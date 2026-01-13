@@ -8,7 +8,7 @@ using System.Data;
 //using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Net;
-using System.Security.Cryptography;
+
 using System.Text.Json;
 using Xconnect.API.Extensions;
 using Xconnect.API.Middleware;
