@@ -1643,5 +1643,86 @@ namespace XConnect.DAL
             }
         }
 
+        #region MobileTeamNewVersion
+        public async Task<DataSet> GetDataSet_staticdata(string SPName, SqlParameter[] para)
+        {
+
+
+            using (SqlConnection con = new SqlConnection(_connectionStrings.ConnectionString_staticData))
+            {
+                DataSet ds = new DataSet();
+
+                using (SqlCommand cmd = new SqlCommand(SPName, con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+
+                    foreach (SqlParameter par in para)
+                    {
+                        cmd.Parameters.Add(par);
+                    }
+                    try
+                    {
+                        await con.OpenAsync();
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            await Task.Run(() => da.Fill(ds));  // Use Task.Run to execute the filling operation asynchronously
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                return ds;
+            }
+
+
+        }
+
+        public async Task<DataTable> GetDataTable_staticdata(string SPName, SqlParameter[] para, int Timeout)
+        {
+
+            using (SqlConnection con = new SqlConnection(_connectionStrings.ConnectionString_staticData))
+            {
+                DataTable dt = new DataTable();
+
+                using (SqlCommand cmd = new SqlCommand(SPName, con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = Timeout;
+
+                    foreach (SqlParameter par in para)
+                    {
+                        cmd.Parameters.Add(par);
+                    }
+                    try
+                    {
+                        await con.OpenAsync();
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            await Task.Run(() => da.Fill(dt));  // Use Task.Run to execute the filling operation asynchronously
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                return dt;
+
+            }
+
+        }
+        #endregion MobileTeamNewVersion
+
     }
 }

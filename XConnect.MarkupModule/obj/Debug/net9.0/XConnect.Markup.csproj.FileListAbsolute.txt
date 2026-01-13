@@ -188,3 +188,4 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\refint\XConnect.Markup.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\ref\XConnect.Markup.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.sourcelink.json

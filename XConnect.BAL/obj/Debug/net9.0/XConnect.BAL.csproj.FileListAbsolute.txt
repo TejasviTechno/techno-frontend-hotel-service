@@ -248,3 +248,4 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConn
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\refint\XConnect.BAL.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\ref\XConnect.BAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL.sourcelink.json

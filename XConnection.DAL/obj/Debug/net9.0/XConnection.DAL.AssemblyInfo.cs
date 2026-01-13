@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("XConnection.DAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1be6ca9bc5d0638f69cc8ba61835a95e3e6e73e5")]
 [assembly: System.Reflection.AssemblyProductAttribute("XConnection.DAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("XConnection.DAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -116,3 +116,4 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XC
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\refint\XConnect.Models.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\ref\XConnect.Models.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.sourcelink.json

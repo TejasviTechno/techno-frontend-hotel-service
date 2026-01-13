@@ -168,3 +168,4 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.ErrorLogHandler\obj\Debug\
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.ErrorLogHandler\obj\Debug\net9.0\refint\XConnect.ErrorLogHandler.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.ErrorLogHandler.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.ErrorLogHandler\obj\Debug\net9.0\ref\XConnect.ErrorLogHandler.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.ErrorLogHandler.sourcelink.json

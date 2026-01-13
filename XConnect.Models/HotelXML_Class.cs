@@ -564,10 +564,37 @@ namespace XConnect.Models
     {
 
         public string CityId { get; set; }
+        public string LocationId { get; set; }    
+        public string Type { get; set; }    
 
 
     }
     #endregion
+
+    
+    
+    public class StaticDataCity_Auto
+    {
+        public string CityName { get; set; }
+
+    }
+
+    public class HotelSync
+    {
+        public int CityId { get; set; }
+        public string SupplierName { get; set; }
+        public string HotelIds { get; set; }
+        public string POI { get; set; }
+        public string Propertytype { get; set; }
+        public string Chain { get; set; }
+        public string Bedprefrence { get; set; }
+        public string AminitiesHotelIds { get; set; }
+        public string Propertytheme { get; set; }
+        public string Neighbouthood { get; set; }
+        public int CountryId { get; set; }
+        public int IsShowRooms { get; set; }
+    }
+
 
     #region "Compact Response"
 

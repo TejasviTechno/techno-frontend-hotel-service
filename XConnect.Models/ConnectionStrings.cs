@@ -9,6 +9,7 @@ namespace XConnect.Models
     public class ConnectionStrings
     {
         public string? ConnectionString { get; set; } = String.Empty;
+        public string? ConnectionString_staticData { get; set; } = String.Empty;
         public string? ConnectionStringControl { get; set; } = String.Empty;
         public string? ConnectionStringBalancer { get; set; } = String.Empty;
         public string? ConnectionStringforlogtrack { get; set; } = String.Empty;

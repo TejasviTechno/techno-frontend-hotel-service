@@ -1061,3 +1061,4 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\Seril
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\Serilog.Sinks.Debug.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\Serilog.Sinks.File.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\UserContextMiddleWare.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.sourcelink.json

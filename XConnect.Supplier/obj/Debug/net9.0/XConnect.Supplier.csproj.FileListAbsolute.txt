@@ -228,3 +228,4 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\refint\XConnect.Supplier.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\ref\XConnect.Supplier.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.sourcelink.json

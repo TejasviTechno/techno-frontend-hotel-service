@@ -96,5 +96,10 @@ namespace XConnect.DAL.Interface
         Task<DataTable> GetDataTable_cm(string SPName, SqlParameter[] para);
 
         Task<DataTable> GetDataTable_cm2(string SPName, SqlParameter[] para);
+
+        #region MobileTeamNewVersion
+        Task<DataTable> GetDataTable_staticdata(String SPName, SqlParameter[] para, Int32 Timeout);
+        Task<DataSet> GetDataSet_staticdata(String SPName, SqlParameter[] para);
+        #endregion MobileTeamNewVersion
     }
 }

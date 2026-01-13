@@ -148,3 +148,4 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XC
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\refint\XConnection.DAL.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\ref\XConnection.DAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.sourcelink.json

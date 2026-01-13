@@ -55,5 +55,42 @@ namespace XConnect.BAL.Interface
         //Task StopAppPool(string appPoolName);
         //Task StartAppPool(string appPoolName);
         //Task RecycleAppPool(string appPoolName);
+
+        #region MobileTeamNerVersion
+        Task<List<StaticData>> GetStaticDataByCity(int CityId, int LoactionID, string Type);
+        Task<DataTable> GetCitiesWithHotel(string CityName);
+        Task<DataSet> GetHotelStaticDataOptimize(HotelSync para);
+        Task<DataSet> gethotelstaticdatalistsuboptimize_v1_Address(HotelSync para);
+        Task<DataSet> GetHotelStaticDataOptimizeImage(HotelSync para);
+        Task<DataSet> ForPOIListing(HotelSync para);
+        Task<DataSet> ForNeighbourHoodFiltering(HotelSync para);
+        Task<DataSet> FotPropertyThemesFiltering(HotelSync para);
+        Task<DataSet> FotPropertyCategoryFiltering(HotelSync para);
+        Task<DataSet> FotPropertyAmenitiesFiltering(HotelSync para);
+        Task<DataSet> FotBedpreferenceFiltering(HotelSync para);
+        Task<DataSet> FotPropertyChainFiltering(HotelSync para);
+        Task<DataSet> GetPropertyCategory(HotelSync para);
+        Task<DataSet> GetPropertyPaymentCollectionInfo(HotelSync para);
+        Task<DataSet> GetPropertyFees(HotelSync para);
+        Task<DataSet> GetPropertyPolicies(HotelSync para);
+        Task<DataSet> GetPropertyAttribute(HotelSync para);
+        Task<DataSet> GetPropertyAmenities(HotelSync para);
+        Task<DataSet> GetPropertyOnsitePayments(HotelSync para);
+        Task<DataSet> GetPropertyRoomDescription(HotelSync para);
+        Task<DataSet> GetPropertyRoomAmenities(HotelSync para);
+        Task<DataSet> GETPropertyRoomImages(HotelSync para);
+        Task<DataSet> GETPropertyRoomBedGroups(HotelSync para);
+        Task<DataSet> GETPropertyRoomBedGroupsConfiguration(HotelSync para);
+        Task<DataSet> GETPropertyRoomArea(HotelSync para);
+        Task<DataSet> GETPropertyRoomViews(HotelSync para);
+        Task<DataSet> GETPropertyRoomOccupancyMaxAllowed(HotelSync para);
+        Task<DataSet> GetPropertyRoomOccupancyAgeCategories(HotelSync para);
+        Task<DataSet> GetPropertyDescriptions(HotelSync para);
+        Task<DataSet> GetPropertyThemes(HotelSync para);
+        Task<DataSet> GetPropertyChain(HotelSync para);
+        Task<DataSet> GetPropertyBrand(HotelSync para);
+        Task<DataSet> GetPropertySpokenLanguages(HotelSync para);
+
+        #endregion MobileTeamVersion 
     }
 }

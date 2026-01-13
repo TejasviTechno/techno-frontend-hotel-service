@@ -188,3 +188,4 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\obj\Debug\net9.0\XC
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\obj\Debug\net9.0\refint\XConnect.CommonUtilities.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\obj\Debug\net9.0\XConnect.CommonUtilities.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\obj\Debug\net9.0\ref\XConnect.CommonUtilities.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\obj\Debug\net9.0\XConnect.CommonUtilities.sourcelink.json

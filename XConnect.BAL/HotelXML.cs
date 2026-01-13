@@ -43588,5 +43588,1517 @@ new SqlParameter("@AgentId", AgentId),
         //    });
         //}
 
+        #region MobileTeamNewVersion
+
+        public async Task<DataTable> GetCitiesWithHotel(string CityName)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                SqlParameter[] para = new SqlParameter[]
+                {
+           new SqlParameter("@prefix", CityName)
+                };
+
+                dt = await _dlConnection.GetDataTable_staticdata("GetLocationSearchData", para, 10);
+
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+                return null;
+            }
+        }
+        public async Task<List<StaticData>> GetStaticDataByCity(int CityId, int LocationId, string Type = "")
+        {
+            try
+            {
+                string keydata = "HotelStaticDataByCityCache_" + Convert.ToString(CityId) + "_" + LocationId + "_" + Type;
+                DataTable dt = new DataTable();
+                if (!_cache.TryGetValue(keydata, out dt))
+                {
+
+                    SqlParameter[] para = new SqlParameter[]
+                    {
+                new SqlParameter("@ID", CityId),
+                new SqlParameter("@LocationId", LocationId),
+                new SqlParameter("@Type", Type)
+                    };
+                    //dt = await _dlConnection.GetDataTable_Time("GetStaticDataByCity_XConnect_nextjs", para, 10);
+                    dt = await _dlConnection.GetDataTable_staticdata("GetHotelFromPolygon", para, 100);
+
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        var cacheEntryOptions = new MemoryCacheEntryOptions()
+                           .SetAbsoluteExpiration(DateTime.Now.AddHours(12));  // Set cache to expire in 12 hours
+
+                        _cache.Set(keydata, dt, cacheEntryOptions);
+                    }
+                }
+
+
+                //dt.Columns["Id"].ColumnName = "CountryId";
+                //dt.Columns["GroupValue"].ColumnName = "Name";
+                return HtmlExtensions.ToList<StaticData>(dt);
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+                return null;
+            }
+        }
+
+        public async Task<DataSet> GetHotelStaticDataOptimize(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetHotelStaticDataOptimize", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyInfo";
+
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> gethotelstaticdatalistsuboptimize_v1_Address(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("gethotelstaticdatalistsuboptimize_v1_Address", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyAddressInfo";
+
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+
+        public async Task<DataSet> GetHotelStaticDataOptimizeImage(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetHotelStaticDataOptimizeImage", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "Property_Image";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> ForPOIListing(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("ForPOIListing", para);
+
+                    if (dtcache.Tables.Count > 0)
+                    {
+                        if (HotelData.IsShowRooms == 0)
+                        {
+                            dtcache.Tables[0].TableName = "POI_S";
+
+                        }
+
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> ForNeighbourHoodFiltering(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("ForNeighbourHoodFiltering", para);
+
+                    if (dtcache.Tables.Count > 0)
+                    {
+                        if (HotelData.IsShowRooms == 0)
+                        {
+                            dtcache.Tables[0].TableName = "NeighbourHoodList";
+
+                        }
+
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetHotelUsingForPOIListing(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@POI",Convert.ToString(HotelData.POI))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetHotelUsingForPOIListing", para);
+
+                    if (dtcache.Tables.Count > 0)
+                    {
+                        if (HotelData.IsShowRooms == 0)
+                        {
+                            dtcache.Tables[0].TableName = "HotelListOfPoi";
+
+                        }
+
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> FotPropertyThemesFiltering(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("FotPropertyThemesFiltering", para);
+
+                    if (dtcache.Tables.Count > 0)
+                    {
+                        if (HotelData.IsShowRooms == 0)
+                        {
+                            dtcache.Tables[0].TableName = "HotelListOfThemes";
+
+                        }
+
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+
+        public async Task<DataSet> FotPropertyCategoryFiltering(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("FotPropertyCategoryFiltering", para);
+
+                    if (dtcache.Tables.Count > 0)
+                    {
+                        if (HotelData.IsShowRooms == 0)
+                        {
+                            dtcache.Tables[0].TableName = "HotelListOfPropertyCategory";
+
+                        }
+
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+
+        public async Task<DataSet> FotPropertyAmenitiesFiltering(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("FotPropertyAmenitiesFiltering", para);
+
+                    if (dtcache.Tables.Count > 0)
+                    {
+                        if (HotelData.IsShowRooms == 0)
+                        {
+                            dtcache.Tables[0].TableName = "HotelListOfPropertyAmenities";
+
+                        }
+
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+
+        public async Task<DataSet> FotPropertyRoomAmenitiesFiltering(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("FotPropertyRoomAmenitiesFiltering", para);
+
+                    if (dtcache.Tables.Count > 0)
+                    {
+                        if (HotelData.IsShowRooms == 0)
+                        {
+                            dtcache.Tables[0].TableName = "HotelListOfRoomAmenities";
+
+                        }
+
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+
+        public async Task<DataSet> FotBedpreferenceFiltering(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("FotBedpreferenceFiltering", para);
+
+                    if (dtcache.Tables.Count > 0)
+                    {
+                        if (HotelData.IsShowRooms == 0)
+                        {
+                            dtcache.Tables[0].TableName = "HotelListOfBedpreference";
+
+                        }
+
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> FotPropertyChainFiltering(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("FotPropertyChainFiltering", para);
+
+                    if (dtcache.Tables.Count > 0)
+                    {
+                        if (HotelData.IsShowRooms == 0)
+                        {
+                            dtcache.Tables[0].TableName = "HotelListOfChain";
+
+                        }
+
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> FotPropertyBrandFiltering(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("FotPropertyBrandFiltering", para);
+
+                    if (dtcache.Tables.Count > 0)
+                    {
+                        if (HotelData.IsShowRooms == 0)
+                        {
+                            dtcache.Tables[0].TableName = "HotelListOfBrand";
+
+                        }
+
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+
+        //GetPropertyCategory
+        #region FroDetailPage
+
+        public async Task<DataSet> GetPropertySpokenLanguages(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertySpokenLanguages", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertySpokenLanguages";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyBrand(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyBrand", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyBrand";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyChain(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyChain", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyChain";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyThemes(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyThemes", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyThemes";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyDescriptions(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyDescriptions", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyDescriptions";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyRoomOccupancyAgeCategories(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyRoomOccupancyAgeCategories", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyRoomOccupancyAgeCategories";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GETPropertyRoomOccupancyMaxAllowed(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GETPropertyRoomOccupancyMaxAllowed", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyRoomOccupancyMaxAllowed";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GETPropertyRoomViews(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GETPropertyRoomViews", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyRoomViews";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GETPropertyRoomArea(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GETPropertyRoomArea", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyRoomArea";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                ///Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GETPropertyRoomBedGroupsConfiguration(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GETPropertyRoomBedGroupsConfiguration", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyRoomBedGroupsConfiguration";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GETPropertyRoomBedGroups(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GETPropertyRoomBedGroups", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyRoomBedGroups";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GETPropertyRoomImages(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GETPropertyRoomImages", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyRoomImages";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyRoomAmenities(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyRoomAmenities", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyRoomAmenities";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyRoomDescription(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyRoomDescription", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyRoomDescription";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyOnsitePayments(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyOnsitePayments", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyOnsitePayments";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyAmenities(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyAmenities", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyAmenities";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyAttribute(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyAttribute", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyAttribute";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyPolicies(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyPolicies", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyFees";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                // Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyFees(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyFees", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyFees";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyCheckInCheckOutInfo(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyCheckInCheckOutInfo", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyCheckInCheckOutInfo";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyPaymentCollectionInfo(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyPaymentCollectionInfo", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyPaymentCollectionInfo";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+        public async Task<DataSet> GetPropertyCategory(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("GetPropertyCategory", para);
+
+                    if (dtcache.Tables.Count > 0)
+                        dtcache.Tables[0].TableName = "PropertyCategory";
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+
+
+
+        #endregion FroDetailPage
+
+        #region ForFilter
+        //Filtering
+
+        public async Task<DataSet> Filtering(HotelSync HotelData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+            //new SqlParameter("@CountryID",HotelData.CountryId),
+            new SqlParameter("@IsShowRooms",  HotelData.IsShowRooms),
+            new SqlParameter("@LanguageId",Convert.ToInt32(0)),
+            new SqlParameter("@HotelIds",Convert.ToString(HotelData.HotelIds)),
+            new SqlParameter("@Propertytype",Convert.ToString(HotelData.Propertytype)),
+            new SqlParameter("@Neighbouthood",Convert.ToString(HotelData.Neighbouthood)),
+            new SqlParameter("@POI",Convert.ToString(HotelData.POI)),
+            new SqlParameter("@Chain",Convert.ToString(HotelData.Chain)),
+            new SqlParameter("@Bedprefrence",Convert.ToString(HotelData.Bedprefrence)),
+            new SqlParameter("@Aminities",Convert.ToString(HotelData.AminitiesHotelIds)),
+            new SqlParameter("@Propertytheme",Convert.ToString(HotelData.Propertytheme))
+
+    };
+                //DLConnection db = new DLConnection();
+                DataSet dtcache = new DataSet();
+                try
+                {
+                    dtcache = await _dlConnection.GetDataSet_staticdata("Filtering", para);
+
+                    if (dtcache.Tables.Count > 0)
+                    {
+                        if (HotelData.IsShowRooms == 0)
+                        {
+                            dtcache.Tables[0].TableName = "HotelListOfBrand";
+
+                        }
+
+
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                }
+                //dtcache= db.GetDataSet("getStaticHotelData", para);
+
+
+
+                return dtcache;
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                return null;
+            }
+        }
+
+        #endregion ForFilter
+
+        #endregion MobileTeamNewVersion
+
     }
 }
