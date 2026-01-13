@@ -1,0 +1,57 @@
+C:\ANKIT\Jay\XConnect\XConnect.Models\bin\Release\net9.0\XConnect.Models.deps.json
+C:\ANKIT\Jay\XConnect\XConnect.Models\bin\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\Jay\XConnect\XConnect.Models\bin\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\Jay\XConnect\XConnect.Models\obj\Release\net9.0\XConnect.Models.csproj.AssemblyReference.cache
+C:\ANKIT\Jay\XConnect\XConnect.Models\obj\Release\net9.0\XConnect.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\ANKIT\Jay\XConnect\XConnect.Models\obj\Release\net9.0\XConnect.Models.AssemblyInfoInputs.cache
+C:\ANKIT\Jay\XConnect\XConnect.Models\obj\Release\net9.0\XConnect.Models.AssemblyInfo.cs
+C:\ANKIT\Jay\XConnect\XConnect.Models\obj\Release\net9.0\XConnect.Models.csproj.CoreCompileInputs.cache
+C:\ANKIT\Jay\XConnect\XConnect.Models\obj\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\Jay\XConnect\XConnect.Models\obj\Release\net9.0\refint\XConnect.Models.dll
+C:\ANKIT\Jay\XConnect\XConnect.Models\obj\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\Jay\XConnect\XConnect.Models\obj\Release\net9.0\ref\XConnect.Models.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.deps.json
+C:\WEB\Xconnect9\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\WEB\Xconnect9\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.AssemblyInfoInputs.cache
+C:\WEB\Xconnect9\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.AssemblyInfo.cs
+C:\WEB\Xconnect9\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.csproj.CoreCompileInputs.cache
+C:\WEB\Xconnect9\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.Models\obj\Release\net9.0\refint\XConnect.Models.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.Models\obj\Release\net9.0\ref\XConnect.Models.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.deps.json
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.AssemblyInfoInputs.cache
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.AssemblyInfo.cs
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.csproj.CoreCompileInputs.cache
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.Models\obj\Release\net9.0\refint\XConnect.Models.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.Models\obj\Release\net9.0\ref\XConnect.Models.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.deps.json
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.AssemblyInfoInputs.cache
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.AssemblyInfo.cs
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.csproj.CoreCompileInputs.cache
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\refint\XConnect.Models.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\ref\XConnect.Models.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.deps.json
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\bin\Release\net9.0\XConnect.Models.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.csproj.AssemblyReference.cache
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.AssemblyInfoInputs.cache
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.AssemblyInfo.cs
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.csproj.CoreCompileInputs.cache
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\refint\XConnect.Models.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\XConnect.Models.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Release\net9.0\ref\XConnect.Models.dll

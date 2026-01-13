@@ -1,0 +1,125 @@
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.deps.json
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.dll
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.pdb
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.CommonUtilities.dll
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.Markup.dll
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.Supplier.dll
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnection.DAL.dll
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.CommonUtilities.pdb
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.Supplier.pdb
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnection.DAL.pdb
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\ANKIT\Jay\XConnect\XConnect.BAL\bin\Release\net9.0\XConnect.Markup.pdb
+C:\ANKIT\Jay\XConnect\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.csproj.AssemblyReference.cache
+C:\ANKIT\Jay\XConnect\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\ANKIT\Jay\XConnect\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.AssemblyInfoInputs.cache
+C:\ANKIT\Jay\XConnect\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.AssemblyInfo.cs
+C:\ANKIT\Jay\XConnect\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.csproj.CoreCompileInputs.cache
+C:\ANKIT\Jay\XConnect\XConnect.BAL\obj\Release\net9.0\XConnect.D0259A92.Up2Date
+C:\ANKIT\Jay\XConnect\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.dll
+C:\ANKIT\Jay\XConnect\XConnect.BAL\obj\Release\net9.0\refint\XConnect.BAL.dll
+C:\ANKIT\Jay\XConnect\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.pdb
+C:\ANKIT\Jay\XConnect\XConnect.BAL\obj\Release\net9.0\ref\XConnect.BAL.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.deps.json
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.CommonUtilities.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Markup.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Models.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Supplier.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnection.DAL.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.CommonUtilities.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Models.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Supplier.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnection.DAL.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Markup.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.csproj.AssemblyReference.cache
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.AssemblyInfoInputs.cache
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.AssemblyInfo.cs
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.csproj.CoreCompileInputs.cache
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.D0259A92.Up2Date
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\obj\Release\net9.0\refint\XConnect.BAL.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.BAL\obj\Release\net9.0\ref\XConnect.BAL.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.deps.json
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.CommonUtilities.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Markup.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Supplier.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnection.DAL.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.CommonUtilities.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Supplier.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnection.DAL.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Markup.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.csproj.AssemblyReference.cache
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.AssemblyInfoInputs.cache
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.AssemblyInfo.cs
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.csproj.CoreCompileInputs.cache
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.D0259A92.Up2Date
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\obj\Release\net9.0\refint\XConnect.BAL.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.BAL\obj\Release\net9.0\ref\XConnect.BAL.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.deps.json
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.CommonUtilities.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Markup.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Supplier.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnection.DAL.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.CommonUtilities.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Supplier.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnection.DAL.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Markup.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.csproj.AssemblyReference.cache
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.AssemblyInfoInputs.cache
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.AssemblyInfo.cs
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.csproj.CoreCompileInputs.cache
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.D0259A92.Up2Date
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\refint\XConnect.BAL.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\ref\XConnect.BAL.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.csproj.AssemblyReference.cache
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.GeneratedMSBuildEditorConfig.editorconfig
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.AssemblyInfoInputs.cache
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.AssemblyInfo.cs
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.csproj.CoreCompileInputs.cache
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.deps.json
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.BAL.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.CommonUtilities.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Markup.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Models.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Supplier.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnection.DAL.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.CommonUtilities.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Models.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Supplier.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnection.DAL.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\bin\Release\net9.0\XConnect.Markup.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.D0259A92.Up2Date
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\refint\XConnect.BAL.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\XConnect.BAL.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Release\net9.0\ref\XConnect.BAL.dll

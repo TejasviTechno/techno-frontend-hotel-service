@@ -1,0 +1,248 @@
+﻿<data>
+  <b XMLNationality="Somaliland" Capital="Hargeisa"/>
+  <b XMLNationality="South Georgia and South Sandwich Islands" Capital="King Edward Point"/>
+  <b XMLNationality="French Southern and Antarctic Lands" Capital="Port-aux-Français"/>
+  <b XMLNationality="Palestine" Capital="Jerusalem"/>
+  <b XMLNationality="Aland Islands" Capital="Mariehamn"/>
+  <b XMLNationality="Nauru" Capital="Yaren"/>
+  <b XMLNationality="Saint Martin" Capital="Marigot"/>
+  <b XMLNationality="Tokelau" Capital="Atafu"/>
+  <b XMLNationality="Western Sahara" Capital="El-Aaiún"/>
+  <b XMLNationality="Afghanistan" Capital="Kabul"/>
+  <b XMLNationality="Albania" Capital="Tirana"/>
+  <b XMLNationality="Algeria" Capital="Algiers"/>
+  <b XMLNationality="American Samoa" Capital="Pago Pago"/>
+  <b XMLNationality="Andorra" Capital="Andorra la Vella"/>
+  <b XMLNationality="Angola" Capital="Luanda"/>
+  <b XMLNationality="Anguilla" Capital="The Valley"/>
+  <b XMLNationality="Antigua and Barbuda" Capital="Saint John's"/>
+  <b XMLNationality="Argentina" Capital="Buenos Aires"/>
+  <b XMLNationality="Armenia" Capital="Yerevan"/>
+  <b XMLNationality="Aruba" Capital="Oranjestad"/>
+  <b XMLNationality="Australia" Capital="Canberra"/>
+  <b XMLNationality="Austria" Capital="Vienna"/>
+  <b XMLNationality="Azerbaijan" Capital="Baku"/>
+  <b XMLNationality="Bahamas" Capital="Nassau"/>
+  <b XMLNationality="Bahrain" Capital="Manama"/>
+  <b XMLNationality="Bangladesh" Capital="Dhaka"/>
+  <b XMLNationality="Barbados" Capital="Bridgetown"/>
+  <b XMLNationality="Belarus" Capital="Minsk"/>
+  <b XMLNationality="Belgium" Capital="Brussels"/>
+  <b XMLNationality="Belize" Capital="Belmopan"/>
+  <b XMLNationality="Benin" Capital="Porto-Novo"/>
+  <b XMLNationality="Bermuda" Capital="Hamilton"/>
+  <b XMLNationality="Bhutan" Capital="Thimphu"/>
+  <b XMLNationality="Bolivia" Capital="La Paz"/>
+  <!--<b XMLNationality="Bosnia and Herzegovina" Capital="Sarajevo"/>-->
+  <b XMLNationality="Bosnia Herzegovina" Capital="Sarajevo"/> 
+  <b XMLNationality="Botswana" Capital="Gaborone"/>
+  <b XMLNationality="Brazil" Capital="Brasilia"/>
+  <b XMLNationality="British Virgin Islands" Capital="Road Town"/>
+  <b XMLNationality="Brunei Darussalam" Capital="Bandar Seri Begawan"/>
+  <b XMLNationality="Bulgaria" Capital="Sofia"/>
+  <b XMLNationality="Burkina Faso" Capital="Ouagadougou"/>
+  <b XMLNationality="Myanmar" Capital="Rangoon"/>
+  <b XMLNationality="Burundi" Capital="Bujumbura"/>
+  <b XMLNationality="Cambodia" Capital="Phnom Penh"/>
+  <b XMLNationality="Cameroon" Capital="Yaounde"/>
+  <b XMLNationality="Canada" Capital="Ottawa"/>
+  <b XMLNationality="Cape Verde" Capital="Praia"/>
+  <b XMLNationality="Cayman Islands" Capital="George Town"/>
+  <b XMLNationality="Central African Republic" Capital="Bangui"/>
+  <b XMLNationality="Chad" Capital="N'Djamena"/>
+  <b XMLNationality="Chile" Capital="Santiago"/>
+  <b XMLNationality="China" Capital="Beijing"/>
+  <b XMLNationality="Christmas Island" Capital="The Settlement"/>
+  <b XMLNationality="Cocos Islands" Capital="West Island"/>
+  <b XMLNationality="Colombia" Capital="Bogota"/>
+  <b XMLNationality="Comoros" Capital="Moroni"/>
+  <b XMLNationality="Democratic Republic of the Congo" Capital="Kinshasa"/>
+  <b XMLNationality="Republic of Congo" Capital="Brazzaville"/>
+  <b XMLNationality="Cook Islands" Capital="Avarua"/>
+  <b XMLNationality="Costa Rica" Capital="San Jose"/>
+  <b XMLNationality="Cote d'Ivoire" Capital="Yamoussoukro"/>
+  <b XMLNationality="Croatia" Capital="Zagreb"/>
+  <b XMLNationality="Cuba" Capital="Havana"/>
+  <b XMLNationality="Curaçao" Capital="Willemstad"/>
+  <b XMLNationality="Cyprus" Capital="Nicosia"/>
+  <b XMLNationality="Czech Republic" Capital="Prague"/>
+  <b XMLNationality="Denmark" Capital="Copenhagen"/>
+  <b XMLNationality="Djibouti" Capital="Djibouti"/>
+  <b XMLNationality="Dominica" Capital="Roseau"/>
+  <b XMLNationality="Dominican Republic" Capital="Santo Domingo"/>
+  <b XMLNationality="Ecuador" Capital="Quito"/>
+  <b XMLNationality="Egypt" Capital="Cairo"/>
+  <b XMLNationality="El Salvador" Capital="San Salvador"/>
+  <b XMLNationality="Equatorial Guinea" Capital="Malabo"/>
+  <b XMLNationality="Eritrea" Capital="Asmara"/>
+  <b XMLNationality="Estonia" Capital="Tallinn"/>
+  <b XMLNationality="Ethiopia" Capital="Addis Ababa"/>
+  <b XMLNationality="Falkland Islands" Capital="Stanley"/>
+  <b XMLNationality="Faroe Islands" Capital="Torshavn"/>
+  <b XMLNationality="Fiji" Capital="Suva"/>
+  <b XMLNationality="Finland" Capital="Helsinki"/>
+  <b XMLNationality="France" Capital="Paris"/>
+  <b XMLNationality="French Polynesia" Capital="Papeete"/>
+  <b XMLNationality="Gabon" Capital="Libreville"/>
+  <b XMLNationality="The Gambia" Capital="Banjul"/>
+  <b XMLNationality="Georgia" Capital="Tbilisi"/>
+  <b XMLNationality="Germany" Capital="Berlin"/>
+  <b XMLNationality="Ghana" Capital="Accra"/>
+  <b XMLNationality="Gibraltar" Capital="Gibraltar"/>
+  <b XMLNationality="Greece" Capital="Athens"/>
+  <b XMLNationality="Greenland" Capital="Nuuk"/>
+  <b XMLNationality="Grenada" Capital="Saint George's"/>
+  <b XMLNationality="Guam" Capital="Hagatna"/>
+  <b XMLNationality="Guatemala" Capital="Guatemala City"/>
+  <b XMLNationality="Guernsey" Capital="Saint Peter Port"/>
+  <b XMLNationality="Guinea" Capital="Conakry"/>
+  <b XMLNationality="Guinea-Bissau" Capital="Bissau"/>
+  <b XMLNationality="Guyana" Capital="Georgetown"/>
+  <b XMLNationality="Haiti" Capital="Port-au-Prince"/>
+  <b XMLNationality="Vatican City" Capital="Vatican City"/>
+  <b XMLNationality="Honduras" Capital="Tegucigalpa"/>
+  <b XMLNationality="Hungary" Capital="Budapest"/>
+  <b XMLNationality="Iceland" Capital="Reykjavik"/>
+  <b XMLNationality="India" Capital="New Delhi"/>
+  <b XMLNationality="Indonesia" Capital="Jakarta"/>
+  <b XMLNationality="Iran" Capital="Tehran"/>
+  <b XMLNationality="Iraq" Capital="Baghdad"/>
+  <b XMLNationality="Ireland" Capital="Dublin"/>
+  <b XMLNationality="Isle of Man" Capital="Douglas"/>
+  <b XMLNationality="Israel" Capital="Jerusalem"/>
+  <b XMLNationality="Italy" Capital="Rome"/>
+  <b XMLNationality="Jamaica" Capital="Kingston"/>
+  <b XMLNationality="Japan" Capital="Tokyo"/>
+  <b XMLNationality="Jersey" Capital="Saint Helier"/>
+  <b XMLNationality="Jordan" Capital="Amman"/>
+  <b XMLNationality="Kazakhstan" Capital="Astana"/>
+  <b XMLNationality="Kenya" Capital="Nairobi"/>
+  <b XMLNationality="Kiribati" Capital="Tarawa"/>
+  <b XMLNationality="North Korea" Capital="Pyongyang"/>
+  <b XMLNationality="South Korea" Capital="Seoul"/>
+  <b XMLNationality="Kosovo" Capital="Pristina"/>
+  <b XMLNationality="Kuwait" Capital="Kuwait City"/>
+  <b XMLNationality="Kyrgyzstan" Capital="Bishkek"/>
+  <b XMLNationality="Laos" Capital="Vientiane"/>
+  <b XMLNationality="Latvia" Capital="Riga"/>
+  <b XMLNationality="Lebanon" Capital="Beirut"/>
+  <b XMLNationality="Lesotho" Capital="Maseru"/>
+  <b XMLNationality="Liberia" Capital="Monrovia"/>
+  <b XMLNationality="Libya" Capital="Tripoli"/>
+  <b XMLNationality="Liechtenstein" Capital="Vaduz"/>
+  <b XMLNationality="Lithuania" Capital="Vilnius"/>
+  <b XMLNationality="Luxembourg" Capital="Luxembourg"/>
+  <b XMLNationality="Macedonia" Capital="Skopje"/>
+  <b XMLNationality="Madagascar" Capital="Antananarivo"/>
+  <b XMLNationality="Malawi" Capital="Lilongwe"/>
+  <b XMLNationality="Malaysia" Capital="Kuala Lumpur"/>
+  <b XMLNationality="Maldives" Capital="Male"/>
+  <b XMLNationality="Mali" Capital="Bamako"/>
+  <b XMLNationality="Malta" Capital="Valletta"/>
+  <b XMLNationality="Marshall Islands" Capital="Majuro"/>
+  <b XMLNationality="Mauritania" Capital="Nouakchott"/>
+  <b XMLNationality="Mauritius" Capital="Port Louis"/>
+  <b XMLNationality="Mexico" Capital="Mexico City"/>
+  <b XMLNationality="Federated States of Micronesia" Capital="Palikir"/>
+  <b XMLNationality="Moldova" Capital="Chisinau"/>
+  <b XMLNationality="Monaco" Capital="Monaco"/>
+  <b XMLNationality="Mongolia" Capital="Ulaanbaatar"/>
+  <b XMLNationality="Montenegro" Capital="Podgorica"/>
+  <b XMLNationality="Montserrat" Capital="Plymouth"/>
+  <b XMLNationality="Morocco" Capital="Rabat"/>
+  <b XMLNationality="Mozambique" Capital="Maputo"/>
+  <b XMLNationality="Namibia" Capital="Windhoek"/>
+  <b XMLNationality="Nepal" Capital="Kathmandu"/>
+  <b XMLNationality="Netherlands" Capital="Amsterdam"/>
+  <b XMLNationality="New Caledonia" Capital="Noumea"/>
+  <b XMLNationality="New Zealand" Capital="Wellington"/>
+  <b XMLNationality="Nicaragua" Capital="Managua"/>
+  <b XMLNationality="Niger" Capital="Niamey"/>
+  <b XMLNationality="Nigeria" Capital="Abuja"/>
+  <b XMLNationality="Niue" Capital="Alofi"/>
+  <b XMLNationality="Norfolk Island" Capital="Kingston"/>
+  <b XMLNationality="Northern Mariana Islands" Capital="Saipan"/>
+  <b XMLNationality="Norway" Capital="Oslo"/>
+  <b XMLNationality="Oman" Capital="Muscat"/>
+  <b XMLNationality="Pakistan" Capital="Islamabad"/>
+  <b XMLNationality="Palau" Capital="Melekeok"/>
+  <b XMLNationality="Panama" Capital="Panama City"/>
+  <b XMLNationality="Papua New Guinea" Capital="Port Moresby"/>
+  <b XMLNationality="Paraguay" Capital="Asuncion"/>
+  <b XMLNationality="Peru" Capital="Lima"/>
+  <b XMLNationality="Philippines" Capital="Manila"/>
+  <b XMLNationality="Pitcairn Islands" Capital="Adamstown"/>
+  <b XMLNationality="Poland" Capital="Warsaw"/>
+  <b XMLNationality="Portugal" Capital="Lisbon"/>
+  <b XMLNationality="Puerto Rico" Capital="San Juan"/>
+  <b XMLNationality="Qatar" Capital="Doha"/>
+  <b XMLNationality="Romania" Capital="Bucharest"/>
+  <b XMLNationality="Russia" Capital="Moscow"/>
+  <b XMLNationality="Rwanda" Capital="Kigali"/>
+  <b XMLNationality="Saint Barthelemy" Capital="Gustavia"/>
+  <b XMLNationality="Saint Helena" Capital="Jamestown"/>
+  <b XMLNationality="Saint Kitts and Nevis" Capital="Basseterre"/>
+  <b XMLNationality="Saint Lucia" Capital="Castries"/>
+  <b XMLNationality="Saint Pierre and Miquelon" Capital="Saint-Pierre"/>
+  <b XMLNationality="Saint Vincent and the Grenadines" Capital="Kingstown"/>
+  <b XMLNationality="Samoa" Capital="Apia"/>
+  <b XMLNationality="San Marino" Capital="San Marino"/>
+  <b XMLNationality="Sao Tome and Principe" Capital="Sao Tome"/>
+  <b XMLNationality="Saudi Arabia" Capital="Riyadh"/>
+  <b XMLNationality="Senegal" Capital="Dakar"/>
+  <b XMLNationality="Serbia" Capital="Belgrade"/>
+  <b XMLNationality="Seychelles" Capital="Victoria"/>
+  <b XMLNationality="Sierra Leone" Capital="Freetown"/>
+  <b XMLNationality="Singapore" Capital="Singapore"/>
+  <b XMLNationality="Sint Maarten" Capital="Philipsburg"/>
+  <b XMLNationality="Slovakia" Capital="Bratislava"/>
+  <b XMLNationality="Slovenia" Capital="Ljubljana"/>
+  <b XMLNationality="Solomon Islands" Capital="Honiara"/>
+  <b XMLNationality="Somalia" Capital="Mogadishu"/>
+  <b XMLNationality="South Africa" Capital="Pretoria"/>
+  <b XMLNationality="South Sudan" Capital="Juba"/>
+  <b XMLNationality="Spain" Capital="Madrid"/>
+  <b XMLNationality="Sri Lanka" Capital="Colombo"/>
+  <b XMLNationality="Sudan" Capital="Khartoum"/>
+  <b XMLNationality="Suriname" Capital="Paramaribo"/>
+  <b XMLNationality="Svalbard" Capital="Longyearbyen"/>
+  <b XMLNationality="Swaziland" Capital="Mbabane"/>
+  <b XMLNationality="Sweden" Capital="Stockholm"/>
+  <b XMLNationality="Switzerland" Capital="Bern"/>
+  <b XMLNationality="Syria" Capital="Damascus"/>
+  <b XMLNationality="Taiwan" Capital="Taipei"/>
+  <b XMLNationality="Tajikistan" Capital="Dushanbe"/>
+  <b XMLNationality="Tanzania" Capital="Dar es Salaam"/>
+  <b XMLNationality="Thailand" Capital="Bangkok"/>
+  <b XMLNationality="Timor-Leste" Capital="Dili"/>
+  <b XMLNationality="Togo" Capital="Lome"/>
+  <b XMLNationality="Tonga" Capital="Nuku'alofa"/>
+  <b XMLNationality="Trinidad and Tobago" Capital="Port of Spain"/>
+  <b XMLNationality="Tunisia" Capital="Tunis"/>
+  <b XMLNationality="Turkey" Capital="Ankara"/>
+  <b XMLNationality="Turkmenistan" Capital="Ashgabat"/>
+  <b XMLNationality="Turks and Caicos Islands" Capital="Grand Turk"/>
+  <b XMLNationality="Tuvalu" Capital="Funafuti"/>
+  <b XMLNationality="Uganda" Capital="Kampala"/>
+  <b XMLNationality="Ukraine" Capital="Kyiv"/>
+  <b XMLNationality="United Arab Emirates" Capital="Abu Dhabi"/>
+  <b XMLNationality="United Kingdom" Capital="London"/>
+  <b XMLNationality="United States" Capital="Washington"/>
+  <b XMLNationality="Uruguay" Capital="Montevideo"/>
+  <b XMLNationality="Uzbekistan" Capital="Tashkent"/>
+  <b XMLNationality="Vanuatu" Capital="Port-Vila"/>
+  <b XMLNationality="Venezuela" Capital="Caracas"/>
+  <b XMLNationality="Vietnam" Capital="Hanoi"/>
+  <b XMLNationality="US Virgin Islands" Capital="Charlotte Amalie"/>
+  <b XMLNationality="Wallis and Futuna" Capital="Mata-Utu"/>
+  <b XMLNationality="Yemen" Capital="Sanaa"/>
+  <b XMLNationality="Zambia" Capital="Lusaka"/>
+  <b XMLNationality="Zimbabwe" Capital="Harare"/>
+  <b XMLNationality="US Minor Outlying Islands" Capital="Washington"/>
+  <b XMLNationality="Antarctica" Capital="N/A"/>
+  <b XMLNationality="Northern Cyprus" Capital="North Nicosia"/>
+  <b XMLNationality="Hong Kong" Capital="N/A"/>
+  <b XMLNationality="Heard Island and McDonald Islands" Capital="N/A"/>
+  <b XMLNationality="British Indian Ocean Territory" Capital="Diego Garcia"/>
+  <b XMLNationality="Macau" Capital="N/A"/>
+</data>

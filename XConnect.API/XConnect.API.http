@@ -1,0 +1,6 @@
+@XConnect.API_HostAddress = http://localhost:5076
+
+GET {{XConnect.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

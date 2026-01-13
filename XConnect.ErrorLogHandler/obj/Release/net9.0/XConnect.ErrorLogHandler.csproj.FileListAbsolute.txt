@@ -1,0 +1,85 @@
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.deps.json
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnection.DAL.dll
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnection.DAL.pdb
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.csproj.AssemblyReference.cache
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.GeneratedMSBuildEditorConfig.editorconfig
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.AssemblyInfoInputs.cache
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.AssemblyInfo.cs
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.csproj.CoreCompileInputs.cache
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.26BB576B.Up2Date
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\obj\Release\net9.0\refint\XConnect.ErrorLogHandler.dll
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\ANKIT\Jay\XConnect\XConnect.ErrorLogHandler\obj\Release\net9.0\ref\XConnect.ErrorLogHandler.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.deps.json
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.Models.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnection.DAL.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnection.DAL.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.Models.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.csproj.AssemblyReference.cache
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.GeneratedMSBuildEditorConfig.editorconfig
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.AssemblyInfoInputs.cache
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.AssemblyInfo.cs
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.csproj.CoreCompileInputs.cache
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.26BB576B.Up2Date
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\refint\XConnect.ErrorLogHandler.dll
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\WEB\Xconnect9\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\ref\XConnect.ErrorLogHandler.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.deps.json
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnection.DAL.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnection.DAL.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.csproj.AssemblyReference.cache
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.GeneratedMSBuildEditorConfig.editorconfig
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.AssemblyInfoInputs.cache
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.AssemblyInfo.cs
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.csproj.CoreCompileInputs.cache
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.26BB576B.Up2Date
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\refint\XConnect.ErrorLogHandler.dll
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\ANKIT\Jay 070225\xconnect-api_Update_Parse_050225\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\ref\XConnect.ErrorLogHandler.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.deps.json
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.Models.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnection.DAL.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnection.DAL.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.Models.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.csproj.AssemblyReference.cache
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.GeneratedMSBuildEditorConfig.editorconfig
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.AssemblyInfoInputs.cache
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.AssemblyInfo.cs
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.csproj.CoreCompileInputs.cache
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.26BB576B.Up2Date
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\refint\XConnect.ErrorLogHandler.dll
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\ANKIT\BK\120525\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\ref\XConnect.ErrorLogHandler.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.deps.json
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.Models.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnection.DAL.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnection.DAL.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\bin\Release\net9.0\XConnect.Models.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.csproj.AssemblyReference.cache
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.GeneratedMSBuildEditorConfig.editorconfig
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.AssemblyInfoInputs.cache
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.AssemblyInfo.cs
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.csproj.CoreCompileInputs.cache
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.26BB576B.Up2Date
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\refint\XConnect.ErrorLogHandler.dll
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\XConnect.ErrorLogHandler.pdb
+C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.ErrorLogHandler\obj\Release\net9.0\ref\XConnect.ErrorLogHandler.dll

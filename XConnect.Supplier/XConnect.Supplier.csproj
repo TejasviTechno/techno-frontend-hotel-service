@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+		<PackageReference Include="RestSharp" Version="112.1.0"/>
+	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XConnect.Common\XConnect.CommonUtilities.csproj" />
+    <ProjectReference Include="..\XConnect.ErrorLogHandler\XConnect.ErrorLogHandler.csproj" />
+    <ProjectReference Include="..\XConnect.MarkupModule\XConnect.Markup.csproj" />
+    <ProjectReference Include="..\XConnect.Models\XConnect.Models.csproj" />
+  </ItemGroup>
+
+</Project>

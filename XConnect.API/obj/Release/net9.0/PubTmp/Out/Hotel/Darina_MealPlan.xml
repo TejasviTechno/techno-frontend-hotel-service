@@ -1,0 +1,20 @@
+﻿<D>
+  <d0 DarinaId="9" DarinaText="AI" MealPlanCode="AI">
+  </d0>
+  <d0 DarinaId="1" DarinaText="BB" MealPlanCode="BB">
+  </d0>
+  <d0 DarinaId="14" DarinaText="BB+ Al" MealPlanCode="">
+  </d0>
+  <d0 DarinaId="13" DarinaText="BB+ FB" MealPlanCode="">
+  </d0>
+  <d0 DarinaId="12" DarinaText="BB+ HB" MealPlanCode="">
+  </d0>
+  <d0 DarinaId="7" DarinaText="FB" MealPlanCode="FB">
+  </d0>
+  <d0 DarinaId="8" DarinaText="HB" MealPlanCode="HB">
+  </d0>
+  <d0 DarinaId="10" DarinaText="RO" MealPlanCode="RO">
+  </d0>
+  <d0 DarinaId="15" DarinaText="Test Meal Plan" MealPlanCode="">
+  </d0>
+</D>
