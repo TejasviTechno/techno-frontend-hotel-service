@@ -30,13 +30,14 @@ namespace XConnect.Supplier.Paximum
         private readonly KeySettings _keySettings;
 
 
-        public PaximumRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings)
+        public PaximumRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception)
         {
             _commonMethod = commonMethod;
-            _exception = null;
+
             _markup = markup;
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
+            _exception = exception;
         }
 
 

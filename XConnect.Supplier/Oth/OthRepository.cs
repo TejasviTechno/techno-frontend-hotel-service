@@ -28,13 +28,14 @@ namespace XConnect.Supplier.Oth
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
 
-        public OthRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings)
+        public OthRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception)
         {
             _commonMethod = commonMethod;
-            _exception = null;
+
             _markup = markup;
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
+            _exception = exception;
         }
 
         public void GetWithinearthRequestOnlyNew(bool SearchByHotel, DataTable dtPreferredDataHotel, HotelSearchParameter SearchPara, List<SupplierDetails> OTHDetails, List<SupplierSearchConfig> OTHSearchConfig, ref ConcurrentBag<HotelX> AllTask, DataTable dtAgentDetail, DataSet dsAgentDetails, DataTable dtMarkupDetails, int Hit, DataTable OwnIDSList, DataRow[] commonCode)

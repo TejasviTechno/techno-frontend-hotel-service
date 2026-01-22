@@ -32,12 +32,13 @@ namespace XConnect.Supplier.Qtech
         private readonly KeySettings _keySettings;
 
 
-        public QtechRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings)
+        public QtechRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
+            _exception = exception;
         }
 
         public void GetQTechRequestOnly_Async_bck(DataTable dtROE, DataRow[] commonCode, DataTable dtPreferredDataHotel, HotelSearchParameter SearchPara, List<SupplierSearchConfig> QTechSearchConfig, List<SupplierDetails> QTechDetails, ref ConcurrentBag<HotelX> AllTask, string AgentCode, string CityCode, string CountryCode, List<StarRating> listRating, int Hit, string Provider, string XmlNationality)

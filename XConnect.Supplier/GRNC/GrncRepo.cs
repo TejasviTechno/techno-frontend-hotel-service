@@ -33,13 +33,14 @@ namespace XConnect.Supplier.GRNC
         private readonly KeySettings _keySettings;
 
 
-        public GrncRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings)
+        public GrncRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _cache = cache;
             _keySettings = keySettings.Value;
+            _exception = exception;
         }
 
         public void GRNCRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> lstGRNCDetails, List<SupplierSearchConfig> lstGRNCSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, int Hit, DataTable dtROE, TokenData tokenData, DataSet dtXMLCity)

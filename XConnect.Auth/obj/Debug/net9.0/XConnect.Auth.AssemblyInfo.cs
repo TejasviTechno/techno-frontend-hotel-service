@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("XConnect.Auth")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1be6ca9bc5d0638f69cc8ba61835a95e3e6e73e5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5e83618297ea38cd123cf3e9e0234ec00b102124")]
 [assembly: System.Reflection.AssemblyProductAttribute("XConnect.Auth")]
 [assembly: System.Reflection.AssemblyTitleAttribute("XConnect.Auth")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

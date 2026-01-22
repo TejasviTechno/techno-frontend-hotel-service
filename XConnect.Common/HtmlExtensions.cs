@@ -1094,6 +1094,8 @@ namespace XConnect.CommonUtilities
             return dataRow;
         }
 
+        
+
         //public static string GetHotelImagePath(this string Raynaid)
         public static string GetHotelImagePath(this string Raynaid,string staticimagepath)
         {

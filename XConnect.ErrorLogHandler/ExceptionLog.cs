@@ -17,6 +17,7 @@ namespace XConnect.ErrorLogHandler
         private readonly IDLConnection _dLConnection;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
+
         public ExceptionLog(IDLConnection dLConnection, IHttpContextAccessor httpContextAccessor)
         {
             _dLConnection = dLConnection;

@@ -321,6 +321,518 @@
   },
   {
     "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "ForNeighbourHoodFiltering",
+    "RelativePath": "api/XConnect/ForNeighbourHoodFiltering",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "ForPOIListing",
+    "RelativePath": "api/XConnect/ForPOIListing",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "FotBedpreferenceFiltering",
+    "RelativePath": "api/XConnect/FotBedpreferenceFiltering",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "FotPropertyAmenitiesFiltering",
+    "RelativePath": "api/XConnect/FotPropertyAmenitiesFiltering",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "FotPropertyCategoryFiltering",
+    "RelativePath": "api/XConnect/FotPropertyCategoryFiltering",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "FotPropertyChainFiltering",
+    "RelativePath": "api/XConnect/FotPropertyChainFiltering",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "FotPropertyThemesFiltering",
+    "RelativePath": "api/XConnect/FotPropertyThemesFiltering",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetCitiesWithHotel",
+    "RelativePath": "api/XConnect/GetCitiesWithHotel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "gethotelstaticdatalistsuboptimize_v1_Address",
+    "RelativePath": "api/XConnect/gethotelstaticdatalistsuboptimize_v1_Address",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetHotelStaticDataOptimize",
+    "RelativePath": "api/XConnect/GetHotelStaticDataOptimize",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetHotelStaticDataOptimizeImage",
+    "RelativePath": "api/XConnect/GetHotelStaticDataOptimizeImage",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyAmenities",
+    "RelativePath": "api/XConnect/GetPropertyAmenities",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyAttribute",
+    "RelativePath": "api/XConnect/GetPropertyAttribute",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyBrand",
+    "RelativePath": "api/XConnect/GetPropertyBrand",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyCategory",
+    "RelativePath": "api/XConnect/GetPropertyCategory",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyChain",
+    "RelativePath": "api/XConnect/GetPropertyChain",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyDescriptions",
+    "RelativePath": "api/XConnect/GetPropertyDescriptions",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyFees",
+    "RelativePath": "api/XConnect/GetPropertyFees",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyOnsitePayments",
+    "RelativePath": "api/XConnect/GetPropertyOnsitePayments",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyPaymentCollectionInfo",
+    "RelativePath": "api/XConnect/GetPropertyPaymentCollectionInfo",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyPolicies",
+    "RelativePath": "api/XConnect/GetPropertyPolicies",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyRoomAmenities",
+    "RelativePath": "api/XConnect/GetPropertyRoomAmenities",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GETPropertyRoomArea",
+    "RelativePath": "api/XConnect/GETPropertyRoomArea",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GETPropertyRoomBedGroups",
+    "RelativePath": "api/XConnect/GETPropertyRoomBedGroups",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GETPropertyRoomBedGroupsConfiguration",
+    "RelativePath": "api/XConnect/GETPropertyRoomBedGroupsConfiguration",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyRoomDescription",
+    "RelativePath": "api/XConnect/GetPropertyRoomDescription",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GETPropertyRoomImages",
+    "RelativePath": "api/XConnect/GETPropertyRoomImages",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyRoomOccupancyAgeCategories",
+    "RelativePath": "api/XConnect/GetPropertyRoomOccupancyAgeCategories",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GETPropertyRoomOccupancyMaxAllowed",
+    "RelativePath": "api/XConnect/GETPropertyRoomOccupancyMaxAllowed",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GETPropertyRoomViews",
+    "RelativePath": "api/XConnect/GETPropertyRoomViews",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertySpokenLanguages",
+    "RelativePath": "api/XConnect/GetPropertySpokenLanguages",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
+    "Method": "GetPropertyThemes",
+    "RelativePath": "api/XConnect/GetPropertyThemes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "XConnect.Models.CommonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "XConnect.API.Controllers.XConnectController",
     "Method": "GetStaticDataByCity",
     "RelativePath": "api/XConnect/GetStaticDataByCity",
     "HttpMethod": "POST",
@@ -447,8 +959,8 @@
   },
   {
     "ContainingType": "XConnect.API.Controllers.XConnectController",
-    "Method": "ReCheck_9",
-    "RelativePath": "api/XConnect/ReCheck_9",
+    "Method": "ReCheck_old",
+    "RelativePath": "api/XConnect/ReCheck_old",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,

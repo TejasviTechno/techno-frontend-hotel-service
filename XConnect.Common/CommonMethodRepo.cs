@@ -96,6 +96,89 @@ namespace XConnect.CommonUtilities
             _httpClientFactory = httpClientFactory;
         }
 
+        //15-JAN-26
+        public DataTable UserCartTableStructure()
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                dt.Columns.Add("UserCartID", typeof(int));
+                dt.Columns.Add("GuestUserId", typeof(string));
+                dt.Columns.Add("CheckInDate", typeof(string));
+                dt.Columns.Add("StrCheckInDate", typeof(string));
+                dt.Columns.Add("CheckOutDate", typeof(string));
+                dt.Columns.Add("ServiceId", typeof(int));
+                dt.Columns.Add("ServiceName", typeof(string));
+                dt.Columns.Add("ServiceType", typeof(string));
+                dt.Columns.Add("XMLHotelId", typeof(string));
+                dt.Columns.Add("OfficeId", typeof(string));
+                dt.Columns.Add("ContractId", typeof(string));
+                dt.Columns.Add("XMLCountryId", typeof(string));
+                dt.Columns.Add("XMLCityId", typeof(string));
+                dt.Columns.Add("Nationality", typeof(string));
+                dt.Columns.Add("NationalityName", typeof(string));
+                dt.Columns.Add("GiataId", typeof(int));
+                dt.Columns.Add("NoOfAdults", typeof(int));
+                dt.Columns.Add("NoOfChild", typeof(int));
+                dt.Columns.Add("IsB2B", typeof(bool));
+                dt.Columns.Add("CountryId", typeof(int));
+                dt.Columns.Add("CityId", typeof(int));
+                dt.Columns.Add("StarRating", typeof(int));
+                dt.Columns.Add("SupplierCurrency", typeof(string));
+                dt.Columns.Add("NoOfNight", typeof(string));
+                dt.Columns.Add("PackageId", typeof(string));
+                dt.Columns.Add("IsVouchered", typeof(string));
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+            }
+            return null;
+        } 
+        //15-JAN-26
+        public DataTable UserCartDetailsTableStructure()
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                dt.Columns.Add("UserCartID", typeof(int));
+                dt.Columns.Add("UserCartDetailID", typeof(int));
+                dt.Columns.Add("CompanyBuyingPrice", typeof(double));
+                dt.Columns.Add("AgentBuyingPrice", typeof(double));
+                dt.Columns.Add("FinalSellingPrice", typeof(double));
+                dt.Columns.Add("RoomTypeId", typeof(string));
+                dt.Columns.Add("RoomTypeCode", typeof(string));
+                dt.Columns.Add("SupplierName", typeof(string));
+                dt.Columns.Add("RoomType", typeof(string));
+                dt.Columns.Add("XmlHotelId", typeof(string));
+                dt.Columns.Add("ServiceId", typeof(int));
+                dt.Columns.Add("HotelName", typeof(string));
+                dt.Columns.Add("RoomNumber", typeof(int));
+                dt.Columns.Add("MealPlanCode", typeof(string));
+                dt.Columns.Add("ContractID", typeof(int));
+                dt.Columns.Add("NoOfAdults", typeof(int));
+                dt.Columns.Add("NoOfChild", typeof(int));
+                dt.Columns.Add("ChildAge1", typeof(int));
+                dt.Columns.Add("ChildAge2", typeof(int));
+                dt.Columns.Add("spui", typeof(string));
+                dt.Columns.Add("CheckInDate", typeof(string));
+                dt.Columns.Add("CheckOutDate", typeof(string));
+                dt.Columns.Add("EachoToken", typeof(string));
+                dt.Columns.Add("IsCombineRoom", typeof(bool));
+                dt.Columns.Add("XmlNationality", typeof(string));
+                dt.Columns.Add("purchaseToken", typeof(string));
+                dt.Columns.Add("IsVouchered", typeof(int));
+                dt.Columns.Add("MappedMeal", typeof(string));
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+            }
+            return null;
+        }
+
         public async Task<T?> SendRequestAsync<T>(string baseUrl, string endpoint, HttpMethod method, object? parameters = null, string? token = null)
         {
             try

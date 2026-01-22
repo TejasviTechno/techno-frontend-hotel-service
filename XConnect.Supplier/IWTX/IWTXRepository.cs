@@ -48,14 +48,14 @@ namespace XConnect.Supplier.IWTX
 
 
 
-        public IWTXRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings)
+        public IWTXRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception)
         {
             _commonMethod = commonMethod;
-            _exception = null;
+
             _markup = markup;
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
-
+            _exception = exception;
         }
 
         public void IWTXRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> IWTXDetails, List<SupplierSearchConfig> IWTXSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string XMLCountry, string XMLNationality, int Hit, DataTable dtROE, TokenData tokenData)

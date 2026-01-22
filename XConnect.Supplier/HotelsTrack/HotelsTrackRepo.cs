@@ -33,14 +33,14 @@ namespace XConnect.Supplier.HotelsTrack
 
 
 
-        public HotelsTrackRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings)
+        public HotelsTrackRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception)
         {
             _commonMethod = commonMethod;
-            _exception = null;
+
             _markup = markup;
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
-
+            _exception = exception;
         }
         public void GetHotelsTrackRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, bool HitFromAll, HotelSearchParameter SearchPara, List<SupplierDetails> lstHotelsTrackDetails, List<SupplierSearchConfig> lstHotelsTrackSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, int Hit, TokenData tokenData, DataSet dtXMLCity)
         {
