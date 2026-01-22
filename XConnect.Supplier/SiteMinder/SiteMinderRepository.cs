@@ -25,7 +25,6 @@ namespace XConnect.Supplier.SiteMinder
         private readonly IException _exception;
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
-        private readonly ISiteMinder _ISiteMinder;
 
         public SiteMinderRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception)
         {

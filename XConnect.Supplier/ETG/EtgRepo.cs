@@ -38,13 +38,14 @@ namespace XConnect.Supplier.ETG
         private readonly KeySettings _keySettings;
 
 
-        public EtgRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings)
+        public EtgRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _cache = cache;
             _keySettings = keySettings.Value;
+            _exception = exception;
         }
         public void GetOstrovokRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> lstOstrovok_Details, List<SupplierSearchConfig> lstOstrovokSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, int Hit, DataTable dtROE, TokenData tokenData, DataSet dtXMLCity)
         {

@@ -39,8 +39,10 @@ namespace XConnect.API.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         _Error error = new _Error();
 
+        private readonly ILogger<XConnectController> _logger;
 
-        public XConnectController(IAuthenticationTokenAgent authenticationTokenAgent, IHotelXML hotelXML, IException exception, PlatformService platformService, IOptions<KeySettings> keySettings, IHttpContextAccessor httpContextAccessor)
+
+        public XConnectController(IAuthenticationTokenAgent authenticationTokenAgent, IHotelXML hotelXML, IException exception, PlatformService platformService, IOptions<KeySettings> keySettings, IHttpContextAccessor httpContextAccessor, ILogger<XConnectController> logger)
         {
             _authenticationTokenAgent = authenticationTokenAgent;
             _hotelXML = hotelXML;
@@ -48,6 +50,7 @@ namespace XConnect.API.Controllers
             _platformService = platformService;
             _keySettings = keySettings.Value;
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
 
         [Route("Countries")]
@@ -461,7 +464,7 @@ namespace XConnect.API.Controllers
             Stopwatch timer = new Stopwatch();
             timer.Start();
             TokenData TokenData = new TokenData();
-            data.IsSearch = 1;
+           
             DateTime EntryTime = DateTime.Now;
 
 
@@ -470,7 +473,7 @@ namespace XConnect.API.Controllers
             string Search_Key = "";//Added on 1-MAR-2025
             try
             {
-
+                data.IsSearch = 1;
                 //string userAgent = _platformService.GetBrowserInfo(_platformService.GetRequest());
                 string userAgent = _platformService.GetUserPlatform(IP);
                 string MainURL = _platformService.GetHostName();
@@ -684,6 +687,7 @@ namespace XConnect.API.Controllers
             {
                 timer.Stop();
                 await _exception.Error(ex);
+                //_logger.LogError(ex, "AvailabilitywithCancellation");
                 AvailHotelList_Comp RS = new AvailHotelList_Comp();
                 error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
                 RS.Error.Add(error);
@@ -928,9 +932,9 @@ namespace XConnect.API.Controllers
         }
 
 
-        [Route("ReCheck")]
+        [Route("ReCheck_old")]
         [HttpPost]
-        public async Task<IActionResult> ReCheck(CommonRequest data)
+        public async Task<IActionResult> ReCheck_old(CommonRequest data)
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
@@ -2391,8 +2395,8 @@ namespace XConnect.API.Controllers
         }
 
         [HttpPost]
-        [Route("ReCheck_9")]
-        public async Task<IActionResult> ReCheck_9(CommonRequest data)
+        [Route("ReCheck")]
+        public async Task<IActionResult> ReCheck(CommonRequest data)
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();

@@ -32,13 +32,13 @@ namespace Xconnect.Expedia
         private readonly KeySettings _keySettings;
 
 
-        public FitruumsRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings)
+        public FitruumsRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
-
+            _exception = exception;
         }
 
         public  void GetfitruumsRequestOnly_Async_new(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> fitruumsDetails, List<SupplierSearchConfig> fitruumsSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string citycode, string Nationality, int Hit, string supplierName,TokenData tokenData)

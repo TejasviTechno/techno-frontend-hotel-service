@@ -40,13 +40,14 @@ namespace Xconnect.Expedia
         private readonly KeySettings _keySettings;
 
 
-        public DidaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings)
+        public DidaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _cache = cache;
             _keySettings = keySettings.Value;
+            _exception = exception;
         }
         public void GetDidaRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, string SupplierName, HotelSearchParameter SearchPara, List<SupplierDetails> DidaDetails, List<SupplierSearchConfig> DidaSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string XMLCountry, string Xmlnationality, int Hit, string AgentCode, DataTable dtROE, TokenData tokenData)
         {

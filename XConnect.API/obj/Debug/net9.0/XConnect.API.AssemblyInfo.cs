@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("XConnect.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5e83618297ea38cd123cf3e9e0234ec00b102124")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bea138ef6fb796d0d938b0e9a234826bcf2fc8e4")]
 [assembly: System.Reflection.AssemblyProductAttribute("XConnect.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("XConnect.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

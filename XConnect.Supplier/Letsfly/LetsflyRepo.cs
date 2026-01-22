@@ -34,14 +34,14 @@ namespace XConnect.Supplier.Letsfly
 
 
 
-        public LetsflyRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings)
+        public LetsflyRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception)
         {
             _commonMethod = commonMethod;
-            _exception = null;
+
             _markup = markup;
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
-
+            _exception = exception;
         }
 
         public void GetLetsflyRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, DataTable dtPreferredDataHotel, HotelSearchParameter SearchPara, List<SupplierSearchConfig> lstLetsFlySearchConfig, List<SupplierDetails> lstLetsFlyDetails, ref ConcurrentBag<HotelX> AllTask, string AgentCode, int Hit, TokenData tokenData, DataSet dtXMLCity)

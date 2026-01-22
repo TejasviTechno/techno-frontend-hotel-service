@@ -63,6 +63,19 @@ namespace XConnect.CommonUtilities
             StartHealthMonitorOnce();
         }
 
+        private MongoClient CreateClient(string connectionString)
+        {
+            var settings = MongoClientSettings.FromConnectionString(connectionString);
+
+            settings.ServerSelectionTimeout = TimeSpan.FromSeconds(2);
+            settings.ConnectTimeout = TimeSpan.FromSeconds(2);
+            settings.SocketTimeout = TimeSpan.FromSeconds(2);
+
+            settings.RetryWrites = true;
+            settings.DirectConnection = true; // Important for single-server ping
+
+            return new MongoClient(settings);
+        }
 
         private MongoClient CreateFastClient(string connectionString)
         {

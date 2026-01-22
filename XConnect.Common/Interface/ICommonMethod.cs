@@ -11,6 +11,8 @@ namespace XConnect.CommonUtilities.Interface
 {
     public interface ICommonMethod
     {
+        DataTable UserCartTableStructure(); //Added on 19-JAN-26
+        DataTable UserCartDetailsTableStructure(); //Added on 19-JAN-26
         Task<T?> SendRequestAsync<T>(string baseUrl, string endpoint, HttpMethod method, object? parameters = null, string? token = null);
         Task<int> InsertRedisHotelSearchData(string error, string remark, int AgentId, int DB, int timeoutMs);
         Task<string> GetHotelNameForRedis(int HotelId);

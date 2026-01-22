@@ -31,14 +31,14 @@ namespace XConnect.Supplier.InfiniteHotelsFrance
 
 
 
-        public InfiniteHotelsFranceRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings)
+        public InfiniteHotelsFranceRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception)
         {
             _commonMethod = commonMethod;
-            _exception = null;
+
             _markup = markup;
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
-
+            _exception = exception;
         }
 
         public void GetInfiniteHotelsFrance_async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> lstInfiniteHotelsFranceDetails, List<SupplierSearchConfig> lstInfiniteHotelsFranceSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, int Hit, DataTable dtROE, TokenData tokenData, bool HitFromAll, DataSet dtXMLCity)

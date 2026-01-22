@@ -15,9 +15,84 @@ using XConnect.CommonUtilities.Interface;
 using Microsoft.AspNetCore.Mvc;
 using XConnect.API.Extensions;
 using UserContextMiddleWare.Extensions;
+using Autofac.Extensions.DependencyInjection;
+using Autofac;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
+using Serilog.Events;
+using Serilog.Formatting.Compact;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+/* ---------------- AUTOFAC ---------------- */
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
+builder.Host.ConfigureContainer<ContainerBuilder>(container =>
+{
+    // Register your Autofac modules here
+    // container.RegisterModule(new YourModule());
+});
+
+/* ---------------- SERILOG ---------------- */
+builder.Host.UseSerilog((context, services, loggerConfiguration) =>
+{
+    var environment = context.HostingEnvironment;
+    var applicationName = context.HostingEnvironment.ApplicationName;
+
+    loggerConfiguration
+#if DEBUG
+        .MinimumLevel.Debug()
+#else
+        .MinimumLevel.Information()
+#endif
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+        .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+        .Enrich.FromLogContext()
+        .Enrich.WithProperty("Application", applicationName);
+
+    // Elasticsearch logging (same logic as ABP)
+    var isElasticEnabled = context.Configuration.GetValue<bool>(
+        context.Configuration["ElasticSearch:IsLoggingEnabled"]
+    );
+
+    if (isElasticEnabled)
+    {
+        loggerConfiguration.WriteTo.Elasticsearch(
+            new ElasticsearchSinkOptions(
+                new Uri(context.Configuration["ElasticSearch:Url"]!)
+            )
+            {
+                AutoRegisterTemplate = true,
+                AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv6,
+                IndexFormat = "tmsapi-log-{0:yyyy.MM}"
+            }
+        );
+    }
+
+    if (environment.IsDevelopment())
+    {
+        loggerConfiguration
+            .WriteTo.Async(c => c.Console(
+                outputTemplate:
+                "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u3}] {Message:lj} {Properties}{NewLine}{Exception}"
+            ))
+            .WriteTo.Async(c => c.File(
+                path: "Logs/logs.txt",
+                rollingInterval: RollingInterval.Minute,
+                retainedFileCountLimit: 7,
+                outputTemplate:
+                "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u3}] {Message:lj} {Properties}{NewLine}{Exception}"
+            ));
+    }
+    else
+    {
+        loggerConfiguration
+            .WriteTo.Async(c => c.Console(new RenderedCompactJsonFormatter()));
+    }
+});
+
+/* ---------------- SERVICES ---------------- */
 
 // Add services to the container.
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -206,6 +281,8 @@ else
     app.UseUserContextValue("HotelServices", "Production");
 }
 app.UseHttpsRedirection();
+
+app.UseSerilogRequestLogging(); // <-- Important (ABP does this internally)
 
 app.UseAuthorization();
 

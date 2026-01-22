@@ -7,6 +7,7 @@ namespace XConnect.DAL.Interface
 {
     public interface IDLConnection
     {
+        Task<DataSet> GetDataSet_ReplicationDB_Host(string SPName, SqlParameter[] para, Int32 Timeout); //Added on 21-JAN-26
         Task<object> GetExecuteScalarSP_WithConStr_1SecTimeout_Log(string Qry, SqlParameter[] para);//16/12/25
         Task<DataTable> GetDataTable_Replica(string SPName, SqlParameter[] para, int Timeout);
         Task<DataSet> GetDataSet_Limit(String SPName, SqlParameter[] para, int Timeout = 2);

@@ -1041,6 +1041,46 @@ namespace XConnect.DAL
 
 
         }
+        public async Task<DataSet> GetDataSet_ReplicationDB_Host(string SPName, SqlParameter[] para, Int32 Timeout)
+        {
+
+
+            //using (SqlConnection con = new SqlConnection(_connectionString_ReplicationDB))
+            using (SqlConnection con = new SqlConnection(_connectionStrings.ConnectionString_staticData))
+            {
+                DataSet ds = new DataSet();
+
+                using (SqlCommand cmd = new SqlCommand(SPName, con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = Timeout;
+
+                    foreach (SqlParameter par in para)
+                    {
+                        cmd.Parameters.Add(par);
+                    }
+                    try
+                    {
+                        await con.OpenAsync();
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            await Task.Run(() => da.Fill(ds));  // Use Task.Run to execute the filling operation asynchronously
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                return ds;
+            }
+
+
+        }
 
         public async Task<DataTable> GetDataTableAsync(string SPName)
         {

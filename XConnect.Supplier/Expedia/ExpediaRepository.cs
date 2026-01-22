@@ -42,13 +42,14 @@ namespace XConnect.Expedia
         private readonly IDLConnection _dLConnection;
 
 
-        public ExpediaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IDLConnection dLConnection)
+        public ExpediaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IDLConnection dLConnection, IException exception)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
             _dLConnection = dLConnection;
+            _exception = exception;
         }
 
         public string EAN_NationalityCode(string Nationality)
