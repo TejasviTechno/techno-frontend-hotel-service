@@ -1,0 +1,41 @@
+# Ignore git
+.git
+.gitignore
+
+# Ignore Docker files
+Dockerfile
+docker-compose*.yml
+
+# Ignore build outputs
+**/bin
+**/obj
+
+# Ignore user files
+**/*.user
+**/*.suo
+**/*.cache
+**/*.log
+
+# Ignore VS / Rider / VSCode
+.vs
+.vscode
+.idea
+
+# Ignore OS junk
+.DS_Store
+Thumbs.db
+
+# Ignore test projects (if any)
+**/*Test*
+**/*Tests*
+
+# Ignore docs
+*.md
+
+# Ignore environment secrets
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/*.env
+
+XConnect.API/appsettings.json
+XConnect.API/appsettings.Development.json
