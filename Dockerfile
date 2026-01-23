@@ -4,6 +4,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
+COPY NuGet.config ./
+
 # Copy solution & csproj first (layer caching)
 COPY *.sln ./
 COPY XConnect.API/*.csproj XConnect.API/
