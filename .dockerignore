@@ -7,8 +7,36 @@ Dockerfile
 docker-compose*.yml
 
 # Ignore build outputs
-**/bin
-**/obj
+**/bin/
+**/obj/
+
+XConnect.API/bin
+XConnect.API/obj
+
+XConnect.Auth/bin
+XConnect.Auth/obj
+
+XConnect.BAL/bin
+XConnect.BAL/obj
+
+XConnect.Common/bin
+XConnect.Common/obj
+
+XConnect.ErrorLogHandler/bin
+XConnect.ErrorLogHandler/obj
+ 
+XConnect.MarkupModule/bin
+XConnect.MarkupModule/obj
+
+XConnect.Models/bin
+XConnect.Models/obj
+
+XConnect.Supplier/bin
+XConnect.Supplier/obj
+
+XConnection.DAL/bin
+XConnection.DAL/obj
+
 
 # Ignore user files
 **/*.user

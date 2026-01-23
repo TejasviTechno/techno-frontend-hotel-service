@@ -59,6 +59,33 @@ TestResults/
 XConnect.API/appsettings.json
 XConnect.API/appsettings.Development.json
 
+XConnect.API/bin
+XConnect.API/obj
+
+XConnect.Auth/bin
+XConnect.Auth/obj
+
+XConnect.BAL/bin
+XConnect.BAL/obj
+
+XConnect.Common/bin
+XConnect.Common/obj
+
+XConnect.ErrorLogHandler/bin
+XConnect.ErrorLogHandler/obj
+ 
+XConnect.MarkupModule/bin
+XConnect.MarkupModule/obj
+
+XConnect.Models/bin
+XConnect.Models/obj
+
+XConnect.Supplier/bin
+XConnect.Supplier/obj
+
+XConnection.DAL/bin
+XConnection.DAL/obj
+
 secrets.json
 
 ##############################
