@@ -727,7 +727,7 @@ namespace XConnect.API.Controllers
 
                     var options = new JsonSerializerOptions
                     {
-                        PropertyNameCaseInsensitive = true; // 👈 Enables case-insensitive mapping
+                        PropertyNameCaseInsensitive = true // 👈 Enables case-insensitive mapping
                     };
 
 
