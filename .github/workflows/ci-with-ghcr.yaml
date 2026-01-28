@@ -100,12 +100,12 @@ jobs:
     #   run: |
     #     # dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore
     - name: Build
-      run: dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore -v:q
-
+      run: dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore  /clp:ErrorsOnly
 
     - name: Publish
       run: |
         dotnet publish ${{ env.BUILD_PROJECT }} -c Release -o publish --no-build
+
     - name: Test
       run: dotnet test
 
