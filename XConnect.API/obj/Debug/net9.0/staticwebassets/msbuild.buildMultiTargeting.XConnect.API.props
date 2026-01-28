@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\XConnect.API.props" />
-</Project>

@@ -2015,6 +2015,7 @@
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
           "Microsoft.AspNetCore.Http.Abstractions": "2.3.0",
+          "Microsoft.Extensions.Logging": "9.0.0",
           "XConnection.DAL": "1.0.0"
         },
         "compile": {

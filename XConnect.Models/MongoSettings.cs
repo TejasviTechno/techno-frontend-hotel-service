@@ -39,5 +39,9 @@ namespace XConnect.Models
         public string MongoDB_DatabaseName_UmMappedRoomMapping { get; set; } //Add On 17SEP2025
         public string MongoDB_CollectionName_UmMappedRoomMapping { get; set; } //Add On 17SEP2025
         public string MongoDB_Active_for_Loadbalance { get; set; } //Add On 12NOV2025
+
+        public string MongoDB_ConnectionStr_ExceptionLog { get; set; } //Add On 31-DEC-25
+        public string MongoDB_DatabaseName_ExceptionLog { get; set; } //Add On 31-DEC-25
+
     }
 }

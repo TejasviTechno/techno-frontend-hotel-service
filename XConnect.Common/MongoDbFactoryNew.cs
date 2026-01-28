@@ -25,6 +25,7 @@ namespace XConnect.CommonUtilities
         private readonly MongoClient _clientUnMappedRoomMapping;
         private readonly MongoClient _clientQRSLog;
         private readonly MongoClient _clientSPR;
+        private readonly MongoClient _clientExceptionLog; //Add On 31-DEC-25
         private static long _roomMappingCounter = 0;
 
         // --- Room Mapping Load Balancing ---
@@ -50,6 +51,7 @@ namespace XConnect.CommonUtilities
             _clientUnMappedRoomMapping = new MongoClient(_settings.MongoDB_ConnectionStr_UmMappedRoomMapping);
             _clientQRSLog = new MongoClient(_settings.MongoDB_ConStr_SaveAPIRQRSLog);
             _clientSPR = new MongoClient(_settings.MongoDB_ConStr_SPR);
+            _clientExceptionLog = CreateFastClient(_settings.MongoDB_ConnectionStr_ExceptionLog); //Add On 31-DEC-25
 
             _roomMappingClients = new[]
             {
@@ -149,7 +151,8 @@ namespace XConnect.CommonUtilities
                 "Row_RoomsForRoomMapping" => _clientUnMappedRoomMapping.GetDatabase(_settings.MongoDB_DatabaseName_UmMappedRoomMapping),
                 "QRSLog" => _clientQRSLog.GetDatabase(_settings.MongoDB_DatabaseName_SaveAPIRQRSLog),
                 "SPR" => _clientSPR.GetDatabase(_settings.MongoDB_DatabaseName_SPR),
-                "BookingCRoomMapping" => _clientRoomMapping.GetDatabase(_settings.MongoDB_DatabaseName_BookingC) //130625
+                "BookingCRoomMapping" => _clientRoomMapping.GetDatabase(_settings.MongoDB_DatabaseName_BookingC), //130625
+                "ExceptionLog" => _clientExceptionLog.GetDatabase(_settings.MongoDB_DatabaseName_ExceptionLog) //Add On 31-DEC-25
                 // _ => throw new ArgumentException("Invalid database key", nameof(name))
             };
         }

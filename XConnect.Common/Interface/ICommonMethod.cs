@@ -40,6 +40,7 @@ namespace XConnect.CommonUtilities.Interface
         DataTable GenerateCommonInfoTableNewV2();
         DataTable GenerateHotelMinStayNewV2();
 
+        Task XMLRequestResponseTrack_DebugMode(string XmlRequest, string XmlResponse, string Provider, string TypeRequest, string reqId = "", string NewSearchKey = "");
         Task XMLRequestResponseTrack(string XmlRequest, string XmlResponse, string Provider, string TypeRequest, string reqId = "", string NewSearchKey = "");
 
         Task XMLRequestResponseTrack_Error(string XmlRequest, string XmlResponse, string Provider, string TypeRequest, string reqId = "", string NewSearchKey = "");

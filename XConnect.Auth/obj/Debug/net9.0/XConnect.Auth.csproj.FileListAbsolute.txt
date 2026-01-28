@@ -187,25 +187,3 @@ C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.Au
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Auth\obj\Debug\net9.0\refint\XConnect.Auth.dll
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.pdb
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Auth\obj\Debug\net9.0\ref\XConnect.Auth.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\bin\Debug\net9.0\XConnect.Auth.deps.json
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\bin\Debug\net9.0\XConnect.Auth.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\bin\Debug\net9.0\XConnect.Auth.pdb
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\bin\Debug\net9.0\XConnect.CommonUtilities.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\bin\Debug\net9.0\XConnect.ErrorLogHandler.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\bin\Debug\net9.0\XConnect.Models.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\bin\Debug\net9.0\XConnection.DAL.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\bin\Debug\net9.0\XConnect.CommonUtilities.pdb
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\bin\Debug\net9.0\XConnect.ErrorLogHandler.pdb
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\bin\Debug\net9.0\XConnect.Models.pdb
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\bin\Debug\net9.0\XConnection.DAL.pdb
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.csproj.AssemblyReference.cache
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.GeneratedMSBuildEditorConfig.editorconfig
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.AssemblyInfoInputs.cache
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.AssemblyInfo.cs
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.csproj.CoreCompileInputs.cache
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.1DAFA237.Up2Date
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\refint\XConnect.Auth.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.pdb
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\ref\XConnect.Auth.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.sourcelink.json

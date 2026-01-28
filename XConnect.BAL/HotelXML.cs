@@ -6860,7 +6860,7 @@ new SqlParameter("@AgentId", AgentId),
             finally
             {
                 if (DebugMode)
-                    _ = _commonMethod.XMLRequestResponseTrack(strHost + " # " + strxmlRQRS + mainRQ, responsedata == "" ? Catchtype : responsedata, Provider, timer.Elapsed.ToString(), reqid + "#" + HttpStatusCode, para.SearchKey);
+                    _ = _commonMethod.XMLRequestResponseTrack_DebugMode(strHost + " # " + strxmlRQRS + mainRQ, responsedata == "" ? Catchtype : responsedata, Provider, timer.Elapsed.ToString(), reqid + "#" + HttpStatusCode, para.SearchKey);
 
                 Item.ResponseError = responsedata == "" ? Catchtype : responsedata;
 

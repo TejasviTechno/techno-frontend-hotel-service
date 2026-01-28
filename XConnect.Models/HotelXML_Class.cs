@@ -13,6 +13,40 @@ namespace XConnect.Models
     {
     }
 
+    public class RequestTrackingLog
+    {
+        public string SearchData { get; set; }
+        public string IP { get; set; }
+        public int Agentid { get; set; }
+        public int TotalRecord { get; set; }
+        public int CityID { get; set; }
+        public bool from { get; set; }
+        public string SupplierTime { get; set; }
+        public string SearchKey { get; set; }
+    }
+    public class ResLog
+    {
+        public string XmlRequest { get; set; }
+        public string XmlResponse { get; set; }
+        public string Provider { get; set; }
+        public string TypeRequest { get; set; }
+        public string ReqId { get; set; }
+        public string SearchKey { get; set; }
+
+    }
+    public class ExceptionLogDocument
+    {
+        public string servicename { get; set; }
+        public string title { get; set; }
+        public int status { get; set; }
+        public string details { get; set; }
+        public string datetime { get; set; }
+        public string source { get; set; }
+        public string WebsiteName { get; set; }
+        public string SearchKey { get; set; }
+        public string Info { get; set; }
+        public int ApiName { get; set; } = 0;//default 0 other
+    }
     public class TokenDetails
     {
         public int agentId { get; set; }

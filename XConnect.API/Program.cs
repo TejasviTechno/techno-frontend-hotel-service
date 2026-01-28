@@ -151,6 +151,8 @@ builder.Services.AddSingleton<IRabbitMQConnection, RabbitMQConnection>();
 builder.Services.AddSingleton<RabbitMQPublisher>();
 //builder.Services.AddSingleton<RadisConnection>();//Added on 14-AUG-2025
 builder.Services.AddScoped<RadisConnection>();
+builder.Services.AddScoped<IExceptionLogStore, MongoExceptionLogStore>(); //Added on 31-DEC-25
+
 
 #region Supplier DI
 //builder.Services.AddScoped<IAdonis, AdonisRepo>();

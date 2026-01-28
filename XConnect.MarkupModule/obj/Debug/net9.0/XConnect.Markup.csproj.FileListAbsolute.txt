@@ -169,23 +169,3 @@ C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XCo
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\refint\XConnect.Markup.dll
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.pdb
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\ref\XConnect.Markup.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Markup.deps.json
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Markup.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Markup.pdb
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.ErrorLogHandler.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Models.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\bin\Debug\net9.0\XConnection.DAL.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.ErrorLogHandler.pdb
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Models.pdb
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\bin\Debug\net9.0\XConnection.DAL.pdb
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.csproj.AssemblyReference.cache
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.GeneratedMSBuildEditorConfig.editorconfig
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.AssemblyInfoInputs.cache
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.AssemblyInfo.cs
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.csproj.CoreCompileInputs.cache
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.0E5A62E2.Up2Date
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\refint\XConnect.Markup.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.pdb
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\ref\XConnect.Markup.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.sourcelink.json

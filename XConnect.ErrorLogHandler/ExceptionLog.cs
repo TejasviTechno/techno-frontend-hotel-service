@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
@@ -16,12 +17,27 @@ namespace XConnect.ErrorLogHandler
     {
         private readonly IDLConnection _dLConnection;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<ExceptionLog> _logger;
 
 
-        public ExceptionLog(IDLConnection dLConnection, IHttpContextAccessor httpContextAccessor)
+        public ExceptionLog(IDLConnection dLConnection, IHttpContextAccessor httpContextAccessor, ILogger<ExceptionLog> logger)
         {
             _dLConnection = dLConnection;
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
+        }
+
+        private string GetCollectionName(int apiName)
+        {
+            return apiName switch
+            {
+                1 => "Errorlog_AV",    // Availability
+                2 => "Errorlog_RE",    // Recheck / CancellationPolicy
+                3 => "Errorlog_PR",    // Prebook
+                4 => "Errorlog_BO",    // Book / BookingDetail
+                5 => "Errorlog_CA",    // CancelBooking / CheckHotelCancellationCharges
+                _ => "Errorlog_OT"     // Other
+            };
         }
 
         public void ErrorLog(string sPathName, string sErrMsg)
@@ -279,7 +295,21 @@ namespace XConnect.ErrorLogHandler
 
                 if (true)
                 {
-                     await SaveGetException(provider, title, ex, timestamp, file_name, Website, hostName, SearchKey, Info, APIName);//Added on 10-MAR-2025
+                    string actionName = GetCollectionName(APIName);
+
+                     _logger.LogError(
+                        ex,
+                        "{Action} | Provider:{Provider} | API:{APIName} | Website:{Website} | Host:{HostName} | SearchKey:{SearchKey} | File:{FileName} | Info:{Info}",
+                        actionName,
+                        provider,
+                        APIName,
+                        Website,
+                        hostName,
+                        SearchKey,
+                        file_name,
+                        Info
+                        );
+                    // await SaveGetException(provider, title, ex, timestamp, file_name, Website, hostName, SearchKey, Info, APIName);//Added on 10-MAR-2025
                 }
                 else
                 {
@@ -362,7 +392,25 @@ namespace XConnect.ErrorLogHandler
                     };
 
                 //dl.GetExecuteScalarQry("Insert into Log_Details_MB (servicename,title,status,details,datetime,source)values(@servicename,@title,@status,@details,@datetime,@source)", para);
-                await _dLConnection.GetExecuteScalarQry("Insert into Log_Details_APIOUT_V1 (servicename,title,status,details,datetime,source,WebsiteName,SearchKey,Info)values(@servicename,@title,@status,@details,@datetime,@source,@WebsiteName,@SearchKey,@Info)", para);
+                
+                //23-JAN-26
+                //await _dLConnection.GetExecuteScalarQry("Insert into Log_Details_APIOUT_V1 (servicename,title,status,details,datetime,source,WebsiteName,SearchKey,Info)values(@servicename,@title,@status,@details,@datetime,@source,@WebsiteName,@SearchKey,@Info)", para);
+
+                int APIName = 6; //
+                string actionName = GetCollectionName(APIName);
+
+                _logger.LogError(
+                   ex,
+                   "{Action} | Provider:{Provider} | API:{APIName} | Website:{Website} | Host:{HostName} | SearchKey:{SearchKey} | File:{FileName} | Info:{Info}",
+                   actionName,
+                   provider,
+                   APIName,
+                   Website,
+                   hostName,
+                   SearchKey,
+                   file_name,
+                   Info
+                   );
             }
             catch (Exception)
             {
@@ -485,7 +533,22 @@ namespace XConnect.ErrorLogHandler
                 #endregion
                 if (true)
                 {
-                    await SaveGetException(provider, title, ex, timestamp, file_name, Website, hostName, SearchKey, Info, APIName);//Added on 10-MAR-2025
+                    //await SaveGetException(provider, title, ex, timestamp, file_name, Website, hostName, SearchKey, Info, APIName);//Added on 10-MAR-2025
+
+                    string actionName = GetCollectionName(APIName);
+
+                    _logger.LogError(
+                       ex,
+                       "{Action} | Provider:{Provider} | API:{APIName} | Website:{Website} | Host:{HostName} | SearchKey:{SearchKey} | File:{FileName} | Info:{Info}",
+                       actionName,
+                       provider,
+                       APIName,
+                       Website,
+                       hostName,
+                       SearchKey,
+                       file_name,
+                       Info
+                       );
                 }
                 else
                 {
@@ -548,7 +611,23 @@ namespace XConnect.ErrorLogHandler
                     };
 
                 //dl.GetExecuteScalarQry("Insert into Log_Details_MB (servicename,title,status,details,datetime,source)values(@servicename,@title,@status,@details,@datetime,@source)", para);
-                await _dLConnection.GetExecuteScalarQry_Logserver2("Insert into Log_Details_APIOUT_V2 (servicename,title,status,details,datetime,source,WebsiteName,SearchKey,Info)values(@servicename,@title,@status,@details,@datetime,@source,@WebsiteName,@SearchKey,@Info)", para);
+                //23-JAN-26
+                //await _dLConnection.GetExecuteScalarQry_Logserver2("Insert into Log_Details_APIOUT_V2 (servicename,title,status,details,datetime,source,WebsiteName,SearchKey,Info)values(@servicename,@title,@status,@details,@datetime,@source,@WebsiteName,@SearchKey,@Info)", para);
+                int APIName = 6; //
+                string actionName = GetCollectionName(APIName);
+
+                _logger.LogError(
+                   ex,
+                   "{Action} | Provider:{Provider} | API:{APIName} | Website:{Website} | Host:{HostName} | SearchKey:{SearchKey} | File:{FileName} | Info:{Info}",
+                   actionName,
+                   provider,
+                   APIName,
+                   Website,
+                   hostName,
+                   SearchKey,
+                   file_name,
+                   Info
+                   );
             }
             catch (Exception)
             {

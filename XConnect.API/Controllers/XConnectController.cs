@@ -39,10 +39,10 @@ namespace XConnect.API.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         _Error error = new _Error();
 
-        private readonly ILogger<XConnectController> _logger;
+   
 
 
-        public XConnectController(IAuthenticationTokenAgent authenticationTokenAgent, IHotelXML hotelXML, IException exception, PlatformService platformService, IOptions<KeySettings> keySettings, IHttpContextAccessor httpContextAccessor, ILogger<XConnectController> logger)
+        public XConnectController(IAuthenticationTokenAgent authenticationTokenAgent, IHotelXML hotelXML, IException exception, PlatformService platformService, IOptions<KeySettings> keySettings, IHttpContextAccessor httpContextAccessor)
         {
             _authenticationTokenAgent = authenticationTokenAgent;
             _hotelXML = hotelXML;
@@ -50,7 +50,7 @@ namespace XConnect.API.Controllers
             _platformService = platformService;
             _keySettings = keySettings.Value;
             _httpContextAccessor = httpContextAccessor;
-            _logger = logger;
+           
         }
 
         [Route("Countries")]
@@ -3293,9 +3293,9 @@ namespace XConnect.API.Controllers
                 string userAgent = _platformService.GetBrowserInfo(_platformService.GetRequest());
 
 
-                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
-                if (Convert.ToBoolean(authData.tokenData.AgentId))
-                {
+                //AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                //if (Convert.ToBoolean(authData.tokenData.AgentId))
+                //{
                     StaticDataCity_Auto payload = Newtonsoft.Json.JsonConvert.DeserializeObject<StaticDataCity_Auto>(data.Request.ToString());
 
                     // List<StaticData> lstFiltOption = await _hotelXML.GetCitiesWithHotel(payload.CityName);
@@ -3303,21 +3303,21 @@ namespace XConnect.API.Controllers
                     if (lstFiltOption != null)
                     {
                         timer.Stop();
-                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, authData.tokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.CityName.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, TokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.CityName.ToString(), IP, "", "", "", 0, 0, 0, "", null);
 
                     }
                     else
                     {
                         timer.Stop();
                         error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
-                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", authData.tokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.InternalError, payload.CityName.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.InternalError, payload.CityName.ToString(), IP, "", "", "", 0, 0, 0, "", null);
                     }
-                }
-                else
-                {
-                    timer.Stop();
-                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, 401, "application/json", data, "", authData.tokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "", IP, "", "", "", 0, 0, 0, "", null);
-                }
+                //}
+                //else
+                //{
+                //    timer.Stop();
+                //    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, 401, "application/json", data, "", authData.tokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "", IP, "", "", "", 0, 0, 0, "", null);
+                //}
             }
             catch (Exception ex)
             {
@@ -3346,30 +3346,30 @@ namespace XConnect.API.Controllers
                 string userAgent = _platformService.GetBrowserInfo(_platformService.GetRequest());
 
 
-                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
-                if (Convert.ToBoolean(authData.tokenData.AgentId))
-                {
+                //AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                //if (Convert.ToBoolean(authData.tokenData.AgentId))
+                //{
                     StaticDataCity payload = Newtonsoft.Json.JsonConvert.DeserializeObject<StaticDataCity>(data.Request.ToString());
 
                     List<StaticData> lstFiltOption = await _hotelXML.GetStaticDataByCity(Convert.ToInt32(payload.CityId), Convert.ToInt32(payload.LocationId), payload.Type);
                     if (lstFiltOption != null)
                     {
                         timer.Stop();
-                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, authData.tokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.CityId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, TokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.CityId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
 
                     }
                     else
                     {
                         timer.Stop();
                         error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
-                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", authData.tokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.InternalError, payload.CityId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.InternalError, payload.CityId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
                     }
-                }
-                else
-                {
-                    timer.Stop();
-                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, 401, "application/json", data, "", authData.tokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "", IP, "", "", "", 0, 0, 0, "", null);
-                }
+                //}
+                //else
+                //{
+                //    timer.Stop();
+                //    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, 401, "application/json", data, "", authData.tokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "", IP, "", "", "", 0, 0, 0, "", null);
+                //}
             }
             catch (Exception ex)
             {

@@ -70,7 +70,9 @@ namespace XConnect.CommonUtilities
 
         private readonly RabbitMQPublisher _publisher;
 
-        public CommonMethodRepo(IException exception, IDLConnection dlConnection, IMemoryCache cache, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IOptions<MongoSettings> mongoSettings, MongoDbFactoryNew factory, RabbitMQPublisher publisher, IOptions<RabitMQSettings> rabitmqSettings, IHttpClientFactory httpClientFactory)
+        private readonly IExceptionLogStore _stores;
+
+        public CommonMethodRepo(IException exception, IDLConnection dlConnection, IMemoryCache cache, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IOptions<MongoSettings> mongoSettings, MongoDbFactoryNew factory, RabbitMQPublisher publisher, IOptions<RabitMQSettings> rabitmqSettings, IHttpClientFactory httpClientFactory, IExceptionLogStore stores)
         {
             _exception = exception;
             _dlConnection = dlConnection;
@@ -94,6 +96,7 @@ namespace XConnect.CommonUtilities
             _roomBookingC = factory.GetDatabase("BookingCRoomMapping");
             _publisher = publisher;
             _httpClientFactory = httpClientFactory;
+            _stores = stores;
         }
 
         //15-JAN-26
@@ -135,7 +138,7 @@ namespace XConnect.CommonUtilities
                 _ = _exception.Error(ex);
             }
             return null;
-        } 
+        }
         //15-JAN-26
         public DataTable UserCartDetailsTableStructure()
         {
@@ -5905,6 +5908,46 @@ namespace XConnect.CommonUtilities
             }
             return null;
         }
+
+        public async Task XMLRequestResponseTrack_DebugMode(string XmlRequest, string XmlResponse, string Provider, string TypeRequest, string reqId = "", string NewSearchKey = "")
+        {
+            try
+            {
+
+                if (true)
+                {
+                    var log = new ResLog
+                    {
+                        XmlRequest = XmlRequest,
+                        XmlResponse = XmlResponse,
+                        Provider = Provider,
+                        TypeRequest = TypeRequest,
+                        ReqId = reqId,
+                        SearchKey = NewSearchKey
+                    };
+
+                    await _stores.SaveLogAsync(log, "DebugLog");
+                }
+                else
+                {
+
+                    SqlParameter[] para = new SqlParameter[]{
+            new SqlParameter("@XmlRequest",XmlRequest),
+            new SqlParameter("@XmlResponse",XmlResponse),
+            new SqlParameter("@Provider",Provider),
+            new SqlParameter("@TypeRequest",TypeRequest),
+            new SqlParameter("@ReqId",reqId),
+            new SqlParameter("@SearchKey",NewSearchKey)
+            };
+                    await _dlConnection.GetExecuteScalarSP("InsertXMLRequestResponseTrack_Xconnect", para);
+                }
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+            }
+        }
+
         public async Task XMLRequestResponseTrack(string XmlRequest, string XmlResponse, string Provider, string TypeRequest, string reqId = "", string NewSearchKey = "")
         {
             try
@@ -7946,22 +7989,44 @@ namespace XConnect.CommonUtilities
         {
             try
             {
-                SqlParameter[] para = new SqlParameter[]{
-new SqlParameter("@SearchData", JsonSerializer.Serialize(data)),
-new SqlParameter("@Ip", IP),
-new SqlParameter("@Agentid",agentid),
-new SqlParameter("@TotalRecord",count),
-new SqlParameter("@CityID",data.CityID),
-new SqlParameter("@from",from),
-new SqlParameter("@SupplierTime",Convert.ToString(SupplierTime)),
-new SqlParameter("@SearchKey",SearchKey),
+                if (true)
+                {
+                    var log = new RequestTrackingLog
+                    {
+                        SearchData = JsonSerializer.Serialize(data),
+                        IP = IP,
+                        Agentid = agentid,
+                        TotalRecord = count,
+                        CityID = data.CityID,
+                        from = from,
+                        SupplierTime = Convert.ToString(SupplierTime),
+                        SearchKey = SearchKey
+                    };
+
+                    await _stores.SaveRequestTrackingLogAsync(log, "RequestTrackingLog");
+                    return 1;
+                }
+                else
+                {
 
 
-
-};
-                //db.ExecuteNonQuerywithconnection("InsertHotelSearchData", para, Convert.ToString(ConfigurationManager.ConnectionStrings["ConnectionStringforlogtrack"].ConnectionString));
-                int id = Convert.ToInt32(await _dlConnection.GetExecuteScalarSP_WithConStr_1SecTimeout("InsertHotelSearchData_New", para));
-                return id;
+                    SqlParameter[] para = new SqlParameter[]{
+                    new SqlParameter("@SearchData", JsonSerializer.Serialize(data)),
+                    new SqlParameter("@Ip", IP),
+                    new SqlParameter("@Agentid",agentid),
+                    new SqlParameter("@TotalRecord",count),
+                    new SqlParameter("@CityID",data.CityID),
+                    new SqlParameter("@from",from),
+                    new SqlParameter("@SupplierTime",Convert.ToString(SupplierTime)),
+                    new SqlParameter("@SearchKey",SearchKey),
+                    
+                    
+                    
+                    };
+                    //db.ExecuteNonQuerywithconnection("InsertHotelSearchData", para, Convert.ToString(ConfigurationManager.ConnectionStrings["ConnectionStringforlogtrack"].ConnectionString));
+                    int id = Convert.ToInt32(await _dlConnection.GetExecuteScalarSP_WithConStr_1SecTimeout("InsertHotelSearchData_New", para));
+                    return id;
+                }
             }
             catch (Exception e)
             {
