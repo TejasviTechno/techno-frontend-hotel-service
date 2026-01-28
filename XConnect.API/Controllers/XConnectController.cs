@@ -698,7 +698,7 @@ namespace XConnect.API.Controllers
 
         [Route("availabilitywithCancellationv2")]
         [HttpPost]
-        public async Task<IActionResult> AvailabilitywithCancellationv2(CommonRequest data)
+        public async Task<IActionResult> AvailabilitywithCancellati onv2(CommonRequest data)
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();

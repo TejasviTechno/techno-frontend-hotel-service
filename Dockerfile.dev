@@ -1,0 +1,16 @@
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+
+WORKDIR /app
+EXPOSE 8080
+
+# Copy output produced by CI
+COPY publish/ .
+
+# Run as non-root (production best practice)
+RUN groupadd -g 1001 appgroup && \
+    useradd -u 1001 -g appgroup -s /usr/sbin/nologin appuser && \
+    chown -R appuser:appgroup /app
+
+USER appuser
+
+ENTRYPOINT ["dotnet", "BackGroundService.WebHost.dll"]
