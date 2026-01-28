@@ -223,3 +223,29 @@ C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Debug\net9.0\refint\XConnect.BAL.dll
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL.pdb
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.BAL\obj\Debug\net9.0\ref\XConnect.BAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.BAL.deps.json
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.BAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.BAL.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.CommonUtilities.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.ErrorLogHandler.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.Markup.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.Models.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.Supplier.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnection.DAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.CommonUtilities.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.Models.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.Supplier.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnection.DAL.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.ErrorLogHandler.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\bin\Debug\net9.0\XConnect.Markup.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL.csproj.AssemblyReference.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL.AssemblyInfoInputs.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL.AssemblyInfo.cs
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL.csproj.CoreCompileInputs.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL.sourcelink.json
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.D0259A92.Up2Date
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\refint\XConnect.BAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\XConnect.BAL.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.BAL\obj\Debug\net9.0\ref\XConnect.BAL.dll

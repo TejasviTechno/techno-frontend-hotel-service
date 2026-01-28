@@ -1,0 +1,69 @@
+# Ignore git
+.git
+.gitignore
+
+# Ignore Docker files
+Dockerfile
+docker-compose*.yml
+
+# Ignore build outputs
+**/bin/
+**/obj/
+
+XConnect.API/bin
+XConnect.API/obj
+
+XConnect.Auth/bin
+XConnect.Auth/obj
+
+XConnect.BAL/bin
+XConnect.BAL/obj
+
+XConnect.Common/bin
+XConnect.Common/obj
+
+XConnect.ErrorLogHandler/bin
+XConnect.ErrorLogHandler/obj
+ 
+XConnect.MarkupModule/bin
+XConnect.MarkupModule/obj
+
+XConnect.Models/bin
+XConnect.Models/obj
+
+XConnect.Supplier/bin
+XConnect.Supplier/obj
+
+XConnection.DAL/bin
+XConnection.DAL/obj
+
+
+# Ignore user files
+**/*.user
+**/*.suo
+**/*.cache
+**/*.log
+
+# Ignore VS / Rider / VSCode
+.vs
+.vscode
+.idea
+
+# Ignore OS junk
+.DS_Store
+Thumbs.db
+
+# Ignore test projects (if any)
+**/*Test*
+**/*Tests*
+
+# Ignore docs
+*.md
+
+# Ignore environment secrets
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/*.env
+
+XConnect.API/appsettings.json
+XConnect.API/appsettings.Development.json

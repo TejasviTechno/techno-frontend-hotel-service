@@ -133,3 +133,19 @@ C:\WEB\Xconnect9TechWise\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnecti
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnection.DAL\obj\Debug\net9.0\refint\XConnection.DAL.dll
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.pdb
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnection.DAL\obj\Debug\net9.0\ref\XConnection.DAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\bin\Debug\net9.0\XConnection.DAL.deps.json
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\bin\Debug\net9.0\XConnection.DAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\bin\Debug\net9.0\XConnection.DAL.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\bin\Debug\net9.0\XConnect.Models.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\bin\Debug\net9.0\XConnect.Models.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.csproj.AssemblyReference.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.AssemblyInfoInputs.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.AssemblyInfo.cs
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.csproj.CoreCompileInputs.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.sourcelink.json
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnect.EBD15483.Up2Date
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\refint\XConnection.DAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\ref\XConnection.DAL.dll

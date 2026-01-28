@@ -104,3 +104,16 @@ C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Debug\net9.0\refint\XConnect.Models.dll
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.pdb
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Models\obj\Debug\net9.0\ref\XConnect.Models.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\bin\Debug\net9.0\XConnect.Models.deps.json
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\bin\Debug\net9.0\XConnect.Models.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\bin\Debug\net9.0\XConnect.Models.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.csproj.AssemblyReference.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.AssemblyInfoInputs.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.AssemblyInfo.cs
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.csproj.CoreCompileInputs.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.sourcelink.json
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\refint\XConnect.Models.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\ref\XConnect.Models.dll

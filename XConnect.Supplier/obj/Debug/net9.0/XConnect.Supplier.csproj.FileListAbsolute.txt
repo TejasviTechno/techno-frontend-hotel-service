@@ -205,3 +205,27 @@ C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnec
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\refint\XConnect.Supplier.dll
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.pdb
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\ref\XConnect.Supplier.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnect.Supplier.deps.json
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnect.Supplier.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnect.Supplier.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnect.CommonUtilities.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnect.ErrorLogHandler.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnect.Markup.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnect.Models.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnection.DAL.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnect.CommonUtilities.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnect.ErrorLogHandler.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnect.Markup.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnect.Models.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\bin\Debug\net9.0\XConnection.DAL.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.csproj.AssemblyReference.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.AssemblyInfoInputs.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.AssemblyInfo.cs
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.csproj.CoreCompileInputs.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.sourcelink.json
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.C9222F34.Up2Date
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\refint\XConnect.Supplier.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Supplier\obj\Debug\net9.0\ref\XConnect.Supplier.dll
