@@ -13,4 +13,4 @@ RUN groupadd -g 1001 appgroup && \
 
 USER appuser
 
-ENTRYPOINT ["dotnet", "BackGroundService.WebHost.dll"]
+ENTRYPOINT ["dotnet", "XConnect.API.dll"]
