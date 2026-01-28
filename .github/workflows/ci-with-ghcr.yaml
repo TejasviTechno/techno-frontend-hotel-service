@@ -1,0 +1,217 @@
+name: Hotel Service CI With GHCR for Production
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  NAME: techno-frontend-hotel-service
+  IMAGE_TAG: ${{ github.sha }}
+  DOCKERFILE: Dockerfile.dev
+  CI_REPO: technoheavenbilimora/cicd-configuration
+  IMAGE_FULL: ghcr.io/${{ github.repository }}
+  BUILD_PROJECT: ./XConnect.API\XConnect.API.csproj
+  GITOPS_FILE: hotelservice.yaml
+
+jobs:
+  build-deploy:
+    runs-on: self-hosted 
+
+    steps:
+    - name: Checkout Application Repo
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 
+
+    - name: Debug Info
+      run : |
+        ls -la
+
+    - name: Fix git safe.directory (self-hosted runner)
+      run: |
+        git config --global --add safe.directory /opt/actions-runner/_work/${{ env.NAME }}/${{ env.NAME }}
+        git config --global --add safe.directory "$PWD"
+
+    - name: Fetch Git Tags
+      run: |
+        git fetch --tags --force
+
+    - name: Collect commits since last pipeline execution
+      shell: bash
+      run: |
+        if git rev-parse ci-last-run >/dev/null 2>&1; then
+          echo "Using baseline tag: ci-last-run"
+          git log ci-last-run..HEAD --pretty=format:"%h - %an - %s (%cr)" > commits.txt
+        else
+          echo "Baseline not found — using full history"
+          git log --pretty=format:"%h - %an - %s (%cr)" > commits.txt
+        fi
+
+        echo "Commit list:"
+        cat commits.txt
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.203'
+
+    - name: Checkout CI Config Repo
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ env.CI_REPO }}
+        ref: main
+        token: ${{ secrets.GIT_TOKEN }}
+        path: ci-config
+
+    - name: Generate NuGet.config
+      env:
+        ABP_USERNAME: ${{ secrets.ABP_USERNAME }}
+        ABP_PASSWORD: ${{ secrets.ABP_PASSWORD }}
+        GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+        GIT_TOKEN:    ${{ secrets.GIT_TOKEN }}
+      run: |
+        chmod +x ci-config/ci-templates/nuget/generate-nuget-config.sh
+        ci-config/ci-templates/nuget/generate-nuget-config.sh
+
+    - name: Restore
+      run: dotnet restore --configfile nuget.ci.config
+
+    - name: Gitleaks Security Scan
+      run: |
+        gitleaks detect --source . --verbose --no-git --redact --exit-code 0
+
+    - name: Trivy File System Scan (non-blocking)
+      run: |
+        trivy fs . --severity HIGH,CRITICAL
+        trivy fs . --scanners config --severity HIGH,CRITICAL
+        trivy fs . --scanners secret --severity HIGH,CRITICAL
+
+    - name: Debug Info
+      run : |
+        ls -la
+
+    - name: Build
+      run: |
+        dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore
+
+    - name: Publish
+      run: |
+        dotnet publish ${{ env.BUILD_PROJECT }} -c Release -o publish --no-build
+    - name: Test
+      run: dotnet test
+
+    - name: Build image with nerdctl
+      run: |
+        sudo -n nerdctl --address /run/containerd/containerd.sock build -t $IMAGE_FULL:$IMAGE_TAG -f ${{ env.DOCKERFILE }} .
+
+    - name: Trivy Image Scan
+      run: |
+        trivy image $IMAGE_FULL:$IMAGE_TAG --severity HIGH,CRITICAL
+        trivy image $IMAGE_FULL:$IMAGE_TAG --scanners config --severity HIGH,CRITICAL
+        trivy image $IMAGE_FULL:$IMAGE_TAG --scanners secret --severity HIGH,CRITICAL
+      continue-on-error: true
+
+    - name: Login to GHCR
+      run: |
+        echo "${{ secrets.GIT_TOKEN }}" | sudo nerdctl login ghcr.io --username ${{ github.actor }} --password-stdin
+
+    - name: Push image to GHCR
+      run: |
+        sudo nerdctl --address /run/containerd/containerd.sock push $IMAGE_FULL:$IMAGE_TAG
+
+    - name: Trivy Image Scan
+      continue-on-error: true
+      run: |
+        trivy image $IMAGE_FULL:$IMAGE_TAG --severity HIGH,CRITICAL
+        trivy image $IMAGE_FULL:$IMAGE_TAG --scanners config --severity HIGH,CRITICAL
+        trivy image $IMAGE_FULL:$IMAGE_TAG --scanners secret --severity HIGH,CRITICAL
+
+    - name: Remove Local Image
+      run: |
+        sudo nerdctl rmi $IMAGE_FULL:$IMAGE_TAG || true
+
+    - name: Update Kubernetes manifests (ALL clients + ALL envs)
+      run: |
+        echo "Updating image tag to: $IMAGE_TAG"
+
+        FILES=$(find ci-config/gitops-repo -type f -name "${{ env.GITOPS_FILE }}")
+
+        if [ -z "$FILES" ]; then
+          echo "⚠️ No GitOps manifests found for ${GITOPS_FILE}. Skipping deployment."
+          exit 0
+        fi
+
+        for file in $FILES; do
+          echo "Updating: $file"
+          yq -i '.image.tag = "'"$IMAGE_TAG"'"' "$file"
+        done
+
+        echo "✅ All GitOps manifests updated."
+
+    - name: Commit and Push GitOps changes
+      run: |
+        cd ci-config
+
+        git config --global user.email "${{ secrets.USER_EMAIL }}"
+        git config --global user.name "${{ secrets.GIT_USERNAME }}"
+
+        git add .
+
+        if git diff --cached --quiet; then
+          echo "No GitOps changes detected. Skipping commit."
+          exit 0
+        fi
+
+        git commit -m "Deploy ${{ env.GITOPS_FILE }} → all clients + envs → image=$IMAGE_TAG"
+
+        git remote set-url origin https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/${{ env.CI_REPO }}.git
+        git push origin main
+
+    - name: Update baseline tag
+      if: success()
+      run: echo "CI build succeeded."
+
+    - name: Failure Notification
+      if: failure()
+      run: echo "CI build failed."
+
+    - name: Email Notification (Unified)
+      if: always()
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: ${{ secrets.SMTP_SERVER }}
+        server_port: ${{ secrets.SMTP_PORT }}
+        username: ${{ secrets.SMTP_USERNAME }}
+        password: ${{ secrets.SMTP_PASSWORD }}
+        to: ${{ secrets.EMAIL_TO }}
+        from: GitHub Actions <${{ secrets.SMTP_USERNAME }}>
+        subject: |
+          ${{ job.status == 'success' && '✅ SUCCESS' || job.status == 'failure' && '❌ FAILURE' || '⚠️ CANCELLED' }}:
+          ${{ github.repository }} | All-Clients & All-envs
+        body: |
+          CI/CD Pipeline Status: ${{ job.status }}
+
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.ref_name }}
+          Commit SHA: ${{ github.sha }}
+
+          Workflow Run:
+          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          Commits since last successful build:
+          -------------------------------------
+        body_file: commits.txt
+        attachments: commits.txt
+
+    - name: Update pipeline baseline tag
+      if: always()
+      run: |
+        git remote set-url origin https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/${{ github.repository }}.git
+        git tag -f ci-last-run
+        git push origin -f ci-last-run
