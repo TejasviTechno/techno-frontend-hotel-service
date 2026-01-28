@@ -16,7 +16,7 @@ env:
   DOCKERFILE: Dockerfile.dev
   CI_REPO: technoheavenbilimora/cicd-configuration
   IMAGE_FULL: ghcr.io/${{ github.repository }}
-  BUILD_PROJECT: ./XConnect.API\XConnect.API.csproj
+  BUILD_PROJECT: ./XConnect.API/XConnect.API.csproj
   GITOPS_FILE: hotelservice.yaml
 
 jobs:
