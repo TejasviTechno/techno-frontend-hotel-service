@@ -101,10 +101,7 @@ jobs:
     #     # dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore
     - name: Build
       run: |
-        dotnet build ${{ env.BUILD_PROJECT }} \
-          -c Release \
-          --no-restore \
-          -p:NoWarn=CS8618
+        dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore /p:NoWarn=CS8618,CS8602,CS8603,CS8604
 
     - name: Publish
       run: |
