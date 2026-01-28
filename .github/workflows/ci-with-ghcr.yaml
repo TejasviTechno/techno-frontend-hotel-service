@@ -98,11 +98,12 @@ jobs:
 
     - name: Build
       run: |
-        dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore
+        dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore -p:NoWarn="CS8618;CS8602;CS8603;CS8604"
 
     - name: Publish
       run: |
         dotnet publish ${{ env.BUILD_PROJECT }} -c Release -o publish --no-build
+        
     - name: Test
       run: dotnet test
 
