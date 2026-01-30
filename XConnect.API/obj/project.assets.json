@@ -1896,7 +1896,7 @@
           "lib/netcoreapp2.1/_._": {}
         }
       },
-      "UserContext/10.0.10": {
+      "UserContext/10.0.11": {
         "type": "package",
         "dependencies": {
           "Microsoft.AspNetCore.Http.Abstractions": "2.3.0",
@@ -1927,7 +1927,7 @@
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
           "Microsoft.Extensions.Caching.Memory": "9.0.1",
-          "UserContext": "10.0.8",
+          "UserContext": "10.0.11",
           "XConnect.CommonUtilities": "1.0.0",
           "XConnect.ErrorLogHandler": "1.0.0",
           "XConnect.Models": "1.0.0",
@@ -4954,14 +4954,14 @@
         "system.threading.tasks.extensions.nuspec"
       ]
     },
-    "UserContext/10.0.10": {
-      "sha512": "u1BnwPT+VHU3LdvIYlq5QJUmHsEDojVjkrCDeEj/UZtIVxnAEuwX/VA0/n81XQDQMGgN7cufAes7ctDquodIzA==",
+    "UserContext/10.0.11": {
+      "sha512": "thAMOYf4tWcZ8LqyAqXLgcKuAgb63JJgdfl3KHb7OG9djABJ41kH86lLlXRYV4N1TuL0jpt9hdCBq+bBDNEhUA==",
       "type": "package",
-      "path": "usercontext/10.0.10",
+      "path": "usercontext/10.0.11",
       "files": [
         ".nupkg.metadata",
         "lib/net9.0/UserContextMiddleWare.dll",
-        "usercontext.10.0.10.nupkg.sha512",
+        "usercontext.10.0.11.nupkg.sha512",
         "usercontext.nuspec"
       ]
     },
@@ -5036,7 +5036,7 @@
       "Serilog.Sinks.Elasticsearch >= 9.0.0",
       "Serilog.Sinks.File >= 8.0.0-dev-02318",
       "Swashbuckle.AspNetCore >= 7.2.0",
-      "UserContext >= 10.0.10",
+      "UserContext >= 10.0.11",
       "XConnect.Auth >= 1.0.0",
       "XConnect.BAL >= 1.0.0",
       "XConnect.ErrorLogHandler >= 1.0.0",
@@ -5151,7 +5151,7 @@
           },
           "UserContext": {
             "target": "Package",
-            "version": "[10.0.10, )"
+            "version": "[10.0.11, )"
           }
         },
         "imports": [
