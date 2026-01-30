@@ -319,7 +319,7 @@ namespace Xconnect.Auth
                     }
 
                     _token.creditLimitCurrencyId = Convert.ToInt32(_userContextAccessor.DecodedJwt.CreditLimitCurrencyId);
-                    _token.creditLimitCurrencyName = "USD"; // Convert.ToString(jToken["creditlimitCurrencyCode"]?.ToString());
+                    _token.creditLimitCurrencyName = Convert.ToString(_userContextAccessor.DecodedJwt.CreditLimitCurrencyCode);
                     _token.mapCategoryId = Convert.ToInt32(_userContextAccessor.DecodedJwt.RateCategoryId);
                     _token.agentCode = Convert.ToString(_userContextAccessor.DecodedJwt.AgentCode);
 

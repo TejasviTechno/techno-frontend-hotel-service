@@ -926,14 +926,6 @@ C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.API\obj\Debug\net9.0\refint\XConn
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.pdb
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.genruntimeconfig.cache
 C:\WEB\Xconnect9TechWise\xconnect-api\XConnect.API\obj\Debug\net9.0\ref\XConnect.API.dll
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.csproj.AssemblyReference.cache
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.GeneratedMSBuildEditorConfig.editorconfig
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.AssemblyInfoInputs.cache
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.AssemblyInfo.cs
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.csproj.CoreCompileInputs.cache
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.MvcApplicationPartsAssemblyInfo.cs
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.MvcApplicationPartsAssemblyInfo.cache
-D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.sourcelink.json
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\appsettings.json
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\XConnect.API.staticwebassets.endpoints.json
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\Hotel\BookingDotCom_Booker_City.xml
@@ -1052,6 +1044,14 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\XConn
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\XConnect.Markup.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\XConnect.Supplier.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\XConnection.DAL.pdb
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.csproj.AssemblyReference.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.AssemblyInfoInputs.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.AssemblyInfo.cs
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.csproj.CoreCompileInputs.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.MvcApplicationPartsAssemblyInfo.cs
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.MvcApplicationPartsAssemblyInfo.cache
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.sourcelink.json
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\scopedcss\bundle\XConnect.API.styles.css
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\staticwebassets.build.json
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\staticwebassets.development.json
@@ -1062,6 +1062,7 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\stati
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\staticwebassets\msbuild.buildMultiTargeting.XConnect.API.props
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\staticwebassets\msbuild.buildTransitive.XConnect.API.props
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\staticwebassets.pack.json
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.D8251D42.Up2Date
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\refint\XConnect.API.dll
