@@ -96,9 +96,6 @@ jobs:
       run : |
         ls -la
 
-    # - name: Build
-    #   run: |
-    #     # dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore
     - name: Build
       run: dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore  /clp:ErrorsOnly
 
@@ -184,37 +181,37 @@ jobs:
       if: failure()
       run: echo "CI build failed."
 
-    # - name: Email Notification (Unified)
-    #   if: always()
-    #   uses: dawidd6/action-send-mail@v3
-    #   with:
-    #     server_address: ${{ secrets.SMTP_SERVER }}
-    #     server_port: ${{ secrets.SMTP_PORT }}
-    #     username: ${{ secrets.SMTP_USERNAME }}
-    #     password: ${{ secrets.SMTP_PASSWORD }}
-    #     to: ${{ secrets.EMAIL_TO }}
-    #     from: GitHub Actions <${{ secrets.SMTP_USERNAME }}>
-    #     subject: |
-    #       ${{ job.status == 'success' && '✅ SUCCESS' || job.status == 'failure' && '❌ FAILURE' || '⚠️ CANCELLED' }}:
-    #       ${{ github.repository }} | All-Clients & All-envs
-    #     body: |
-    #       CI/CD Pipeline Status: ${{ job.status }}
+    - name: Email Notification (Unified)
+      if: always()
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: ${{ secrets.SMTP_SERVER }}
+        server_port: ${{ secrets.SMTP_PORT }}
+        username: ${{ secrets.SMTP_USERNAME }}
+        password: ${{ secrets.SMTP_PASSWORD }}
+        to: ${{ secrets.EMAIL_TO }}
+        from: GitHub Actions <${{ secrets.SMTP_USERNAME }}>
+        subject: |
+          ${{ job.status == 'success' && '✅ SUCCESS' || job.status == 'failure' && '❌ FAILURE' || '⚠️ CANCELLED' }}:
+          ${{ github.repository }} | All-Clients & All-envs
+        body: |
+          CI/CD Pipeline Status: ${{ job.status }}
 
-    #       Repository: ${{ github.repository }}
-    #       Branch: ${{ github.ref_name }}
-    #       Commit SHA: ${{ github.sha }}
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.ref_name }}
+          Commit SHA: ${{ github.sha }}
 
-    #       Workflow Run:
-    #       ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          Workflow Run:
+          ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-    #       Commits since last successful build:
-    #       -------------------------------------
-    #     body_file: commits.txt
-    #     attachments: commits.txt
+          Commits since last successful build:
+          -------------------------------------
+        body_file: commits.txt
+        attachments: commits.txt
 
-    # - name: Update pipeline baseline tag
-    #   if: always()
-    #   run: |
-    #     git remote set-url origin https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/${{ github.repository }}.git
-    #     git tag -f ci-last-run
-    #     git push origin -f ci-last-run
+    - name: Update pipeline baseline tag
+      if: always()
+      run: |
+        git remote set-url origin https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/${{ github.repository }}.git
+        git tag -f ci-last-run
+        git push origin -f ci-last-run
