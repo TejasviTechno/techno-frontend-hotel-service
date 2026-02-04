@@ -128,11 +128,13 @@ jobs:
 
     - name: Login to GHCR
       run: |
-        echo "${{ secrets.GIT_TOKEN }}" | sudo nerdctl login ghcr.io --username ${{ github.actor }} --password-stdin
+        set -euo pipefail
+        echo "${{ secrets.GIT_TOKEN }}" | sudo nerdctl login ghcr.io --username ${{ github.actor }} --password-stdin 2>&1 | tee -a $ERROR_LOG
 
     - name: Push image to GHCR
       run: |
-        sudo nerdctl --address /run/containerd/containerd.sock push $IMAGE_FULL:$IMAGE_TAG
+        set -euo pipefail
+        sudo nerdctl --address /run/containerd/containerd.sock push $IMAGE_FULL:$IMAGE_TAG 2>&1 | tee -a $ERROR_LOG
 
     - name: Trivy Image Scan
       continue-on-error: true
