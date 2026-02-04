@@ -18,7 +18,8 @@ env:
   IMAGE_FULL: ghcr.io/${{ github.repository }}
   BUILD_PROJECT: ./XConnect.API/XConnect.API.csproj
   GITOPS_FILE: hotelservice.yaml
-
+  ERROR_LOG: error.log
+  
 jobs:
   build-deploy:
     runs-on: self-hosted 
@@ -80,42 +81,50 @@ jobs:
         ci-config/ci-templates/nuget/generate-nuget-config.sh
 
     - name: Restore
-      run: dotnet restore --configfile nuget.ci.config
+      run: |
+        set -euo pipefail
+        dotnet restore --configfile nuget.ci.config 2>&1 | tee -a $ERROR_LOG
 
     - name: Gitleaks Security Scan
       run: |
-        gitleaks detect --source . --verbose --no-git --redact --exit-code 0
+        gitleaks detect --source . --verbose --no-git --redact -f json -r gitleaks-report.json --exit-code 0
 
     - name: Trivy File System Scan (non-blocking)
+      continue-on-error: true
       run: |
-        trivy fs . --severity HIGH,CRITICAL
-        trivy fs . --scanners config --severity HIGH,CRITICAL
-        trivy fs . --scanners secret --severity HIGH,CRITICAL
+        trivy fs . --scanners vuln,secret,misconfig --severity HIGH,CRITICAL --format table -o trivy-report.html
 
     - name: Debug Info
       run : |
         ls -la
 
     - name: Build
-      run: dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore  /clp:ErrorsOnly
+      run: |
+        set -euo pipefail
+        dotnet build ${{ env.BUILD_PROJECT }} -c Release --no-restore  /clp:ErrorsOnly  2>&1 | tee -a $ERROR_LOG
 
     - name: Publish
       run: |
-        dotnet publish ${{ env.BUILD_PROJECT }} -c Release -o publish --no-build
+        set -euo pipefail
+        dotnet publish ${{ env.BUILD_PROJECT }} -c Release -o publish --no-build 2>&1 | tee -a $ERROR_LOG
 
     - name: Test
-      run: dotnet test
+      run: |
+        set -euo pipefail
+        dotnet test 2>&1 | tee -a $ERROR_LOG
 
     - name: Build image with nerdctl
       run: |
-        sudo -n nerdctl --address /run/containerd/containerd.sock build -t $IMAGE_FULL:$IMAGE_TAG -f ${{ env.DOCKERFILE }} .
+        set -euo pipefail
+        sudo -n nerdctl --address /run/containerd/containerd.sock build -t $IMAGE_FULL:$IMAGE_TAG -f ${{ env.DOCKERFILE }} . 2>&1 | tee -a $ERROR_LOG
 
     - name: Trivy Image Scan
-      run: |
-        trivy image $IMAGE_FULL:$IMAGE_TAG --severity HIGH,CRITICAL
-        trivy image $IMAGE_FULL:$IMAGE_TAG --scanners config --severity HIGH,CRITICAL
-        trivy image $IMAGE_FULL:$IMAGE_TAG --scanners secret --severity HIGH,CRITICAL
       continue-on-error: true
+      run: |
+        trivy image $IMAGE_FULL:$IMAGE_TAG --scanners vuln,secret,misconfig \
+        --severity HIGH,CRITICAL \
+        --format table  \
+        -o trivy-image-report.html
 
     - name: Login to GHCR
       run: |
@@ -128,9 +137,10 @@ jobs:
     - name: Trivy Image Scan
       continue-on-error: true
       run: |
-        trivy image $IMAGE_FULL:$IMAGE_TAG --severity HIGH,CRITICAL
-        trivy image $IMAGE_FULL:$IMAGE_TAG --scanners config --severity HIGH,CRITICAL
-        trivy image $IMAGE_FULL:$IMAGE_TAG --scanners secret --severity HIGH,CRITICAL
+        trivy image $IMAGE_FULL:$IMAGE_TAG --scanners vuln,secret,misconfig \
+        --severity HIGH,CRITICAL \
+        --format table  \
+        -o trivy-image-report2.html
 
     - name: Remove Local Image
       run: |
@@ -193,7 +203,7 @@ jobs:
         from: GitHub Actions <${{ secrets.SMTP_USERNAME }}>
         subject: |
           ${{ job.status == 'success' && '✅ SUCCESS' || job.status == 'failure' && '❌ FAILURE' || '⚠️ CANCELLED' }}:
-          ${{ github.repository }} | All-Clients & All-envs
+          ${{ github.repository }} 
         body: |
           CI/CD Pipeline Status: ${{ job.status }}
 
@@ -207,7 +217,13 @@ jobs:
           Commits since last successful build:
           -------------------------------------
         body_file: commits.txt
-        attachments: commits.txt
+        attachments: |
+          commits.txt
+          error.log
+          gitleaks-report.json
+          trivy-report.html
+          trivy-image-report.html
+          trivy-image-report1.html
 
     - name: Update pipeline baseline tag
       if: always()
@@ -215,3 +231,17 @@ jobs:
         git remote set-url origin https://x-access-token:${{ secrets.GIT_TOKEN }}@github.com/${{ github.repository }}.git
         git tag -f ci-last-run
         git push origin -f ci-last-run
+
+    - name: Cleanup reports
+      if: always()
+      run: |
+        rm -f \
+          error.log \
+          commits.txt \
+          gitleaks-report.json \
+          trivy-*.html || true
+          
+    - name: Cleanup workspace
+      if: always()
+      run: |
+        git clean -fdx
