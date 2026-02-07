@@ -15973,17 +15973,22 @@ new SqlParameter("@AgentId", AgentId),
                             string newCheckInDate = Convert.ToString(objdata.CheckInDate);
                             string newCheckOutDate = Convert.ToString(objdata.CheckOutDate);
                             //DateTime dtCheckInDate = DateTime.ParseExact(newCheckInDate, "M/d/yyyy", null);
-                            DateTime dtCheckInDate = DateTime.ParseExact(newCheckInDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture); 
+                            //DateTime dtCheckInDate = DateTime.ParseExact(newCheckInDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture); 
                             //DateTime dtCheckOutDate = DateTime.ParseExact(newCheckOutDate, "M/d/yyyy", null);
-                            DateTime dtCheckOutDate = DateTime.ParseExact(newCheckOutDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
-                            TimeSpan t = dtCheckOutDate - dtCheckInDate;
+                            //DateTime dtCheckOutDate = DateTime.ParseExact(newCheckOutDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+
+                            //DateTime dtCheckInDate = DateTime.ParseExact(newCheckInDate, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                            //DateTime dtCheckOutDate = DateTime.ParseExact(newCheckOutDate, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+
+
+                            //TimeSpan t = dtCheckOutDate - dtCheckInDate;
 
                             ratebreakup_Prebook.RoomTypeName = Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
                             ratebreakup_Prebook.MealName = Convert.ToString(objdata.ShoppingCartDetails[room].MealPlanCode);
                             ratebreakup_Prebook.RateType = Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
-                            DateTime rateDate = dtCheckInDate.Date.AddDays(p);
+                            DateTime rateDate = objdata.CheckOutDate.Date.AddDays(p);
                             ratebreakup_Prebook.Date = rateDate;
-                            string rateWeekColumn = Convert.ToString(dtCheckInDate.Date.AddDays(p).DayOfWeek).Substring(0, 3);
+                            string rateWeekColumn = Convert.ToString(objdata.CheckOutDate.Date.AddDays(p).DayOfWeek).Substring(0, 3);
                             ratebreakup_Prebook.DayOfWeek = Convert.ToString(rateWeekColumn);
                             ratebreakup_Prebook.Rate = Night_Price;
                             ratebreakup_Prebook.SupplierCurrencyId = _commonMethod.GetCurrencyIdCurrencyCode(objdata.SupplierCurrency, tokenData.dtROE);
