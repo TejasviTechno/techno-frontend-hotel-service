@@ -39,7 +39,7 @@ namespace XConnect.API.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         _Error error = new _Error();
 
-   
+
 
 
         public XConnectController(IAuthenticationTokenAgent authenticationTokenAgent, IHotelXML hotelXML, IException exception, PlatformService platformService, IOptions<KeySettings> keySettings, IHttpContextAccessor httpContextAccessor)
@@ -50,7 +50,7 @@ namespace XConnect.API.Controllers
             _platformService = platformService;
             _keySettings = keySettings.Value;
             _httpContextAccessor = httpContextAccessor;
-           
+
         }
 
         [Route("Countries")]
@@ -158,7 +158,7 @@ namespace XConnect.API.Controllers
 
         }
 
-       
+
         [Route("allcitieswithcountry")]
         [HttpPost]
         public async Task<IActionResult> AllCitieswithCountry(CommonRequest data)
@@ -464,7 +464,7 @@ namespace XConnect.API.Controllers
             Stopwatch timer = new Stopwatch();
             timer.Start();
             TokenData TokenData = new TokenData();
-           
+
             DateTime EntryTime = DateTime.Now;
 
 
@@ -660,7 +660,11 @@ namespace XConnect.API.Controllers
                         }
                         else
                         {
-                            lstFiltOption.AvailabilityRS.Currency = authData.tokenData.CreditLimitCurrencyName;
+                            if (authData.tokenData.IsFromAPI)
+                                lstFiltOption.AvailabilityRS.Currency = authData.tokenData.CreditLimitCurrencyName;
+                            else
+                                lstFiltOption.AvailabilityRS.Currency = authData.tokenData.SiteCurrency; //bcoz return in site base currency
+
                             timer.Stop();
                             return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, authData.tokenData, "availabilitywithCancellation", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.CityID.ToString(), IP, Convert.ToString(payload.Filters.HotelIDs), Convert.ToString(payload.CheckInDate), Convert.ToString(payload.CheckOutDate), payload.NoofNights, payload.Rooms.Count, 0, Search_Key, EntryTime, "", "", "", 200);
                             //return Ok(lstFiltOption);
@@ -2444,7 +2448,11 @@ namespace XConnect.API.Controllers
                             }
                             if (IsNotAvailable)
                             {
-                                lstFiltOption.Currency = authData.tokenData.CreditLimitCurrencyName;
+                                if (authData.tokenData.IsFromAPI)
+                                    lstFiltOption.Currency = authData.tokenData.CreditLimitCurrencyName;// use to get data in credit currecny only
+                                else
+                                    lstFiltOption.Currency = authData.tokenData.SiteCurrency;
+
                                 timer.Stop();
                                 return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, authData.tokenData, "ReCheck", true, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200);
                             }
@@ -2455,7 +2463,12 @@ namespace XConnect.API.Controllers
                                     lstFiltOption.ReCheckRS[x].EssentialInformation = lstFiltOption.ReCheckRS[x].EssentialInformation + EssentialInfo.Essentialinformation;
 
                                 }
-                                lstFiltOption.Currency = authData.tokenData.CreditLimitCurrencyName;
+
+                                if (authData.tokenData.IsFromAPI)
+                                    lstFiltOption.Currency = authData.tokenData.CreditLimitCurrencyName;// use to get data in credit currecny only
+                                else
+                                    lstFiltOption.Currency = authData.tokenData.SiteCurrency;
+
                                 timer.Stop();
                                 return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, authData.tokenData, "ReCheck", true, timer.Elapsed.ToString(), ErrorCode.NoError, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200);
                             }
@@ -2713,7 +2726,7 @@ namespace XConnect.API.Controllers
             try
             {
                 AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
-               
+
                 if (Convert.ToBoolean(authData.tokenData.AgentId))
                 {
                     DataforLogBD log = new DataforLogBD();
@@ -2810,7 +2823,7 @@ namespace XConnect.API.Controllers
                     string JsonRQ = Newtonsoft.Json.JsonConvert.SerializeObject(data);
                     CheckChargesRequest payload = Newtonsoft.Json.JsonConvert.DeserializeObject<CheckChargesRequest>(data.Request.ToString());
                     CheckChargesResponse lstFiltOption = await _hotelXML.CheckHotelCancellationCharges(payload, authData.tokenData, data.AdvancedOptions);
-                 
+
                     if (lstFiltOption != null)
                     {
                         if (lstFiltOption.Error.Count > 0)
@@ -2819,7 +2832,7 @@ namespace XConnect.API.Controllers
                             return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, authData.tokenData, "CheckHotelCancellationCharges", true, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", IP, "", "", "", 0, 0, 0, payload.CheckHotelCancellationChargesRQ.ReferenceNo, EntryTime, payload.CheckHotelCancellationChargesRQ.ReferenceNo, payload.CheckHotelCancellationChargesRQ.InternalReference, "", 200);
 
                         }
-                        else if(lstFiltOption.CheckHotelCancellationChargesRS.HotelOption.HotelRooms.Count == 0)
+                        else if (lstFiltOption.CheckHotelCancellationChargesRS.HotelOption.HotelRooms.Count == 0)
                         {
                             timer.Stop();
                             //lstFiltOption.Error.Add(HotelXML.GetErrorMsg(ErrorType.GeneralError, ErrorCode.NorecordError, ErrorDescription.NoPermission_Cancel)); // comment on 260225
@@ -2891,7 +2904,7 @@ namespace XConnect.API.Controllers
                     data.AdvancedOptions.Currency = authData.tokenData.CreditLimitCurrencyName;// use to get data in credit currecny only
                     string JsonRQ = Newtonsoft.Json.JsonConvert.SerializeObject(data);
                     CancelBookingRequest payload = Newtonsoft.Json.JsonConvert.DeserializeObject<CancelBookingRequest>(data.Request.ToString());
-                    CancelBookingResponse_newapi response = await _hotelXML.CancelBooking(payload, authData.tokenData, data.AdvancedOptions,userAgent,IP,MainURL);
+                    CancelBookingResponse_newapi response = await _hotelXML.CancelBooking(payload, authData.tokenData, data.AdvancedOptions, userAgent, IP, MainURL);
                     CancelBookingResponse lstFiltOption = response.CancelBookingResponse;
                     PNRNo = response.PNRNo;
 
@@ -2935,7 +2948,7 @@ namespace XConnect.API.Controllers
             catch (Exception ex)
             {
                 timer.Stop();
-                await _exception.ErrorNew(ex,_LogAPI.CancelBooking);
+                await _exception.ErrorNew(ex, _LogAPI.CancelBooking);
                 CancelBookingResponse RS = new CancelBookingResponse();
                 error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
                 RS.Error.Add(error);
@@ -3227,7 +3240,11 @@ namespace XConnect.API.Controllers
                             if (RS.PreBookRS != null)
                             {
                                 timer.Stop();
-                                RS.PreBookRS.Currency = authData.tokenData.CreditLimitCurrencyName;
+                                if (authData.tokenData.IsFromAPI)
+                                    RS.PreBookRS.Currency = authData.tokenData.CreditLimitCurrencyName;
+                                else
+                                    RS.PreBookRS.Currency = authData.tokenData.SiteCurrency;
+
                                 return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "PreBook", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200);
                             }
                             else
@@ -3240,7 +3257,11 @@ namespace XConnect.API.Controllers
                         }
                         else
                         {
-                            RS.PreBookRS.Currency = authData.tokenData.CreditLimitCurrencyName;
+                            if (authData.tokenData.IsFromAPI)
+                                RS.PreBookRS.Currency = authData.tokenData.CreditLimitCurrencyName;
+                            else
+                                RS.PreBookRS.Currency = authData.tokenData.SiteCurrency;
+
                             timer.Stop();
                             return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "PreBook", true, timer.Elapsed.ToString(), ErrorCode.NoError, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200);
 
@@ -3296,22 +3317,22 @@ namespace XConnect.API.Controllers
                 //AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
                 //if (Convert.ToBoolean(authData.tokenData.AgentId))
                 //{
-                    StaticDataCity_Auto payload = Newtonsoft.Json.JsonConvert.DeserializeObject<StaticDataCity_Auto>(data.Request.ToString());
+                StaticDataCity_Auto payload = Newtonsoft.Json.JsonConvert.DeserializeObject<StaticDataCity_Auto>(data.Request.ToString());
 
-                    // List<StaticData> lstFiltOption = await _hotelXML.GetCitiesWithHotel(payload.CityName);
-                    DataTable lstFiltOption = await _hotelXML.GetCitiesWithHotel(payload.CityName);
-                    if (lstFiltOption != null)
-                    {
-                        timer.Stop();
-                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, TokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.CityName.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+                // List<StaticData> lstFiltOption = await _hotelXML.GetCitiesWithHotel(payload.CityName);
+                DataTable lstFiltOption = await _hotelXML.GetCitiesWithHotel(payload.CityName);
+                if (lstFiltOption != null)
+                {
+                    timer.Stop();
+                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, TokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.CityName.ToString(), IP, "", "", "", 0, 0, 0, "", null);
 
-                    }
-                    else
-                    {
-                        timer.Stop();
-                        error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
-                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.InternalError, payload.CityName.ToString(), IP, "", "", "", 0, 0, 0, "", null);
-                    }
+                }
+                else
+                {
+                    timer.Stop();
+                    error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
+                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.InternalError, payload.CityName.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+                }
                 //}
                 //else
                 //{
@@ -3349,21 +3370,21 @@ namespace XConnect.API.Controllers
                 //AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
                 //if (Convert.ToBoolean(authData.tokenData.AgentId))
                 //{
-                    StaticDataCity payload = Newtonsoft.Json.JsonConvert.DeserializeObject<StaticDataCity>(data.Request.ToString());
+                StaticDataCity payload = Newtonsoft.Json.JsonConvert.DeserializeObject<StaticDataCity>(data.Request.ToString());
 
-                    List<StaticData> lstFiltOption = await _hotelXML.GetStaticDataByCity(Convert.ToInt32(payload.CityId), Convert.ToInt32(payload.LocationId), payload.Type);
-                    if (lstFiltOption != null)
-                    {
-                        timer.Stop();
-                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, TokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.CityId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+                List<StaticData> lstFiltOption = await _hotelXML.GetStaticDataByCity(Convert.ToInt32(payload.CityId), Convert.ToInt32(payload.LocationId), payload.Type);
+                if (lstFiltOption != null)
+                {
+                    timer.Stop();
+                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, TokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.CityId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
 
-                    }
-                    else
-                    {
-                        timer.Stop();
-                        error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
-                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.InternalError, payload.CityId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
-                    }
+                }
+                else
+                {
+                    timer.Stop();
+                    error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
+                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.InternalError, payload.CityId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+                }
                 //}
                 //else
                 //{

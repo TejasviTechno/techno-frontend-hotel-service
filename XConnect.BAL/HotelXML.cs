@@ -1283,6 +1283,10 @@ namespace Xconnect.BLL
                     timer.Stop();
                     SearchPara.SupplierTime += ",|Search Total" + "|Time :" + timer.Elapsed.ToString();
                 }
+
+                if (!Tokendata.IsFromAPI) //4-FEB-26
+                    availHotelList.Currency = Tokendata.SiteCurrency; //Bcoz return in base currency
+
                 finalResponse.AvailabilityRS = availHotelList;
 
                 timer.Restart();
@@ -1372,7 +1376,7 @@ namespace Xconnect.BLL
                         }
                         else
                         {
-                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList(finalResponse, NewSearchKey, withcancellation); //convert to final response // No RoomMapping
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList(finalResponse, NewSearchKey, withcancellation, Tokendata.IsFromAPI); //convert to final response // No RoomMapping
                         }
                     }
                 }
@@ -11377,9 +11381,10 @@ new SqlParameter("@AgentId", AgentId),
                         {
                             var settings = new JsonSerializerSettings
                             {
-                                //NullValueHandling = NullValueHandling.Ignore,
+                                NullValueHandling = NullValueHandling.Ignore,
                                 //MissingMemberHandling = MissingMemberHandling.Ignore,
                             };
+
 
                             jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(value, settings);
                         }
@@ -12386,6 +12391,12 @@ new SqlParameter("@AgentId", AgentId),
                     roomPolicy.MappedMealName = selectedRoom.MappedMealName;
                     roomPolicy.Price = selectedRoom.Price;
                     roomPolicy.BookingStatus = selectedRoom.BookingStatus;
+
+                    if (tokenData.IsFromAPI) //Added on 04-FEB-26
+                        roomPolicy.SupplierCurrency = null;
+                    else
+                        roomPolicy.SupplierCurrency = selectedRoom.SupplierCurrency;
+
                     lstPolicy = selectedRoom.CancellationPolicy;
                 }
                 else
@@ -12471,7 +12482,10 @@ new SqlParameter("@AgentId", AgentId),
                             obj.ToDate = Convert.ToDateTime(list[i].ToDate).ToString("MM-dd-yyyy");
                             obj.CancellationPrice = Convert.ToDecimal(list[i].AgentCancellationPrice);
                             token += list[i].EncryptPolicyToken();
-                            obj.CancellationPrice = obj.CancellationPrice.CalculatePrice(tokenData, advancedOptions, room.SupplierCurrency);
+
+                            if (tokenData.IsFromAPI) //Added on 04-FEB-26
+                                obj.CancellationPrice = obj.CancellationPrice.CalculatePrice(tokenData, advancedOptions, room.SupplierCurrency);
+
                             lstPolicy.Add(obj);
                         }
                         if (tokenData.AgentCode.ToLower() == "dida" || tokenData.AgentCode.ToLower() == "inst" || tokenData.AgentCode.ToLower() == "mtbo" || tokenData.AgentCode.ToLower() == "spet" || tokenData.AgentCode.ToLower() == "fzcb" || tokenData.AgentCode.ToLower() == "mwrl" || tokenData.AgentCode.ToLower() == "expa" || tokenData.AgentCode.ToLower() == "guji" || tokenData.AgentCode.ToLower() == "ostr" || tokenData.AgentCode.ToLower() == "vibe" || tokenData.AgentCode.ToLower() == "dazz" || tokenData.AgentCode.ToLower() == "mapa" || tokenData.AgentCode.ToLower() == "reis" || tokenData.AgentCode.ToLower() == "pres")
@@ -12490,6 +12504,12 @@ new SqlParameter("@AgentId", AgentId),
                         roomPolicy.Price = selectedOption.HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].Price;//@new added 24-Aug-2023
                         roomPolicy.BookingStatus = hotelCancelation.ISBooking;//changes on 4-4-2024 // "Available";// selectedOption.HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].BookingStatus;//@new added 24-Aug-2023
                         selectedRoom.BookingStatus = hotelCancelation.ISBooking;// added on 01-APR-2025
+
+                        if (tokenData.IsFromAPI) //Added on 04-FEB-26
+                            roomPolicy.SupplierCurrency = null;
+                        else
+                            roomPolicy.SupplierCurrency = selectedOption.HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].SupplierCurrency;
+
                         selectedOption.HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].CancellationPolicy = lstPolicy;
                         selectedOption.HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].CancellationToken = token;
                         availResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].CancellationPolicy = lstPolicy;
@@ -14973,12 +14993,12 @@ new SqlParameter("@AgentId", AgentId),
 
             //Added on 10-JAN-26
             UserCart_Prebook userCart_Prebook = new UserCart_Prebook();
-            UserCartDetails_Prebook userCartDetails_Prebook = new UserCartDetails_Prebook();
-            SupplierRateBreakUp_Prebook supplierRateBreakUp_Prebook = new SupplierRateBreakUp_Prebook();
-            AgentRateBreakUp_Prebook agentRateBreakUp_Prebook = new AgentRateBreakUp_Prebook();
-            HotelData_Prebook hotelData_Prebook = new HotelData_Prebook();
-            HotelPolicy_Prebook hotelPolicy_Prebook = new HotelPolicy_Prebook();
-            Ratebreakup_Prebook ratebreakup_Prebook = new Ratebreakup_Prebook();
+            //List<UserCartDetails_Prebook> userCartDetails_Prebook = new List<UserCartDetails_Prebook>();
+            //SupplierRateBreakUp_Prebook supplierRateBreakUp_Prebook = new SupplierRateBreakUp_Prebook();
+            //AgentRateBreakUp_Prebook agentRateBreakUp_Prebook = new AgentRateBreakUp_Prebook();
+            //HotelData_Prebook hotelData_Prebook = new HotelData_Prebook();
+            //HotelPolicy_Prebook hotelPolicy_Prebook = new HotelPolicy_Prebook();
+            //Ratebreakup_Prebook ratebreakup_Prebook = new Ratebreakup_Prebook();
 
             System.Diagnostics.Stopwatch timerPreBook = new System.Diagnostics.Stopwatch();
             timerPreBook.Start();
@@ -15623,68 +15643,71 @@ new SqlParameter("@AgentId", AgentId),
                     //int UserCartId = await SaveCartForHotelNew(objdata, Rayna_ID, IP);//@new28-12-2022 //disable addtocart process in new version 10-JAN-26
 
                     #region Neew to store Data for UserCart
+
+
                     DataTable dtUserCart = _commonMethod.UserCartTableStructure();
                     DataRow drUserCart = dtUserCart.NewRow();
-                    drUserCart["UserCartID"] = 0;
+                    drUserCart["UserCartID"] = 123;
                     drUserCart["GuestUserId"] = "0";
-                    drUserCart["CheckInDate"] = "";
-                    drUserCart["StrCheckInDate"] = "";
-                    drUserCart["CheckOutDate"] = "";
-                    drUserCart["ServiceId"] = objdata.ServiceId;
-                    drUserCart["ServiceName"] = objdata.ServiceName;
-                    drUserCart["ServiceType"] = objdata.ServiceType;
-                    drUserCart["XMLHotelId"] = objdata.XMLHotelId;
-                    drUserCart["OfficeId"] = objdata.OfficeId;
-                    drUserCart["ContractId"] = objdata.ContractId;
-                    drUserCart["XMLCountryId"] = objdata.XMLCountryId;
-                    drUserCart["XMLCityId"] = objdata.XMLCityId;
-                    drUserCart["Nationality"] = objdata.Nationality;
-                    drUserCart["NationalityName"] = "";
-                    drUserCart["GiataId"] = Convert.ToString(objdata.GiataId);
-                    drUserCart["NoOfAdults"] = objdata.NoOfAdults;
-                    drUserCart["NoOfChild"] = objdata.NoOfChild;
-                    drUserCart["IsB2B"] = objdata.IsB2B;
-                    drUserCart["CountryId"] = objdata.CountryId;
-                    drUserCart["CityId"] = objdata.CityId;
-                    drUserCart["StarRating"] = objdata.StarRating;
-                    drUserCart["SupplierCurrency"] = objdata.SupplierCurrency;
-                    drUserCart["NoOfNight"] = "";
-                    drUserCart["PackageId"] = objdata.PackageId == null ? 0 : objdata.PackageId;
-                    drUserCart["IsVouchered"] = objdata.IsVouchered;
+                    drUserCart["CheckInDate"] = Convert.ToString(objdata.CheckInDate.ToString("yyyyMMdd"));
+                    drUserCart["StrCheckInDate"] = Convert.ToString(objdata.CheckInDate.ToString("dd/MM/yyyy"));
+                    drUserCart["CheckOutDate"] = Convert.ToString(objdata.CheckOutDate.ToString("yyyyMMdd"));
+                    drUserCart["ServiceId"] = Convert.ToInt32(objdata.ServiceId);
+                    drUserCart["ServiceName"] = Convert.ToString(objdata.ServiceName);
+                    drUserCart["ServiceType"] = Convert.ToString(objdata.ServiceType);
+                    drUserCart["XMLHotelId"] = Convert.ToString(objdata.XMLHotelId);
+                    drUserCart["OfficeId"] = Convert.ToString(objdata.OfficeId);
+                    drUserCart["ContractId"] = Convert.ToString(objdata.ContractId);
+                    drUserCart["XMLCountryId"] = Convert.ToString(objdata.XMLCountryId);
+                    drUserCart["XMLCityId"] = Convert.ToString(objdata.XMLCityId);
+                    drUserCart["Nationality"] = Convert.ToString(objdata.Nationality);
+                    drUserCart["NationalityName"] = Convert.ToString(objdata.Nationality);
+                    drUserCart["GiataId"] = Convert.ToInt32(objdata.GiataId);
+                    drUserCart["NoOfAdults"] = Convert.ToInt32(objdata.NoOfAdults);
+                    drUserCart["NoOfChild"] = Convert.ToInt32(objdata.NoOfChild);
+                    drUserCart["IsB2B"] = Convert.ToBoolean(objdata.IsB2B);
+                    drUserCart["CountryId"] = Convert.ToInt32(objdata.CountryId);
+                    drUserCart["CityId"] = Convert.ToInt32(objdata.CityId);
+                    drUserCart["StarRating"] = Convert.ToInt32(objdata.StarRating);
+                    drUserCart["SupplierCurrency"] = Convert.ToString(objdata.SupplierCurrency);
+                    drUserCart["NoOfNight"] = (objdata.CheckOutDate.Date - objdata.CheckInDate.Date).Days;
+                    drUserCart["PackageId"] = objdata.PackageId == null ? "0" : Convert.ToString(objdata.PackageId);
+                    drUserCart["IsVouchered"] = Convert.ToString(objdata.IsVouchered);
+                    drUserCart["Percentage"] = Convert.ToDouble(objdata.Percentage);
                     dtUserCart.Rows.Add(drUserCart);
 
                     DataTable dtUserCartDetails = _commonMethod.UserCartDetailsTableStructure();
                     for (int room = 0; room < objdata.ShoppingCartDetails.Count; room++)
                     {
-                        DataRow drUserCartDetails = dtUserCart.NewRow();
-                        drUserCartDetails["UserCartID"] = 0;
-                        drUserCartDetails["UserCartDetailID"] = "0";
-                        drUserCartDetails["CompanyBuyingPrice"] = objdata.ShoppingCartDetails[room].CompanyBuyingPrice;
-                        drUserCartDetails["AgentBuyingPrice"] = objdata.ShoppingCartDetails[room].AgentBuyingPrice;
-                        drUserCartDetails["FinalSellingPrice"] = objdata.ShoppingCartDetails[room].FinalSellingPrice;
-                        drUserCartDetails["RoomTypeId"] = objdata.ShoppingCartDetails[room].RoomTypeID;
-                        drUserCartDetails["RoomTypeCode"] = objdata.ShoppingCartDetails[room].RoomTypeID;
-                        drUserCartDetails["SupplierName"] = objdata.ShoppingCartDetails[room].SupplierName;
-                        drUserCartDetails["RoomType"] = objdata.ShoppingCartDetails[room].RoomType;
-                        drUserCartDetails["XmlHotelId"] = objdata.XMLHotelId;
-                        drUserCartDetails["ServiceId"] = objdata.ServiceId;
-                        drUserCartDetails["HotelName"] = "";
+                        DataRow drUserCartDetails = dtUserCartDetails.NewRow();
+                        drUserCartDetails["UserCartID"] = 123;
+                        drUserCartDetails["UserCartDetailID"] = 12345;
+                        drUserCartDetails["CompanyBuyingPrice"] = Convert.ToDouble(objdata.ShoppingCartDetails[room].CompanyBuyingPrice);
+                        drUserCartDetails["AgentBuyingPrice"] = Convert.ToDouble(objdata.ShoppingCartDetails[room].AgentBuyingPrice);
+                        drUserCartDetails["FinalSellingPrice"] = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
+                        drUserCartDetails["RoomTypeId"] = Convert.ToString(objdata.ShoppingCartDetails[room].RoomTypeID);
+                        drUserCartDetails["RoomTypeCode"] = Convert.ToString(objdata.ShoppingCartDetails[room].RoomTypeID);
+                        drUserCartDetails["SupplierName"] = Convert.ToString(objdata.ShoppingCartDetails[room].SupplierName);
+                        drUserCartDetails["RoomType"] = Convert.ToString(objdata.ShoppingCartDetails[room].RoomName);
+                        drUserCartDetails["XmlHotelId"] = Convert.ToString(objdata.XMLHotelId);
+                        drUserCartDetails["ServiceId"] = Convert.ToInt32(objdata.ServiceId);
+                        drUserCartDetails["HotelName"] = "xyz";
                         drUserCartDetails["RoomNumber"] = objdata.RoomNo;
-                        drUserCartDetails["MealPlanCode"] = "";
-                        drUserCartDetails["ContractID"] = "";
-                        drUserCartDetails["NoOfAdults"] = "";
-                        drUserCartDetails["NoOfChild"] = "";
-                        drUserCartDetails["ChildAge1"] = "";
-                        drUserCartDetails["ChildAge2"] = "";
-                        drUserCartDetails["spui"] = "";
-                        drUserCartDetails["CheckInDate"] = "";
-                        drUserCartDetails["CheckOutDate"] = "";
-                        drUserCartDetails["EachoToken"] = "";
-                        drUserCartDetails["IsCombineRoom"] = "";
+                        drUserCartDetails["MealPlanCode"] = Convert.ToString(objdata.ShoppingCartDetails[room].MealPlanCode);
+                        drUserCartDetails["ContractID"] = Convert.ToString(objdata.ShoppingCartDetails[room].ContractID);
+                        drUserCartDetails["NoOfAdults"] = objdata.ShoppingCartDetails[room].NoofAdults;
+                        drUserCartDetails["NoOfChild"] = objdata.ShoppingCartDetails[room].NoofChild;
+                        drUserCartDetails["ChildAge1"] = objdata.ShoppingCartDetails[room].Child1Age;
+                        drUserCartDetails["ChildAge2"] = objdata.ShoppingCartDetails[room].Child2Age;
+                        drUserCartDetails["spui"] = objdata.ShoppingCartDetails[room].SPUI;
+                        drUserCartDetails["CheckInDate"] = objdata.CheckInDate.ToString("yyyyMMdd");
+                        drUserCartDetails["CheckOutDate"] = objdata.CheckOutDate.ToString("yyyyMMdd");
+                        drUserCartDetails["EachoToken"] = objdata.ShoppingCartDetails[room].EachoToken;
+                        drUserCartDetails["IsCombineRoom"] = objdata.IsCombineRoom;
                         drUserCartDetails["XmlNationality"] = "";
-                        drUserCartDetails["purchaseToken"] = "";
-                        drUserCartDetails["IsVouchered"] = "";
-                        drUserCartDetails["MappedMeal"] = "";
+                        drUserCartDetails["purchaseToken"] = objdata.ShoppingCartDetails[room].PurchaseToken;
+                        drUserCartDetails["IsVouchered"] = Convert.ToInt32(objdata.IsVouchered);
+                        drUserCartDetails["MappedMeal"] = Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
                         dtUserCartDetails.Rows.Add(drUserCartDetails);
                     }
 
@@ -15698,9 +15721,9 @@ new SqlParameter("@AgentId", AgentId),
                     PreBookTime = PreBookTime + ",| after SaveCartSp time:" + timerPreBook.Elapsed.ToString();
                     timerPreBook.Restart();
 
-                    if (UserCartId > 0)
+                    if (true)// (UserCartId > 0)
                     {
-                        preBookRS = await GeneratePrebookResponse_newversion(dsCartDetails, GuestUserID, UserCartId, tokenData, advancedOptions, SearchKey, userAgent, IP);
+                        preBookRS = await GeneratePrebookResponse_newversion(objdata, dsCartDetails, GuestUserID, UserCartId, tokenData, advancedOptions, SearchKey, userAgent, IP);
                         timerPreBook.Stop();
                         PreBookTime = PreBookTime + ",| after GeneratePrebookResponse time:" + timerPreBook.Elapsed.ToString();
                         timerPreBook.Restart();
@@ -15827,6 +15850,156 @@ new SqlParameter("@AgentId", AgentId),
                     _ = _exception.Error(ex, SearchKey);
                 }
 
+                #region Added Extra Parameter for addtocart entry
+                userCart_Prebook.TotalSellingAmount = Convert.ToDouble(Convert.ToDecimal(objdata.ServiceTotal).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency)); //Agent currency amount
+                userCart_Prebook.BaseTotalSellingAmount = Convert.ToDouble(objdata.ServiceTotal); //Base currency
+                userCart_Prebook.SupplierCurrencyId = _commonMethod.GetCurrencyIdCurrencyCode(objdata.SupplierCurrency, tokenData.dtROE);//
+
+                if (objdata.SupplierCurrency.ToLower() != tokenData.SiteCurrency.Trim().ToLower())
+                {
+                    userCart_Prebook.TotalBuyingAmount = Convert.ToDouble(Convert.ToDouble(objdata.ServiceTotal) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)); //Supplier curency
+                }
+                else
+                {
+                    userCart_Prebook.TotalBuyingAmount = Convert.ToDouble(objdata.ServiceTotal); //Supplier curency
+                }
+                userCart_Prebook.BaseTotalBuyingAmount = Convert.ToDouble(objdata.ServiceTotal);
+                userCart_Prebook.ServiceId = Convert.ToInt32(objdata.ServiceId);
+                userCart_Prebook.ServiceName = Convert.ToString(objdata.ServiceName);
+                userCart_Prebook.ImagePath = Convert.ToString(objdata.ImagePath);
+                userCart_Prebook.CountryId = Convert.ToInt32(objdata.CountryId);
+                userCart_Prebook.CityId = Convert.ToInt32(objdata.CityId);
+
+                userCart_Prebook.HotelId = Convert.ToInt32(123);
+                userCart_Prebook.HotelAddress = Convert.ToString(objdata.Address);
+                userCart_Prebook.HotelContactNo = Convert.ToString(objdata.HotelContactNo);
+                userCart_Prebook.NoofNights = Convert.ToInt32((objdata.CheckOutDate.Date - objdata.CheckInDate.Date).Days);
+                userCart_Prebook.NoofRoom = Convert.ToInt32(para.Rooms.Count);
+
+                List<UserCartDetails_Prebook> userCartDetails_Prebook = new List<UserCartDetails_Prebook>();
+                for (int room = 0; room < objdata.ShoppingCartDetails.Count; room++)
+                {
+                    UserCartDetails_Prebook userCartDetails_Pre = new UserCartDetails_Prebook();
+                    userCartDetails_Pre.SubServiceName = Convert.ToString("Hotel");
+                    userCartDetails_Pre.NoofAdult = Convert.ToInt32(objdata.ShoppingCartDetails[room].NoofAdults);
+                    userCartDetails_Pre.NoofChild = Convert.ToInt32(objdata.ShoppingCartDetails[room].NoofChild);
+                    userCartDetails_Pre.NoofInfant = Convert.ToInt32(0);
+                    userCartDetails_Pre.ChildAge = Convert.ToDouble(0);
+                    userCartDetails_Pre.ServiceSellingAmount = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
+                    userCartDetails_Pre.BaseServiceSellingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
+
+                    if (objdata.SupplierCurrency.ToLower() != tokenData.SiteCurrency.Trim().ToLower())
+                    {
+                        userCartDetails_Pre.ServiceBuyingAmount = Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)); //Supplier curency
+                    }
+                    else
+                    {
+                        userCartDetails_Pre.ServiceBuyingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice); //Supplier curency
+                    }
+                    userCartDetails_Pre.BaseServiceBuyingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
+                    userCartDetails_Pre.CheckInDate = Convert.ToString(objdata.CheckInDate);
+                    userCartDetails_Pre.CheckOutDate = Convert.ToString(objdata.CheckOutDate);
+                    userCartDetails_Pre.DueDate = Convert.ToString(objdata.DueDate);
+                    userCartDetails_Pre.DeadlineDate = Convert.ToString("");
+                    userCartDetails_Pre.SupplierName = Convert.ToString(objdata.ShoppingCartDetails[room].SupplierName);
+                    userCartDetails_Pre.LoyaltyPoints = Convert.ToDouble(0);
+                    userCartDetails_Pre.TechName = Convert.ToString(objdata.TechName);
+
+                    userCartDetails_Pre.BedType = Convert.ToString(objdata.ShoppingCartDetails[room].MealPlanCode);
+                    userCartDetails_Pre.MealPlan = Convert.ToString(objdata.ShoppingCartDetails[room].MealPlanCode);
+
+                    userCartDetails_Pre.RoomTypeId = Convert.ToString(objdata.ShoppingCartDetails[room].RoomTypeID);
+                    userCartDetails_Pre.RoomTypeName = Convert.ToString(objdata.ShoppingCartDetails[room].RoomName);
+                    userCartDetails_Pre.SepplierRefNo = Convert.ToString("");
+                    userCartDetails_Pre.SupplierName = Convert.ToString(objdata.ShoppingCartDetails[room].SupplierName);
+                    userCartDetails_Pre.OfferCode = Convert.ToString(objdata.ShoppingCartDetails[room].OfferCode);
+                    userCartDetails_Pre.OfferDescription = Convert.ToString(objdata.ShoppingCartDetails[room].OfferDescription);
+                    userCartDetails_Pre.RoomEssentialInformation = Convert.ToString(objdata.ShoppingCartDetails[room].EssentialInformation);
+                    userCartDetails_Pre.RoomMealInfo = Convert.ToString(objdata.ShoppingCartDetails[room].RoomMealInfo);
+                    userCartDetails_Pre.PurchaseToken = Convert.ToString(objdata.ShoppingCartDetails[room].PurchaseToken);
+                    userCartDetails_Pre.EachoToken = Convert.ToString(objdata.ShoppingCartDetails[room].EachoToken);
+                    userCartDetails_Pre.EachoToken = Convert.ToString(objdata.ShoppingCartDetails[room].SPUI);
+
+                    if (!objdata.IsCombineRoom || room == 0)
+                    {
+                        #region SupplierRB
+                        SupplierRateBreakUp_Prebook supplierRateBreakUp_Prebook = new SupplierRateBreakUp_Prebook();
+                        supplierRateBreakUp_Prebook.BuyingPrice = Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].CompanyBuyingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
+                        supplierRateBreakUp_Prebook.BaseBuyingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].CompanyBuyingPrice);
+                        supplierRateBreakUp_Prebook.SellingPrice = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency)); ;
+                        supplierRateBreakUp_Prebook.BaseSellingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].CompanySellingPrice);
+                        supplierRateBreakUp_Prebook.SupplierId = Convert.ToInt32(objdata.SupplierID);
+                        supplierRateBreakUp_Prebook.SuppliercurrencyId = _commonMethod.GetCurrencyIdCurrencyCode(objdata.SupplierCurrency, tokenData.dtROE);
+                        userCartDetails_Pre.supplierRateBreakUp_Prebook = supplierRateBreakUp_Prebook;
+                        #endregion
+                        #region AgentRB
+                        AgentRateBreakUp_Prebook agentRateBreakUp_Prebook = new AgentRateBreakUp_Prebook();
+                        agentRateBreakUp_Prebook.AgentId = Convert.ToInt32(objdata.AgentId);
+                        agentRateBreakUp_Prebook.AgentCurrencyId = Convert.ToInt32(_commonMethod.GetCurrencyIdCurrencyCode(tokenData.CreditLimitCurrencyName, tokenData.dtROE));
+                        agentRateBreakUp_Prebook.AgentBuyingPrice = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].AgentBuyingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
+                        agentRateBreakUp_Prebook.AgentSellingPrice = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].AgentSellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
+                        agentRateBreakUp_Prebook.SubagentBuyingPrice = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].SubAgentBuyingPice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
+                        agentRateBreakUp_Prebook.SubagentSellingPrice = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].SubAgentSellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
+                        agentRateBreakUp_Prebook.BaseAgentBuyingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].AgentBuyingPrice);
+                        agentRateBreakUp_Prebook.BaseAgentSellingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].AgentSellingPrice);
+                        agentRateBreakUp_Prebook.BaseSubagentBuyingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].SubAgentBuyingPice);
+                        agentRateBreakUp_Prebook.BaseSubAgentSellingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].SubAgentSellingPrice);
+                        userCartDetails_Pre.agentRateBreakUp_Prebook = agentRateBreakUp_Prebook;
+                        #endregion
+                        #region Policy
+                        List<HotelPolicy_Prebook> hotelPolicy_Prebooks = new List<HotelPolicy_Prebook>();
+                        for (int p = 0; p < dtPolicy.Rows.Count; p++)
+                        {
+                            HotelPolicy_Prebook hotelPolicy_Prebook = new HotelPolicy_Prebook();
+                            hotelPolicy_Prebook.RoomNumber = Convert.ToInt32(dtPolicy.Rows[p]["RoomNo"]);
+                            hotelPolicy_Prebook.FromDate = Convert.ToString(dtPolicy.Rows[p]["FromDate"]);
+                            hotelPolicy_Prebook.Todate = Convert.ToString(dtPolicy.Rows[p]["ToDate"]);
+                            hotelPolicy_Prebook.CancellationAmount = Convert.ToDouble(Convert.ToDouble(dtPolicy.Rows[p]["BuyingPrice"]) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
+                            hotelPolicy_Prebook.BaseCancellationAmount = Convert.ToDouble(dtPolicy.Rows[p]["BuyingPrice"]);
+                            hotelPolicy_Prebook.AgentcancellationAmount = Convert.ToDouble(Convert.ToDecimal(dtPolicy.Rows[p]["AgentCancellationPrice"]).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
+                            hotelPolicy_Prebook.BaseAgentcancellationAmount = Convert.ToDouble(dtPolicy.Rows[p]["AgentCancellationPrice"]);
+                            hotelPolicy_Prebook.CompanyCancellationAmount = Convert.ToDouble(dtPolicy.Rows[p]["BuyingPrice"]);
+                            hotelPolicy_Prebook.BaseCompanyCancellationAmount = Convert.ToDouble(dtPolicy.Rows[p]["BuyingPrice"]);
+                            hotelPolicy_Prebooks.Add(hotelPolicy_Prebook);
+                        }
+                        userCartDetails_Pre.hotelPolicy_Prebooks = hotelPolicy_Prebooks;
+                        #endregion
+                        #region RB
+                        List<Ratebreakup_Prebook> ratebreakup_Prebooks = new List<Ratebreakup_Prebook>();
+                        for (int p = 0; p < userCart_Prebook.NoofNights; p++)
+                        {
+                            Ratebreakup_Prebook ratebreakup_Prebook = new Ratebreakup_Prebook();
+                            double Night_Price = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / userCart_Prebook.NoofNights;
+                            string newCheckInDate = Convert.ToString(objdata.CheckInDate);
+                            string newCheckOutDate = Convert.ToString(objdata.CheckOutDate);
+                            //DateTime dtCheckInDate = DateTime.ParseExact(newCheckInDate, "M/d/yyyy", null);
+                            DateTime dtCheckInDate = DateTime.ParseExact(newCheckInDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture); 
+                            //DateTime dtCheckOutDate = DateTime.ParseExact(newCheckOutDate, "M/d/yyyy", null);
+                            DateTime dtCheckOutDate = DateTime.ParseExact(newCheckOutDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                            TimeSpan t = dtCheckOutDate - dtCheckInDate;
+
+                            ratebreakup_Prebook.RoomTypeName = Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
+                            ratebreakup_Prebook.MealName = Convert.ToString(objdata.ShoppingCartDetails[room].MealPlanCode);
+                            ratebreakup_Prebook.RateType = Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
+                            DateTime rateDate = dtCheckInDate.Date.AddDays(p);
+                            ratebreakup_Prebook.Date = rateDate;
+                            string rateWeekColumn = Convert.ToString(dtCheckInDate.Date.AddDays(p).DayOfWeek).Substring(0, 3);
+                            ratebreakup_Prebook.DayOfWeek = Convert.ToString(rateWeekColumn);
+                            ratebreakup_Prebook.Rate = Night_Price;
+                            ratebreakup_Prebook.SupplierCurrencyId = _commonMethod.GetCurrencyIdCurrencyCode(objdata.SupplierCurrency, tokenData.dtROE);
+                            ratebreakup_Prebook.BaseRate = Convert.ToDouble(Night_Price);
+                            ratebreakup_Prebooks.Add(ratebreakup_Prebook);
+                        }
+                        userCartDetails_Pre.ratebreakup_Prebooks = ratebreakup_Prebooks;
+                        #endregion
+                    }
+
+                    userCartDetails_Prebook.Add(userCartDetails_Pre);
+                }
+
+                userCart_Prebook.userCartDetails_Prebooks = userCartDetails_Prebook;
+                preBookResponse.userCart_Prebook = userCart_Prebook;
+                #endregion
                 preBookResponse_1.PreBookResponse = preBookResponse;
                 return preBookResponse_1;
 
@@ -16327,7 +16500,7 @@ new SqlParameter("@AgentId", AgentId),
             return preBookRS;
         }
 
-        public async Task<PreBookRS> GeneratePrebookResponse_newversion(DataSet dsCartDetailss, int GuestUserID, int UserCartId, TokenData tokenData, AdvancedOptions advancedOptions, string Searchkey = "", string platform = "", string IP = "")
+        public async Task<PreBookRS> GeneratePrebookResponse_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetailss, int GuestUserID, int UserCartId, TokenData tokenData, AdvancedOptions advancedOptions, string Searchkey = "", string platform = "", string IP = "")
         {
             PreBookRS preBookRS = new PreBookRS();
             try
@@ -16335,7 +16508,7 @@ new SqlParameter("@AgentId", AgentId),
                 DataSet dsCartDetails = new DataSet();
                 DataTable dtPriceDetail = new DataTable();
                 DataSet DsPriceUpdate = new DataSet();
-                HotelCartRoomPrices hotelCartRoomPrices = await GetHotelCartRoomPricesNew_newversion(dsCartDetailss, GuestUserID, UserCartId, tokenData, advancedOptions, Searchkey, platform, IP);
+                HotelCartRoomPrices hotelCartRoomPrices = await GetHotelCartRoomPricesNew_newversion(objdata, dsCartDetailss, GuestUserID, UserCartId, tokenData, advancedOptions, Searchkey, platform, IP);
                 dtPriceDetail = hotelCartRoomPrices.dtPriceDetail;
                 dsCartDetails = hotelCartRoomPrices.dsCartDetails;
                 DsPriceUpdate = hotelCartRoomPrices.DsPriceUpdate;
@@ -16511,8 +16684,15 @@ new SqlParameter("@AgentId", AgentId),
                                     if (drPriceUpdate.Length > 0)
                                     {
                                         room.Price = Convert.ToDecimal(drPriceUpdate[0]["FinalSellingPrice"]) / dsCartDetails.Tables[1].Rows.Count;
-                                        priceChange.OldPrice = (Convert.ToDecimal(dsCartDetails.Tables[1].Rows[0]["FinalSellingPrice"]) / dsCartDetails.Tables[1].Rows.Count).CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
-                                        priceChange.NewPrice = room.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
+                                        if (tokenData.IsFromAPI)
+                                            priceChange.OldPrice = (Convert.ToDecimal(dsCartDetails.Tables[1].Rows[0]["FinalSellingPrice"]) / dsCartDetails.Tables[1].Rows.Count).CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
+                                        else
+                                            priceChange.OldPrice = (Convert.ToDecimal(dsCartDetails.Tables[1].Rows[0]["FinalSellingPrice"]) / dsCartDetails.Tables[1].Rows.Count);
+
+                                        if (tokenData.IsFromAPI)
+                                            priceChange.NewPrice = room.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
+                                        else
+                                            priceChange.NewPrice = room.Price;
                                     }
                                 }
                                 else
@@ -16521,8 +16701,16 @@ new SqlParameter("@AgentId", AgentId),
                                     if (drPriceUpdate.Length > 0)
                                     {
                                         room.Price = Convert.ToDecimal(drPriceUpdate[0]["FinalSellingPrice"]);
-                                        priceChange.OldPrice = Convert.ToDecimal(dsCartDetails.Tables[1].Rows[j]["FinalSellingPrice"]).CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
-                                        priceChange.NewPrice = room.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
+
+                                        if (tokenData.IsFromAPI)
+                                            priceChange.OldPrice = Convert.ToDecimal(dsCartDetails.Tables[1].Rows[j]["FinalSellingPrice"]).CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
+                                        else
+                                            priceChange.OldPrice = Convert.ToDecimal(dsCartDetails.Tables[1].Rows[j]["FinalSellingPrice"]);
+
+                                        if (tokenData.IsFromAPI)
+                                            priceChange.NewPrice = room.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
+                                        else
+                                            priceChange.NewPrice = room.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
                                     }
                                 }
                             }
@@ -16537,8 +16725,11 @@ new SqlParameter("@AgentId", AgentId),
                         //room.Price = room.Price.CalculatePrice_PreBook(tokenData, advancedOptions, SupplierCurrency);//@New Due to Ticket #16106
 
                         // Due to Ticket ID#29678 // send 3 digit price at each room in prebook only                        
+                        if (tokenData.IsFromAPI)
+                            room.Price = room.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency, 2);
+                        else
+                            room.Price = room.Price;
 
-                        room.Price = room.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency, 2);
                         room.RoomNo = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["RoomNumber"]);
                         room.RoomTypeName = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["RoomType"]).Split('-')[0]; ;
                         room.UniqueId = Convert.ToInt32(UserCartDetailID);
@@ -16546,7 +16737,10 @@ new SqlParameter("@AgentId", AgentId),
 
                         if (IsCombineRoom.ToLower() == "true" && j == dsCartDetails.Tables[1].Rows.Count - 1 && dsCartDetails.Tables[1].Rows.Count > 1)
                         {
-                            hotelOptionPreBook.TotalPrice = Math.Round(Convert.ToDecimal(dsCartDetails.Tables[1].Rows[0]["FinalSellingPrice"]).CalculatePrice(tokenData, advancedOptions, SupplierCurrency, 2), 2); // Due to Ticket ID#29678 // send 3 digit price at each room in prebook only
+                            if (tokenData.IsFromAPI)
+                                hotelOptionPreBook.TotalPrice = Math.Round(Convert.ToDecimal(dsCartDetails.Tables[1].Rows[0]["FinalSellingPrice"]).CalculatePrice(tokenData, advancedOptions, SupplierCurrency, 2), 2); // Due to Ticket ID#29678 // send 3 digit price at each room in prebook only
+                            else
+                                hotelOptionPreBook.TotalPrice = Math.Round(Convert.ToDecimal(dsCartDetails.Tables[1].Rows[0]["FinalSellingPrice"]), 2); // Due to Ticket ID#29678 // send 3 digit price at each room in prebook only
                         }
 
                         hotelRoomPreBook.Add(room);
@@ -25589,7 +25783,7 @@ new SqlParameter("@AgentId", AgentId),
             return hotelCartRoomPrices;
         }
 
-        public async Task<HotelCartRoomPrices> GetHotelCartRoomPricesNew_newversion(DataSet dsCartDetails, int GuestUserId, int UsercartID, TokenData TokenData, AdvancedOptions advancedoptions, string Searchkey = "", string platform = "", string IP = "")
+        public async Task<HotelCartRoomPrices> GetHotelCartRoomPricesNew_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, int GuestUserId, int UsercartID, TokenData TokenData, AdvancedOptions advancedoptions, string Searchkey = "", string platform = "", string IP = "")
         {
             HotelCartRoomPrices hotelCartRoomPrices = new HotelCartRoomPrices();
             //DataSet dsCartDetails = new DataSet();
@@ -25660,11 +25854,12 @@ new SqlParameter("@AgentId", AgentId),
                 DataSet dsAgentDetails = new DataSet();
                 if (IsSubAgentCacheActive == 1)
                 {
-                    dsAgentDetails = await IsSubAgent(AgentId, 0, Convert.ToInt32(CityUniqueID), NationalityUnique, 0, TokenData.Type, TokenData.SubUserId, IsShowSupplier, Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["CountryId"]), TokenData.RateCategoryId, 1, false, 1, false, false, 20);
+                    //dsAgentDetails = await IsSubAgent(AgentId, 0, Convert.ToInt32(CityUniqueID), NationalityUnique, 0, TokenData.Type, TokenData.SubUserId, IsShowSupplier, Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["CountryId"]), TokenData.RateCategoryId, 1, false, 1, false, false, 20);
+                    dsAgentDetails = await IsSubAgent(AgentId, 0, Convert.ToInt32(CityUniqueID), NationalityUnique, 0, TokenData.Type, TokenData.SubUserId, IsShowSupplier, Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["CountryId"]), TokenData.RateCategoryId, 1, false, 1, false, false, 20, false, "", 10, 1, TokenData.TanentId);
                 }
                 else
                 {
-                    dsAgentDetails = await IsSubAgent(AgentId, 0, Convert.ToInt32(CityUniqueID), NationalityUnique, 0, TokenData.Type, TokenData.SubUserId, IsShowSupplier, Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["CountryId"]), TokenData.RateCategoryId, 1, false, 0, false, false, 20);
+                    dsAgentDetails = await IsSubAgent(AgentId, 0, Convert.ToInt32(CityUniqueID), NationalityUnique, 0, TokenData.Type, TokenData.SubUserId, IsShowSupplier, Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["CountryId"]), TokenData.RateCategoryId, 1, false, 0, false, false, 20, false, "", 10, 1, TokenData.TanentId);
                 }
                 //DataSet dsAgentDetails = Common.IsSubAgent(AgentId, 0, Convert.ToInt32(CityUniqueID), NationalityUnique, 0, TokenData.Type, TokenData.SubUserId, IsShowSupplier, Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["CountryId"]), TokenData.RateCategoryId, 1);
                 string AgentCode = Convert.ToString(dsAgentDetails.Tables[0].Rows[0]["AgentCode"]);
@@ -26151,7 +26346,8 @@ new SqlParameter("@AgentId", AgentId),
                                         #endregion
 
                                         #region Added New on 26-05-25
-                                        string TechName = await GetTechNameBySupplierName(Supplier);
+                                        string TechName = await GetTechNameBySupplierName(Supplier, TokenData.TanentId);
+                                        objdata.TechName = TechName;//Added on 03-FEB-26
                                         #endregion
 
                                         if (Supplier.IndexOf("xpedia") >= 0)
@@ -31309,7 +31505,9 @@ new SqlParameter("@AgentId", AgentId),
                                                                         string BookLink = Root.links.book.href;
                                                                         string BookMethod = Root.links.book.method;
                                                                         BookLink = BookLink + "$$$" + BookMethod;
-                                                                        await _commonMethod.GetEANBookLinkUpdate(BookLink, UserCartID_EAN);
+                                                                        //await _commonMethod.GetEANBookLinkUpdate(BookLink, UserCartID_EAN);
+
+                                                                        objdata.ShoppingCartDetails[0].PurchaseToken = BookLink; //Added on 02-FEB-26
 
                                                                         if (Status.ToLower() == "matched" || Status.ToLower() == "price_changed" || Status.ToLower() == "available")
                                                                         //if (Status.ToLower() == "matched" )
@@ -31406,7 +31604,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                             try
                                                                             {
                                                                                 MainPrice_mk = MainPrice_mk - OurProfit_mk;
-                                                                                await _commonMethod.GetEANOurProfitUpdate_mk(MainPrice_mk, Convert.ToInt32(UniqueNo)); //07-Jun-2025 Ean Regarding gimmonix 
+                                                                                //await _commonMethod.GetEANOurProfitUpdate_mk(MainPrice_mk, Convert.ToInt32(UniqueNo)); //07-Jun-2025 Ean Regarding gimmonix 
+                                                                                objdata.ShoppingCartDetails[0].EachoToken = Convert.ToString(MainPrice_mk); //Added on 02-FEB-26
                                                                             }
                                                                             catch (Exception)
                                                                             {
@@ -31421,7 +31620,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                             {
                                                                                 try
                                                                                 {
-                                                                                    await _commonMethod.GetEANOurProfitUpdate(OurProfit, UserCartID_EAN);
+                                                                                    //await _commonMethod.GetEANOurProfitUpdate(OurProfit, UserCartID_EAN);
+                                                                                    objdata.ShoppingCartDetails[0].OurProfit = Convert.ToDecimal(OurProfit); //Added on 02-FEB-26
                                                                                 }
                                                                                 catch (Exception ex)
                                                                                 {
@@ -34798,8 +34998,8 @@ new SqlParameter("@AgentId", AgentId),
         }
 
         public async Task PostSvaCartPriceCheckData(string UserCartId, string UserCartDetailId, string SupplierName, string CityName, string HotelName, string CheckInDate, string CheckoOutDate,
-   int NoOfRoom, int NoOfAdult, int NoOfChild, string ErrorType, string RoomTypeID, string XMLHotelId, int RoomNumber, string XMLNationality, string Request, string Response
-   , double NewPrice, double OldPrice, string AgentID, string AgentCode)
+        int NoOfRoom, int NoOfAdult, int NoOfChild, string ErrorType, string RoomTypeID, string XMLHotelId, int RoomNumber, string XMLNationality, string Request, string Response
+        , double NewPrice, double OldPrice, string AgentID, string AgentCode)
         {
             try
             {
@@ -34996,7 +35196,7 @@ new SqlParameter("@AgentId", AgentId),
                 //Regex r = new Regex("^[a-zA-Z ]*$");
                 //Regex r = new Regex("^[a-zA-Z !@#$%^&*()]*$"); //@added on 6-dec-2023
                 Regex r = new Regex("^[^0-9]*$"); //@added on 6-dec-2023
-                //@newchange
+                                                  //@newchange
                 string SpecialReqToPass = "";
                 try
                 {
@@ -45509,7 +45709,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), paximumBookingRequest, "-", "Before Block Request hit booking [FinalPrice=" + FinalPrice + "]", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Request Confirm j=" + 0 + "", ReferenceNo, "WithinEarth");
 
                                                                                 ResponseDto responseDto = await _paximum.GetpaximumbookingResponse(paximumBookingRequest, URL, 60000, TechName, Password);//60 sec as per supplier
-                                                                                //File.WriteAllText(@"D:\ANUPRIYA\Log\hyperguest\Hotel\BookingResponse.txt", BookingResponse);
+                                                                                                                                                                                                          //File.WriteAllText(@"D:\ANUPRIYA\Log\hyperguest\Hotel\BookingResponse.txt", BookingResponse);
                                                                                 BookingResponse = responseDto.Response;
                                                                                 Error = responseDto.Error;
 
@@ -50171,7 +50371,7 @@ new SqlParameter("@AgentId", AgentId),
                                         SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='grnc'");// for expedia
                                     }
                                     string CancellationGRNC = ""; // Common.GRNCBookingCancelationRequest(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), SupplierDetailsCommon);
-                                    //string GRNCUrl = Convert.ToString(GRNCDetails[0]["WebSiteURL"]) + "/api/v3/hotels/bookings/" + Arr[0];
+                                                                  //string GRNCUrl = Convert.ToString(GRNCDetails[0]["WebSiteURL"]) + "/api/v3/hotels/bookings/" + Arr[0];
                                     string GRNCUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/api/v3/hotels/bookings/" + ReferenceNo;
                                     _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), GRNCUrl, "-", "Before Request hit cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", PNRNO_Cancel, "WithinEarth");
 

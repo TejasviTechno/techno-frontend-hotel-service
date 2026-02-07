@@ -200,8 +200,9 @@ namespace Xconnect.Auth
                         data.ApiTimeOut = Convert.ToInt32(2000); ;
                         //data.CompanyId = Convert.ToInt32(parts[Convert.ToInt32(_MainToken.CompanyId)]); 
                         data.TanentId = Convert.ToString(_token.tenantId);
-                        data.dtROE = listips.mainconfig.dtROE;
-                        data.dtROENew = listips.mainconfig.dtROENew; //051125
+                        //data.dtROE = listips.mainconfig.dtROE;
+                        //data.dtROENew = listips.mainconfig.dtROENew; //051125
+                        data.dtROE = HtmlExtensions.ConvertToDataTable(listips.mainconfig.dtROENew);
                         data.SpeedCategoryId = listips.mainconfig.SpeedCategoryId;
                         data.CitycodeOverpass = listips.mainconfig.CitycodeOverpass;//@HID //160525
                                                                                     //DataRow[] dr = listips.mainconfig.dtROE.Select("currencyshortname='" + data.CreditLimitCurrencyName + "'");
@@ -236,6 +237,7 @@ namespace Xconnect.Auth
                         }
                         data.SiteCurrency = Convert.ToString(_token.siteCurrency); //need to change once sp modify and return in 3rd table
                         data.CanBookWithinCancellation = _token.CanBookWithinCancellation; //Added on 10-JAN-26
+                        data.IsFromAPI = _token.IsFromAPI;
                     }
                 }
                 #endregion
@@ -335,6 +337,7 @@ namespace Xconnect.Auth
                         _token.CanBookWithinCancellation = _userContextAccessor.DecodedJwt.PermissionType.Any(p => p.Equals("Allow booking within cancellation", StringComparison.OrdinalIgnoreCase));
                     }
 
+                    _token.IsFromAPI = false;//Convert.ToBoolean(_userContextAccessor.DecodedJwt.isFromApi);//where request come. API or B2B
                     #endregion
                 }
             }

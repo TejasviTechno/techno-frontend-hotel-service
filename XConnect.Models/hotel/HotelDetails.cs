@@ -288,6 +288,7 @@ namespace XConnect.Models.Hotel
         public int isfromsupplier { get; set; }
         public int OldBookingId { get; set; }//#Pruvo added on 6-MAY-2024
 
+        public string TechName { get; set; } //Added on 03-FEB-26
     }
 
     public class ClsRoomRateDetails
