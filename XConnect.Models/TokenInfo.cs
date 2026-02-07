@@ -52,6 +52,8 @@ namespace XConnect.Models
         public bool CanBookWithinCancellation { get; set; } //10-JAN-26
         public List<DtRoeNew> dtROENew { get; set; } //051125
 
+        public bool IsFromAPI { get; set; } //4-FEB-26
+
     }
 
     public class CurrencyNames

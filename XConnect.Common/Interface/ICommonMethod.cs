@@ -11,6 +11,7 @@ namespace XConnect.CommonUtilities.Interface
 {
     public interface ICommonMethod
     {
+        int GetCurrencyIdCurrencyCode(string Currency, DataTable dtROE);
         DataTable UserCartTableStructure(); //Added on 19-JAN-26
         DataTable UserCartDetailsTableStructure(); //Added on 19-JAN-26
         Task<T?> SendRequestAsync<T>(string baseUrl, string endpoint, HttpMethod method, object? parameters = null, string? token = null);
@@ -70,7 +71,7 @@ namespace XConnect.CommonUtilities.Interface
         Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping=1); //ADD On 30MAY2025
 
         Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMappingv2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1);  // ADD on 29-JAN-2025
-        Task<AvailHotelList_Comp> ConvertToFinalResponseList(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false);
+        Task<AvailHotelList_Comp> ConvertToFinalResponseList(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, bool IsFromAPI = true);
         Task<AvailHotelList_Comp> ConvertToFinalResponseList_Dag2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null);
 
         Task<int> InsertHotelSearchData(SaveParameter data, int count, bool from, string SupplierTime, int agentid, string SearchKey, string IP);

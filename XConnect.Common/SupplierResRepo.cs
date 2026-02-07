@@ -256,7 +256,8 @@ namespace XConnect.CommonUtilities
                         }
 
                         final.Price = Convert.ToDecimal(Mainrooms[i][j].FinalSellingPrice);
-                        final.Price = final.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
+                        if (tokenData.IsFromAPI)
+                            final.Price = final.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency); //comment bcoz no need to return in agent currency 04-FEB-25 
 
 
                         price += Convert.ToDecimal(final.Price);
@@ -323,7 +324,8 @@ namespace XConnect.CommonUtilities
                                     obj.ToDate = Convert.ToDateTime(policyDetails[p].ToDate).ToString("MM-dd-yyyy");
                                     obj.CancellationPrice = Convert.ToDecimal(policyDetails[p].AgentCancellationPrice);
                                     final.CancellationToken += policyDetails[p].EncryptPolicyToken();//add to policy token
-                                    obj.CancellationPrice = obj.CancellationPrice.CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
+                                    if (tokenData.IsFromAPI)
+                                        obj.CancellationPrice = obj.CancellationPrice.CalculatePrice(tokenData, advancedOptions, SupplierCurrency); //comment bcoz no need to return in agent currency 04-FEB-25 
                                     _FinalPolicy.Add(obj);
                                 }
                             }
@@ -341,16 +343,20 @@ namespace XConnect.CommonUtilities
                         }
                         if (final.RateDetailsToken != "")
                             final.RateDetailsToken = final.RateDetailsToken.ToBase64StringManual(false);
+
+
+                        final.SupplierCurrency = Mainrooms[i][j].SupplierCurrency; //Added on 4-FEB-26
+
                         list.Add(final);
                     }
                     arrMinPrice.Add(price);
                     rooms.Add(list);
 
-                    
+
 
                 }
 
-                
+
 
                 MinPrice = arrMinPrice.Min();
 
@@ -360,7 +366,7 @@ namespace XConnect.CommonUtilities
             }
             catch (Exception ex)
             {
-               await _exception.Error(ex, SearchPara.SearchKey);
+                await _exception.Error(ex, SearchPara.SearchKey);
             }
             if (SearchPara.Filters.IsShowRooms == 0)
             {
@@ -1644,8 +1650,8 @@ namespace XConnect.CommonUtilities
                 case "soft-all-inclusive": { Meal = "Soft Inclusive"; } break;
                 case "ultra soft all inclusive": { Meal = "Soft Inclusive"; } break;
                 default:
-                Meal = "Room Only";
-                break;
+                    Meal = "Room Only";
+                    break;
             }
             return Meal;
         }
@@ -1832,6 +1838,6 @@ namespace XConnect.CommonUtilities
             return hotelListNew;
         }
 
-      
+
     }
 }

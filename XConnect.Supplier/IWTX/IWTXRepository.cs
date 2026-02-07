@@ -34,6 +34,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Extensions.Configuration;
 using static XConnect.Supplier.Booking.Com.preebookrs;
 using static XConnect.Models.ErrorLog;
+using MongoDB.Driver.Core.Events;
 
 
 namespace XConnect.Supplier.IWTX
@@ -685,7 +686,7 @@ namespace XConnect.Supplier.IWTX
                             {
                                 continue;
                             }
-                           
+
                             double CurrencyFactor = 1;
                             if (currency.ToLower() != commonSearch.tokenData.SiteCurrency.ToLower())
                             {
@@ -737,7 +738,9 @@ namespace XConnect.Supplier.IWTX
                                     DataTable dt_Cancellation = _commonMethod.GenerateCancellationDataTableNewV2();
                                     DataTable dt_RateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
                                     #endregion
-                                    decimal LowestPrice = Convert.ToDecimal(MinPrice).CalculatePrice(commonSearch.tokenData, commonSearch.advancedOptions, currency);
+                                    decimal LowestPrice = Convert.ToDecimal(MinPrice);
+                                    if(commonSearch.tokenData.IsFromAPI)
+                                         LowestPrice = Convert.ToDecimal(MinPrice).CalculatePrice(commonSearch.tokenData, commonSearch.advancedOptions, currency);
                                     Options ops = (await _supplierRes.GetCommonRoomForSuppliers(GiataId, commonSearch.tokenData, commonSearch.advancedOptions, Convert.ToDouble(LowestPrice), drXmlHotel, dt_HotelRoom, dt_Cancellation, dt_RateBreackUp, SearchParam));
                                     if (ops != null)
                                         options.Add(ops);
@@ -2568,7 +2571,7 @@ namespace XConnect.Supplier.IWTX
             return Response;
         }
 
-        public async Task<CancellationDto> IWTX_cancellation(string SearchKey, string OwnsystemHotelId, string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails,TokenData tokenData, string GiataId = "0", int hotelRating = 0, string CompanyBuyPrice = "", int RoomNo = 0, string XmlCity = "", string Uniqueid = "", string XmlNationality = "", string ContractTokenId = "", string MealPlanCode = "")
+        public async Task<CancellationDto> IWTX_cancellation(string SearchKey, string OwnsystemHotelId, string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData tokenData, string GiataId = "0", int hotelRating = 0, string CompanyBuyPrice = "", int RoomNo = 0, string XmlCity = "", string Uniqueid = "", string XmlNationality = "", string ContractTokenId = "", string MealPlanCode = "")
         {
 
             CancellationDto cancellationDto = new CancellationDto();
@@ -2597,7 +2600,7 @@ namespace XConnect.Supplier.IWTX
                     //double CurrencyFactorPaximum = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
                     CurrencyFactorPaximum = _commonMethod.GetROEByCurrency(PaximumCurrency, tokenData.dtROE);
                 }
-                
+
 
                 DataRow[] drSearchConfig = (dtSearchConfig.Select("SupplierID='" + SupplierId + "'"));
                 string IWTXURL = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_PriceCheck); ;
@@ -3009,7 +3012,7 @@ namespace XConnect.Supplier.IWTX
             }
             catch (Exception ex)
             {
-                _exception.ErrorNew(ex,_LogAPI.Recheck);
+                _exception.ErrorNew(ex, _LogAPI.Recheck);
                 return "";
             }
         }
@@ -3466,6 +3469,7 @@ namespace XConnect.Supplier.IWTX
                         MealPlanCode = HBArray[1];
                         ContractTokenId = HBArray[5];
                         RoomConfigurationId = Convert.ToInt32(HBArray[10]);
+                        XmlNationality = Convert.ToString(HBArray[12]); //Added on 03-FEB-26
 
                         Child1Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["ChildAge1"]);
                         Child2Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["ChildAge2"]);
@@ -3682,7 +3686,7 @@ namespace XConnect.Supplier.IWTX
             }
             catch (Exception ex)
             {
-                _ =_exception.Error(ex);
+                _ = _exception.Error(ex);
                 return "";
             }
         }
@@ -3725,7 +3729,7 @@ namespace XConnect.Supplier.IWTX
             }
             catch (Exception ex)
             {
-                _=_exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
             }
             return string.Empty;
         }

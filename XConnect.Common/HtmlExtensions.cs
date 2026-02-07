@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Protocols;
+using XConnect.CommonUtilities.Interface;
 using XConnect.Models;
 using XConnect.Models.Hotel;
 using static Azure.Core.HttpHeader;
@@ -406,7 +407,6 @@ namespace XConnect.CommonUtilities
             return Math.Round(price, DecimalDigitRound); // Due to Ticket ID#29678 // send 3 digit price at each room in prebook only
 
         }
-
         public static decimal Ignore_DecimalPlaces(this decimal val, int places)
         {
             string StrVal = Convert.ToString(val);

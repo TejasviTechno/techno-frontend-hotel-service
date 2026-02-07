@@ -131,6 +131,7 @@ namespace XConnect.CommonUtilities
                 dt.Columns.Add("NoOfNight", typeof(string));
                 dt.Columns.Add("PackageId", typeof(string));
                 dt.Columns.Add("IsVouchered", typeof(string));
+                dt.Columns.Add("Percentage", typeof(double));
                 return dt;
             }
             catch (Exception ex)
@@ -3450,6 +3451,7 @@ namespace XConnect.CommonUtilities
 
         public void ThirdPartyBookingHistory(string UniqueNo, string AgentUniqueNo, string XMLRequest, string XMLResponse, string Stage, string Provider, string StatusBooking, string ReferenceNo, string Website)
         {
+            return;
             Website = "API Out";
             SqlConnection conn1 = new SqlConnection(_connectionStrings.connectionStr_Logserver2_TP);//@Newadded on 12-mar-2024
             try
@@ -3702,6 +3704,8 @@ namespace XConnect.CommonUtilities
 
         public async Task<string> SupplierPerformanceReportForPrebookAndBook(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "")
         {
+            return "";
+
             try
             {
 
@@ -5137,7 +5141,7 @@ namespace XConnect.CommonUtilities
             return false;
         }
 
-        public double GetROEByCurrency(string Currency, DataTable dtROE)
+        public double GetROEByCurrencyBackup030226(string Currency, DataTable dtROE)
         {
             double exchnage = 5;
             try
@@ -5161,6 +5165,61 @@ namespace XConnect.CommonUtilities
             }
 
             return exchnage;
+
+        }
+
+
+        public double GetROEByCurrency(string Currency, DataTable dtROE)
+        {
+            double exchnage = 5;
+            try
+            {
+                if (Currency != "" && dtROE.Rows.Count > 0)
+                {
+
+                    DataRow[] drROE = dtROE.Select("currencyCode='" + Currency + "'");
+                    if (drROE.Length > 0)
+                    {
+                        exchnage = Convert.ToDouble(drROE[0]["buyingROE"]);
+                        if (exchnage == 0)
+                            exchnage = 5;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+            }
+
+            return exchnage;
+
+        }
+
+        public int GetCurrencyIdCurrencyCode(string Currency, DataTable dtROE)
+        {
+            int currencyId = 5;
+            try
+            {
+                if (Currency != "" && dtROE.Rows.Count > 0)
+                {
+
+                    DataRow[] drROE = dtROE.Select("currencyCode='" + Currency + "'");
+                    if (drROE.Length > 0)
+                    {
+                        currencyId = Convert.ToInt32(drROE[0]["currencyId"]);
+                        if (currencyId == 0)
+                            currencyId = 5;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+            }
+
+            return currencyId;
 
         }
 
@@ -7645,7 +7704,7 @@ namespace XConnect.CommonUtilities
             return dataTable;
         }
 
-        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false)
+        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, bool IsFromAPI = true)
         {
             AvailabilityRS_Comp availHotelList_Comp = new AvailabilityRS_Comp();
             AvailHotelList_Comp finalResponse_Comp = new AvailHotelList_Comp();
@@ -7699,6 +7758,12 @@ namespace XConnect.CommonUtilities
                                 RoomList.RoomTypeName = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].RoomTypeName;
                                 RoomList.BookingStatus = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].BookingStatus;
                                 RoomList.MappedMealName = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].MappedMealName;
+
+                                if (!IsFromAPI)
+                                    RoomList.SupplierCurrency = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].SupplierCurrency;//Added on 04-FEB-26
+                                else
+                                    RoomList.SupplierCurrency = null;
+
                                 if (withcancellation)
                                 {
                                     // RoomList.EssentialInformation = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].EssentialInformation;
@@ -8019,9 +8084,9 @@ namespace XConnect.CommonUtilities
                     new SqlParameter("@from",from),
                     new SqlParameter("@SupplierTime",Convert.ToString(SupplierTime)),
                     new SqlParameter("@SearchKey",SearchKey),
-                    
-                    
-                    
+
+
+
                     };
                     //db.ExecuteNonQuerywithconnection("InsertHotelSearchData", para, Convert.ToString(ConfigurationManager.ConnectionStrings["ConnectionStringforlogtrack"].ConnectionString));
                     int id = Convert.ToInt32(await _dlConnection.GetExecuteScalarSP_WithConStr_1SecTimeout("InsertHotelSearchData_New", para));

@@ -62,6 +62,7 @@ namespace XConnect.Models
         public int parentId { get; set; } //30/12/25
         public string siteCurrency { get; set; } //30/12/25
         public bool CanBookWithinCancellation { get; set; } = false;
+        public bool IsFromAPI { get; set; } = true;
     }
     public class DtRoeNew //041125
     {
@@ -672,6 +673,9 @@ namespace XConnect.Models
 
         public string MealName { get; set; }
         public decimal Price { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string SupplierCurrency { get; set; } //Added 04-FEB-26
         public string BookingStatus { get; set; }
         public string RoomToken { get; set; }
         public string MappedMealName { get; set; }
@@ -779,6 +783,7 @@ namespace XConnect.Models
         //public List<_FinalRate> RateDetails { get; set; }
         public string RateDetailsToken { get; set; }
         public string MappedMealName { get; set; }
+        public string SupplierCurrency { get; set; } //Added on 4-FEB-26
     }
     public class _FinalPolicy
     {
@@ -1332,6 +1337,9 @@ namespace XConnect.Models
         public string EssentialInformation { get; set; }
         public List<_FinalPolicy> CancellationPolicy { get; set; }
         public string RoomToken { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string SupplierCurrency { get; set; } //Added 04-FEB-26
     }
     #endregion
 
@@ -1453,14 +1461,7 @@ namespace XConnect.Models
         public PreBookResponse PreBookResponse { get; set; }
         public DataforLog DataforLog { get; set; }
 
-        //new version class added on 10-JAN-26
-        public UserCart_Prebook userCart_Prebook { get; set; }
-        public UserCartDetails_Prebook userCartDetails_Prebook { get; set; }
-        public SupplierRateBreakUp_Prebook supplierRateBreakUp_Prebook { get; set; }
-        public AgentRateBreakUp_Prebook agentRateBreakUp_Prebook { get; set; }
-        public HotelData_Prebook hotelData_Prebook { get; set; }
-        public HotelPolicy_Prebook hotelPolicy_Prebook { get; set; }
-        public Ratebreakup_Prebook ratebreakup_Prebook { get; set; }
+        
     }
 
     public class UserCart_Prebook //Added on 10-JAN-26
@@ -1475,6 +1476,15 @@ namespace XConnect.Models
         public string ImagePath { get; set; }
         public int CountryId { get; set; }
         public int CityId { get; set; }
+        //new
+        public int HotelId { get; set; }
+        public string HotelAddress { get; set; }
+        public string HotelContactNo { get; set; }
+
+        public int NoofNights { get; set; }
+        public int NoofRoom { get; set; }
+
+        public List<UserCartDetails_Prebook> userCartDetails_Prebooks { get; set; }
     }
 
     public class UserCartDetails_Prebook //Added on 10-JAN-26
@@ -1495,6 +1505,27 @@ namespace XConnect.Models
         public string SupplierName { get; set; }
         public double LoyaltyPoints { get; set; }
         public string TechName { get; set; }
+
+        //new
+        public string BedType { get; set; }
+        public string MealPlan { get; set; }
+
+
+        public string RoomTypeId { get; set; }
+        public string RoomTypeName { get; set; }
+        public string SepplierRefNo { get; set; }
+        public string OfferCode { get; set; }
+        public string OfferDescription { get; set; }
+        public string RoomEssentialInformation { get; set; }
+        public string RoomMealInfo { get; set; }
+        public string PurchaseToken { get; set; }
+        public string EachoToken { get; set; }
+        public string SPUI { get; set; }
+
+        public SupplierRateBreakUp_Prebook supplierRateBreakUp_Prebook { get; set; }
+        public AgentRateBreakUp_Prebook agentRateBreakUp_Prebook { get; set; }
+        public List<HotelPolicy_Prebook> hotelPolicy_Prebooks { get; set; }
+        public List<Ratebreakup_Prebook> ratebreakup_Prebooks { get; set; }
     }
 
     public class SupplierRateBreakUp_Prebook //Added on 10-JAN-26
@@ -1523,28 +1554,29 @@ namespace XConnect.Models
 
     }
 
-    public class HotelData_Prebook //Added on 10-JAN-26
-    {
-        public string BedType { get; set; }
-        public string MealPlan { get; set; }
-        public int NoofNights { get; set; }
-        public int NoofRoom { get; set; }
-        public int HotelId { get; set; }
-        public string RoomTypeId { get; set; }
-        public string RoomTypeName { get; set; }
-        public string SepplierRefNo { get; set; }
-        public string SupplierName { get; set; }
-        public string OfferCode { get; set; }
-        public string OfferDescription { get; set; }
-        public string RoomEssentialInformation { get; set; }
-        public string HotelAddress { get; set; }
-        public string RoomMealInfo { get; set; }
-        public string HotelContactNo { get; set; }
+    //public class HotelData_Prebook //Added on 10-JAN-26
+    //{
+    //    public string BedType { get; set; }
+    //    public string MealPlan { get; set; }
+    //    public int NoofNights { get; set; }
+    //    public int NoofRoom { get; set; }
+    //    public int HotelId { get; set; }
+    //    public string RoomTypeId { get; set; }
+    //    public string RoomTypeName { get; set; }
+    //    public string SepplierRefNo { get; set; }
+    //    public string SupplierName { get; set; }
+    //    public string OfferCode { get; set; }
+    //    public string OfferDescription { get; set; }
+    //    public string RoomEssentialInformation { get; set; }
+    //    public string HotelAddress { get; set; }
+    //    public string RoomMealInfo { get; set; }
+    //    public string HotelContactNo { get; set; }
 
-    }
+    //}
 
     public class HotelPolicy_Prebook
     {
+        public int RoomNumber { get; set; }
         public string FromDate { get; set; }
         public string Todate { get; set; }
         public double CancellationAmount { get; set; }
@@ -1560,16 +1592,26 @@ namespace XConnect.Models
         public string RoomTypeName { get; set; }
         public string MealName { get; set; }
         public string RateType { get; set; }
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
         public string DayOfWeek { get; set; }
-        public string Rate { get; set; }
+        public double Rate { get; set; }
         public int SupplierCurrencyId { get; set; }
         public double BaseRate { get; set; }
     }
     public class PreBookResponse
     {
         public PreBookRS PreBookRS { get; set; }
+
         public List<_Error> Error = new List<_Error>();
+
+        //new version class added on 10-JAN-26
+        public UserCart_Prebook userCart_Prebook { get; set; }
+        public List<UserCartDetails_Prebook> userCartDetails_Prebook { get; set; }
+        //public SupplierRateBreakUp_Prebook supplierRateBreakUp_Prebook { get; set; }
+        //public AgentRateBreakUp_Prebook agentRateBreakUp_Prebook { get; set; }
+        //public HotelData_Prebook hotelData_Prebook { get; set; }
+        //public HotelPolicy_Prebook hotelPolicy_Prebook { get; set; }
+        //public Ratebreakup_Prebook ratebreakup_Prebook { get; set; }
     }
 
 
