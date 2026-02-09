@@ -1069,3 +1069,17 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\refin
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\XConnect.API.genruntimeconfig.cache
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\obj\Debug\net9.0\ref\XConnect.API.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\Google.Protobuf.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\Grpc.Core.Api.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\Grpc.Net.Client.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\Grpc.Net.Common.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\OpenTelemetry.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\OpenTelemetry.Api.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\OpenTelemetry.Api.ProviderBuilderExtensions.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\OpenTelemetry.Exporter.OpenTelemetryProtocol.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\OpenTelemetry.Extensions.Hosting.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\OpenTelemetry.Instrumentation.AspNetCore.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\OpenTelemetry.Instrumentation.EntityFrameworkCore.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\OpenTelemetry.Instrumentation.Http.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\OpenTelemetry.Instrumentation.SqlClient.dll
+D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.API\bin\Debug\net9.0\System.Diagnostics.DiagnosticSource.dll

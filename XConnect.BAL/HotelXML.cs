@@ -1304,51 +1304,53 @@ namespace Xconnect.BLL
                     #region GetDataFromCache //RoomMapping
                     bool ActiveRoomMApping = false;
                     bool isvervoRoomMapping = false; bool isGimoRoomMapping = false; int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
-                    try
-                    {
-                        string keydata = "GetActiveRoomMApping_AgentID_" + Convert.ToString(SearchPara.AgentID);
-                        DataSet dsActiveRoomMApping = new DataSet();
-                        if (!_cache.TryGetValue(keydata, out dsActiveRoomMApping) || advancedOptions.CustomerIpAddress == "777")
-                        {
-                            SqlParameter[] para = new SqlParameter[] {
-                        new SqlParameter("@AgentId",SearchPara.AgentID),
-                        };
-                            dsActiveRoomMApping = await _dlConnection.GetDataSet_Limit("GetActiveRoomMapping_Agent", para, 5);//@HID
-                            if (dsActiveRoomMApping.Tables[0].Rows.Count > 0)
-                            {
-                                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                           .SetAbsoluteExpiration(DateTime.Now.AddMinutes(5));  // Set cache to expire in 12 hours
+                    #region Not Used
+                    //try
+                    //{
+                    //    string keydata = "GetActiveRoomMApping_AgentID_" + Convert.ToString(SearchPara.AgentID);
+                    //    DataSet dsActiveRoomMApping = new DataSet();
+                    //    if (!_cache.TryGetValue(keydata, out dsActiveRoomMApping) || advancedOptions.CustomerIpAddress == "777")
+                    //    {
+                    //        SqlParameter[] para = new SqlParameter[] {
+                    //    new SqlParameter("@AgentId",SearchPara.AgentID),
+                    //    };
+                    //        dsActiveRoomMApping = await _dlConnection.GetDataSet_Limit("GetActiveRoomMapping_Agent", para, 5);//@HID
+                    //        if (dsActiveRoomMApping.Tables[0].Rows.Count > 0)
+                    //        {
+                    //            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    //       .SetAbsoluteExpiration(DateTime.Now.AddMinutes(5));  // Set cache to expire in 12 hours
 
-                                _cache.Set(keydata, dsActiveRoomMApping, cacheEntryOptions);
-                            }
-                        }
+                    //            _cache.Set(keydata, dsActiveRoomMApping, cacheEntryOptions);
+                    //        }
+                    //    }
 
-                        //ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]); comment on 30May2025
-                        #region RoomMAppingConfig
-                        //This Region Add ON 30May2025
+                    //    //ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]); comment on 30May2025
+                    //    #region RoomMAppingConfig
+                    //    //This Region Add ON 30May2025
 
-                        ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]);
-                        if (!ActiveRoomMApping)
-                            ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[1].Rows[0]["IsGimoRoomMapping"]);
+                    //    ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]);
+                    //    if (!ActiveRoomMApping)
+                    //        ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[1].Rows[0]["IsGimoRoomMapping"]);
 
-                        if (ActiveRoomMApping)
-                        {
-                            isvervoRoomMapping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]);
-                            isGimoRoomMapping = Convert.ToBoolean(dsActiveRoomMApping.Tables[1].Rows[0]["IsGimoRoomMapping"]);
-                            if (isvervoRoomMapping)
-                                Roommapping = 1; //vervo
+                    //    if (ActiveRoomMApping)
+                    //    {
+                    //        isvervoRoomMapping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]);
+                    //        isGimoRoomMapping = Convert.ToBoolean(dsActiveRoomMApping.Tables[1].Rows[0]["IsGimoRoomMapping"]);
+                    //        if (isvervoRoomMapping)
+                    //            Roommapping = 1; //vervo
 
-                            if (isGimoRoomMapping)
-                                Roommapping = 2;  //Gimmo
-                        }
+                    //        if (isGimoRoomMapping)
+                    //            Roommapping = 2;  //Gimmo
+                    //    }
 
-                        #endregion RoomMAppingConfig
-                    }
-                    catch (Exception EA)
-                    {
-                        await _exception.Error(EA);
-                        ActiveRoomMApping = false;
-                    }
+                    //    #endregion RoomMAppingConfig
+                    //}
+                    //catch (Exception EA)
+                    //{
+                    //    await _exception.Error(EA);
+                    //    ActiveRoomMApping = false;
+                    //}
+                    #endregion
                     #endregion
 
                     //if (ActiveRoomMApping && SearchPara.Filters.IsShowRooms == 1)

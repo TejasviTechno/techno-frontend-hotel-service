@@ -21,6 +21,9 @@ using Serilog;
 using Serilog.Sinks.Elasticsearch;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Exporter;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,8 +51,53 @@ builder.Host.UseSerilog((context, services, loggerConfiguration) =>
 #endif
         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
         .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+        //Added below on 9-FEB-26
+.MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+.MinimumLevel.Override("Microsoft.Hosting", LogEventLevel.Warning)
+.MinimumLevel.Override("System", LogEventLevel.Warning)
+.MinimumLevel.Override("Volo", LogEventLevel.Warning)
+.MinimumLevel.Override("Abp", LogEventLevel.Warning)
+
         .Enrich.FromLogContext()
         .Enrich.WithProperty("Application", applicationName);
+
+    //Added on 9-FEB-26
+    var otelConfig = builder.Configuration.GetSection("OpenTelemetry");
+    bool tracingEnabled = otelConfig.GetValue<bool>("Enabled");
+    if (tracingEnabled)
+    {
+        string otlpEndpoint = otelConfig.GetValue<string>("OtlpEndpoint");
+        string serviceName = otelConfig.GetValue<string>("ServiceName");
+
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(tpb =>
+            {
+                tpb.SetResourceBuilder(
+                        ResourceBuilder.CreateDefault().AddService(serviceName))
+
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+
+                    .AddEntityFrameworkCoreInstrumentation(options =>
+        {
+            options.SetDbStatementForStoredProcedure = true;
+        })
+
+                    .AddSqlClientInstrumentation(options =>
+        {
+
+            options.RecordException = true;
+        })
+
+                      .AddOtlpExporter(opt =>
+          {
+              opt.Endpoint = new Uri(otlpEndpoint);
+              opt.Protocol = OtlpExportProtocol.HttpProtobuf;
+          });
+            });
+    }
+
+    //END 9-FEB-26
 
     // Elasticsearch logging (same logic as ABP)
     var isElasticEnabled = context.Configuration.GetValue<bool>(
