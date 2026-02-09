@@ -37,6 +37,42 @@ builder.Host.ConfigureContainer<ContainerBuilder>(container =>
     // container.RegisterModule(new YourModule());
 });
 
+//Added on 9-FEB-26
+var otelConfig = builder.Configuration.GetSection("OpenTelemetry");
+bool tracingEnabled = otelConfig.GetValue<bool>("Enabled");
+if (tracingEnabled)
+{
+    string otlpEndpoint = otelConfig.GetValue<string>("OtlpEndpoint");
+    string serviceName = otelConfig.GetValue<string>("ServiceName");
+
+    builder.Services.AddOpenTelemetry()
+        .WithTracing(tpb =>
+        {
+            tpb.SetResourceBuilder(
+                    ResourceBuilder.CreateDefault().AddService(serviceName))
+
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+
+                .AddEntityFrameworkCoreInstrumentation(options =>
+                {
+                    options.SetDbStatementForStoredProcedure = true;
+                })
+
+                .AddSqlClientInstrumentation(options =>
+                {
+
+                    options.RecordException = true;
+                })
+
+                  .AddOtlpExporter(opt =>
+                  {
+                      opt.Endpoint = new Uri(otlpEndpoint);
+                      opt.Protocol = OtlpExportProtocol.HttpProtobuf;
+                  });
+        });
+}
+
 /* ---------------- SERILOG ---------------- */
 builder.Host.UseSerilog((context, services, loggerConfiguration) =>
 {
@@ -61,41 +97,7 @@ builder.Host.UseSerilog((context, services, loggerConfiguration) =>
         .Enrich.FromLogContext()
         .Enrich.WithProperty("Application", applicationName);
 
-    //Added on 9-FEB-26
-    var otelConfig = builder.Configuration.GetSection("OpenTelemetry");
-    bool tracingEnabled = otelConfig.GetValue<bool>("Enabled");
-    if (tracingEnabled)
-    {
-        string otlpEndpoint = otelConfig.GetValue<string>("OtlpEndpoint");
-        string serviceName = otelConfig.GetValue<string>("ServiceName");
-
-        builder.Services.AddOpenTelemetry()
-            .WithTracing(tpb =>
-            {
-                tpb.SetResourceBuilder(
-                        ResourceBuilder.CreateDefault().AddService(serviceName))
-
-                    .AddAspNetCoreInstrumentation()
-                    .AddHttpClientInstrumentation()
-
-                    .AddEntityFrameworkCoreInstrumentation(options =>
-        {
-            options.SetDbStatementForStoredProcedure = true;
-        })
-
-                    .AddSqlClientInstrumentation(options =>
-        {
-
-            options.RecordException = true;
-        })
-
-                      .AddOtlpExporter(opt =>
-          {
-              opt.Endpoint = new Uri(otlpEndpoint);
-              opt.Protocol = OtlpExportProtocol.HttpProtobuf;
-          });
-            });
-    }
+    
 
     //END 9-FEB-26
 
