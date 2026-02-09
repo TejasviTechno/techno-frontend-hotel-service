@@ -33,8 +33,9 @@ namespace Xconnect.Auth
         private readonly ITokenReaderService _jwt;
 
         private readonly IUserContextAccessor _userContextAccessor;
+        private readonly RemoteServices _remoteServices;
 
-        public AuthenticationTokenAgent(IDLConnection dlConnection, IMemoryCache cache, IException exception, IOptions<KeySettings> keySettings, ICommonMethod commonMethod, ITokenReaderService jwt, IUserContextAccessor userContextAccessor)
+        public AuthenticationTokenAgent(IDLConnection dlConnection, IMemoryCache cache, IException exception, IOptions<KeySettings> keySettings, ICommonMethod commonMethod, ITokenReaderService jwt, IUserContextAccessor userContextAccessor, IOptions<RemoteServices> remoteServices)
         {
             _dlConnection = dlConnection;
             _cache = cache;
@@ -43,6 +44,7 @@ namespace Xconnect.Auth
             _commonMethod = commonMethod;
             _jwt = jwt;
             _userContextAccessor = userContextAccessor;
+            _remoteServices = remoteServices.Value;
         }
 
         public async Task<AuthData> Authenticate(TokenData TokenData, CommonRequest data, string IP = "", string IUserAgent = "", bool IsRefereshCache = false)
@@ -420,7 +422,7 @@ namespace Xconnect.Auth
                 ApiResponseNew<DtRoeNew> dtRoeNew;
                 if (!_cache.TryGetValue(keydataRoE, out dtRoeNew) || IsRefereshCache)
                 {
-                    dtRoeNew = await _commonMethod.SendRequestAsync<ApiResponseNew<DtRoeNew>>("http://172.10.1.154:8000/api", "Currency/ROE", HttpMethod.Get);
+                    dtRoeNew = await _commonMethod.SendRequestAsync<ApiResponseNew<DtRoeNew>>(_remoteServices.CommonServices.BaseUrl + "/api", "Currency/ROE", HttpMethod.Get);
 
                     if (dtRoeNew != null && dtRoeNew.result != null && dtRoeNew.statusCode == 200 ) 
                     {
