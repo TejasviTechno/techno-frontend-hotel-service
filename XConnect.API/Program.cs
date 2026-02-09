@@ -260,7 +260,7 @@ builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("
 builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("MongoSettings"));
 builder.Services.Configure<RabitMQSettings>(builder.Configuration.GetSection("RabitMQSettings"));
 builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("RedisSettings"));//Added on 14-AUG-2025
-
+builder.Services.Configure<RemoteServices>(builder.Configuration.GetSection("RemoteServices"));//Added on 09-FEB-26
 
 var app = builder.Build();
 
