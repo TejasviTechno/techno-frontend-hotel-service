@@ -1483,6 +1483,7 @@ namespace XConnect.Models
 
         public int NoofNights { get; set; }
         public int NoofRoom { get; set; }
+        public string Nationality { get; set; }
 
         public List<UserCartDetails_Prebook> userCartDetails_Prebooks { get; set; }
     }

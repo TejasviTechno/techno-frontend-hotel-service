@@ -15877,6 +15877,7 @@ new SqlParameter("@AgentId", AgentId),
                 userCart_Prebook.HotelContactNo = Convert.ToString(objdata.HotelContactNo);
                 userCart_Prebook.NoofNights = Convert.ToInt32((objdata.CheckOutDate.Date - objdata.CheckInDate.Date).Days);
                 userCart_Prebook.NoofRoom = Convert.ToInt32(para.Rooms.Count);
+                userCart_Prebook.Nationality = Convert.ToString(objdata.Nationality);
 
                 List<UserCartDetails_Prebook> userCartDetails_Prebook = new List<UserCartDetails_Prebook>();
                 for (int room = 0; room < objdata.ShoppingCartDetails.Count; room++)
@@ -15930,7 +15931,7 @@ new SqlParameter("@AgentId", AgentId),
                         supplierRateBreakUp_Prebook.BaseBuyingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].CompanyBuyingPrice);
                         supplierRateBreakUp_Prebook.SellingPrice = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency)); ;
                         supplierRateBreakUp_Prebook.BaseSellingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].CompanySellingPrice);
-                        supplierRateBreakUp_Prebook.SupplierId = Convert.ToInt32(objdata.SupplierID);
+                        supplierRateBreakUp_Prebook.SupplierId = Convert.ToInt32(BookOption.Hotel.SupplierId);// Convert.ToInt32(objdata.SupplierID);
                         supplierRateBreakUp_Prebook.SuppliercurrencyId = _commonMethod.GetCurrencyIdCurrencyCode(objdata.SupplierCurrency, tokenData.dtROE);
                         userCartDetails_Pre.supplierRateBreakUp_Prebook = supplierRateBreakUp_Prebook;
                         #endregion
