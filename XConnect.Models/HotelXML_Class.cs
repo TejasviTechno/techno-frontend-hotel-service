@@ -1522,6 +1522,8 @@ namespace XConnect.Models
         public string PurchaseToken { get; set; }
         public string EachoToken { get; set; }
         public string SPUI { get; set; }
+        public int RoomNo { get; set; }
+
 
         public SupplierRateBreakUp_Prebook supplierRateBreakUp_Prebook { get; set; }
         public AgentRateBreakUp_Prebook agentRateBreakUp_Prebook { get; set; }

@@ -15883,7 +15883,7 @@ new SqlParameter("@AgentId", AgentId),
                 for (int room = 0; room < objdata.ShoppingCartDetails.Count; room++)
                 {
                     UserCartDetails_Prebook userCartDetails_Pre = new UserCartDetails_Prebook();
-                    userCartDetails_Pre.SubServiceName = Convert.ToString("Hotel");
+                    userCartDetails_Pre.SubServiceName = Convert.ToString(objdata.ShoppingCartDetails[room].RoomName);//Updated 
                     userCartDetails_Pre.NoofAdult = Convert.ToInt32(objdata.ShoppingCartDetails[room].NoofAdults);
                     userCartDetails_Pre.NoofChild = Convert.ToInt32(objdata.ShoppingCartDetails[room].NoofChild);
                     userCartDetails_Pre.NoofInfant = Convert.ToInt32(0);
@@ -15922,6 +15922,7 @@ new SqlParameter("@AgentId", AgentId),
                     userCartDetails_Pre.PurchaseToken = Convert.ToString(objdata.ShoppingCartDetails[room].PurchaseToken);
                     userCartDetails_Pre.EachoToken = Convert.ToString(objdata.ShoppingCartDetails[room].EachoToken);
                     userCartDetails_Pre.EachoToken = Convert.ToString(objdata.ShoppingCartDetails[room].SPUI);
+                    userCartDetails_Pre.RoomNo = Convert.ToInt32(objdata.ShoppingCartDetails[room].RoomNo);//Updated
 
                     if (!objdata.IsCombineRoom || room == 0)
                     {
