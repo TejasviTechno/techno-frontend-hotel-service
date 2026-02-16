@@ -1,0 +1,97 @@
+[2026-02-16 16:31:09.392 +05:30] [INF] HTTP POST /api/xconnect/Availabilitywithcancellation responded 200 in 8484.5507 ms { SourceContext: "Serilog.AspNetCore.RequestLoggingMiddleware", SpanId: "", ClientType: "Agent", ClientId: 2, Host: "localhost:44372", Endpoint: "/api/xconnect/Availabilitywithcancellation", ClientIp: "::1", SiteType: "", CorrelationId: "", TraceId: "", Environment: "Development", ServiceName: "HotelServices", RequestId: "8000000b-0008-ff00-b63f-84710c7967bb", Application: "XConnect.API" }
+[2026-02-16 16:31:32.698 +05:30] [ERR] Errorlog_OT | Provider:XMLOUT | API:0 | Website:XConnect.API AppPool | Host:Techno-JayJK | SearchKey: | File:Page:D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\CommonMethodRepo.cs Method:MoveNext Line No:6208 | Info:0 { SourceContext: "XConnect.ErrorLogHandler.ExceptionLog", ActionId: "5549816e-f019-4581-8448-7085bf0c00b6", ActionName: "XConnect.API.Controllers.XConnectController.AvailabilitywithCancellation (XConnect.API)", RequestId: "8000000a-0008-ff00-b63f-84710c7967bb", RequestPath: "/api/xconnect/Availabilitywithcancellation", SpanId: "", ClientType: "Agent", ClientId: 2, Host: "localhost:44372", Endpoint: "/api/xconnect/Availabilitywithcancellation", ClientIp: "::1", SiteType: "", CorrelationId: "", TraceId: "", Environment: "Development", ServiceName: "HotelServices", Application: "XConnect.API" }
+System.TimeoutException: A timeout occurred after 30000ms selecting a server using CompositeServerSelector{ Selectors = WritableServerSelector, LatencyLimitingServerSelector{ AllowedLatencyRange = 00:00:00.0150000 }, OperationsCountServerSelector }. Client view of cluster state is { ClusterId : "5", Type : "Unknown", State : "Disconnected", Servers : [{ ServerId: "{ ClusterId : 5, EndPoint : "Unspecified/10.32.8.75xx:27017" }", EndPoint: "Unspecified/10.32.8.75xx:27017", ReasonChanged: "Heartbeat", State: "Disconnected", ServerVersion: , TopologyVersion: , Type: "Unknown", HeartbeatException: "MongoDB.Driver.MongoConnectionException: An exception occurred while opening a connection to the server.
+ ---> System.Net.Sockets.SocketException (0x00002AF9): No such host is known.
+   at System.Net.Dns.GetHostEntryOrAddressesCore(String hostName, Boolean justAddresses, AddressFamily addressFamily, Nullable`1 activityOrDefault)
+   at System.Net.Dns.GetHostAddresses(String hostNameOrAddress, AddressFamily family)
+   at MongoDB.Driver.Core.Connections.TcpStreamFactory.ResolveEndPoints(EndPoint initial)
+   at MongoDB.Driver.Core.Connections.TcpStreamFactory.CreateStream(EndPoint endPoint, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Connections.BinaryConnection.OpenHelper(CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at MongoDB.Driver.Core.Connections.BinaryConnection.OpenHelper(CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Connections.BinaryConnection.Open(CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Servers.ServerMonitor.InitializeConnection(CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Servers.ServerMonitor.Heartbeat(CancellationToken cancellationToken)", LastHeartbeatTimestamp: "2026-02-16T11:01:25.5555794Z", LastUpdateTimestamp: "2026-02-16T11:01:25.5555798Z" }] }.
+   at MongoDB.Driver.Core.Clusters.Cluster.ThrowTimeoutException(IServerSelector selector, ClusterDescription description)
+   at MongoDB.Driver.Core.Clusters.Cluster.WaitForDescriptionChangedAsync(IServerSelector selector, ClusterDescription description, Task descriptionChangedTask, TimeSpan timeout, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Clusters.Cluster.SelectServerAsync(IServerSelector selector, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Clusters.IClusterExtensions.SelectServerAndPinIfNeededAsync(IClusterInternal cluster, ICoreSessionHandle session, IServerSelector selector, IReadOnlyCollection`1 deprioritizedServers, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Bindings.WritableServerBinding.GetWriteChannelSourceAsync(IReadOnlyCollection`1 deprioritizedServers, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Operations.RetryableWriteContext.InitializeAsync(CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Operations.RetryableWriteContext.CreateAsync(IWriteBinding binding, Boolean retryRequested, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Operations.BulkMixedWriteOperation.ExecuteAsync(IWriteBinding binding, CancellationToken cancellationToken)
+   at MongoDB.Driver.OperationExecutor.ExecuteWriteOperationAsync[TResult](IWriteBinding binding, IWriteOperation`1 operation, CancellationToken cancellationToken)
+   at MongoDB.Driver.MongoCollectionImpl`1.ExecuteWriteOperationAsync[TResult](IClientSessionHandle session, IWriteOperation`1 operation, CancellationToken cancellationToken)
+   at MongoDB.Driver.MongoCollectionImpl`1.BulkWriteAsync(IClientSessionHandle session, IEnumerable`1 requests, BulkWriteOptions options, CancellationToken cancellationToken)
+   at MongoDB.Driver.MongoCollectionImpl`1.UsingImplicitSessionAsync[TResult](Func`2 funcAsync, CancellationToken cancellationToken)
+   at MongoDB.Driver.MongoCollectionBase`1.InsertOneAsync(TDocument document, InsertOneOptions options, Func`3 bulkWriteAsync)
+   at XConnect.CommonUtilities.CommonMethodRepo.Write_API_RQRS_MongoDB(String RQ, String RS, String SearchKey, Nullable`1 EntryTime) in D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\CommonMethodRepo.cs:line 6208
+[2026-02-16 16:31:34.303 +05:30] [ERR] Errorlog_OT | Provider:XMLOUT | API:0 | Website:XConnect.API AppPool | Host:Techno-JayJK | SearchKey: | File:Page:D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\CommonMethodRepo.cs Method:MoveNext Line No:4863 | Info:0 { SourceContext: "XConnect.ErrorLogHandler.ExceptionLog", ActionId: "5549816e-f019-4581-8448-7085bf0c00b6", ActionName: "XConnect.API.Controllers.XConnectController.AvailabilitywithCancellation (XConnect.API)", RequestId: "8000000a-0008-ff00-b63f-84710c7967bb", RequestPath: "/api/xconnect/Availabilitywithcancellation", SpanId: "", ClientType: "Agent", ClientId: 2, Host: "localhost:44372", Endpoint: "/api/xconnect/Availabilitywithcancellation", ClientIp: "::1", SiteType: "", CorrelationId: "", TraceId: "", Environment: "Development", ServiceName: "HotelServices", Application: "XConnect.API" }
+RabbitMQ.Client.Exceptions.BrokerUnreachableException: None of the specified endpoints were reachable
+ ---> System.AggregateException: One or more errors occurred. (No such host is known.)
+ ---> System.Net.Sockets.SocketException (11001): No such host is known.
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, Int64 startingTimeStamp)
+   at RabbitMQ.Client.Impl.SocketFactory.OpenAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFrameHandler.CreateAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateFrameHandlerAsync(AmqpTcpEndpoint endpoint, CancellationToken cancellationToken)
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Framing.AutorecoveringConnection.CreateAsync(ConnectionConfig config, IEndpointResolver endpoints, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   at XConnect.CommonUtilities.RabbitMQConnection.GetConnectionAsync() in D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\RabbitMQConnection.cs:line 50
+   at XConnect.CommonUtilities.RabbitMQPublisher.SendMessageAsync(Object msg, String queueName) in D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\RabbitMQPublisher.cs:line 25
+   at XConnect.CommonUtilities.CommonMethodRepo.FireAway_APILOG(String RequestId, String Request, String Response, String Token, String ApiName, String IpAddress, Int32 AgentId, String ElapsedTime, String ErrorCode, String CityId, String CustomerIpAddress, Int64 HotelId, String HotelName, String provider, String HotelID, String CheckInDate, String CheckOutDate, Int32 NoofNights, Int32 Rooms, Int32 LogId, String Search_Key, Nullable`1 EntryTime, String ReferenceNo, String InternalReference, String hostName, String MainURL, String ActiveMongoDB_ForAPI_SearchLogs) in D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\CommonMethodRepo.cs:line 4863
+[2026-02-16 16:31:44.020 +05:30] [ERR] Errorlog_OT | Provider:XMLOUT | API:0 | Website:XConnect.API AppPool | Host:Techno-JayJK | SearchKey: | File:Page:D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\CommonMethodRepo.cs Method:MoveNext Line No:6208 | Info:0 { SourceContext: "XConnect.ErrorLogHandler.ExceptionLog", ActionId: "5549816e-f019-4581-8448-7085bf0c00b6", ActionName: "XConnect.API.Controllers.XConnectController.AvailabilitywithCancellation (XConnect.API)", RequestId: "8000000b-0008-ff00-b63f-84710c7967bb", RequestPath: "/api/xconnect/Availabilitywithcancellation", SpanId: "", ClientType: "Agent", ClientId: 2, Host: "localhost:44372", Endpoint: "/api/xconnect/Availabilitywithcancellation", ClientIp: "::1", SiteType: "", CorrelationId: "", TraceId: "", Environment: "Development", ServiceName: "HotelServices", Application: "XConnect.API" }
+System.TimeoutException: A timeout occurred after 30000ms selecting a server using CompositeServerSelector{ Selectors = WritableServerSelector, LatencyLimitingServerSelector{ AllowedLatencyRange = 00:00:00.0150000 }, OperationsCountServerSelector }. Client view of cluster state is { ClusterId : "5", Type : "Unknown", State : "Disconnected", Servers : [{ ServerId: "{ ClusterId : 5, EndPoint : "Unspecified/10.32.8.75xx:27017" }", EndPoint: "Unspecified/10.32.8.75xx:27017", ReasonChanged: "Heartbeat", State: "Disconnected", ServerVersion: , TopologyVersion: , Type: "Unknown", HeartbeatException: "MongoDB.Driver.MongoConnectionException: An exception occurred while opening a connection to the server.
+ ---> System.Net.Sockets.SocketException (0x00002AF9): No such host is known.
+   at System.Net.Dns.GetHostEntryOrAddressesCore(String hostName, Boolean justAddresses, AddressFamily addressFamily, Nullable`1 activityOrDefault)
+   at System.Net.Dns.GetHostAddresses(String hostNameOrAddress, AddressFamily family)
+   at MongoDB.Driver.Core.Connections.TcpStreamFactory.ResolveEndPoints(EndPoint initial)
+   at MongoDB.Driver.Core.Connections.TcpStreamFactory.CreateStream(EndPoint endPoint, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Connections.BinaryConnection.OpenHelper(CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at MongoDB.Driver.Core.Connections.BinaryConnection.OpenHelper(CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Connections.BinaryConnection.Open(CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Servers.ServerMonitor.InitializeConnection(CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Servers.ServerMonitor.Heartbeat(CancellationToken cancellationToken)", LastHeartbeatTimestamp: "2026-02-16T11:01:38.4998455Z", LastUpdateTimestamp: "2026-02-16T11:01:38.4998456Z" }] }.
+   at MongoDB.Driver.Core.Clusters.Cluster.ThrowTimeoutException(IServerSelector selector, ClusterDescription description)
+   at MongoDB.Driver.Core.Clusters.Cluster.WaitForDescriptionChangedAsync(IServerSelector selector, ClusterDescription description, Task descriptionChangedTask, TimeSpan timeout, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Clusters.Cluster.SelectServerAsync(IServerSelector selector, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Clusters.IClusterExtensions.SelectServerAndPinIfNeededAsync(IClusterInternal cluster, ICoreSessionHandle session, IServerSelector selector, IReadOnlyCollection`1 deprioritizedServers, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Bindings.WritableServerBinding.GetWriteChannelSourceAsync(IReadOnlyCollection`1 deprioritizedServers, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Operations.RetryableWriteContext.InitializeAsync(CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Operations.RetryableWriteContext.CreateAsync(IWriteBinding binding, Boolean retryRequested, CancellationToken cancellationToken)
+   at MongoDB.Driver.Core.Operations.BulkMixedWriteOperation.ExecuteAsync(IWriteBinding binding, CancellationToken cancellationToken)
+   at MongoDB.Driver.OperationExecutor.ExecuteWriteOperationAsync[TResult](IWriteBinding binding, IWriteOperation`1 operation, CancellationToken cancellationToken)
+   at MongoDB.Driver.MongoCollectionImpl`1.ExecuteWriteOperationAsync[TResult](IClientSessionHandle session, IWriteOperation`1 operation, CancellationToken cancellationToken)
+   at MongoDB.Driver.MongoCollectionImpl`1.BulkWriteAsync(IClientSessionHandle session, IEnumerable`1 requests, BulkWriteOptions options, CancellationToken cancellationToken)
+   at MongoDB.Driver.MongoCollectionImpl`1.UsingImplicitSessionAsync[TResult](Func`2 funcAsync, CancellationToken cancellationToken)
+   at MongoDB.Driver.MongoCollectionBase`1.InsertOneAsync(TDocument document, InsertOneOptions options, Func`3 bulkWriteAsync)
+   at XConnect.CommonUtilities.CommonMethodRepo.Write_API_RQRS_MongoDB(String RQ, String RS, String SearchKey, Nullable`1 EntryTime) in D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\CommonMethodRepo.cs:line 6208
+[2026-02-16 16:31:52.816 +05:30] [ERR] Errorlog_OT | Provider:XMLOUT | API:0 | Website:XConnect.API AppPool | Host:Techno-JayJK | SearchKey: | File:Page:D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\CommonMethodRepo.cs Method:MoveNext Line No:4863 | Info:0 { SourceContext: "XConnect.ErrorLogHandler.ExceptionLog", ActionId: "5549816e-f019-4581-8448-7085bf0c00b6", ActionName: "XConnect.API.Controllers.XConnectController.AvailabilitywithCancellation (XConnect.API)", RequestId: "8000000b-0008-ff00-b63f-84710c7967bb", RequestPath: "/api/xconnect/Availabilitywithcancellation", SpanId: "", ClientType: "Agent", ClientId: 2, Host: "localhost:44372", Endpoint: "/api/xconnect/Availabilitywithcancellation", ClientIp: "::1", SiteType: "", CorrelationId: "", TraceId: "", Environment: "Development", ServiceName: "HotelServices", Application: "XConnect.API" }
+RabbitMQ.Client.Exceptions.BrokerUnreachableException: None of the specified endpoints were reachable
+ ---> System.AggregateException: One or more errors occurred. (No such host is known.)
+ ---> System.Net.Sockets.SocketException (11001): No such host is known.
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, Int64 startingTimeStamp)
+   at RabbitMQ.Client.Impl.SocketFactory.OpenAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Impl.SocketFrameHandler.CreateAsync(AmqpTcpEndpoint amqpTcpEndpoint, Func`2 socketFactory, TimeSpan connectionTimeout, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateFrameHandlerAsync(AmqpTcpEndpoint endpoint, CancellationToken cancellationToken)
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.EndpointResolverExtensions.SelectOneAsync[T](IEndpointResolver resolver, Func`3 selector, CancellationToken cancellationToken)
+   at RabbitMQ.Client.Framing.AutorecoveringConnection.CreateAsync(ConnectionConfig config, IEndpointResolver endpoints, CancellationToken cancellationToken)
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at RabbitMQ.Client.ConnectionFactory.CreateConnectionAsync(IEndpointResolver endpointResolver, String clientProvidedName, CancellationToken cancellationToken)
+   at XConnect.CommonUtilities.RabbitMQConnection.GetConnectionAsync() in D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\RabbitMQConnection.cs:line 50
+   at XConnect.CommonUtilities.RabbitMQPublisher.SendMessageAsync(Object msg, String queueName) in D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\RabbitMQPublisher.cs:line 25
+   at XConnect.CommonUtilities.CommonMethodRepo.FireAway_APILOG(String RequestId, String Request, String Response, String Token, String ApiName, String IpAddress, Int32 AgentId, String ElapsedTime, String ErrorCode, String CityId, String CustomerIpAddress, Int64 HotelId, String HotelName, String provider, String HotelID, String CheckInDate, String CheckOutDate, Int32 NoofNights, Int32 Rooms, Int32 LogId, String Search_Key, Nullable`1 EntryTime, String ReferenceNo, String InternalReference, String hostName, String MainURL, String ActiveMongoDB_ForAPI_SearchLogs) in D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Common\CommonMethodRepo.cs:line 4863

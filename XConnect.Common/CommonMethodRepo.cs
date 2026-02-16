@@ -71,8 +71,9 @@ namespace XConnect.CommonUtilities
         private readonly RabbitMQPublisher _publisher;
 
         private readonly IExceptionLogStore _stores;
+        private readonly ILogger<CommonMethodRepo> _logger;
 
-        public CommonMethodRepo(IException exception, IDLConnection dlConnection, IMemoryCache cache, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IOptions<MongoSettings> mongoSettings, MongoDbFactoryNew factory, RabbitMQPublisher publisher, IOptions<RabitMQSettings> rabitmqSettings, IHttpClientFactory httpClientFactory, IExceptionLogStore stores)
+        public CommonMethodRepo(IException exception, IDLConnection dlConnection, IMemoryCache cache, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IOptions<MongoSettings> mongoSettings, MongoDbFactoryNew factory, RabbitMQPublisher publisher, IOptions<RabitMQSettings> rabitmqSettings, IHttpClientFactory httpClientFactory, IExceptionLogStore stores, ILogger<CommonMethodRepo> logger)
         {
             _exception = exception;
             _dlConnection = dlConnection;
@@ -97,6 +98,7 @@ namespace XConnect.CommonUtilities
             _publisher = publisher;
             _httpClientFactory = httpClientFactory;
             _stores = stores;
+            _logger = logger;
         }
 
         //15-JAN-26
@@ -5973,19 +5975,26 @@ namespace XConnect.CommonUtilities
             try
             {
 
+
                 if (true)
                 {
-                    var log = new ResLog
-                    {
-                        XmlRequest = XmlRequest,
-                        XmlResponse = XmlResponse,
-                        Provider = Provider,
-                        TypeRequest = TypeRequest,
-                        ReqId = reqId,
-                        SearchKey = NewSearchKey
-                    };
+                    // Also log to Serilog
+                    _logger.LogInformation(
+            "Third-Party API Call | Provider: {Provider} | Type: {TypeRequest} | ReqId: {ReqId} | SearchKey: {SearchKey} | Request: {XmlRequest} | Response: {XmlResponse}",
+            Provider, TypeRequest, reqId, NewSearchKey, XmlRequest, XmlResponse);
 
-                    await _stores.SaveLogAsync(log, "DebugLog");
+                    //var log = new ResLog
+                    //{
+                    //    XmlRequest = XmlRequest,
+                    //    XmlResponse = XmlResponse,
+                    //    Provider = Provider,
+                    //    TypeRequest = TypeRequest,
+                    //    ReqId = reqId,
+                    //    SearchKey = NewSearchKey
+                    //};
+
+                    //await _stores.SaveLogAsync(log, "DebugLog");
+
                 }
                 else
                 {
