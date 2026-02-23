@@ -4829,7 +4829,7 @@ namespace XConnect.CommonUtilities
                    new SqlParameter("@CustomerIpAddress",CustomerIpAddress),
                    new SqlParameter("@HotelName",HotelName),
                    new SqlParameter("@HotelId",HotelId),
-                    new SqlParameter("@Provider",provider),
+                    new SqlParameter("@Provider",""),
                    new SqlParameter("@IsLive",Convert.ToInt32(_keySettings.IsLive)),
                     new SqlParameter("@CheckInDate",CheckInDate),
                     new SqlParameter("@CheckOutDate",CheckOutDate),
@@ -4901,7 +4901,8 @@ namespace XConnect.CommonUtilities
                         HotelId = Convert.ToInt32(HotelID);
 
                     SqlParameter[] para = new SqlParameter[]{
-                   new SqlParameter("@RequestId",RequestId),
+                   //new SqlParameter("@RequestId",RequestId),
+                   new SqlParameter("@RequestId",""),
                    new SqlParameter("@Request",Request),
                    new SqlParameter("@Response",Response),
                    //new SqlParameter("@Token",Token),
