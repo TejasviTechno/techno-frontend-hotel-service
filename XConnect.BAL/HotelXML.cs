@@ -11805,7 +11805,9 @@ new SqlParameter("@AgentId", AgentId),
                     try
                     {
 
-                        if ((pls == 0 && TechName.ToLower() == "expedia") || (pls == 0 && TechName.ToLower() == "hotelbeds") || TechName.ToLower() == "tbo" || TechName.ToLower() == "iwtx" || TechName.ToLower() == "hoteldo"
+                        if ((pls == 0 && TechName.ToLower() == "expedia")
+                            || (pls == 0 && TechName.ToLower() == "hotelbeds")
+                            || TechName.ToLower() == "tbo" || TechName.ToLower() == "iwtx" || TechName.ToLower() == "hoteldo"
                             || TechName.ToLower() == "agoda" || TechName.ToLower() == "pricetravel" || TechName.ToLower() == "booking.com"
                             || TechName.ToLower() == "booking.com_v3"
                             || TechName.ToLower() == "webhotelier" || TechName.ToLower() == "teamamerica" || TechName.ToLower() == "xtg" || TechName.ToLower() == "dida"
@@ -15987,7 +15989,7 @@ new SqlParameter("@AgentId", AgentId),
 
                             //TimeSpan t = dtCheckOutDate - dtCheckInDate;
 
-                            ratebreakup_Prebook.RoomTypeName = Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
+                            ratebreakup_Prebook.RoomTypeName = Convert.ToString(objdata.ShoppingCartDetails[room].RoomName);
                             ratebreakup_Prebook.MealName = Convert.ToString(objdata.ShoppingCartDetails[room].MealPlanCode);
                             ratebreakup_Prebook.RateType = Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
                             DateTime rateDate = objdata.CheckOutDate.Date.AddDays(p);
@@ -47546,6 +47548,117 @@ new SqlParameter("@AgentId", AgentId),
                 return bookResponse_1;
             }
         }
+
+        public async Task<BookResponse_newversion> Book_newversion(BookRequest_newversion bookRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName)
+        {
+            BookResponse_newversion bookResponse_1 = new BookResponse_newversion();
+            try
+            {
+               
+
+                if (bookRequest != null)
+                {
+                    if(bookRequest.userCart != null)
+                    {
+
+                        #region SubAgentSP
+                        DataSet dsAgentDetails = new DataSet();
+                        int IsShowSupplier = 0;
+                        int CityId = bookRequest.userCart.CityId;
+                        string Nationality = bookRequest.userCart.Nationality;
+                        int CountryID = bookRequest.userCart.CountryId;
+
+                        int IsSubAgentCacheActive = Convert.ToInt32(_keySettings.IsSubAgentCacheActive);
+
+                        if (IsSubAgentCacheActive == 1)
+                        {
+                            dsAgentDetails = await IsSubAgent(tokenData.AgentId, 0, CityId, Nationality, 0, tokenData.Type, tokenData.SubUserId, IsShowSupplier, CountryID, tokenData.RateCategoryId, 1, false, 1, false, false, 20);
+                        }
+                        else
+                        {
+                            dsAgentDetails = await IsSubAgent(tokenData.AgentId, 0, CityId, Nationality, 0, tokenData.Type, tokenData.SubUserId, IsShowSupplier, CountryID, tokenData.RateCategoryId, 1, false, 0, false, false, 20);
+                        }
+                        #endregion
+
+                        #region PaxDetails
+                        string Email = "";
+                        string MobileNo = "";
+
+                        DataTable dtPassengers = new DataTable();
+
+                        List<PassengerDetailsFor> paxlist = new List<PassengerDetailsFor>();
+                        for (int i = 0; i < bookRequest.BookRQ.HotelRooms.Count; i++)
+                        {
+                            PassengerDetailsFor pax = new PassengerDetailsFor();
+                            pax.UserCartId = bookRequest.userCart.UserCartId;
+                            pax.ServiceType = "Hotel";
+                            pax.FirstName = bookRequest.BookRQ.HotelRooms[i].FirstName;
+                            pax.LastName = bookRequest.BookRQ.HotelRooms[i].LastName;
+                            pax.IsLead = bookRequest.BookRQ.HotelRooms[i].IsLead;
+                            pax.Prefix = bookRequest.BookRQ.HotelRooms[i].Prefix;
+                            pax.Email = Email;
+                            pax.Mobile = MobileNo;
+                            pax.Nationality = Nationality;
+                            pax.Message = "";
+                            if (!bookRequest.BookRQ.HotelRooms[i].Prefix.ToLower().Contains("."))
+                                bookRequest.BookRQ.HotelRooms[i].Prefix = bookRequest.BookRQ.HotelRooms[i].Prefix.ToLower() + ".";
+                            if (!pax.Prefix.Contains("."))
+                                pax.Prefix = pax.Prefix + ".";
+                            pax.Gender = bookRequest.BookRQ.HotelRooms[i].Prefix.ToLower() == "mr." ? "Male" : "Female";
+                            pax.RoomNo = bookRequest.BookRQ.HotelRooms[i].RoomNo;
+                            pax.RoomType = "";
+                            pax.PickUp = "";
+
+                            var drDetails = bookRequest.userCart.UserCartDetails
+                                            .FirstOrDefault(x => x.UserCartId == bookRequest.userCart.UserCartId
+                                              && x.RoomNo == pax.RoomNo
+                                              && x.UserCartDetailId == bookRequest.BookRQ.HotelRooms[i].UniqueId);
+                            if (drDetails != null)
+                            {
+                                pax.PickUp = Convert.ToString(drDetails.RoomTypeId);
+
+                            }
+
+                            pax.PaxType = bookRequest.BookRQ.HotelRooms[i].PaxType;
+                            pax.ChildAge = Convert.ToInt32(bookRequest.BookRQ.HotelRooms[i].ChildAge);
+
+                            paxlist.Add(pax);
+                        }
+
+                        dtPassengers = HtmlExtensions.ConvertToDataTable(paxlist);
+                        #endregion
+
+                        for (int j=0; j < bookRequest.userCart.UserCartDetails.Count; j++)
+                        {
+
+                            string TechName = Convert.ToString(bookRequest.userCart.UserCartDetails[j].TechName).ToLower();
+                            string suppliername = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName).ToLower();
+
+
+                            //try
+                            //{
+
+                                
+                            //}
+                            //catch (Exception ex)
+                            //{
+                            //    _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                            //    _ = _exception.ErrorNew(ex, _LogAPI.Book, bookRequest.SearchKey);
+                            //}
+
+
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorNew(ex, _LogAPI.Book);
+            }
+            return bookResponse_1;
+        }
+
 
         public static bool CheckPrefix(string prefix)//Added on 28-MAY-2024
         {

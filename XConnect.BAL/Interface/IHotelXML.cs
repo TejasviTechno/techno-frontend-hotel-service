@@ -92,5 +92,6 @@ namespace XConnect.BAL.Interface
         Task<DataSet> GetPropertySpokenLanguages(HotelSync para);
 
         #endregion MobileTeamVersion 
-    }
+
+        Task<BookResponse_newversion> Book_newversion(BookRequest_newversion bookRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);    }
 }

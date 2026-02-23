@@ -339,7 +339,7 @@ namespace Xconnect.Auth
                         _token.CanBookWithinCancellation = _userContextAccessor.DecodedJwt.PermissionType.Any(p => p.Equals("Allow booking within cancellation", StringComparison.OrdinalIgnoreCase));
                     }
 
-                    _token.IsFromAPI = false;//Convert.ToBoolean(_userContextAccessor.DecodedJwt.isFromApi);//where request come. API or B2B
+                    _token.IsFromAPI = Convert.ToBoolean(_userContextAccessor.DecodedJwt.IsFromApi);//where request come. API or B2B
                     #endregion
                 }
             }
