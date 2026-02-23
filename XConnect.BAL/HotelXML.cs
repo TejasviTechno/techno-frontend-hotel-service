@@ -11352,7 +11352,8 @@ new SqlParameter("@AgentId", AgentId),
 
 
                         // Log data
-                        string Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
+                        //string Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
+                        string Website = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
                         hostName = System.Net.Dns.GetHostName();
 
