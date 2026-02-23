@@ -1369,7 +1369,7 @@
           "lib/netcoreapp2.1/_._": {}
         }
       },
-      "UserContext/10.0.11": {
+      "UserContext/10.0.14": {
         "type": "package",
         "dependencies": {
           "Microsoft.AspNetCore.Http.Abstractions": "2.3.0",
@@ -3576,14 +3576,14 @@
         "version.txt"
       ]
     },
-    "UserContext/10.0.11": {
-      "sha512": "thAMOYf4tWcZ8LqyAqXLgcKuAgb63JJgdfl3KHb7OG9djABJ41kH86lLlXRYV4N1TuL0jpt9hdCBq+bBDNEhUA==",
+    "UserContext/10.0.14": {
+      "sha512": "0chgeeI+iaxhM3Y2kjcwQJE1XUYtAhYfXwZc+CLiaSZSTdAHxEXAiYK8+NOyShSBpg9Rie+ZFwfuR8AIlPDdwg==",
       "type": "package",
-      "path": "usercontext/10.0.11",
+      "path": "usercontext/10.0.14",
       "files": [
         ".nupkg.metadata",
         "lib/net9.0/UserContextMiddleWare.dll",
-        "usercontext.10.0.11.nupkg.sha512",
+        "usercontext.10.0.14.nupkg.sha512",
         "usercontext.nuspec"
       ]
     },
@@ -3629,7 +3629,7 @@
   "projectFileDependencyGroups": {
     "net9.0": [
       "Microsoft.Extensions.Caching.Memory >= 9.0.1",
-      "UserContext >= 10.0.11",
+      "UserContext >= 10.0.14",
       "XConnect.CommonUtilities >= 1.0.0",
       "XConnect.ErrorLogHandler >= 1.0.0",
       "XConnect.Models >= 1.0.0",
@@ -3708,7 +3708,7 @@
           },
           "UserContext": {
             "target": "Package",
-            "version": "[10.0.11, )"
+            "version": "[10.0.14, )"
           }
         },
         "imports": [

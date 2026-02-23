@@ -1815,7 +1815,72 @@ namespace XConnect.Models
     {
         public string SearchKey { get; set; }
         public BookRQ BookRQ { get; set; }
+
+
     }
+
+    public class BookRequest_newversion
+    {
+        public string SearchKey { get; set; }
+        public BookRQ BookRQ { get; set; }
+
+        public UserCart userCart { get; set; }
+    }
+
+    public class UserCart
+    {
+        public int UserCartId { get; set; }
+        public int SupplierCurrencyId { get; set; }
+        public int ServiceId { get; set; }
+        public string ServiceName { get; set; }
+        public int CountryId { get; set; }
+        public int CityId { get; set; }
+        //new
+        public int HotelId { get; set; }
+        public string Nationality { get; set; }
+
+        public List<UserCartDetails> UserCartDetails { get; set; }
+    }
+
+    public class UserCartDetails //Added on 10-JAN-26
+    {
+        public int UserCartId { get; set; }
+        public int UserCartDetailId { get; set; }
+        public int NoofAdult { get; set; }
+        public int NoofChild { get; set; }
+        public int NoofInfant { get; set; }
+        public double ChildAge { get; set; }
+        public double ServiceBuyingAmount { get; set; }
+        public double BaseServiceBuyingAmount { get; set; }
+        public string CheckInDate { get; set; }
+        public string CheckOutDate { get; set; }
+        public string SupplierName { get; set; }
+        public string TechName { get; set; }
+        //new
+        public string MealPlan { get; set; }
+        public string RoomTypeId { get; set; }
+        public string PurchaseToken { get; set; }
+        public string EachoToken { get; set; }
+        public int RoomNo { get; set; }
+        
+    }
+
+    public class BookResponse_newversion
+    {
+        public List<AgentVoucher> agentVouchers { get; set; }
+    }
+
+    public class AgentVoucher
+    {
+        public int UserCartId { get; set; }
+        public int UserCartDetailId { get; set; }
+        public string AgentVoucherNo { get; set; }
+        public string XMLRequest { get; set; }
+        public string XMLResponse { get; set; }
+        public string SupplierName { get; set; }
+        public string RoomStatus { get; set; }
+    }
+
 
     #endregion
     #region "BookingResponse"

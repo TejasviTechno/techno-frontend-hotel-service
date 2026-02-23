@@ -4855,7 +4855,7 @@ namespace XConnect.CommonUtilities
                 //else
                 //    db.ExecuteNonQuerywithconnection("EnterAPILogs_XMLOUT_New_hour", para, Convert.ToString(ConfigurationManager.ConnectionStrings["ConnectionStringforlogtrack"].ConnectionString));
 
-                if (_rabitmqSettings.IsRabbitMQActive == "1")
+                if (false)// (_rabitmqSettings.IsRabbitMQActive == "1")
                 {
                     var messageData = para.ToDictionary(p => p.ParameterName, p => p.Value ?? DBNull.Value);
 
@@ -5976,7 +5976,7 @@ namespace XConnect.CommonUtilities
             {
 
 
-                if (true)
+                if (false)
                 {
                     // Also log to Serilog
                     _logger.LogInformation(
@@ -8063,7 +8063,7 @@ namespace XConnect.CommonUtilities
         {
             try
             {
-                if (true)
+                if (false)
                 {
                     var log = new RequestTrackingLog
                     {

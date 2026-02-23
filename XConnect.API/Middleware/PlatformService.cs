@@ -139,14 +139,14 @@
             return ip ?? "Unknown";
         }
 
-        public string GetIPAddress()
+        public string GetIPAddress()//Added on 16-FEB-26
         {
             var httpContext = _httpContextAccessor.HttpContext;
             if (httpContext == null)
                 return "Unknown";
 
             // X-Forwarded-For હેડર માંથી પ્રથમ IP લેજો (comma થી અલગ) //Client IP
-            string ip = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()?.Split(',')[0].Trim();
+            string ip = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()?.Split(',')[0].Trim(); 
 
             // જો X-Forwarded-For ન હોય, તો RemoteIpAddress થી લેજો
             if (string.IsNullOrEmpty(ip))
