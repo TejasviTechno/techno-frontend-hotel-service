@@ -4815,7 +4815,7 @@ namespace XConnect.CommonUtilities
             try
             {
                 SqlParameter[] para = new SqlParameter[]{
-                   new SqlParameter("@RequestId",RequestId),
+                   new SqlParameter("@RequestId",""),
                    new SqlParameter("@Request",RQ),
                    new SqlParameter("@Response",RS),
                    //new SqlParameter("@Token",Token),
