@@ -255,7 +255,9 @@ namespace XConnect.CommonUtilities
 
                         }
 
-                        final.Price = Convert.ToDecimal(Mainrooms[i][j].FinalSellingPrice);
+                        //final.Price = Convert.ToDecimal(Mainrooms[i][j].FinalSellingPrice);
+                        final.Price = Math.Round(Convert.ToDecimal(Mainrooms[i][j].FinalSellingPrice), 2);//Added on 25-FEB-26
+
                         if (tokenData.IsFromAPI)
                             final.Price = final.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency); //comment bcoz no need to return in agent currency 04-FEB-25 
 
@@ -323,6 +325,7 @@ namespace XConnect.CommonUtilities
                                     }//#Due Ticket 33069
                                     obj.ToDate = Convert.ToDateTime(policyDetails[p].ToDate).ToString("MM-dd-yyyy");
                                     obj.CancellationPrice = Convert.ToDecimal(policyDetails[p].AgentCancellationPrice);
+                                    obj.CancellationPrice = Math.Round(Convert.ToDecimal(policyDetails[p].AgentCancellationPrice),2);//Added on 25-FEB-26
                                     final.CancellationToken += policyDetails[p].EncryptPolicyToken();//add to policy token
                                     if (tokenData.IsFromAPI)
                                         obj.CancellationPrice = obj.CancellationPrice.CalculatePrice(tokenData, advancedOptions, SupplierCurrency); //comment bcoz no need to return in agent currency 04-FEB-25 

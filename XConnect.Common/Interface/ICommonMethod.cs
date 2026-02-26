@@ -11,6 +11,7 @@ namespace XConnect.CommonUtilities.Interface
 {
     public interface ICommonMethod
     {
+        string GetCurrencyCodeByCurrencyID(int CurrencyId, DataTable dtROE);
         int GetCurrencyIdCurrencyCode(string Currency, DataTable dtROE);
         DataTable UserCartTableStructure(); //Added on 19-JAN-26
         DataTable UserCartDetailsTableStructure(); //Added on 19-JAN-26

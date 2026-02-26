@@ -1867,6 +1867,7 @@ namespace XConnect.Models
 
     public class BookResponse_newversion
     {
+        public List<_Error> Error = new List<_Error>();
         public List<AgentVoucher> agentVouchers { get; set; }
     }
 

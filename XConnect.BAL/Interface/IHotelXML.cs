@@ -18,16 +18,16 @@ namespace XConnect.BAL.Interface
 
         _Error GetErrorMsg(string type, string code, string description);
 
-        Task<AvailHotelList_Comp> HotelSearch(HotelSearchParameter SearchPara, TokenData Tokendata, AdvancedOptions advancedOptions, Stopwatch MainTimer,string IP, bool withcancellation = false, string UserPlatform = "", int IsAvailbilityWithCancellationv2 = 0, string Search_Key = "");
+        Task<AvailHotelList_Comp> HotelSearch(HotelSearchParameter SearchPara, TokenData Tokendata, AdvancedOptions advancedOptions, Stopwatch MainTimer, string IP, bool withcancellation = false, string UserPlatform = "", int IsAvailbilityWithCancellationv2 = 0, string Search_Key = "");
 
-        Task<IActionResult> CreateResponseCompressedAsync<T>(HttpContext context,HttpStatusCode statusCode,T value,string mediaType,CommonRequest RQ,object RS,TokenData tokendata,string APIName,bool EnterLogs,string ElapsedTime,string ErrorCode,string CityId,string IP = "",string HotelID = "",string CheckInDate = "",string CheckOutDate = "",int NoofNights = 0,int Rooms = 0,int LogId = 0,string Search_Key = "", DateTime? EntryTime = null,string ReferenceNo = "",string InternalReference = "", string MainURL="", int StatusCode = 200);
+        Task<IActionResult> CreateResponseCompressedAsync<T>(HttpContext context, HttpStatusCode statusCode, T value, string mediaType, CommonRequest RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, string IP = "", string HotelID = "", string CheckInDate = "", string CheckOutDate = "", int NoofNights = 0, int Rooms = 0, int LogId = 0, string Search_Key = "", DateTime? EntryTime = null, string ReferenceNo = "", string InternalReference = "", string MainURL = "", int StatusCode = 200);
 
         //Task<CancellationPolicyRS_Multi_v1> ReCheck(string jsonString, TokenData Tokendata, AdvancedOptions advancedOptions, Stopwatch MainTimer,string fullUrl);
 
-        
+
 
         //110425
-        Task<ApiRequest<T>> SendRequestAsyncNew<T>(string apiUrl, string requestPayload, string apiName="");
+        Task<ApiRequest<T>> SendRequestAsyncNew<T>(string apiUrl, string requestPayload, string apiName = "");
 
         HttpStatusCode GetStatusCode(int statusCode);
 
@@ -93,5 +93,6 @@ namespace XConnect.BAL.Interface
 
         #endregion MobileTeamVersion 
 
-        Task<BookResponse_newversion> Book_newversion(BookRequest_newversion bookRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);    }
+        Task<BookResponse_newversion> Book_newversion(BookRequest_newversion bookRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);
+    }
 }

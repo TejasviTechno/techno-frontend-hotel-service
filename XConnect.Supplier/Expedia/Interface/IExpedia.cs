@@ -35,5 +35,8 @@ namespace XConnect.Supplier.Interface
         string EANStringForBookV3(DataSet dsCartDetails, DataTable dtPassengers, int i, int jj, string Ex_Guid, string SupplierName = "");
 
         Task<ResponseDto> GetEANResponseBooking(string strHost, Int32 TimeOut, string Provider = "", string UserName = "", string Password = "", string EchoToken = "", string PlatForm = "", string IsBooking = "GET", string RequestString = "", string SearchKey = "", string IP = "");
+
+        //new version
+        string EANStringForBookV3_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, string Ex_Guid, string SupplierName = "");
     }
 }

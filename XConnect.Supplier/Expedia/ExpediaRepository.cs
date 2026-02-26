@@ -6774,5 +6774,94 @@ namespace XConnect.Expedia
             }
             return string.Empty;
         }
+
+        public string EANStringForBookV3_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, string Ex_Guid, string SupplierName = "")
+        {
+            try
+            {
+
+                string BookReq = "";
+                List<EANV3BookRequest.Room> RoomObj = new List<EANV3BookRequest.Room>();
+
+
+
+                for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
+                {
+
+                    string Prefix = "", Name = "", SurName = "";
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and (RoomNo=" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomNo) + " and PaxType='Adult')";
+                    dtPassengers.DefaultView.Sort = "IsLead DESC";
+                    int Islead = Convert.ToInt32(dtPassengers.DefaultView[0]["islead"]);
+                    if (Islead == 1)
+                    {
+                        Prefix = Convert.ToString(dtPassengers.DefaultView[0]["Prefix"]).Replace(".", "");
+                        Name = Convert.ToString(dtPassengers.DefaultView[0]["FirstName"]).Replace(".", "");
+                        SurName = Convert.ToString(dtPassengers.DefaultView[0]["LastName"]).Replace(".", "");
+                    }
+                    else
+                    {
+                        Prefix = Convert.ToString(dtPassengers.DefaultView[0]["Prefix"]).Replace(".", "");
+                        Name = Convert.ToString(dtPassengers.DefaultView[0]["FirstName"]).Replace(".", "");
+                        SurName = Convert.ToString(dtPassengers.DefaultView[0]["LastName"]).Replace(".", "");
+                    }
+
+                    for (int x = 0; x < dtPassengers.DefaultView.Count; x++)
+                    {
+                        if (x == 0)
+                        {
+
+                            EANV3BookRequest.Room RoomObjNew = new EANV3BookRequest.Room();
+                            //RoomObjNew.title = Prefix;
+                            RoomObjNew.given_name = Name;
+                            RoomObjNew.family_name = SurName;
+                            RoomObjNew.smoking = false;
+                            RoomObj.Add(RoomObjNew);
+                        }
+                    }
+                }
+
+                EANV3BookRequest.Address AddressObj = new EANV3BookRequest.Address();
+                AddressObj.line_1 = ExpediaInfo.address1_Xpedia;
+                AddressObj.city = ExpediaInfo.city_Xpedia;
+                AddressObj.postal_code = ExpediaInfo.postalCode_Xpedia;
+                //AddressObj.country_code = "US";
+                AddressObj.country_code = ExpediaInfo.countryCode_Xpedia;
+
+                EANV3BookRequest.BillingContact BillingContactObj = new EANV3BookRequest.BillingContact();
+                //BillingContactObj.given_name = "John";
+                BillingContactObj.given_name = ExpediaInfo.firstName_Xpedia;
+                //BillingContactObj.family_name = "Smith";
+                BillingContactObj.family_name = ExpediaInfo.lastName_Xpedia;
+                BillingContactObj.address = AddressObj;
+
+                List<EANV3BookRequest.Payment> PaymentObj = new List<EANV3BookRequest.Payment>();
+                EANV3BookRequest.Payment PaymentObjNew = new EANV3BookRequest.Payment();
+
+                PaymentObjNew.type = "affiliate_collect";
+
+                PaymentObjNew.billing_contact = BillingContactObj;
+                PaymentObj.Add(PaymentObjNew);
+
+                EANV3BookRequest.RootObject RootObjBook = new EANV3BookRequest.RootObject();
+                RootObjBook.affiliate_reference_id = Ex_Guid;
+                RootObjBook.rooms = RoomObj;
+                RootObjBook.payments = PaymentObj;
+
+                EANV3BookRequest.Phone PhoneObj = new EANV3BookRequest.Phone();
+                PhoneObj.country_code = ExpediaInfo.country_code_Xpedia;
+                PhoneObj.area_code = ExpediaInfo.area_code_Xpedia;
+                PhoneObj.number = ExpediaInfo.number_Xpedia;
+                RootObjBook.phone = PhoneObj;
+                RootObjBook.email = ExpediaInfo.email_Xpedia;
+
+                BookReq = Newtonsoft.Json.JsonConvert.SerializeObject(RootObjBook);
+                return BookReq.ToString();
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+            }
+            return string.Empty;
+        }
     }
 }

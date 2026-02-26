@@ -40,25 +40,28 @@ namespace XConnect.Expedia
         public static string EAN_Payment_Terms_2 = "2";
 
         //for booking process
-        public static string creditCardNumber_Xpedia = "4050379975817569";
+        public static string creditCardNumber_Xpedia = "";
         public static string creditCardExpirationMonth_Xpedia = "12";
         public static string creditCardExpirationYear_Xpedia = "2028";
         public static string creditCardIdentifier_Xpedia = "123";
-        public static string address1_Xpedia = "B-9-4 Megan Avenue 2 Jalan Yap Kwan seng";
-        public static string city_Xpedia = "Kuala Lumpur";
         // public static string stateProvinceCode_Xpedia = "WA";
         public static string countryCode_Xpedia = "MY";
-        public static string postalCode_Xpedia = "50450";
-        public static string firstName_Xpedia = "Mustafa";
-        public static string lastName_Xpedia = "Alabsi";
-        public static string email_Xpedia = "ops@withinearth.com";
+        
         public static string homePhone_Xpedia = "60321663969";
         public static string WorkPhone_Xpedia = " +603-2166-3969";
 
         public static string creditCardType_Xpedia = "VI";
 
-        public static string country_code_Xpedia = "603";
-        public static string area_code_Xpedia = "2166";
-        public static string number_Xpedia = "3969";
+
+
+        public static string country_code_Xpedia = "MY";
+        public static string postalCode_Xpedia = "50450";
+        public static string city_Xpedia = "City Name";
+        public static string firstName_Xpedia = "Myhotelwizard";
+        public static string lastName_Xpedia = "Myhotelwizard";
+        public static string email_Xpedia = "online@myhotelwizard.com";
+        public static string address1_Xpedia = "ACICO Business Park BuildingOffice703704705Port Saeed RoadDeiraDubai";
+        public static string area_code_Xpedia = "603";
+        public static string number_Xpedia = "2166";
     }
 }

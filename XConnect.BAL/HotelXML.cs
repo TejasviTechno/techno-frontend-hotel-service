@@ -2915,10 +2915,10 @@ namespace Xconnect.BLL
                                                 {
                                                     try
                                                     {
-                                                        if (advancedOptions.CustomerIpAddress == "999")
-                                                        {
-                                                            item.DebugeMode = true;
-                                                        }
+                                                        //if (advancedOptions.CustomerIpAddress == "999")
+                                                        //{
+                                                        //    item.DebugeMode = true;
+                                                        //}
                                                         string response = "";
                                                         DataTable HotelData = _commonMethod.GenerateDataTableNewV2();
                                                         string Supplier = item.Supplier.ToLower();
@@ -12485,7 +12485,9 @@ new SqlParameter("@AgentId", AgentId),
                             _FinalPolicy obj = new _FinalPolicy();
                             obj.FromDate = Convert.ToDateTime(list[i].FromDate).ToString("MM-dd-yyyy");
                             obj.ToDate = Convert.ToDateTime(list[i].ToDate).ToString("MM-dd-yyyy");
-                            obj.CancellationPrice = Convert.ToDecimal(list[i].AgentCancellationPrice);
+                            //obj.CancellationPrice = Convert.ToDecimal(list[i].AgentCancellationPrice);
+                            obj.CancellationPrice = Math.Round(Convert.ToDecimal(list[i].AgentCancellationPrice), 2); //Added on 25-FEB-26
+
                             token += list[i].EncryptPolicyToken();
 
                             if (tokenData.IsFromAPI) //Added on 04-FEB-26
@@ -15883,6 +15885,7 @@ new SqlParameter("@AgentId", AgentId),
                 userCart_Prebook.Nationality = Convert.ToString(objdata.Nationality);
 
                 List<UserCartDetails_Prebook> userCartDetails_Prebook = new List<UserCartDetails_Prebook>();
+                double value = 0;
                 for (int room = 0; room < objdata.ShoppingCartDetails.Count; room++)
                 {
                     UserCartDetails_Prebook userCartDetails_Pre = new UserCartDetails_Prebook();
@@ -15891,18 +15894,25 @@ new SqlParameter("@AgentId", AgentId),
                     userCartDetails_Pre.NoofChild = Convert.ToInt32(objdata.ShoppingCartDetails[room].NoofChild);
                     userCartDetails_Pre.NoofInfant = Convert.ToInt32(0);
                     userCartDetails_Pre.ChildAge = Convert.ToDouble(0);
-                    userCartDetails_Pre.ServiceSellingAmount = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
-                    userCartDetails_Pre.BaseServiceSellingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
+                    //userCartDetails_Pre.ServiceSellingAmount = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
+                    userCartDetails_Pre.ServiceSellingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency)) : value : Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
+                    //userCartDetails_Pre.BaseServiceSellingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
+                    userCartDetails_Pre.BaseServiceSellingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
+
 
                     if (objdata.SupplierCurrency.ToLower() != tokenData.SiteCurrency.Trim().ToLower())
                     {
-                        userCartDetails_Pre.ServiceBuyingAmount = Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)); //Supplier curency
+                        //userCartDetails_Pre.ServiceBuyingAmount = Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)); //Supplier curency
+                        userCartDetails_Pre.ServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)) : value : Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)); //Supplier curency
                     }
                     else
                     {
-                        userCartDetails_Pre.ServiceBuyingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice); //Supplier curency
+                        //userCartDetails_Pre.ServiceBuyingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice); //Supplier curency
+                        userCartDetails_Pre.ServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ?  Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice); //Supplier curency
                     }
-                    userCartDetails_Pre.BaseServiceBuyingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
+                    //userCartDetails_Pre.BaseServiceBuyingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
+                    userCartDetails_Pre.BaseServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
+
                     userCartDetails_Pre.CheckInDate = Convert.ToString(objdata.CheckInDate);
                     userCartDetails_Pre.CheckOutDate = Convert.ToString(objdata.CheckOutDate);
                     userCartDetails_Pre.DueDate = Convert.ToString(objdata.DueDate);
@@ -47555,8 +47565,6 @@ new SqlParameter("@AgentId", AgentId),
             BookResponse_newversion bookResponse_1 = new BookResponse_newversion();
             try
             {
-               
-
                 if (bookRequest != null)
                 {
                     if(bookRequest.userCart != null)
@@ -47573,11 +47581,11 @@ new SqlParameter("@AgentId", AgentId),
 
                         if (IsSubAgentCacheActive == 1)
                         {
-                            dsAgentDetails = await IsSubAgent(tokenData.AgentId, 0, CityId, Nationality, 0, tokenData.Type, tokenData.SubUserId, IsShowSupplier, CountryID, tokenData.RateCategoryId, 1, false, 1, false, false, 20);
+                            dsAgentDetails = await IsSubAgent(tokenData.AgentId, 0, CityId, Nationality, 0, tokenData.Type, tokenData.SubUserId, IsShowSupplier, CountryID, tokenData.RateCategoryId, 1, false, 1, false, false, 20,false,"",20,1,tokenData.TanentId);
                         }
                         else
                         {
-                            dsAgentDetails = await IsSubAgent(tokenData.AgentId, 0, CityId, Nationality, 0, tokenData.Type, tokenData.SubUserId, IsShowSupplier, CountryID, tokenData.RateCategoryId, 1, false, 0, false, false, 20);
+                            dsAgentDetails = await IsSubAgent(tokenData.AgentId, 0, CityId, Nationality, 0, tokenData.Type, tokenData.SubUserId, IsShowSupplier, CountryID, tokenData.RateCategoryId, 1, false, 0, false, false, 20, false, "", 20, 1, tokenData.TanentId);
                         }
                         #endregion
 
@@ -47629,26 +47637,521 @@ new SqlParameter("@AgentId", AgentId),
                         dtPassengers = HtmlExtensions.ConvertToDataTable(paxlist);
                         #endregion
 
+                        int UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartId);
+                        string TechName = Convert.ToString(bookRequest.userCart.UserCartDetails[0].TechName).ToLower();
+                        string suppliername = Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName).ToLower();
+
+                        string supplierName = Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName).Replace("'", "''");
+                        DataRow[] XPDetails = dsAgentDetails.Tables[1].Select("SupplierName = '" + supplierName + "'");
+
+
+                        string UniqueNo = "";
+                        string AgentVoucherNo = "";
+                        int bookingStatus = 6;//Default 6 means confirmed
+                        string responsetype = "Success";
+                        string RequestSPR = "";
+                        string ReponseSPR = "";
+                        string time = "";
+                        string Error = "";
+                        string ReferenceNo = "";
+                        string AgentUniqueNo = tokenData.AgentCode;
+                        System.Diagnostics.Stopwatch timerSupp = new System.Diagnostics.Stopwatch();
+
+                        timerSupp.Start();
                         for (int j=0; j < bookRequest.userCart.UserCartDetails.Count; j++)
                         {
 
-                            string TechName = Convert.ToString(bookRequest.userCart.UserCartDetails[j].TechName).ToLower();
-                            string suppliername = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName).ToLower();
+                            try
+                            {
+                                switch (TechName.ToLower())
+                                {
+                                    #region "EAN"
+                                    case "expedia":
+                                        try
+                                        {
+                                            if(j==0)//bcoz merge
+                                            {
+                                                
+                                                AgentVoucherNo = "";
+                                                UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                double CurrencyFactor = 1;
+                                                string currency = Convert.ToString(_commonMethod.GetCurrencyCodeByCurrencyID(bookRequest.userCart.SupplierCurrencyId, tokenData.dtROE));
+                                                if (currency.ToLower() != tokenData.SiteCurrency.ToLower())
+                                                {
+                                                    CurrencyFactor = _commonMethod.GetROEByCurrency(currency, tokenData.dtROE);
+                                                }
+
+                                                bookingStatus = 6;
+                                                #region "Setup Data For Request"
+                                                string EachoToken = Convert.ToString(bookRequest.userCart.UserCartDetails[j].EachoToken);
+                                                string EANBookRequest = "";
+                                                // DataRow newRowDOTW = dtAgentVoucher.NewRow();
+                                                string Ex_Guid = "Book_" + AgentUniqueNo + "_" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                string ChildSupplier = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName).ToLower();
+                                                bool IsB2B = true;
+                                                string CID = Convert.ToString(XPDetails[0]["UserID"]);
+                                                #endregion
+                                                EANBookRequest = _expedia.EANStringForBookV3_newversion(bookRequest, dtPassengers, j, Ex_Guid, ChildSupplier.ToLower());
+                                                string Token = bookRequest.userCart.UserCartDetails[0].PurchaseToken;
+                                                Boolean DynamicRetrive = false;
 
 
-                            //try
-                            //{
+                                                string URL = Convert.ToString(XPDetails[0]["WebsiteURL"]);
+                                                string ereqUrl = URL + Token;
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ereqUrl + EANBookRequest, "-", "Before Request hit Create Booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", "-", "RaynaB2B");
 
-                                
-                            //}
-                            //catch (Exception ex)
-                            //{
-                            //    _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
-                            //    _ = _exception.ErrorNew(ex, _LogAPI.Book, bookRequest.SearchKey);
-                            //}
+                                                string BookingResponse = "";
+
+                                                string RetriveMainResposne = "";
+                                                string ResponseData_Ex = "";
+                                                string ereqUrl1 = "";
+                                                if (Token != "")
+                                                {
+                                                    string Sign = Convert.ToString(XPDetails[0]["UserName"]);
+                                                    string ApiKey = Convert.ToString(XPDetails[0]["Password"]);
+                                                    //string Version = Convert.ToString(XPDetails[0]["Version"]);
+                                                    //string platform = Platform;//Common.GetUserPlatform();
+                                                    string echoToken = Convert.ToString(bookRequest.userCart.UserCartDetails[j].EachoToken); //Convert.ToString(HttpContext.Current.Session["EchoToken"]);
+                                                    string[] spitid = ereqUrl.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                                    ereqUrl1 = spitid[0].ToString();
+                                                    string Method = spitid[1].ToString();
+                                                    System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+
+                                                    timerroomprocess.Start();
+
+
+                                                    //ResponseDto responseDto = await _expedia.GetEANResponseBooking(ereqUrl1, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, Method, EANBookRequest, bookRequest.SearchKey, IP);
+                                                    ResponseDto responseDto = null;
+                                                    ResponseData_Ex = ""; // responseDto.Response;
+                                                    Error = ""; // responseDto.Error;
+
+                                                    RequestSPR = EANBookRequest;
+                                                    ReponseSPR = ResponseData_Ex;
+                                                    timerroomprocess.Stop();
+                                                    time = timerroomprocess.Elapsed.ToString();
+
+                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ereqUrl + EANBookRequest, ResponseData_Ex + Error, "After Request hit Create Booking" + 0, supplierName, "Response Confirm", "-", "activitylinker");
+
+
+                                                    if (ResponseData_Ex != "")
+                                                    {
+                                                        if (Error != "" || ResponseData_Ex.ToLower().Contains("upstream request timeout") || ResponseData_Ex.ToLower().Contains("internal server error") || ResponseData_Ex.ToLower().Contains("gateway time-out"))
+                                                        {
+
+                                                            Thread.Sleep(30000);
+                                                            DynamicRetrive = true;
+                                                            string RetriveBookRes = "";
+                                                            if (true)// (Supplier.ToLower() == "ean_b2bv3" || Supplier.ToLower() == "ean_pkgv3")
+                                                            {
+                                                                ResponseDto responseDto1 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
+                                                                RetriveBookRes = responseDto1.Response;
+                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + 0, supplierName, "Response Confirm", "-", "WithinEarth");
+
+                                                                #region Added on 18-DEC-205
+
+                                                                if (!RetriveBookRes.ToLower().Contains("status"))
+                                                                {
+                                                                    for (int k = 0; k < 22; k++)
+                                                                    {
+                                                                        try
+                                                                        {
+                                                                            if (k == 9)
+                                                                                System.Threading.Thread.Sleep(3000);
+                                                                            else
+                                                                                System.Threading.Thread.Sleep(5000);
+
+                                                                            ResponseDto responseDto11 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
+                                                                            RetriveBookRes = responseDto11.Response;
+                                                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + (k + 1), supplierName, "Response Confirm", "-", "WithinEarth");
+
+                                                                            if (RetriveBookRes.ToLower().Contains("status"))
+                                                                            {
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                        catch (Exception)
+                                                                        {
+
+                                                                        }
+                                                                    }
+                                                                }
+                                                                #endregion
+
+                                                            }
+                                                            else
+                                                            {
+                                                                ResponseDto responseDto2 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
+                                                                RetriveBookRes = responseDto2.Response;
+                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + 0, supplierName, "Response Confirm", "-", "WithinEarth");
+                                                            }
+                                                            RequestSPR = ExpediaInfo.EAN_VersionOnly;
+                                                            ReponseSPR = RetriveBookRes;
+
+
+                                                            RetriveMainResposne = RetriveBookRes;
+                                                            if (RetriveBookRes != "")
+                                                            {
+                                                                //RootObjectBook_EAN RootBook = new RootObjectBook_EAN();
+                                                                List<RootObjectBook_EAN> RootBook = new List<RootObjectBook_EAN>();// JsonConvert.DeserializeObject<List<RootObjectBook_EAN>>(RetriveBookRes);
+                                                                try
+                                                                {
+                                                                    RootBook = JsonConvert.DeserializeObject<List<RootObjectBook_EAN>>(RetriveBookRes);// JsonConvert.DeserializeObject<RootObjectBook_EAN>(RetriveBookRes);
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    RootBook = null;
+                                                                    _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                                }
+
+                                                                if (RootBook != null)
+                                                                {
+                                                                    if (RootBook[0].itinerary_id != null)
+                                                                    {
+                                                                        string ItineraryID = RootBook[0].itinerary_id;
+                                                                        string BookStatus = "";
+                                                                        string ConfirmationID = "";
+
+                                                                        if (RootBook[0].rooms[0].status != null)
+                                                                            BookStatus = RootBook[0].rooms[0].status;
+                                                                        if (RootBook[0].rooms[0].confirmation_id.expedia != null)
+                                                                            ConfirmationID = RootBook[0].rooms[0].confirmation_id.expedia;
+                                                                        if (BookStatus.ToLower() == "booked")
+                                                                        {
+                                                                            responsetype = "Success";
+                                                                            AgentVoucherNo = ItineraryID + "-" + ConfirmationID;
+                                                                            bookingStatus = 6;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            responsetype = "Success";
+                                                                            AgentVoucherNo = ItineraryID + "-0";
+                                                                            bookingStatus = 6;
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        responsetype = "GeneralError";
+                                                                        AgentVoucherNo = "";
+                                                                        bookingStatus = 2;
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    responsetype = "GeneralError";
+                                                                    AgentVoucherNo = "";
+                                                                    bookingStatus = 1;
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                responsetype = "GeneralError";
+                                                                AgentVoucherNo = "";
+                                                                bookingStatus = 2;
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            try
+                                                            {
+                                                                RootObjectCreate_EAN Root = JsonConvert.DeserializeObject<RootObjectCreate_EAN>(ResponseData_Ex);
+
+                                                                if (Root != null)
+                                                                {
+                                                                    if (Root.itinerary_id != null)
+                                                                    {
+                                                                        string ItineraryID = Root.itinerary_id;
+                                                                        string CreateBookLink = Root.links.retrieve.href;
+                                                                        string MethodCreate = Root.links.retrieve.method;
+
+                                                                        if (ItineraryID != "" || ItineraryID != null)
+                                                                        {
+                                                                            string URLRetrive = Convert.ToString(XPDetails[0]["WebsiteURL"]);
+                                                                            string RetriveBookRes = "";
+                                                                            try
+                                                                            {
+                                                                                ResponseDto responseDto2 = await _expedia.GetEANResponse(URLRetrive + CreateBookLink, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, MethodCreate, "", bookRequest.SearchKey, IP);
+                                                                                RetriveBookRes = responseDto2.Response;
+                                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", URLRetrive + CreateBookLink, RetriveBookRes, "After Request hit Retrive Booking" + 0, supplierName, "Response Confirm", "-", "WithinEarth");
+
+                                                                                #region Added on 18-Dec-2025
+                                                                                if (!RetriveBookRes.ToLower().Contains("status"))
+                                                                                {
+                                                                                    for (int k = 0; k < 22; k++)
+                                                                                    {
+                                                                                        try
+                                                                                        {
+                                                                                            if (k == 9)
+                                                                                                System.Threading.Thread.Sleep(3000);
+                                                                                            else
+                                                                                                System.Threading.Thread.Sleep(5000);
+
+                                                                                            ResponseDto responseDto22 = await _expedia.GetEANResponse(URLRetrive + CreateBookLink, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, MethodCreate, "", bookRequest.SearchKey, IP);
+                                                                                            RetriveBookRes = responseDto22.Response;
+                                                                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", URLRetrive + CreateBookLink, RetriveBookRes, "After Request hit Retrive Booking" + (k + 1), supplierName, "Response Confirm", "-", "WithinEarth");
 
 
 
+                                                                                            if (RetriveBookRes.ToLower().Contains("status"))
+                                                                                            {
+                                                                                                break;
+                                                                                            }
+                                                                                        }
+                                                                                        catch (Exception)
+                                                                                        {
+
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                                #endregion
+                                                                            }
+                                                                            catch (Exception)
+                                                                            {
+
+
+                                                                            }
+
+                                                                            RequestSPR = RequestSPR + "#" + URLRetrive + CreateBookLink;
+                                                                            ReponseSPR = ReponseSPR + "#" + RetriveBookRes;
+                                                                            if (RetriveBookRes != "")
+                                                                            {
+                                                                                RootObjectBook_EAN RootBook = JsonConvert.DeserializeObject<RootObjectBook_EAN>(RetriveBookRes);
+                                                                                if (RootBook != null)
+                                                                                {
+                                                                                    string BookStatus = "";
+                                                                                    string ConfirmationID = "";
+
+                                                                                    if (RootBook.rooms[0].status != null)
+                                                                                        BookStatus = RootBook.rooms[0].status;
+                                                                                    if (RootBook.rooms[0].confirmation_id.expedia != null)
+                                                                                        ConfirmationID = RootBook.rooms[0].confirmation_id.expedia;
+                                                                                    if (BookStatus.ToLower() == "booked")
+                                                                                    {
+                                                                                        responsetype = "Success";
+                                                                                        AgentVoucherNo = ItineraryID + "-" + ConfirmationID;
+                                                                                        bookingStatus = 6;
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        responsetype = "Success";
+                                                                                        AgentVoucherNo = ItineraryID + "-0";
+                                                                                        bookingStatus = 6;
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    responsetype = "Success";
+                                                                                    AgentVoucherNo = ItineraryID + "-1";
+                                                                                    bookingStatus = 6;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                responsetype = "Success";
+                                                                                AgentVoucherNo = ItineraryID + "-1";
+                                                                                bookingStatus = 6;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            responsetype = "GeneralError";
+                                                                            AgentVoucherNo = "";
+                                                                            bookingStatus = 2;
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        responsetype = "GeneralError";
+                                                                        AgentVoucherNo = "";
+                                                                        bookingStatus = 2;
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    responsetype = "GeneralError";
+                                                                    AgentVoucherNo = "";
+                                                                    bookingStatus = 2;
+                                                                }
+                                                            }
+                                                            catch (Exception exe)
+                                                            {
+                                                                _ = _exception.ErrorBooking(exe, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+
+                                                                #region k2
+                                                                Thread.Sleep(30000);
+                                                                DynamicRetrive = true;
+                                                                string RetriveBookRes = "";
+                                                                if (true)// (Supplier.ToLower() == "ean_b2bv3" || Supplier.ToLower() == "ean_pkgv3")
+                                                                {
+                                                                    ResponseDto responseDto3 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, suppliername, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
+                                                                    RetriveBookRes = responseDto3.Response;
+                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking." + 0, suppliername, "Response Confirm", "-", "withinearth");
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    ResponseDto responseDto4 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, suppliername, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
+                                                                    RetriveBookRes = responseDto4.Response;
+                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking." + 0, suppliername, "Response Confirm", "-", "WithinEarth");
+                                                                }
+                                                                RequestSPR = ExpediaInfo.EAN_VersionOnly;
+                                                                ReponseSPR = RetriveBookRes;
+
+
+                                                                RetriveMainResposne = RetriveBookRes;
+                                                                if (RetriveBookRes != "")
+                                                                {
+                                                                    List<RootObjectBook_EAN> RootBook = new List<RootObjectBook_EAN>();
+                                                                    try
+                                                                    {
+                                                                        RootBook = JsonConvert.DeserializeObject<List<RootObjectBook_EAN>>(RetriveBookRes);
+                                                                    }
+                                                                    catch (Exception ex)
+                                                                    {
+                                                                        RootBook = null;
+                                                                        _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                                    }
+
+                                                                    if (RootBook != null)
+                                                                    {
+                                                                        if (RootBook[0].itinerary_id != null)
+                                                                        {
+                                                                            string ItineraryID = RootBook[0].itinerary_id;
+                                                                            string BookStatus = "";
+                                                                            string ConfirmationID = "";
+
+                                                                            if (RootBook[0].rooms[0].status != null)
+                                                                                BookStatus = RootBook[0].rooms[0].status;
+                                                                            if (RootBook[0].rooms[0].confirmation_id.expedia != null)
+                                                                                ConfirmationID = RootBook[0].rooms[0].confirmation_id.expedia;
+                                                                            if (BookStatus.ToLower() == "booked")
+                                                                            {
+                                                                                responsetype = "Success";
+                                                                                AgentVoucherNo = ItineraryID + "-" + ConfirmationID;
+                                                                                bookingStatus = 6;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                responsetype = "Success";
+                                                                                AgentVoucherNo = ItineraryID + "-0";
+                                                                                bookingStatus = 6;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            responsetype = "GeneralError";
+                                                                            AgentVoucherNo = "";
+                                                                            bookingStatus = 2;
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        responsetype = "GeneralError";
+                                                                        AgentVoucherNo = "";
+                                                                        bookingStatus = 1;
+                                                                    }
+                                                                    
+                                                                }
+                                                                #endregion
+                                                            }
+
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        AgentVoucherNo = "";
+                                                        bookingStatus = 2;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    AgentVoucherNo = "";
+                                                    bookingStatus = 2;
+                                                }
+
+
+                                                if (bookingStatus == 6)
+                                                    responsetype = "Success";
+                                                else
+                                                    responsetype = "GeneralError";
+
+                                                try
+                                                {
+                                                    string ENRq = "";
+                                                    if (true)// (Supplier.ToLower() == "ean_b2bv3" || Supplier.ToLower() == "ean_pkgv3")
+                                                        ENRq = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia;
+                                                    else
+                                                        ENRq = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia;
+
+                                                    string ENRs = DynamicRetrive == false ? ResponseData_Ex : ResponseData_Ex + "</br>" + "Retrive Response : " + RetriveMainResposne;
+
+                                                    //responsetype = "GeneralError";
+                                                    // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
+                                                    _ = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, ENRq, ENRs, Error);
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    _ = _exception.Error(e, bookRequest.SearchKey);
+                                                    _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                }
+                                                #region BookingData
+                                                bookResponse_1.agentVouchers[j].UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                bookResponse_1.agentVouchers[j].UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                bookResponse_1.agentVouchers[j].AgentVoucherNo = AgentVoucherNo;
+                                                bookResponse_1.agentVouchers[j].XMLRequest = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia;
+                                                bookResponse_1.agentVouchers[j].XMLResponse = DynamicRetrive == false ? ResponseData_Ex : ResponseData_Ex + "</br>" + "Retrive Response : " + RetriveMainResposne;
+                                                bookResponse_1.agentVouchers[j].RoomStatus = Convert.ToString(bookingStatus);
+                                                bookResponse_1.agentVouchers[j].SupplierName = suppliername;
+                                               // bookResponse_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                #endregion
+
+                                            }
+
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            try
+                                            {
+                                                Error = ex.Message;
+                                                responsetype = "GeneralError";
+                                                time = "00:00:00.000000";
+                                                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                _ = _exception.Error(e, bookRequest.SearchKey);
+                                                _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                            }
+
+                                            _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+
+                                            #region BookingData
+                                            bookResponse_1.agentVouchers[j].UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                            bookResponse_1.agentVouchers[j].UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                            bookResponse_1.agentVouchers[j].AgentVoucherNo = AgentVoucherNo;
+                                            bookResponse_1.agentVouchers[j].XMLRequest = RequestSPR;
+                                            bookResponse_1.agentVouchers[j].XMLResponse = ReponseSPR + " ### Error: " + ex.Message + "";
+                                            bookResponse_1.agentVouchers[j].RoomStatus = Convert.ToString(1);
+                                            bookResponse_1.agentVouchers[j].SupplierName = suppliername;
+                                            //bookResponse_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                            #endregion
+                                        }
+                                        break;
+                                    #endregion
+                                    
+                                    default:
+                                        break;  
+                                }
+
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                _ = _exception.ErrorNew(ex, _LogAPI.Book, bookRequest.SearchKey);
+                            }
+                            timerSupp.Stop();
+        
                         }
                     }
                 }

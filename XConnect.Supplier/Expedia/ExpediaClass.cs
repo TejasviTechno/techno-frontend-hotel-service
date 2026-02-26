@@ -981,21 +981,21 @@ namespace XConnect.Expedia
     {
         public class Room
         {
-            public string title { get; set; }
+            //public string title { get; set; }
             public string given_name { get; set; }
             public string family_name { get; set; }
-            public string email { get; set; }
-            public Phone phone { get; set; }
+            //public string email { get; set; }
+           // public Phone phone { get; set; }
             public bool smoking { get; set; }
-            public string special_request { get; set; }
+            //public string special_request { get; set; }
         }
         public class Address
         {
             public string line_1 { get; set; }
-            public string line_2 { get; set; }
-            public string line_3 { get; set; }
-            public string city { get; set; }
-            public string state_province_code { get; set; }
+           // public string line_2 { get; set; }
+           // public string line_3 { get; set; }
+           public string city { get; set; }
+           // public string state_province_code { get; set; }
             public string postal_code { get; set; }
             public string country_code { get; set; }
         }
@@ -1004,18 +1004,18 @@ namespace XConnect.Expedia
         {
             public string given_name { get; set; }
             public string family_name { get; set; }
-            public string email { get; set; }
-            public Phone phone { get; set; }
+           // public string email { get; set; }
+            //public Phone phone { get; set; }
             public Address address { get; set; }
         }
         public class Payment
         {
             public string type { get; set; }
-            public string card_type { get; set; }
-            public string number { get; set; }
-            public string security_code { get; set; }
-            public string expiration_month { get; set; }
-            public string expiration_year { get; set; }
+           // public string card_type { get; set; }
+            //public string number { get; set; }
+            //public string security_code { get; set; }
+            //public string expiration_month { get; set; }
+            //public string expiration_year { get; set; }
             public BillingContact billing_contact { get; set; }
         }
         public class Phone
