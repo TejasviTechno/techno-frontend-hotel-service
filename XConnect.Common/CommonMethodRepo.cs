@@ -3453,7 +3453,6 @@ namespace XConnect.CommonUtilities
 
         public void ThirdPartyBookingHistory(string UniqueNo, string AgentUniqueNo, string XMLRequest, string XMLResponse, string Stage, string Provider, string StatusBooking, string ReferenceNo, string Website)
         {
-            return;
             Website = "API Out";
             SqlConnection conn1 = new SqlConnection(_connectionStrings.connectionStr_Logserver2_TP);//@Newadded on 12-mar-2024
             try
@@ -5223,6 +5222,33 @@ namespace XConnect.CommonUtilities
             }
 
             return currencyId;
+
+        }
+
+        public string GetCurrencyCodeByCurrencyID(int CurrencyId, DataTable dtROE)
+        {
+            string currencyCode = "";
+            try
+            {
+                if (CurrencyId != 0 && dtROE.Rows.Count > 0)
+                {
+
+                    DataRow[] drROE = dtROE.Select("currencyId='" + CurrencyId + "'");
+                    if (drROE.Length > 0)
+                    {
+                        currencyCode = Convert.ToString(drROE[0]["currencyCode"]);
+                        if (currencyCode == "")
+                            currencyCode = "USD";
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+            }
+
+            return currencyCode;
 
         }
 

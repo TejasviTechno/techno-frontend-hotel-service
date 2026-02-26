@@ -2711,6 +2711,110 @@ namespace XConnect.API.Controllers
         }
 
         [HttpPost]
+        [Route("Book_newversion")]
+        public async Task<IActionResult> Book_newversion(CommonRequest data)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            DateTime EntryTime = DateTime.Now;
+            TokenData TokenData = new TokenData();
+            string Seach_Key = "";
+
+            string IP = _platformService.GetIPAddress();
+            string userAgent = _platformService.GetUserPlatform(IP);
+            string MainURL = _platformService.GetHostName();
+            try
+            {
+                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+
+                if (data.IsMobile == 1)
+                {
+                    timer.Stop();
+                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, "401", "application/json", data, "401", authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "0", IP, "", "", "", 0, 0, 0, "", EntryTime, "", "", "", 401);
+
+                }
+                if (Convert.ToBoolean(authData.tokenData.AgentId))
+                {
+                    DataforLog log = new DataforLog();
+                    data.AdvancedOptions.Currency = authData.tokenData.CreditLimitCurrencyName;// use to get data in credit currecny only
+                    string JsonRQ = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                    BookRequest_newversion payload = Newtonsoft.Json.JsonConvert.DeserializeObject<BookRequest_newversion>(data.Request.ToString());
+                    Int32 HotelId = 0;
+
+                    //PreBookResponse RS = _xconnect.PreBook(payload, TokenData, data.AdvancedOptions, ref log, JsonRQ);//#MongoDB
+                    BookResponse_newversion RS = await _hotelXML.Book_newversion(payload, authData.tokenData, data.AdvancedOptions, JsonRQ, userAgent, IP, MainURL);
+                    //BookResponse RS = response.BookResponse;
+                    //log = response.DataforLog;
+
+                    string Ref = "";
+                    string IntRef = "";
+                    //try
+                    //{
+                    //    data.AdvancedOptions.SearchByOneID = true;
+                    //    data.AdvancedOptions.Provider = log.provider;
+                    //    data.AdvancedOptions.hotelid = log.hotelid;
+                    //    data.AdvancedOptions.HotelName = log.hotelname;
+                    //    Ref = RS.BookRS.ReferenceNo;
+                    //    IntRef = RS.BookRS.InternalReference;
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    _ = _exception.Error(ex);
+                    //}
+
+
+                    if (RS != null)
+                    {
+                        if (RS.Error.Count > 0)
+                        {
+                            string Error_Code = ErrorCode.SomeError;
+                            try
+                            {
+                                Error_Code = RS.Error[0].code;
+                            }
+                            catch (Exception x)
+                            {
+                                _ = _exception.Error(x);
+                            }
+                            timer.Stop();
+                            return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, payload.SearchKey, EntryTime, Ref, IntRef, "", 200);
+
+                        }
+                        else
+                        {
+                            //RS.BookRS.Currency = authData.tokenData.CreditLimitCurrencyName;
+                            timer.Stop();
+                            return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), ErrorCode.NoError, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, payload.SearchKey, EntryTime, Ref, IntRef, "", 200);
+
+                        }
+                    }
+                    else
+                    {
+                        error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError + ".");
+                        timer.Stop();
+                        RS.Error.Add(error);
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, RS, "application/json", data, RS, authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, payload.SearchKey, EntryTime, Ref, IntRef, "", 500);
+                    }
+                }
+                else
+                {
+                    timer.Stop();
+                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, "401", "application/json", data, "401", authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "0", IP, "", "", "", 0, 0, 0, "", EntryTime, "", "", "", 401);
+                }
+            }
+            catch (Exception ex)
+            {
+                timer.Stop();
+                await _exception.ErrorBooking(ex, "001");
+                BookResponse RS = new BookResponse();
+                error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError + "_");
+                RS.Error.Add(error);
+                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, RS, "application/json", data, RS, TokenData, "Book_newversion", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "0", IP, "", "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 500);
+            }
+
+        }
+
+        [HttpPost]
         [Route("BookingDetail_9")]
         public async Task<IActionResult> BookingDetail_9(CommonRequest data)
         {
