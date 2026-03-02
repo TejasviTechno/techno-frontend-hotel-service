@@ -38,9 +38,11 @@ namespace Xconnect.Expedia
         private readonly ISupplierRes _supplierRes;
         private readonly IMemoryCache _cache;
         private readonly KeySettings _keySettings;
+        private readonly SupplierConfiguration _supplierConfig;//Added on 26-FEB-26
 
 
-        public DidaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception)
+
+        public DidaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
@@ -48,6 +50,7 @@ namespace Xconnect.Expedia
             _cache = cache;
             _keySettings = keySettings.Value;
             _exception = exception;
+            _supplierConfig = supplierConfig.Value;
         }
         public void GetDidaRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, string SupplierName, HotelSearchParameter SearchPara, List<SupplierDetails> DidaDetails, List<SupplierSearchConfig> DidaSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string XMLCountry, string Xmlnationality, int Hit, string AgentCode, DataTable dtROE, TokenData tokenData)
         {
@@ -96,7 +99,7 @@ namespace Xconnect.Expedia
                                 //if (Hit > 0)
                                 xhotels.ProcessTimeout = Convert.ToInt32(DidaSearchConfig[k].HotelSearchTimeOut2);
 
-                                xhotels.URL = Convert.ToString(DidaDetails[0].WebSiteURL) + DidaInfo.DidaHotel_Action;
+                                xhotels.URL = Convert.ToString(DidaDetails[0].WebSiteURL) + _supplierConfig.Dida.DidaHotel_Action;
                                 xhotels.Action = "";
                                 xhotels.DebugeMode = DebugMode;
                                 //xhotels.CurrencyCode = Convert.ToString(_configuration["AppSettings:DidaCurrency"]);
@@ -234,12 +237,12 @@ namespace Xconnect.Expedia
                                                                     //if (Hit > 0)
                                                                     xhotels.ProcessTimeout = Convert.ToInt32(DidaSearchConfig[k].HotelSearchTimeOut2);
 
-                                                                    //xhotels.URL = Convert.ToString(DidaDetails.WebSiteURL) + DidaInfo.DidaHotel_Action;
+                                                                    //xhotels.URL = Convert.ToString(DidaDetails.WebSiteURL) + _supplierConfig.DidaInfo.DidaHotel_Action;
 
                                                                     if (_keySettings.SupplierProxy == "0")
-                                                                        xhotels.URL = Convert.ToString(DidaDetails.WebSiteURL) + DidaInfo.DidaHotel_Action;
+                                                                        xhotels.URL = Convert.ToString(DidaDetails.WebSiteURL) + _supplierConfig.Dida.DidaHotel_Action;
                                                                     else
-                                                                        xhotels.URL = Convert.ToString(DidaDetails.WebSiteURLforAPI) + DidaInfo.DidaHotel_Action;
+                                                                        xhotels.URL = Convert.ToString(DidaDetails.WebSiteURLforAPI) + _supplierConfig.Dida.DidaHotel_Action;
 
 
                                                                     xhotels.Action = "";
@@ -1289,7 +1292,7 @@ namespace Xconnect.Expedia
                                 dtCheckPriceReqStructure.Rows.Add(_commonMethod.AddCheckPriceReq(dtCheckPriceReqStructure.NewRow(), j + 1, UserCartId, UserCartDetailId, roomtypeid, "Dida", Req));
                             }
 
-                            string Action = DidaURL + Convert.ToString(DidaInfo.Dida_preBooking_Action);
+                            string Action = DidaURL + Convert.ToString(_supplierConfig.Dida.Dida_preBooking_Action);
 
                             System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                             timerroomprocess.Start();
@@ -1572,7 +1575,7 @@ namespace Xconnect.Expedia
                     dtCheckPriceReqStructure.Rows.Add(_commonMethod.AddCheckPriceReq(dtCheckPriceReqStructure.NewRow(), j + 1, UserCartId, UserCartDetailId, RCode, "Dida", Req));
                 }
 
-                string Action = URL + Convert.ToString(DidaInfo.Dida_preBooking_Action);
+                string Action = URL + Convert.ToString(_supplierConfig.Dida.Dida_preBooking_Action);
 
                 System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                 timerroomprocess.Start();
@@ -1767,8 +1770,8 @@ namespace Xconnect.Expedia
                             SBContect.Append("\"Last\": \"" + lastName + "\",");
                             SBContect.Append("\"First\": \"" + firstName + "\"");
                             SBContect.Append("},");
-                            SBContect.Append("\"Email\": \"" + DidaInfo.email + "\",");
-                            SBContect.Append("\"Phone\": \"" + DidaInfo.WorkPhone + "\"");
+                            SBContect.Append("\"Email\": \"" + _supplierConfig.Dida.email + "\",");
+                            SBContect.Append("\"Phone\": \"" + _supplierConfig.Dida.WorkPhone + "\"");
                             SBContect.Append("},");
                         }
                         SBPassanger.Append("{");

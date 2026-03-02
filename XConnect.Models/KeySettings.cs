@@ -100,6 +100,7 @@ namespace XConnect.Models
         public string? Active_Gimmonix { get; set; } = String.Empty;//Added on 25 SEP 2025
         public string? AdminEmail { get; set; } = String.Empty;//Added on 25 SEP 2025
         public string? CreditCardCharges { get; set; } = String.Empty;//Added on 16 DEC 2025
+        public string? siteCurrency { get; set; } = String.Empty;//Added on 26-FEB-26
 
     }
 }

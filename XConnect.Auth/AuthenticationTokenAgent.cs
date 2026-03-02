@@ -332,7 +332,7 @@ namespace Xconnect.Auth
                         //_token.tenantId = tenantGuid;
                         _token.tenantId = _userContextAccessor.DecodedJwt.TenantId;
                     }
-                    _token.siteCurrency = "USD";
+                    _token.siteCurrency = Convert.ToString(_keySettings.siteCurrency);
 
                     if(_userContextAccessor.DecodedJwt.PermissionType != null && _userContextAccessor.DecodedJwt.PermissionType.Count > 0)
                     {

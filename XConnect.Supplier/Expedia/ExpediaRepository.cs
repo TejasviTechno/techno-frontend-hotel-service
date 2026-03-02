@@ -40,9 +40,10 @@ namespace XConnect.Expedia
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
         private readonly IDLConnection _dLConnection;
+        private readonly SupplierConfiguration _supplierConfig;//Added on 26-FEB-26
 
 
-        public ExpediaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IDLConnection dLConnection, IException exception)
+        public ExpediaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IDLConnection dLConnection, IException exception, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
@@ -50,6 +51,7 @@ namespace XConnect.Expedia
             _keySettings = keySettings.Value;
             _dLConnection = dLConnection;
             _exception = exception;
+            _supplierConfig = supplierConfig.Value;
         }
 
         public string EAN_NationalityCode(string Nationality)
@@ -177,24 +179,24 @@ namespace XConnect.Expedia
 
 
 
-                                                                //if (Supplier.ToLower() == ExpediaInfo.EAN_B2BV3 || Supplier.ToLower() == ExpediaInfo.EAN_PKGV3)
-                                                                //    xhotel.URL = Convert.ToString(EANChild[x].WebSiteURL) + ExpediaInfo.EAN_VersionV3 + ExpediaInfo.EAN_HotelList_Url;
+                                                                //if (Supplier.ToLower() == _supplierConfig.Expedia.EAN_B2BV3 || Supplier.ToLower() == _supplierConfig.Expedia.EAN_PKGV3)
+                                                                //    xhotel.URL = Convert.ToString(EANChild[x].WebSiteURL) + _supplierConfig.Expedia.EAN_VersionV3 + _supplierConfig.Expedia.EAN_HotelList_Url;
                                                                 //else
-                                                                //    xhotel.URL = Convert.ToString(EANChild[x].WebSiteURL) + ExpediaInfo.EAN_Version + ExpediaInfo.EAN_HotelList_Url;
+                                                                //    xhotel.URL = Convert.ToString(EANChild[x].WebSiteURL) + _supplierConfig.Expedia.EAN_Version + _supplierConfig.Expedia.EAN_HotelList_Url;
 
-                                                                if (true)// (Supplier.ToLower() == ExpediaInfo.EAN_B2BV3 || Supplier.ToLower() == ExpediaInfo.EAN_PKGV3) //Added on 28-10-25
+                                                                if (true)// (Supplier.ToLower() == _supplierConfig.Expedia.EAN_B2BV3 || Supplier.ToLower() == _supplierConfig.Expedia.EAN_PKGV3) //Added on 28-10-25
                                                                 {
                                                                     if (_keySettings.SupplierProxy == "0")
-                                                                        xhotel.URL = Convert.ToString(EANChild[x].WebSiteURL) + ExpediaInfo.EAN_VersionV3 + ExpediaInfo.EAN_HotelList_Url;
+                                                                        xhotel.URL = Convert.ToString(EANChild[x].WebSiteURL) + _supplierConfig.Expedia.EAN_VersionV3 + _supplierConfig.Expedia.EAN_HotelList_Url;
                                                                     else
-                                                                        xhotel.URL = Convert.ToString(EANChild[x].WebSiteURLforAPI) + ExpediaInfo.EAN_VersionV3 + ExpediaInfo.EAN_HotelList_Url;
+                                                                        xhotel.URL = Convert.ToString(EANChild[x].WebSiteURLforAPI) + _supplierConfig.Expedia.EAN_VersionV3 + _supplierConfig.Expedia.EAN_HotelList_Url;
                                                                 }
                                                                 else
                                                                 {
                                                                     if (_keySettings.SupplierProxy == "0")
-                                                                        xhotel.URL = Convert.ToString(EANChild[x].WebSiteURL) + ExpediaInfo.EAN_Version + ExpediaInfo.EAN_HotelList_Url;
+                                                                        xhotel.URL = Convert.ToString(EANChild[x].WebSiteURL) + _supplierConfig.Expedia.EAN_Version + _supplierConfig.Expedia.EAN_HotelList_Url;
                                                                     else
-                                                                        xhotel.URL = Convert.ToString(EANChild[x].WebSiteURLforAPI) + ExpediaInfo.EAN_Version + ExpediaInfo.EAN_HotelList_Url;
+                                                                        xhotel.URL = Convert.ToString(EANChild[x].WebSiteURLforAPI) + _supplierConfig.Expedia.EAN_Version + _supplierConfig.Expedia.EAN_HotelList_Url;
                                                                 }
                                                                 xhotel.UserId = Convert.ToString(EANChild[x].UserID);
                                                                 xhotel.UserName = Convert.ToString(EANChild[x].UserName);
@@ -318,7 +320,7 @@ namespace XConnect.Expedia
                         if (Convert.ToInt32(EXPSearchConfig[k].CityID) == 0 || Convert.ToInt32(EXPSearchConfig[k].CityID) == SearchPara.CityID)//All City means 0
                         {
                             {
-                                //string currency = ExpediaInfo.EANCurrency;
+                                //string currency = _supplierConfig.Expedia.EANCurrency;
                                 string currency = EXPDetails[0].CurrencyShortName; //210225
                                 double CurrencyFactor = 1;
                                 _commonMethod.GetXtgCurrencyByCountry(Supplier, SearchPara.CountryCode, ref currency, AgentCode);
@@ -438,8 +440,8 @@ namespace XConnect.Expedia
         //        StringBuilder JsonRQ = new StringBuilder();
         //        JsonRQ.Append("checkin=" + checkin + "");
         //        JsonRQ.Append("&checkout=" + checkout + "");
-        //        JsonRQ.Append("&currency=" + ExpediaInfo.EANCurrency + "");
-        //        JsonRQ.Append("&language=" + ExpediaInfo.EANLanguage + "");
+        //        JsonRQ.Append("&currency=" + _supplierConfig.Expedia.EANCurrency + "");
+        //        JsonRQ.Append("&language=" + _supplierConfig.Expedia.EANLanguage + "");
         //        JsonRQ.Append("&country_code=" + XMLCOUNTRYCode + "");
         //        //JsonRQ.Append("&country_code=GB");
         //        //Ids = "119508,16150,19825,23504,24180,4285,7606,11715,7989,119508,4149877";
@@ -534,9 +536,9 @@ namespace XConnect.Expedia
                 StringBuilder JsonRQ = new StringBuilder();
                 JsonRQ.Append("checkin=" + checkin + "");
                 JsonRQ.Append("&checkout=" + checkout + "");
-                //JsonRQ.Append("&currency=" + ExpediaInfo.EANCurrency + "");
+                //JsonRQ.Append("&currency=" + _supplierConfig.Expedia.EANCurrency + "");
                 JsonRQ.Append("&currency=" + EANCurrency + "");
-                JsonRQ.Append("&language=" + ExpediaInfo.EANLanguage + "");
+                JsonRQ.Append("&language=" + _supplierConfig.Expedia.EANLanguage + "");
                 JsonRQ.Append("&country_code=" + XMLCOUNTRYCode + "");
                 Ids = Ids.Replace(",", "&property_id=");
                 for (int room = 0; room < SearchParam.Rooms.Count; room++)
@@ -561,37 +563,37 @@ namespace XConnect.Expedia
                 JsonRQ.Append("&sales_channel=agent_tool");
                 JsonRQ.Append("&property_id=" + Ids + "");
                 if (ISPKG)
-                    JsonRQ.Append("&sales_environment=" + ExpediaInfo.EAN_Sales_Environment_Hotel_package);
+                    JsonRQ.Append("&sales_environment=" + _supplierConfig.Expedia.EAN_Sales_Environment_Hotel_package);
                 else
-                    JsonRQ.Append("&sales_environment=" + ExpediaInfo.EAN_Sales_Environment_Hotel_Only);
-                //JsonRQ.Append("&include=" + ExpediaInfo.EAN_Include_All_Rates);
+                    JsonRQ.Append("&sales_environment=" + _supplierConfig.Expedia.EAN_Sales_Environment_Hotel_Only);
+                //JsonRQ.Append("&include=" + _supplierConfig.Expedia.EAN_Include_All_Rates);
                 if (true)// (SupplierName.ToLower() == "ean_b2bv3" || SupplierName.ToLower() == "ean_pkgv3")
                 {
-                    JsonRQ.Append("&rate_option=" + ExpediaInfo.EAN_Rate_Option_Member);
+                    JsonRQ.Append("&rate_option=" + _supplierConfig.Expedia.EAN_Rate_Option_Member);
                 }
                 else
                 {
-                    JsonRQ.Append("&rate_option=" + ExpediaInfo.EAN_Rate_Option_Closed_User_Group);
+                    JsonRQ.Append("&rate_option=" + _supplierConfig.Expedia.EAN_Rate_Option_Closed_User_Group);
                 }
-                //JsonRQ.Append("&sort_type=" + ExpediaInfo.EAN_Sort_Type_Preferred);
-                //JsonRQ.Append("&billing_terms=" + ExpediaInfo.EAN_Billing_Terms_EAC);
+                //JsonRQ.Append("&sort_type=" + _supplierConfig.Expedia.EAN_Sort_Type_Preferred);
+                //JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
                 JsonRQ.Append("&billing_terms=");
                 if (SupplierName.ToLower() == "ean_pkgv3_retail") //Added on 29-Oct-2025
                 {
-                    JsonRQ.Append("&payment_terms=" + ExpediaInfo.EAN_Payment_Terms_2);
-                    JsonRQ.Append("&partner_point_of_sale=" + ExpediaInfo.EAN_Partner_Point_Of_Sale_COMP);
+                    JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_2);
+                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_COMP);
                 }
                 else
                 {
-                    JsonRQ.Append("&payment_terms=" + ExpediaInfo.EAN_Payment_Terms_0);
-                    JsonRQ.Append("&partner_point_of_sale=" + ExpediaInfo.EAN_Partner_Point_Of_Sale);
+                    JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_0);
+                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale);
                 }
                 if (SearchParam.Filters.IsShowRooms == 0)
                 {
                     if (ReturnRooms > 0)
                         JsonRQ.Append("&rate_plan_count=" + ReturnRooms);
                     else
-                        JsonRQ.Append("&rate_plan_count=" + ExpediaInfo.EAN_Rate_Plan_Count_1);
+                        JsonRQ.Append("&rate_plan_count=" + _supplierConfig.Expedia.EAN_Rate_Plan_Count_1);
 
                 }
                 else
@@ -601,23 +603,23 @@ namespace XConnect.Expedia
                         if (ReturnRooms > 0)
                             JsonRQ.Append("&rate_plan_count=" + ReturnRooms); // added on 20-JUN-2024 as per mustafa sir //change to 250 As per Mustfa sir 16 OCT 2025
                         else
-                            JsonRQ.Append("&rate_plan_count=" + ExpediaInfo.EAN_Rate_Plan_Count_250); // added on 20-JUN-2024 as per mustafa sir //change to 250 As per Mustfa sir 16 OCT 2025
+                            JsonRQ.Append("&rate_plan_count=" + _supplierConfig.Expedia.EAN_Rate_Plan_Count_250); // added on 20-JUN-2024 as per mustafa sir //change to 250 As per Mustfa sir 16 OCT 2025
                     }
                     else
                     {
                         if (AgentCode.ToLower() == "nigm" || AgentCode.ToLower() == "amtj")
-                            JsonRQ.Append("&rate_plan_count=" + ExpediaInfo.EAN_Rate_Plan_Count_10);
+                            JsonRQ.Append("&rate_plan_count=" + _supplierConfig.Expedia.EAN_Rate_Plan_Count_10);
                         else
                         {
                             if (ReturnRooms > 0) //040225
                                 JsonRQ.Append("&rate_plan_count=" + ReturnRooms); //040225
                             else
-                                JsonRQ.Append("&rate_plan_count=" + ExpediaInfo.EAN_Rate_Plan_Count_10);
+                                JsonRQ.Append("&rate_plan_count=" + _supplierConfig.Expedia.EAN_Rate_Plan_Count_10);
 
                         }
                     }
                 }
-                JsonRQ.Append("&platform_name=" + ExpediaInfo.EAN_Platform_Name);
+                JsonRQ.Append("&platform_name=" + _supplierConfig.Expedia.EAN_Platform_Name);
                 return JsonRQ.ToString();
             }
             catch (Exception Ex)
@@ -814,7 +816,7 @@ namespace XConnect.Expedia
         //                                DataTable dt_Cancellation = _commonMethod.GenerateCancellationDataTableNewV2();
         //                                DataTable dt_RateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
         //                                #endregion
-        //                                decimal LowestPrice = Convert.ToDecimal(MinPrice).CalculatePrice(commonSearch.tokenData, commonSearch.advancedOptions, ExpediaInfo.EANCurrency);
+        //                                decimal LowestPrice = Convert.ToDecimal(MinPrice).CalculatePrice(commonSearch.tokenData, commonSearch.advancedOptions, _supplierConfig.Expedia.EANCurrency);
         //                                Options ops = (await _supplierRes.GetCommonRoomForSuppliers(GiataId, commonSearch.tokenData, commonSearch.advancedOptions, Convert.ToDouble(LowestPrice), drXmlHotel, dt_HotelRoom, dt_Cancellation, dt_RateBreackUp, SearchParam));
         //                                if (ops != null)
         //                                    options.Add(ops);
@@ -1307,7 +1309,7 @@ namespace XConnect.Expedia
         //                                                drEANRoom["OurProfit"] = OurProfit;
         //                                                drEANRoom["CurrencyFactor"] = ExpediaCurrencyFactor;
 
-        //                                                _markup.ProcessHotelRoom_WithMarkup(ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref ItemPrice, ref drEANRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
+        //                                                _markup.ProcessHotelRoom_WithMarkup(ExpediaCurrencyFactor, _supplierConfig.Expedia.EANCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref ItemPrice, ref drEANRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
 
         //                                                drEANRoom["SupplierName"] = Provider;
         //                                                dtHotelRoom.Rows.Add(drEANRoom);
@@ -1327,7 +1329,7 @@ namespace XConnect.Expedia
         //                                                        double CancellationAmount = 0;
         //                                                        double CancellationPecentage = 0;
         //                                                        double CancellationCharge = 0;
-        //                                                        Currency = ExpediaInfo.EANCurrency;
+        //                                                        Currency = _supplierConfig.Expedia.EANCurrency;
         //                                                        if (Root[h].rooms[j].rates[k].cancel_penalties != null)
         //                                                        {
         //                                                            int CancellationPolicy = Convert.ToInt32(Root[h].rooms[j].rates[k].cancel_penalties.Count);
@@ -1423,7 +1425,7 @@ namespace XConnect.Expedia
         //                                                        #endregion
 
 
-        //                                                        dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
+        //                                                        dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, _supplierConfig.Expedia.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
         //                                                                                                       Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
         //                                                                                                       DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
         //                                                        dtCancellation.AcceptChanges();
@@ -1446,7 +1448,7 @@ namespace XConnect.Expedia
         //                                                        double CancellationPecentage = 0;
         //                                                        double CancellationCharge = 0;
         //                                                        bool IsNonRef = false;
-        //                                                        Currency = ExpediaInfo.EANCurrency;
+        //                                                        Currency = _supplierConfig.Expedia.EANCurrency;
         //                                                        bool IsTrue = true;
         //                                                        bool ForPol = true;
 
@@ -1619,7 +1621,7 @@ namespace XConnect.Expedia
         //                                                            double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
         //                                                            #endregion
 
-        //                                                            dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
+        //                                                            dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, _supplierConfig.Expedia.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
         //                                                                                                        Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
         //                                                                                                        DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
         //                                                            dtCancellation.AcceptChanges();
@@ -1641,7 +1643,7 @@ namespace XConnect.Expedia
         //                                                        double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
         //                                                        #endregion
 
-        //                                                        dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
+        //                                                        dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, _supplierConfig.Expedia.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
         //                                                                                                         Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
         //                                                                                                         DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
         //                                                        dtCancellation.AcceptChanges();
@@ -1926,7 +1928,7 @@ namespace XConnect.Expedia
                                         DataTable dt_Cancellation = _commonMethod.GenerateCancellationDataTableNewV2();
                                         DataTable dt_RateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
                                         #endregion
-                                        decimal LowestPrice = Convert.ToDecimal(MinPrice).CalculatePrice(commonSearch.tokenData, commonSearch.advancedOptions, ExpediaInfo.EANCurrency);
+                                        decimal LowestPrice = Convert.ToDecimal(MinPrice).CalculatePrice(commonSearch.tokenData, commonSearch.advancedOptions, _supplierConfig.Expedia.EANCurrency);
                                         Options ops = (await _supplierRes.GetCommonRoomForSuppliers(GiataId, commonSearch.tokenData, commonSearch.advancedOptions, Convert.ToDouble(LowestPrice), drXmlHotel, dt_HotelRoom, dt_Cancellation, dt_RateBreackUp, SearchParam));
                                         if (ops != null)
                                             options.Add(ops);
@@ -2410,7 +2412,7 @@ namespace XConnect.Expedia
                                                         drEANRoom["OurProfit"] = OurProfit;
                                                         drEANRoom["CurrencyFactor"] = ExpediaCurrencyFactor;
 
-                                                        _markup.ProcessHotelRoom_WithMarkup(ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref ItemPrice, ref drEANRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
+                                                        _markup.ProcessHotelRoom_WithMarkup(ExpediaCurrencyFactor, _supplierConfig.Expedia.EANCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref ItemPrice, ref drEANRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
 
                                                         drEANRoom["SupplierName"] = Provider;
                                                         dtHotelRoom.Rows.Add(drEANRoom);
@@ -2430,7 +2432,7 @@ namespace XConnect.Expedia
                                                                 double CancellationAmount = 0;
                                                                 double CancellationPecentage = 0;
                                                                 double CancellationCharge = 0;
-                                                                Currency = ExpediaInfo.EANCurrency;
+                                                                Currency = _supplierConfig.Expedia.EANCurrency;
                                                                 if (Root[h].rooms[j].rates[k].cancel_penalties != null)
                                                                 {
                                                                     int CancellationPolicy = Convert.ToInt32(Root[h].rooms[j].rates[k].cancel_penalties.Count);
@@ -2526,7 +2528,7 @@ namespace XConnect.Expedia
                                                                 #endregion
 
 
-                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
+                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, _supplierConfig.Expedia.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
                                                                                                                Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
                                                                                                                DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
                                                                 dtCancellation.AcceptChanges();
@@ -2549,7 +2551,7 @@ namespace XConnect.Expedia
                                                                 double CancellationPecentage = 0;
                                                                 double CancellationCharge = 0;
                                                                 bool IsNonRef = false;
-                                                                Currency = ExpediaInfo.EANCurrency;
+                                                                Currency = _supplierConfig.Expedia.EANCurrency;
                                                                 bool IsTrue = true;
                                                                 bool ForPol = true;
 
@@ -2722,7 +2724,7 @@ namespace XConnect.Expedia
                                                                     double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
                                                                     #endregion
 
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
+                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, _supplierConfig.Expedia.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
                                                                                                                 Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
                                                                                                                 DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
                                                                     dtCancellation.AcceptChanges();
@@ -2744,7 +2746,7 @@ namespace XConnect.Expedia
                                                                 double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
                                                                 #endregion
 
-                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
+                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, _supplierConfig.Expedia.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
                                                                                                                  Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
                                                                                                                  DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
                                                                 dtCancellation.AcceptChanges();
@@ -2808,2836 +2810,7 @@ namespace XConnect.Expedia
             }
         }
 
-        #region For Optimize Code - 11/06/25
-        //parallel
-        public async Task<List<Options>> ean_HotelSearchWithRooms_Optimize1(HotelX ItemEN, CommonSearch commonSearch, string xmlcity, string xmlcountry, HotelSearchParameter SearchParam, double ExpediaCurrencyFactor, DataTable dtROE, string Suppliername, string ResponseData, string CID, string Currency, DataRow[] ExpDetail, string xmlhotelcode, string platform, string echotoken, string Sign, string ApiKey, string Version, string URL, string Provider, string ProccessCutOffTime, int processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string StoreSupplierResErrorLog)
-        {
-            System.Diagnostics.Stopwatch timer_room_ean = new System.Diagnostics.Stopwatch();
-            timer_room_ean.Start();
-
-            List<Options> options = new List<Options>();
-
-            try
-            {
-                #region DataTable
-                //DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
-                #endregion
-                if (ResponseData != string.Empty)
-                {
-                    #region PriceOnly RS
-                    List<EAN.RootObject_EAN2> Root = null;
-
-                    try
-                    {
-                        var optionss = new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true,
-                            ReadCommentHandling = JsonCommentHandling.Skip,
-                            AllowTrailingCommas = true
-                        };
-                        Root = JsonSerializer.Deserialize<List<EAN.RootObject_EAN2>>(ResponseData, optionss);
-                        //List<EAN.RootObject_EAN2> Root = JsonSerializer.Deserialize<List<EAN.RootObject_EAN2>>(ResponseData, optionss);
-                    }
-                    catch (Exception)
-                    {
-                        Root = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EAN.RootObject_EAN2>>(ResponseData); //140525
-                    }
-                    //List<EAN.RootObject_EAN2> Root = JsonSerializer.Deserialize<List<EAN.RootObject_EAN2>>(ResponseData);
-                    #endregion
-                    #region Pax Occupancy
-
-                    int AdultsOcc = 0;
-                    int ChildOcc = 0;
-                    int TotalAdult = 0;
-                    int TotalChild = 0;
-
-                    for (int a = 0; a < SearchParam.Rooms.Count; a++)
-                    {
-                        AdultsOcc = SearchParam.Rooms[a].NoofAdults;
-                        ChildOcc = SearchParam.Rooms[a].NoofChild;
-                        TotalAdult = TotalAdult + AdultsOcc;
-                        TotalChild = TotalChild + ChildOcc;
-                    }
-
-
-                    var parsedOccupancies = SearchParam.Rooms
-                                            .GroupBy(x => new { x.RoomName, x.NoofAdults, x.NoofChild, x.Child1Age, x.Child2Age })
-                                            .Select(n =>
-                                            {
-                                                var childAges = n.ToList();
-                                                string chd = n.Key.NoofChild switch
-                                                {
-                                                    1 => "-" + childAges[0].Child1Age,
-                                                    2 => "-" + childAges[0].Child1Age + "," + childAges[0].Child2Age,
-                                                    _ => ""
-                                                };
-                                                return (Occ: n.Key.NoofAdults + chd, Count: n.Count());
-                                            }).ToList();
-
-
-                    #endregion
-                    var parallelOptions = new ParallelOptions
-                    {
-                        MaxDegreeOfParallelism = 4 // means 4 tasks at a time
-                    };
-
-                    await Parallel.ForEachAsync(Root, parallelOptions, async (hotel, token) =>
-                    {
-
-                        DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
-
-                        ItemEN.ResponseType = "Success";
-                        //if (ProccessCutOffTime == "1" && timer_room_ean.ElapsedMilliseconds > processTimeout)
-                        //{
-                        //    break;
-                        //}
-                        string ItemCode = hotel.property_id;
-                        #region "When not Need Room"  
-                        if (SearchParam.Filters.IsShowRooms == 0)
-                        {
-                            #region "Hotel Code Block "
-                            double TotalCharges = 0;
-                            {
-                                #region Add by jay
-
-                                double MainPrice = 0;
-                                double FinalPrice = CalculateMinimumEANPrice(hotel.rooms, parsedOccupancies, Convert.ToInt32(ItemEN.EanProfit), ExpediaCurrencyFactor, dtROE);
-
-
-                                #endregion
-                                DataRow drXmlHotel = DtHotel.NewRow();
-                                drXmlHotel["XMLHotelCode"] = ItemCode;
-                                drXmlHotel["Reviews"] = 0;
-                                drXmlHotel["OfficeID"] = 0;
-                                drXmlHotel["ContractID"] = CID;
-                                drXmlHotel["IsShowSupplier"] = false;
-                                drXmlHotel["OwnSystemHotelId"] = 0;
-                                drXmlHotel["Favorite"] = 0;
-                                drXmlHotel["XmlHotelCity"] = xmlcity;
-                                drXmlHotel["XMLCountry"] = xmlcountry;
-                                drXmlHotel["XMLCity"] = xmlcity;
-                                drXmlHotel["XMLCode"] = xmlcountry;
-                                drXmlHotel["SupplierName"] = Suppliername;
-                                drXmlHotel["BookingStatus"] = "Available";
-                                drXmlHotel["SupplierCurrency"] = Currency;
-                                drXmlHotel["FinalSellingPrice"] = FinalPrice;
-                                drXmlHotel["SellingPrice"] = FinalPrice;
-                                DtHotel.Rows.Add(drXmlHotel);
-                                TotalCharges = FinalPrice;
-                                #endregion
-                                if (TotalCharges > 0)
-                                {
-                                    #region "Room code Block"
-                                    bool willAddOrNot = true;
-                                    Int64 RaynaID = 0;
-                                    Int64 GiataId = 0;
-                                    int Rating = 0;
-                                    Int64 OwnsystemHotelId = 0;
-                                    double MinPrice = TotalCharges;
-                                    _markup.GetHotelDataCommon(ref MinPrice, ref willAddOrNot, ref OwnsystemHotelId, ref RaynaID, ref GiataId, ref Rating, ref drXmlHotel, commonSearch.AgentId, commonSearch.TariffID, commonSearch.dsAgentDetails, commonSearch.supplierGiataMaster, SearchParam, commonSearch.dtCountryCityMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId, commonSearch.SubAgentMarkup, commonSearch.SearchByHotel, commonSearch.HotelIDS);
-                                    if (willAddOrNot)
-                                    {
-                                        #region "Room Logic"
-                                        DataTable dt_HotelRoom = _commonMethod.GenerateRoomtypeDataTableNewV2();
-                                        DataTable dt_Cancellation = _commonMethod.GenerateCancellationDataTableNewV2();
-                                        DataTable dt_RateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
-                                        #endregion
-                                        decimal LowestPrice = Convert.ToDecimal(MinPrice).CalculatePrice(commonSearch.tokenData, commonSearch.advancedOptions, ExpediaInfo.EANCurrency);
-                                        Options ops = (await _supplierRes.GetCommonRoomForSuppliers(GiataId, commonSearch.tokenData, commonSearch.advancedOptions, Convert.ToDouble(LowestPrice), drXmlHotel, dt_HotelRoom, dt_Cancellation, dt_RateBreackUp, SearchParam));
-                                        if (ops != null)
-                                            options.Add(ops);
-                                    }
-                                    else
-                                    {
-
-                                    }
-                                    #endregion
-                                }
-                            }
-                        }
-                        #endregion
-                        #region "When Need Rooms"
-                        else
-                        {
-                            double FinalMinPrice = 0;
-                            #region Hotels
-
-
-                            #region "Hotel Block here"
-                            double FinalPrice = 1;
-                            DataRow drXmlHotel = DtHotel.NewRow();
-                            drXmlHotel["XMLHotelCode"] = ItemCode;
-                            drXmlHotel["Rating"] = 0;
-                            drXmlHotel["Reviews"] = 0;
-                            drXmlHotel["OfficeID"] = 0;
-                            drXmlHotel["ContractID"] = CID;
-                            drXmlHotel["IsShowSupplier"] = false;
-                            drXmlHotel["OwnSystemHotelId"] = 0;
-                            drXmlHotel["Favorite"] = 0;
-                            drXmlHotel["XmlHotelCity"] = xmlcity;
-                            drXmlHotel["XMLCountry"] = xmlcountry;
-                            drXmlHotel["XMLCity"] = xmlcity;
-                            drXmlHotel["XMLCode"] = xmlcountry;
-                            drXmlHotel["SupplierName"] = Suppliername;
-                            drXmlHotel["BookingStatus"] = "Available";
-                            drXmlHotel["SupplierCurrency"] = Currency;
-                            drXmlHotel["FinalSellingPrice"] = FinalPrice;
-                            drXmlHotel["SellingPrice"] = FinalPrice;
-                            DtHotel.Rows.Add(drXmlHotel);
-                            FinalMinPrice = FinalPrice;
-                            #endregion
-                            #region "GetRooms for this hotel"
-                            bool willAddOrNot = true;
-                            Int64 RaynaID = 0;
-                            Int64 GiataId = 0;
-                            int RatingHotel = 0;
-                            Int64 OwnsystemHotelId = 0;
-                            double MinPrice = 1;
-
-                            _markup.GetHotelDataCommon(ref MinPrice, ref willAddOrNot, ref OwnsystemHotelId, ref RaynaID, ref GiataId, ref RatingHotel, ref drXmlHotel, commonSearch.AgentId, commonSearch.TariffID, commonSearch.dsAgentDetails, commonSearch.supplierGiataMaster, SearchParam, commonSearch.dtCountryCityMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId, commonSearch.SubAgentMarkup, commonSearch.SearchByHotel, commonSearch.HotelIDS);
-                            if (willAddOrNot)
-                            {
-                                DataTable dtHotelRoom = _commonMethod.GenerateRoomtypeDataTableNewV2();
-                                DataTable dtCancellation = _commonMethod.GenerateCancellationDataTableNewV2();
-                                DataTable DtRoomRateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
-                                int CutOffDays = CacheMaster.CutOffDays;
-                                CutOffDays = _commonMethod.GetCutOffDays(commonSearch.dtSuplierMarkup, Provider);
-                                #region "Room Logic"
-                                {
-                                    #region "Hotel Block here"
-                                    double AgentPercentage = 0.0;
-                                    double AgentMarkupAmount = 0.0;
-                                    Boolean isPerce = true;
-                                    bool blnIsShowSupplier = false;
-                                    _markup.getAgetMarkupSetting(Provider, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate);
-                                    DataSet dsFinal = new DataSet();
-                                    DataTable dt_HotelRoom = _commonMethod.GenerateRoomtypeDataTableNewV2();
-                                    DataTable dt_Cancellation = _commonMethod.GenerateCancellationDataTableNewV2();
-                                    DataTable dt_RateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
-
-
-                                    string EssInfo = "";
-                                    {
-                                        string Item_Code = hotel.property_id;
-                                        int Rooms = Convert.ToInt32(hotel.rooms.Count);
-                                        foreach (var room in hotel.rooms)
-                                        {
-
-                                            string RoomId = room.id;
-                                            string RoomName = room.room_name?.Replace("-", " ") ?? "";
-                                            foreach (var rate in room.rates)
-                                            {
-                                                string RateId = rate.id;
-                                                var occPricing = rate.occupancy_pricing;
-
-
-                                                Boolean IsRefundable = Convert.ToBoolean(rate.refundable);
-                                                string AmenitiesId = "";
-                                                string AmenitiesName = "";
-                                                string TotalAmenities = "";
-
-                                                #region Meal Code
-                                                if (true)// (Convert.ToInt32(ConfigurationManager.AppSettings["EANMealLogic"]) == 1)
-                                                {
-                                                    if (rate.amenities != null)
-                                                    {
-                                                        int Amenities = Convert.ToInt32(rate.amenities.Count);
-                                                        List<string> StrMealList = new List<string>();
-                                                        foreach (var item in rate.amenities)
-                                                        {
-                                                            AmenitiesId = Convert.ToString(item.Value.id);
-                                                            AmenitiesName = Convert.ToString(item.Value.name);
-                                                            if (MealNameCheck(AmenitiesName))
-                                                            {
-                                                                StrMealList.Add(AmenitiesName);
-                                                            }
-                                                        }
-                                                        StrMealList.Sort();
-                                                        for (int i = 0; i < StrMealList.Count; i++)
-                                                        {
-                                                            if (TotalAmenities == string.Empty)
-                                                                TotalAmenities = StrMealList[i];
-                                                            else
-                                                                TotalAmenities = TotalAmenities + " , " + StrMealList[i];
-                                                        }
-                                                    }
-                                                }
-                                                //
-                                                else
-                                                {
-                                                    if (rate.amenities != null)
-                                                    {
-                                                        foreach (var item in rate.amenities)
-                                                        {
-                                                            //AmenitiesId = Convert.ToString(item.Value.id);
-                                                            AmenitiesName = Convert.ToString(item.Value.name);
-                                                            if (TotalAmenities == string.Empty)
-                                                                TotalAmenities = AmenitiesName;
-                                                            else
-                                                                TotalAmenities = TotalAmenities + " , " + AmenitiesName;
-                                                        }
-                                                    }
-                                                }
-                                                #endregion
-
-                                                string PromotionId = "";
-                                                string PromotionName = "";
-                                                string TotalPromotion = "";
-
-                                                string DealId = "";
-                                                string DealName = "";
-                                                string TotalDeal = "";
-
-                                                if (rate.bed_groups != null)
-                                                {
-                                                    int BedGroup = rate.bed_groups.Count;
-                                                    string ESS = "";
-                                                    if (BedGroup > 1)
-                                                        ESS = "<br><b>Bed Type is not Guaranteed<b>";
-                                                    string BedName = "";
-                                                    //for (int m = 0; m < BedGroup; m++)
-                                                    foreach (var bedGroup in rate.bed_groups)
-                                                    {
-
-                                                        string BedGroupLink = bedGroup.Value.links?.price_check?.href ?? "";
-                                                        BedName = bedGroup.Value.description?.Replace("-", " ") ?? "";
-
-
-                                                        string RatePlamCode = RoomId + "$$$" + RateId + "$$$" + BedGroupLink + "$$$" + Guid.NewGuid();
-                                                        double MainPrice = 0;
-                                                        double OurProfit = 0;
-                                                        double StrikeTroughMain = 0;
-                                                        string EssentialAdd = "";
-
-                                                        foreach (var (occ, count) in parsedOccupancies)
-                                                        {
-                                                            if (!occPricing.TryGetValue(occ, out var pricing) || pricing?.totals == null)
-                                                                continue;
-
-                                                            var totals = pricing.totals;
-                                                            var fees = pricing.fees;
-
-                                                            double price = 0, profit = 0, strikeThrough = 0;
-
-
-                                                            #region DataRaw and Variable Declaration
-
-                                                            double Price = 0;
-                                                            if (totals.TryGetValue("inclusive", out var inc) && inc.billable_currency?.value != null)
-                                                                price = Convert.ToDouble(inc.billable_currency.value);
-
-                                                            if (!totals.TryGetValue("gross_profit", out var gp) ||
-                                                                   gp.billable_currency?.value == null)
-                                                                continue;
-
-                                                            profit = Convert.ToDouble(gp.billable_currency.value) * Convert.ToInt32(ItemEN.EanProfit) / 100;
-
-                                                            if (totals.TryGetValue("strikethrough", out var st) &&
-                                                                     st.billable_currency?.value != null)
-                                                                strikeThrough = Convert.ToDouble(st.billable_currency.value);
-
-                                                            price *= count;
-                                                            profit *= count;
-                                                            strikeThrough *= count;
-
-                                                            if (string.Equals(inc.billable_currency.currency, commonSearch.tokenData.SiteCurrency.ToLower(), StringComparison.OrdinalIgnoreCase))
-                                                                price *= 1; // Placeholder for real factor
-                                                            else
-                                                                price *= 1; // Replace with GetROEByCurrency if needed
-
-                                                            MainPrice += price;
-
-                                                            if (totals.TryGetValue("marketing_fee", out var mf) &&
-                                                                mf.billable_currency?.currency != null)
-                                                            {
-                                                                if (string.Equals(mf.billable_currency.currency, commonSearch.tokenData.SiteCurrency.ToLower(), StringComparison.OrdinalIgnoreCase))
-                                                                    profit *= 1;
-                                                                else
-                                                                    profit *= 1;
-                                                            }
-
-                                                            OurProfit += profit;
-
-                                                            if (st?.billable_currency?.currency != null)
-                                                            {
-                                                                if (string.Equals(st.billable_currency.currency, commonSearch.tokenData.SiteCurrency.ToLower(), StringComparison.OrdinalIgnoreCase))
-                                                                    strikeThrough *= 1;
-                                                                else
-                                                                    strikeThrough *= 1;
-
-                                                                StrikeTroughMain += strikeThrough;
-                                                            }
-
-
-                                                            // Fees Summary
-                                                            string essentialAdd = "";
-                                                            var feeList = new List<string>();
-
-                                                            void AddFee(string key, string label)
-                                                            {
-                                                                if (fees != null && fees.TryGetValue(key, out var fee) && fee.billable_currency?.value != null)
-                                                                {
-                                                                    var val = Convert.ToDouble(fee.billable_currency.value);
-                                                                    var cur = fee.billable_currency.currency;
-                                                                    feeList.Add($"{label} : {val} ({cur})");
-                                                                }
-                                                            }
-
-                                                            AddFee("mandatory_fee", "Mandatory Fees");
-                                                            AddFee("mandatory_tax", "Mandatory Taxes");
-                                                            AddFee("resort_fee", "Resort Fees");
-
-                                                            if (feeList.Any())
-                                                                essentialAdd = string.Join(" , ", feeList) + $" For {RoomName} {BedName}";
-
-
-
-                                                            #endregion
-
-
-                                                        }
-
-                                                        double VatOnRateBrackUp = 0;
-                                                        double tempmin = MainPrice - OurProfit;
-                                                        tempmin = _markup.ProcessHotelRateBreakupPrice_WithMarkup(1, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), Convert.ToDouble(tempmin), commonSearch.B2CMarkup, commonSearch.IsParentId, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, ref VatOnRateBrackUp);
-
-
-
-                                                        #region Rooms
-                                                        //Boolean IsRefundable = Convert.ToBoolean(Root[h].rooms[j].rates[k].refundable);
-
-                                                        DataRow drEANRoom = dtHotelRoom.NewRow();
-                                                        drEANRoom["OwnSystemHotelId"] = OwnsystemHotelId;
-                                                        drEANRoom["RoomTypeName"] = IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable";
-                                                        drEANRoom["RoomTypeCode"] = RatePlamCode;
-                                                        drEANRoom["MealId"] = TotalAmenities != "" ? TotalAmenities : "Room Only";
-                                                        drEANRoom["MealName"] = TotalAmenities != "" ? TotalAmenities : "Room Only";
-                                                        drEANRoom["ContractID"] = ItemCode;
-                                                        drEANRoom["BoardType"] = TotalAmenities != "" ? TotalAmenities : "Room Only";
-                                                        drEANRoom["RoomTypeId"] = RatePlamCode;
-                                                        drEANRoom["AdultsOccupancy"] = TotalAdult;
-                                                        drEANRoom["ChildOccupancy"] = TotalChild;
-                                                        drEANRoom["MaxExtraBed"] = "0";
-                                                        drEANRoom["RoomNo"] = 1;
-                                                        drEANRoom["RoomSequenceNo"] = Guid.NewGuid();
-                                                        drEANRoom["Type"] = "";
-                                                        drEANRoom["BookingStatus"] = "Available";
-                                                        drEANRoom["UniqueNo"] = OwnsystemHotelId;
-                                                        drEANRoom["OfferDescription"] = "";
-                                                        drEANRoom["OfferCode"] = "";
-                                                        drEANRoom["EssentialInformation"] = EssInfo + "<br>" + EssentialAdd + ESS;
-
-                                                        drEANRoom["CompanyBuyingPriceExpedia"] = MainPrice;
-                                                        drEANRoom["GrossProfitOnline"] = 0;
-                                                        double discountprice = 0;
-                                                        discountprice = StrikeTroughMain;
-                                                        if (discountprice > (MainPrice))
-                                                        {
-                                                            discountprice = _markup.ProcessHotelRateBreakupPrice_WithMarkup(1, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), Convert.ToDouble(discountprice), commonSearch.B2CMarkup, commonSearch.IsParentId, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, ref VatOnRateBrackUp);
-
-                                                            drEANRoom["GrossWitohutDiscount"] = discountprice;
-                                                        }
-
-                                                        MainPrice = MainPrice - OurProfit;
-
-                                                        double ItemPrice = Convert.ToDouble(MainPrice);
-
-                                                        drEANRoom["OurProfit"] = OurProfit;
-                                                        drEANRoom["CurrencyFactor"] = ExpediaCurrencyFactor;
-
-                                                        _markup.ProcessHotelRoom_WithMarkup(ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref ItemPrice, ref drEANRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
-
-                                                        drEANRoom["SupplierName"] = Provider;
-                                                        dtHotelRoom.Rows.Add(drEANRoom);
-                                                        #endregion
-
-
-
-                                                        if (Provider.ToLower() == "ean_b2b" || Provider.ToLower() == "ean_pkg")
-                                                        {
-                                                            #region Cancellation Policy
-
-                                                            if (IsRefundable)
-                                                            {
-                                                                DateTime Start = DateTime.Now.Date;
-                                                                DateTime End = DateTime.Now.Date;
-                                                                int Night = 0;
-                                                                double CancellationAmount = 0;
-                                                                double CancellationPecentage = 0;
-                                                                double CancellationCharge = 0;
-                                                                Currency = ExpediaInfo.EANCurrency;
-                                                                if (rate.cancel_penalties != null)
-                                                                {
-                                                                    int CancellationPolicy = Convert.ToInt32(rate.cancel_penalties.Count);
-                                                                    foreach (var cancellationpolicy in rate.cancel_penalties)
-                                                                    {
-                                                                        Start = Convert.ToDateTime(cancellationpolicy.start);
-                                                                        End = Convert.ToDateTime(cancellationpolicy.end);
-                                                                        Currency = Convert.ToString(cancellationpolicy.currency);
-
-                                                                        if (cancellationpolicy.nights != null)
-                                                                        {
-                                                                            Night = Convert.ToInt32(cancellationpolicy.nights);
-                                                                            CancellationCharge = MainPrice;// (MainPrice / SearchParam.NoofNights) * Night;
-                                                                        }
-                                                                        else if (cancellationpolicy.amount != null)
-                                                                        {
-                                                                            CancellationAmount = Convert.ToDouble(cancellationpolicy.amount);
-                                                                            CancellationCharge = CancellationCharge + CancellationAmount;
-                                                                        }
-                                                                        else if (cancellationpolicy.percent != null)
-                                                                        {
-                                                                            double CanelPercent = 0;
-                                                                            CancellationPecentage = Convert.ToDouble(cancellationpolicy.percent.Replace("%", ""));
-                                                                            CanelPercent = MainPrice * CancellationPecentage;
-                                                                            CancellationCharge = CancellationCharge + CanelPercent;
-
-                                                                        }
-                                                                    }
-                                                                }
-
-                                                                if (CancellationCharge > MainPrice)
-                                                                    CancellationCharge = MainPrice;
-
-
-                                                                double CancelCharge = CancellationCharge;
-
-                                                                DateTime CancelDate = DateTime.Now.Date;
-                                                                CancelDate = Convert.ToDateTime(Start);
-                                                                DateTime NowDate = DateTime.Now.Date;
-                                                                if (CancelDate <= DateTime.Now.Date)
-                                                                    CancelDate = DateTime.Now.Date;
-                                                                else
-                                                                    CancelDate = CancelDate.AddDays(CutOffDays).Date;
-
-                                                                if (CancelDate.AddDays(-1) <= DateTime.Now.Date)
-                                                                    CancelDate = DateTime.Now.Date;
-                                                                #region Vat
-                                                                double VatOnPolicy = 0;
-                                                                double MainAgentCharge = CancelCharge;
-                                                                double CompanyChargeAmount = CancelCharge;
-                                                                CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), CancelCharge, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                #endregion
-                                                                if (CancelDate.Date < DateTime.Now.Date)
-                                                                    CancelDate = DateTime.Now.Date;
-
-                                                                if (NowDate < CancelDate && CancelDate.Date > DateTime.Now.Date)
-                                                                {
-                                                                    double zero = 0;
-
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref zero, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", DateTime.Now.Date, CancelDate.AddDays(-1), 0, 0, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate), DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, CancelCharge, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-                                                                }
-                                                                else
-                                                                {
-                                                                    #region Vat
-                                                                    VatOnPolicy = 0;
-                                                                    MainAgentCharge = MainPrice;
-                                                                    CompanyChargeAmount = MainPrice;
-                                                                    CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                    #endregion
-
-                                                                    if (CancelDate < DateTime.Now.Date)
-                                                                        CancelDate = DateTime.Now.Date;
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                                   Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate),
-                                                                                                                   DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                //if (CancelDate < DateTime.Now.Date)
-                                                                //    CancelDate = DateTime.Now.Date;
-                                                                #region Vat
-                                                                double VatOnPolicy = 0;
-                                                                double MainAgentCharge = MainPrice;
-                                                                double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                #endregion
-
-
-                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                               Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
-                                                                                                               DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                dtCancellation.AcceptChanges();
-                                                            }
-
-
-
-                                                            #endregion
-                                                        }
-                                                        else
-                                                        {
-                                                            #region Cancellation Policy New
-
-                                                            if (IsRefundable)// (IsRefundable)
-                                                            {
-                                                                DateTime Start = DateTime.Now.Date;
-                                                                DateTime End = DateTime.Now.Date;
-                                                                int Night = 0;
-                                                                double CancellationAmount = 0;
-                                                                double CancellationPecentage = 0;
-                                                                double CancellationCharge = 0;
-                                                                bool IsNonRef = false;
-                                                                Currency = ExpediaInfo.EANCurrency;
-                                                                bool IsTrue = true;
-                                                                bool ForPol = true;
-
-                                                                if (rate.cancel_penalties != null)
-                                                                {
-                                                                    int CancellationPolicy = Convert.ToInt32(rate.cancel_penalties.Count);
-                                                                    DateTime EndDate = DateTime.Now.Date;
-                                                                    int l = 0;
-
-                                                                    foreach (var cancellationpolicy in rate.cancel_penalties)
-                                                                    {
-                                                                        double CancelCharge = 0;
-                                                                        Start = Convert.ToDateTime(cancellationpolicy.start);
-                                                                        End = Convert.ToDateTime(cancellationpolicy.end);
-                                                                        Currency = Convert.ToString(cancellationpolicy.currency);
-
-                                                                        if (cancellationpolicy.nights != null)
-                                                                        {
-                                                                            Night = Convert.ToInt32(cancellationpolicy.nights);
-                                                                            CancellationCharge = MainPrice;// (MainPrice / SearchParam.NoofNights) * Night;
-                                                                            CancelCharge = CancellationCharge;
-                                                                        }
-                                                                        else if (cancellationpolicy.amount != null)
-                                                                        {
-                                                                            CancellationAmount = Convert.ToDouble(cancellationpolicy.amount);
-                                                                            CancellationCharge = CancellationCharge + CancellationAmount;
-                                                                            CancelCharge = CancellationCharge * ExpediaCurrencyFactor;
-                                                                        }
-                                                                        else if (cancellationpolicy.percent != null)
-                                                                        {
-                                                                            double CanelPercentPrice = 0;
-                                                                            CancellationPecentage = Convert.ToDouble(cancellationpolicy.percent.Replace("%", ""));
-                                                                            //CanelPercent = MainPrice * CancellationPecentage;
-                                                                            CancellationCharge = (MainPrice * CancellationPecentage) / 100;
-                                                                            //CancellationCharge = CancellationCharge + CanelPercentPrice;
-                                                                            CancelCharge = CancellationCharge;
-                                                                        }
-
-
-                                                                        if (CancelCharge > MainPrice)
-                                                                            CancellationCharge = MainPrice;
-
-
-                                                                        DateTime CancelDate = DateTime.Now.Date;
-                                                                        //CancelDate = Convert.ToDateTime(Start).AddDays(1).Date;
-                                                                        CancelDate = Convert.ToDateTime(Start);
-                                                                        DateTime NowDate = DateTime.Now.Date;
-                                                                        if (CancelDate <= DateTime.Now.Date)
-                                                                            CancelDate = DateTime.Now.Date;
-                                                                        else
-                                                                            CancelDate = CancelDate.AddDays(CutOffDays).Date;
-
-                                                                        if (CancelDate.AddDays(-1) <= DateTime.Now.Date)
-                                                                            CancelDate = DateTime.Now.Date;
-
-                                                                        DateTime LastStart1 = DateTime.Now.Date;
-                                                                        DateTime NextStartDate = DateTime.Now.Date;
-
-                                                                        if (CancellationPolicy > 1 && ForPol && CancellationPolicy != (l + 1))
-                                                                        {
-                                                                            NextStartDate = Convert.ToDateTime(rate.cancel_penalties[l + 1].start);
-                                                                            NextStartDate = NextStartDate.AddDays(CutOffDays).Date;
-                                                                            if (NextStartDate.Date <= DateTime.Now.Date)
-                                                                            {
-                                                                                ForPol = false;
-                                                                                continue;
-
-                                                                            }
-
-                                                                        }
-
-                                                                        if (CancellationPolicy > 1 && CancellationPolicy != (l + 1))
-                                                                        {
-                                                                            LastStart1 = Convert.ToDateTime(rate.cancel_penalties[l + 1].start);
-
-                                                                            if (End.Date == LastStart1.Date)
-                                                                                End = End.AddDays(-1).Date;
-
-                                                                            End = End.AddDays(CutOffDays).Date; //add on 5/5
-                                                                        }
-
-                                                                        if (CancellationPolicy == (l + 1))
-                                                                        {
-                                                                            End = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
-                                                                            // CancelDate = Start;
-
-                                                                            CancelDate = Convert.ToDateTime(Start);
-
-                                                                            if (CancelDate <= DateTime.Now.Date)
-                                                                                CancelDate = DateTime.Now.Date;
-                                                                            else
-                                                                                CancelDate = CancelDate.AddDays(CutOffDays).Date;
-
-                                                                        }
-                                                                        if (CancellationPolicy == 1)
-                                                                            IsTrue = true;
-
-                                                                        if (CancellationPolicy >= 3 && l == 1)
-                                                                        {
-                                                                            End = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
-                                                                            CancelCharge = MainPrice;
-                                                                        }
-
-
-                                                                        #region Vat
-                                                                        double VatOnPolicy = 0;
-                                                                        double MainAgentCharge = CancelCharge;
-                                                                        double CompanyChargeAmount = CancelCharge;
-                                                                        CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), CancellationCharge, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                        #endregion
-                                                                        if (CancelDate.Date < DateTime.Now.Date)
-                                                                            CancelDate = DateTime.Now.Date;
-
-                                                                        if (NowDate < CancelDate && CancelDate.Date > DateTime.Now.Date && IsTrue)
-                                                                        {
-                                                                            if (IsTrue && l == 0)
-                                                                            {
-                                                                                double zero = 0;
-                                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref zero, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                            Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", DateTime.Now.Date, CancelDate.AddDays(-1), 0, 0, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                                dtCancellation.AcceptChanges();
-                                                                            }
-
-                                                                            dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                             Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate), End.Date, MainAgentCharge, CancelCharge, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                            dtCancellation.AcceptChanges();
-
-
-                                                                            IsTrue = true;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            //if (CancelDate < DateTime.Now.Date)
-                                                                            //    CancelDate = DateTime.Now.Date;
-                                                                            //DtEAN_Cancellation.Rows.Add(Common.setCancellationPolicyRow(ref CompanyChargeAmount, DtEAN_Cancellation.NewRow(), CurrencyFactor, Currency, SupplierName, ownsystemid, Convert.ToString(1),
-                                                                            //                                               Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate),
-                                                                            //                                               DateTime.ParseExact(objSearPera.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                            //DtEAN_Cancellation.AcceptChanges();
-
-                                                                            #region Vat
-                                                                            VatOnPolicy = 0;
-                                                                            MainAgentCharge = CancellationCharge;
-                                                                            CompanyChargeAmount = CancellationCharge;
-                                                                            CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), CancellationCharge, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                            #endregion
-
-                                                                            if (CancelDate < DateTime.Now.Date)
-                                                                                CancelDate = DateTime.Now.Date;
-                                                                            dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CancellationCharge, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                               Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate),
-                                                                                                               End.Date, MainAgentCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                            dtCancellation.AcceptChanges();
-
-                                                                            IsTrue = false;
-
-                                                                            if (CancellationPolicy >= 3 && l == 1)
-                                                                                break;
-
-
-                                                                        }
-
-                                                                        l++;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-
-
-                                                                    #region Vat
-                                                                    double VatOnPolicy = 0;
-                                                                    double MainAgentCharge = MainPrice;
-                                                                    double CompanyChargeAmount = MainPrice;
-                                                                    double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                    #endregion
-
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                                Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
-                                                                                                                DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-
-                                                                    break;
-                                                                }
-
-                                                                #region Cancellation Policy
-
-                                                            }
-                                                            else
-                                                            {
-                                                                //if (CancelDate < DateTime.Now.Date)
-                                                                //    CancelDate = DateTime.Now.Date;
-
-                                                                #region Vat
-                                                                double VatOnPolicy = 0;
-                                                                double MainAgentCharge = MainPrice;
-                                                                double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                #endregion
-
-                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                                 Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
-                                                                                                                 DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                dtCancellation.AcceptChanges();
-                                                            }
-                                                            #endregion
-
-                                                            #endregion
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        #region Tables Merge
-
-                                        Options ops = (await _supplierRes.GetCommonRoomForSuppliers(GiataId, commonSearch.tokenData, commonSearch.advancedOptions, FinalMinPrice, drXmlHotel, dtHotelRoom, dtCancellation, DtRoomRateBreackUp, SearchParam));
-                                        if (ops != null)
-                                            options.Add(ops);
-                                        #endregion
-                                    }
-
-                                    #endregion
-                                }
-                                #endregion
-                            }
-                            #endregion
-                            #endregion
-
-
-                        }
-                        #endregion
-
-                    });
-
-                }
-                return options;
-            }
-            catch (Exception ex)
-            {
-
-                await _exception.Error(ex);
-                ItemEN.ResponseType = "NoCount";
-                return options;
-            }
-            finally
-            {
-                #region ResProcessTimer
-                try
-                {
-                    if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_ean.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
-                    {
-                        timer_room_ean.Stop();
-                        SearchParam.SupplierTime += ",|Finish:" + Provider + " Process Response  " + "|Time :" + timer_room_ean.Elapsed.ToString();
-                        _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_ean.Elapsed.ToString(), Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));
-                    }
-                }
-                catch (Exception x)
-                {
-                    await _exception.Error(x);
-                }
-                #endregion
-            }
-        }
-
-        //foreach
-        public async Task<List<Options>> ean_HotelSearchWithRooms_Optimize2(HotelX ItemEN, CommonSearch commonSearch, string xmlcity, string xmlcountry, HotelSearchParameter SearchParam, double ExpediaCurrencyFactor, DataTable dtROE, string Suppliername, string ResponseData, string CID, string Currency, DataRow[] ExpDetail, string xmlhotelcode, string platform, string echotoken, string Sign, string ApiKey, string Version, string URL, string Provider, string ProccessCutOffTime, int processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string StoreSupplierResErrorLog)
-        {
-            System.Diagnostics.Stopwatch timer_room_ean = new System.Diagnostics.Stopwatch();
-            timer_room_ean.Start();
-
-            List<Options> options = new List<Options>();
-
-            try
-            {
-                #region DataTable
-                DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
-                DataTable dtHotelRoomScheme = _commonMethod.GenerateRoomtypeDataTableNewV2();
-                DataTable dtCancellationScheme = _commonMethod.GenerateCancellationDataTableNewV2();
-                DataTable DtRoomRateBreackUpScheme = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
-                #endregion
-                if (ResponseData != string.Empty)
-                {
-                    #region PriceOnly RS
-                    List<EAN.RootObject_EAN2> Root = null;
-
-                    try
-                    {
-                        var optionss = new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true,
-                            ReadCommentHandling = JsonCommentHandling.Skip,
-                            AllowTrailingCommas = true
-                        };
-                        Root = JsonSerializer.Deserialize<List<EAN.RootObject_EAN2>>(ResponseData, optionss);
-                    }
-                    catch (Exception)
-                    {
-                        Root = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EAN.RootObject_EAN2>>(ResponseData); //140525
-                    }
-                    #endregion
-                    #region Pax Occupancy
-
-                    int AdultsOcc = 0;
-                    int ChildOcc = 0;
-                    int TotalAdult = 0;
-                    int TotalChild = 0;
-
-                    for (int a = 0; a < SearchParam.Rooms.Count; a++)
-                    {
-                        AdultsOcc = SearchParam.Rooms[a].NoofAdults;
-                        ChildOcc = SearchParam.Rooms[a].NoofChild;
-                        TotalAdult = TotalAdult + AdultsOcc;
-                        TotalChild = TotalChild + ChildOcc;
-                    }
-
-
-
-                    var parsedOccupancies = SearchParam.Rooms
-                                            .GroupBy(x => new { x.RoomName, x.NoofAdults, x.NoofChild, x.Child1Age, x.Child2Age })
-                                            .Select(n =>
-                                            {
-                                                var childAges = n.ToList();
-                                                string chd = n.Key.NoofChild switch
-                                                {
-                                                    1 => "-" + childAges[0].Child1Age,
-                                                    2 => "-" + childAges[0].Child1Age + "," + childAges[0].Child2Age,
-                                                    _ => ""
-                                                };
-                                                return (Occ: n.Key.NoofAdults + chd, Count: n.Count());
-                                            }).ToList();
-
-
-                    #endregion
-                    foreach (var hotel in Root)
-                    {
-
-
-
-                        ItemEN.ResponseType = "Success";
-                        //if (ProccessCutOffTime == "1" && timer_room_ean.ElapsedMilliseconds > processTimeout)
-                        //{
-                        //    break;
-                        //}
-                        string ItemCode = hotel.property_id;
-                        #region "When not Need Room"  
-                        if (SearchParam.Filters.IsShowRooms == 0)
-                        {
-                            #region "Hotel Code Block "
-                            double TotalCharges = 0;
-                            {
-                                #region Add by jay
-
-                                double MainPrice = 0;
-                                double FinalPrice = CalculateMinimumEANPrice(hotel.rooms, parsedOccupancies, Convert.ToInt32(ItemEN.EanProfit), ExpediaCurrencyFactor, dtROE);
-
-
-                                #endregion
-                                DataRow drXmlHotel = DtHotel.NewRow();
-                                drXmlHotel["XMLHotelCode"] = ItemCode;
-                                drXmlHotel["Reviews"] = 0;
-                                drXmlHotel["OfficeID"] = 0;
-                                drXmlHotel["ContractID"] = CID;
-                                drXmlHotel["IsShowSupplier"] = false;
-                                drXmlHotel["OwnSystemHotelId"] = 0;
-                                drXmlHotel["Favorite"] = 0;
-                                drXmlHotel["XmlHotelCity"] = xmlcity;
-                                drXmlHotel["XMLCountry"] = xmlcountry;
-                                drXmlHotel["XMLCity"] = xmlcity;
-                                drXmlHotel["XMLCode"] = xmlcountry;
-                                drXmlHotel["SupplierName"] = Suppliername;
-                                drXmlHotel["BookingStatus"] = "Available";
-                                drXmlHotel["SupplierCurrency"] = Currency;
-                                drXmlHotel["FinalSellingPrice"] = FinalPrice;
-                                drXmlHotel["SellingPrice"] = FinalPrice;
-                                DtHotel.Rows.Add(drXmlHotel);
-                                TotalCharges = FinalPrice;
-                                #endregion
-                                if (TotalCharges > 0)
-                                {
-                                    #region "Room code Block"
-                                    bool willAddOrNot = true;
-                                    Int64 RaynaID = 0;
-                                    Int64 GiataId = 0;
-                                    int Rating = 0;
-                                    Int64 OwnsystemHotelId = 0;
-                                    double MinPrice = TotalCharges;
-                                    _markup.GetHotelDataCommon(ref MinPrice, ref willAddOrNot, ref OwnsystemHotelId, ref RaynaID, ref GiataId, ref Rating, ref drXmlHotel, commonSearch.AgentId, commonSearch.TariffID, commonSearch.dsAgentDetails, commonSearch.supplierGiataMaster, SearchParam, commonSearch.dtCountryCityMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId, commonSearch.SubAgentMarkup, commonSearch.SearchByHotel, commonSearch.HotelIDS);
-                                    if (willAddOrNot)
-                                    {
-                                        #region "Room Logic"
-                                        DataTable dt_HotelRoom = dtHotelRoomScheme.Clone();
-                                        DataTable dt_Cancellation = dtCancellationScheme.Clone();
-                                        DataTable dt_RateBreackUp = DtRoomRateBreackUpScheme.Clone();
-                                        #endregion
-                                        decimal LowestPrice = Convert.ToDecimal(MinPrice).CalculatePrice(commonSearch.tokenData, commonSearch.advancedOptions, ExpediaInfo.EANCurrency);
-                                        Options ops = (await _supplierRes.GetCommonRoomForSuppliers(GiataId, commonSearch.tokenData, commonSearch.advancedOptions, Convert.ToDouble(LowestPrice), drXmlHotel, dt_HotelRoom, dt_Cancellation, dt_RateBreackUp, SearchParam));
-                                        if (ops != null)
-                                            options.Add(ops);
-                                    }
-                                    else
-                                    {
-
-                                    }
-                                    #endregion
-                                }
-                            }
-                        }
-                        #endregion
-                        #region "When Need Rooms"
-                        else
-                        {
-                            double FinalMinPrice = 0;
-                            #region Hotels
-
-
-                            #region "Hotel Block here"
-                            double FinalPrice = 1;
-                            DataRow drXmlHotel = DtHotel.NewRow();
-                            drXmlHotel["XMLHotelCode"] = ItemCode;
-                            drXmlHotel["Rating"] = 0;
-                            drXmlHotel["Reviews"] = 0;
-                            drXmlHotel["OfficeID"] = 0;
-                            drXmlHotel["ContractID"] = CID;
-                            drXmlHotel["IsShowSupplier"] = false;
-                            drXmlHotel["OwnSystemHotelId"] = 0;
-                            drXmlHotel["Favorite"] = 0;
-                            drXmlHotel["XmlHotelCity"] = xmlcity;
-                            drXmlHotel["XMLCountry"] = xmlcountry;
-                            drXmlHotel["XMLCity"] = xmlcity;
-                            drXmlHotel["XMLCode"] = xmlcountry;
-                            drXmlHotel["SupplierName"] = Suppliername;
-                            drXmlHotel["BookingStatus"] = "Available";
-                            drXmlHotel["SupplierCurrency"] = Currency;
-                            drXmlHotel["FinalSellingPrice"] = FinalPrice;
-                            drXmlHotel["SellingPrice"] = FinalPrice;
-                            DtHotel.Rows.Add(drXmlHotel);
-                            FinalMinPrice = FinalPrice;
-                            #endregion
-                            #region "GetRooms for this hotel"
-                            bool willAddOrNot = true;
-                            Int64 RaynaID = 0;
-                            Int64 GiataId = 0;
-                            int RatingHotel = 0;
-                            Int64 OwnsystemHotelId = 0;
-                            double MinPrice = 1;
-
-                            _markup.GetHotelDataCommon(ref MinPrice, ref willAddOrNot, ref OwnsystemHotelId, ref RaynaID, ref GiataId, ref RatingHotel, ref drXmlHotel, commonSearch.AgentId, commonSearch.TariffID, commonSearch.dsAgentDetails, commonSearch.supplierGiataMaster, SearchParam, commonSearch.dtCountryCityMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId, commonSearch.SubAgentMarkup, commonSearch.SearchByHotel, commonSearch.HotelIDS);
-                            if (willAddOrNot)
-                            {
-                                DataTable dtHotelRoom = dtHotelRoomScheme.Clone();
-                                DataTable dtCancellation = dtCancellationScheme.Clone();
-                                DataTable DtRoomRateBreackUp = DtRoomRateBreackUpScheme.Clone();
-
-
-
-                                int CutOffDays = CacheMaster.CutOffDays;
-                                CutOffDays = _commonMethod.GetCutOffDays(commonSearch.dtSuplierMarkup, Provider);
-                                #region "Room Logic"
-                                {
-                                    #region "Hotel Block here"
-                                    double AgentPercentage = 0.0;
-                                    double AgentMarkupAmount = 0.0;
-                                    Boolean isPerce = true;
-                                    bool blnIsShowSupplier = false;
-                                    _markup.getAgetMarkupSetting(Provider, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate);
-                                    DataSet dsFinal = new DataSet();
-
-
-
-                                    string EssInfo = "";
-                                    {
-                                        string Item_Code = hotel.property_id;
-                                        int Rooms = Convert.ToInt32(hotel.rooms.Count);
-                                        foreach (var room in hotel.rooms)
-                                        {
-
-                                            string RoomId = room.id;
-                                            string RoomName = room.room_name?.Replace("-", " ") ?? "";
-                                            foreach (var rate in room.rates)
-                                            {
-                                                string RateId = rate.id;
-                                                var occPricing = rate.occupancy_pricing;
-
-
-                                                Boolean IsRefundable = Convert.ToBoolean(rate.refundable);
-                                                string AmenitiesId = "";
-                                                string AmenitiesName = "";
-                                                string TotalAmenities = "";
-
-                                                #region Meal Code
-                                                if (true)// (Convert.ToInt32(ConfigurationManager.AppSettings["EANMealLogic"]) == 1)
-                                                {
-                                                    if (rate.amenities != null)
-                                                    {
-                                                        int Amenities = Convert.ToInt32(rate.amenities.Count);
-                                                        List<string> StrMealList = new List<string>();
-                                                        foreach (var item in rate.amenities)
-                                                        {
-                                                            AmenitiesId = Convert.ToString(item.Value.id);
-                                                            AmenitiesName = Convert.ToString(item.Value.name);
-                                                            if (MealNameCheck(AmenitiesName))
-                                                            {
-                                                                StrMealList.Add(AmenitiesName);
-                                                            }
-                                                        }
-                                                        StrMealList.Sort();
-                                                        for (int i = 0; i < StrMealList.Count; i++)
-                                                        {
-                                                            if (TotalAmenities == string.Empty)
-                                                                TotalAmenities = StrMealList[i];
-                                                            else
-                                                                TotalAmenities = TotalAmenities + " , " + StrMealList[i];
-                                                        }
-                                                    }
-                                                }
-                                                //
-                                                else
-                                                {
-                                                    if (rate.amenities != null)
-                                                    {
-                                                        foreach (var item in rate.amenities)
-                                                        {
-                                                            //AmenitiesId = Convert.ToString(item.Value.id);
-                                                            AmenitiesName = Convert.ToString(item.Value.name);
-                                                            if (TotalAmenities == string.Empty)
-                                                                TotalAmenities = AmenitiesName;
-                                                            else
-                                                                TotalAmenities = TotalAmenities + " , " + AmenitiesName;
-                                                        }
-                                                    }
-                                                }
-                                                #endregion
-
-                                                string PromotionId = "";
-                                                string PromotionName = "";
-                                                string TotalPromotion = "";
-
-                                                string DealId = "";
-                                                string DealName = "";
-                                                string TotalDeal = "";
-
-                                                if (rate.bed_groups != null)
-                                                {
-                                                    int BedGroup = rate.bed_groups.Count;
-                                                    string ESS = "";
-                                                    if (BedGroup > 1)
-                                                        ESS = "<br><b>Bed Type is not Guaranteed<b>";
-                                                    string BedName = "";
-                                                    //for (int m = 0; m < BedGroup; m++)
-                                                    foreach (var bedGroup in rate.bed_groups)
-                                                    {
-
-                                                        string BedGroupLink = bedGroup.Value.links?.price_check?.href ?? "";
-                                                        BedName = bedGroup.Value.description?.Replace("-", " ") ?? "";
-
-
-                                                        string RatePlamCode = RoomId + "$$$" + RateId + "$$$" + BedGroupLink + "$$$" + Guid.NewGuid();
-                                                        double MainPrice = 0;
-                                                        double OurProfit = 0;
-                                                        double StrikeTroughMain = 0;
-                                                        string EssentialAdd = "";
-
-                                                        foreach (var (occ, count) in parsedOccupancies)
-                                                        {
-                                                            if (!occPricing.TryGetValue(occ, out var pricing) || pricing?.totals == null)
-                                                                continue;
-
-                                                            var totals = pricing.totals;
-                                                            var fees = pricing.fees;
-
-                                                            double price = 0, profit = 0, strikeThrough = 0;
-
-
-                                                            #region DataRaw and Variable Declaration
-
-                                                            double Price = 0;
-                                                            if (totals.TryGetValue("inclusive", out var inc) && inc.billable_currency?.value != null)
-                                                                price = Convert.ToDouble(inc.billable_currency.value);
-
-                                                            if (!totals.TryGetValue("gross_profit", out var gp) ||
-                                                                   gp.billable_currency?.value == null)
-                                                                continue;
-
-                                                            profit = Convert.ToDouble(gp.billable_currency.value) * Convert.ToInt32(ItemEN.EanProfit) / 100;
-
-                                                            if (totals.TryGetValue("strikethrough", out var st) &&
-                                                                     st.billable_currency?.value != null)
-                                                                strikeThrough = Convert.ToDouble(st.billable_currency.value);
-
-                                                            price *= count;
-                                                            profit *= count;
-                                                            strikeThrough *= count;
-
-                                                            if (string.Equals(inc.billable_currency.currency, commonSearch.tokenData.SiteCurrency.ToLower(), StringComparison.OrdinalIgnoreCase))
-                                                                price *= 1; // Placeholder for real factor
-                                                            else
-                                                                price *= 1; // Replace with GetROEByCurrency if needed
-
-                                                            MainPrice += price;
-
-                                                            if (totals.TryGetValue("marketing_fee", out var mf) &&
-                                                                mf.billable_currency?.currency != null)
-                                                            {
-                                                                if (string.Equals(mf.billable_currency.currency, commonSearch.tokenData.SiteCurrency.ToLower(), StringComparison.OrdinalIgnoreCase))
-                                                                    profit *= 1;
-                                                                else
-                                                                    profit *= 1;
-                                                            }
-
-                                                            OurProfit += profit;
-
-                                                            if (st?.billable_currency?.currency != null)
-                                                            {
-                                                                if (string.Equals(st.billable_currency.currency, commonSearch.tokenData.SiteCurrency.ToLower(), StringComparison.OrdinalIgnoreCase))
-                                                                    strikeThrough *= 1;
-                                                                else
-                                                                    strikeThrough *= 1;
-
-                                                                StrikeTroughMain += strikeThrough;
-                                                            }
-
-
-                                                            // Fees Summary
-                                                            string essentialAdd = "";
-                                                            var feeList = new List<string>();
-
-                                                            void AddFee(string key, string label)
-                                                            {
-                                                                if (fees != null && fees.TryGetValue(key, out var fee) && fee.billable_currency?.value != null)
-                                                                {
-                                                                    var val = Convert.ToDouble(fee.billable_currency.value);
-                                                                    var cur = fee.billable_currency.currency;
-                                                                    feeList.Add($"{label} : {val} ({cur})");
-                                                                }
-                                                            }
-
-                                                            AddFee("mandatory_fee", "Mandatory Fees");
-                                                            AddFee("mandatory_tax", "Mandatory Taxes");
-                                                            AddFee("resort_fee", "Resort Fees");
-
-                                                            if (feeList.Any())
-                                                                essentialAdd = string.Join(" , ", feeList) + $" For {RoomName} {BedName}";
-
-
-
-                                                            #endregion
-
-
-                                                        }
-
-                                                        double VatOnRateBrackUp = 0;
-                                                        double tempmin = MainPrice - OurProfit;
-                                                        tempmin = _markup.ProcessHotelRateBreakupPrice_WithMarkup(1, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), Convert.ToDouble(tempmin), commonSearch.B2CMarkup, commonSearch.IsParentId, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, ref VatOnRateBrackUp);
-
-
-
-                                                        #region Rooms
-                                                        //Boolean IsRefundable = Convert.ToBoolean(Root[h].rooms[j].rates[k].refundable);
-
-                                                        DataRow drEANRoom = dtHotelRoom.NewRow();
-                                                        drEANRoom["OwnSystemHotelId"] = OwnsystemHotelId;
-                                                        drEANRoom["RoomTypeName"] = IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable";
-                                                        drEANRoom["RoomTypeCode"] = RatePlamCode;
-                                                        drEANRoom["MealId"] = TotalAmenities != "" ? TotalAmenities : "Room Only";
-                                                        drEANRoom["MealName"] = TotalAmenities != "" ? TotalAmenities : "Room Only";
-                                                        drEANRoom["ContractID"] = ItemCode;
-                                                        drEANRoom["BoardType"] = TotalAmenities != "" ? TotalAmenities : "Room Only";
-                                                        drEANRoom["RoomTypeId"] = RatePlamCode;
-                                                        drEANRoom["AdultsOccupancy"] = TotalAdult;
-                                                        drEANRoom["ChildOccupancy"] = TotalChild;
-                                                        drEANRoom["MaxExtraBed"] = "0";
-                                                        drEANRoom["RoomNo"] = 1;
-                                                        drEANRoom["RoomSequenceNo"] = Guid.NewGuid();
-                                                        drEANRoom["Type"] = "";
-                                                        drEANRoom["BookingStatus"] = "Available";
-                                                        drEANRoom["UniqueNo"] = OwnsystemHotelId;
-                                                        drEANRoom["OfferDescription"] = "";
-                                                        drEANRoom["OfferCode"] = "";
-                                                        drEANRoom["EssentialInformation"] = EssInfo + "<br>" + EssentialAdd + ESS;
-
-                                                        drEANRoom["CompanyBuyingPriceExpedia"] = MainPrice;
-                                                        drEANRoom["GrossProfitOnline"] = 0;
-                                                        double discountprice = 0;
-                                                        discountprice = StrikeTroughMain;
-                                                        if (discountprice > (MainPrice))
-                                                        {
-                                                            discountprice = _markup.ProcessHotelRateBreakupPrice_WithMarkup(1, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), Convert.ToDouble(discountprice), commonSearch.B2CMarkup, commonSearch.IsParentId, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, ref VatOnRateBrackUp);
-
-                                                            drEANRoom["GrossWitohutDiscount"] = discountprice;
-                                                        }
-
-                                                        MainPrice = MainPrice - OurProfit;
-
-                                                        double ItemPrice = Convert.ToDouble(MainPrice);
-
-                                                        drEANRoom["OurProfit"] = OurProfit;
-                                                        drEANRoom["CurrencyFactor"] = ExpediaCurrencyFactor;
-
-                                                        _markup.ProcessHotelRoom_WithMarkup(ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref ItemPrice, ref drEANRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
-
-                                                        drEANRoom["SupplierName"] = Provider;
-                                                        dtHotelRoom.Rows.Add(drEANRoom);
-                                                        #endregion
-
-
-
-                                                        if (Provider.ToLower() == "ean_b2b" || Provider.ToLower() == "ean_pkg")
-                                                        {
-                                                            #region Cancellation Policy
-
-                                                            if (IsRefundable)
-                                                            {
-                                                                DateTime Start = DateTime.Now.Date;
-                                                                DateTime End = DateTime.Now.Date;
-                                                                int Night = 0;
-                                                                double CancellationAmount = 0;
-                                                                double CancellationPecentage = 0;
-                                                                double CancellationCharge = 0;
-                                                                Currency = ExpediaInfo.EANCurrency;
-                                                                if (rate.cancel_penalties != null)
-                                                                {
-                                                                    int CancellationPolicy = Convert.ToInt32(rate.cancel_penalties.Count);
-                                                                    foreach (var cancellationpolicy in rate.cancel_penalties)
-                                                                    {
-                                                                        Start = Convert.ToDateTime(cancellationpolicy.start);
-                                                                        End = Convert.ToDateTime(cancellationpolicy.end);
-                                                                        Currency = Convert.ToString(cancellationpolicy.currency);
-
-                                                                        if (cancellationpolicy.nights != null)
-                                                                        {
-                                                                            Night = Convert.ToInt32(cancellationpolicy.nights);
-                                                                            CancellationCharge = MainPrice;// (MainPrice / SearchParam.NoofNights) * Night;
-                                                                        }
-                                                                        else if (cancellationpolicy.amount != null)
-                                                                        {
-                                                                            CancellationAmount = Convert.ToDouble(cancellationpolicy.amount);
-                                                                            CancellationCharge = CancellationCharge + CancellationAmount;
-                                                                        }
-                                                                        else if (cancellationpolicy.percent != null)
-                                                                        {
-                                                                            double CanelPercent = 0;
-                                                                            CancellationPecentage = Convert.ToDouble(cancellationpolicy.percent.Replace("%", ""));
-                                                                            CanelPercent = MainPrice * CancellationPecentage;
-                                                                            CancellationCharge = CancellationCharge + CanelPercent;
-
-                                                                        }
-                                                                    }
-                                                                }
-
-                                                                if (CancellationCharge > MainPrice)
-                                                                    CancellationCharge = MainPrice;
-
-
-                                                                double CancelCharge = CancellationCharge;
-
-                                                                DateTime CancelDate = DateTime.Now.Date;
-                                                                CancelDate = Convert.ToDateTime(Start);
-                                                                DateTime NowDate = DateTime.Now.Date;
-                                                                if (CancelDate <= DateTime.Now.Date)
-                                                                    CancelDate = DateTime.Now.Date;
-                                                                else
-                                                                    CancelDate = CancelDate.AddDays(CutOffDays).Date;
-
-                                                                if (CancelDate.AddDays(-1) <= DateTime.Now.Date)
-                                                                    CancelDate = DateTime.Now.Date;
-                                                                #region Vat
-                                                                double VatOnPolicy = 0;
-                                                                double MainAgentCharge = CancelCharge;
-                                                                double CompanyChargeAmount = CancelCharge;
-                                                                CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), CancelCharge, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                #endregion
-                                                                if (CancelDate.Date < DateTime.Now.Date)
-                                                                    CancelDate = DateTime.Now.Date;
-
-                                                                if (NowDate < CancelDate && CancelDate.Date > DateTime.Now.Date)
-                                                                {
-                                                                    double zero = 0;
-
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref zero, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", DateTime.Now.Date, CancelDate.AddDays(-1), 0, 0, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate), DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, CancelCharge, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-                                                                }
-                                                                else
-                                                                {
-                                                                    #region Vat
-                                                                    VatOnPolicy = 0;
-                                                                    MainAgentCharge = MainPrice;
-                                                                    CompanyChargeAmount = MainPrice;
-                                                                    CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                    #endregion
-
-                                                                    if (CancelDate < DateTime.Now.Date)
-                                                                        CancelDate = DateTime.Now.Date;
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                                   Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate),
-                                                                                                                   DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                //if (CancelDate < DateTime.Now.Date)
-                                                                //    CancelDate = DateTime.Now.Date;
-                                                                #region Vat
-                                                                double VatOnPolicy = 0;
-                                                                double MainAgentCharge = MainPrice;
-                                                                double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                #endregion
-
-
-                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                               Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
-                                                                                                               DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                dtCancellation.AcceptChanges();
-                                                            }
-
-
-
-                                                            #endregion
-                                                        }
-                                                        else
-                                                        {
-                                                            #region Cancellation Policy New
-
-                                                            if (IsRefundable)// (IsRefundable)
-                                                            {
-                                                                DateTime Start = DateTime.Now.Date;
-                                                                DateTime End = DateTime.Now.Date;
-                                                                int Night = 0;
-                                                                double CancellationAmount = 0;
-                                                                double CancellationPecentage = 0;
-                                                                double CancellationCharge = 0;
-                                                                bool IsNonRef = false;
-                                                                Currency = ExpediaInfo.EANCurrency;
-                                                                bool IsTrue = true;
-                                                                bool ForPol = true;
-
-                                                                if (rate.cancel_penalties != null)
-                                                                {
-                                                                    int CancellationPolicy = Convert.ToInt32(rate.cancel_penalties.Count);
-                                                                    DateTime EndDate = DateTime.Now.Date;
-                                                                    int l = 0;
-
-                                                                    foreach (var cancellationpolicy in rate.cancel_penalties)
-                                                                    {
-                                                                        double CancelCharge = 0;
-                                                                        Start = Convert.ToDateTime(cancellationpolicy.start);
-                                                                        End = Convert.ToDateTime(cancellationpolicy.end);
-                                                                        Currency = Convert.ToString(cancellationpolicy.currency);
-
-                                                                        if (cancellationpolicy.nights != null)
-                                                                        {
-                                                                            Night = Convert.ToInt32(cancellationpolicy.nights);
-                                                                            CancellationCharge = MainPrice;// (MainPrice / SearchParam.NoofNights) * Night;
-                                                                            CancelCharge = CancellationCharge;
-                                                                        }
-                                                                        else if (cancellationpolicy.amount != null)
-                                                                        {
-                                                                            CancellationAmount = Convert.ToDouble(cancellationpolicy.amount);
-                                                                            CancellationCharge = CancellationCharge + CancellationAmount;
-                                                                            CancelCharge = CancellationCharge * ExpediaCurrencyFactor;
-                                                                        }
-                                                                        else if (cancellationpolicy.percent != null)
-                                                                        {
-                                                                            double CanelPercentPrice = 0;
-                                                                            CancellationPecentage = Convert.ToDouble(cancellationpolicy.percent.Replace("%", ""));
-                                                                            //CanelPercent = MainPrice * CancellationPecentage;
-                                                                            CancellationCharge = (MainPrice * CancellationPecentage) / 100;
-                                                                            //CancellationCharge = CancellationCharge + CanelPercentPrice;
-                                                                            CancelCharge = CancellationCharge;
-                                                                        }
-
-
-                                                                        if (CancelCharge > MainPrice)
-                                                                            CancellationCharge = MainPrice;
-
-
-                                                                        DateTime CancelDate = DateTime.Now.Date;
-                                                                        //CancelDate = Convert.ToDateTime(Start).AddDays(1).Date;
-                                                                        CancelDate = Convert.ToDateTime(Start);
-                                                                        DateTime NowDate = DateTime.Now.Date;
-                                                                        if (CancelDate <= DateTime.Now.Date)
-                                                                            CancelDate = DateTime.Now.Date;
-                                                                        else
-                                                                            CancelDate = CancelDate.AddDays(CutOffDays).Date;
-
-                                                                        if (CancelDate.AddDays(-1) <= DateTime.Now.Date)
-                                                                            CancelDate = DateTime.Now.Date;
-
-                                                                        DateTime LastStart1 = DateTime.Now.Date;
-                                                                        DateTime NextStartDate = DateTime.Now.Date;
-
-                                                                        if (CancellationPolicy > 1 && ForPol && CancellationPolicy != (l + 1))
-                                                                        {
-                                                                            NextStartDate = Convert.ToDateTime(rate.cancel_penalties[l + 1].start);
-                                                                            NextStartDate = NextStartDate.AddDays(CutOffDays).Date;
-                                                                            if (NextStartDate.Date <= DateTime.Now.Date)
-                                                                            {
-                                                                                ForPol = false;
-                                                                                continue;
-
-                                                                            }
-
-                                                                        }
-
-                                                                        if (CancellationPolicy > 1 && CancellationPolicy != (l + 1))
-                                                                        {
-                                                                            LastStart1 = Convert.ToDateTime(rate.cancel_penalties[l + 1].start);
-
-                                                                            if (End.Date == LastStart1.Date)
-                                                                                End = End.AddDays(-1).Date;
-
-                                                                            End = End.AddDays(CutOffDays).Date; //add on 5/5
-                                                                        }
-
-                                                                        if (CancellationPolicy == (l + 1))
-                                                                        {
-                                                                            End = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
-                                                                            // CancelDate = Start;
-
-                                                                            CancelDate = Convert.ToDateTime(Start);
-
-                                                                            if (CancelDate <= DateTime.Now.Date)
-                                                                                CancelDate = DateTime.Now.Date;
-                                                                            else
-                                                                                CancelDate = CancelDate.AddDays(CutOffDays).Date;
-
-                                                                        }
-                                                                        if (CancellationPolicy == 1)
-                                                                            IsTrue = true;
-
-                                                                        if (CancellationPolicy >= 3 && l == 1)
-                                                                        {
-                                                                            End = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
-                                                                            CancelCharge = MainPrice;
-                                                                        }
-
-
-                                                                        #region Vat
-                                                                        double VatOnPolicy = 0;
-                                                                        double MainAgentCharge = CancelCharge;
-                                                                        double CompanyChargeAmount = CancelCharge;
-                                                                        CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), CancellationCharge, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                        #endregion
-                                                                        if (CancelDate.Date < DateTime.Now.Date)
-                                                                            CancelDate = DateTime.Now.Date;
-
-                                                                        if (NowDate < CancelDate && CancelDate.Date > DateTime.Now.Date && IsTrue)
-                                                                        {
-                                                                            if (IsTrue && l == 0)
-                                                                            {
-                                                                                double zero = 0;
-                                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref zero, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                            Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", DateTime.Now.Date, CancelDate.AddDays(-1), 0, 0, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                                dtCancellation.AcceptChanges();
-                                                                            }
-
-                                                                            dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                             Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate), End.Date, MainAgentCharge, CancelCharge, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                            dtCancellation.AcceptChanges();
-
-
-                                                                            IsTrue = true;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            //if (CancelDate < DateTime.Now.Date)
-                                                                            //    CancelDate = DateTime.Now.Date;
-                                                                            //DtEAN_Cancellation.Rows.Add(Common.setCancellationPolicyRow(ref CompanyChargeAmount, DtEAN_Cancellation.NewRow(), CurrencyFactor, Currency, SupplierName, ownsystemid, Convert.ToString(1),
-                                                                            //                                               Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate),
-                                                                            //                                               DateTime.ParseExact(objSearPera.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                            //DtEAN_Cancellation.AcceptChanges();
-
-                                                                            #region Vat
-                                                                            VatOnPolicy = 0;
-                                                                            MainAgentCharge = CancellationCharge;
-                                                                            CompanyChargeAmount = CancellationCharge;
-                                                                            CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), CancellationCharge, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                            #endregion
-
-                                                                            if (CancelDate < DateTime.Now.Date)
-                                                                                CancelDate = DateTime.Now.Date;
-                                                                            dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CancellationCharge, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                               Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate),
-                                                                                                               End.Date, MainAgentCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                            dtCancellation.AcceptChanges();
-
-                                                                            IsTrue = false;
-
-                                                                            if (CancellationPolicy >= 3 && l == 1)
-                                                                                break;
-
-
-                                                                        }
-
-                                                                        l++;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-
-
-                                                                    #region Vat
-                                                                    double VatOnPolicy = 0;
-                                                                    double MainAgentCharge = MainPrice;
-                                                                    double CompanyChargeAmount = MainPrice;
-                                                                    double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                    #endregion
-
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                                Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
-                                                                                                                DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-
-                                                                    break;
-                                                                }
-
-                                                                #region Cancellation Policy
-
-                                                            }
-                                                            else
-                                                            {
-                                                                //if (CancelDate < DateTime.Now.Date)
-                                                                //    CancelDate = DateTime.Now.Date;
-
-                                                                #region Vat
-                                                                double VatOnPolicy = 0;
-                                                                double MainAgentCharge = MainPrice;
-                                                                double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                #endregion
-
-                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                                 Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
-                                                                                                                 DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                dtCancellation.AcceptChanges();
-                                                            }
-                                                            #endregion
-
-                                                            #endregion
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        #region Tables Merge
-
-                                        Options ops = (await _supplierRes.GetCommonRoomForSuppliers(GiataId, commonSearch.tokenData, commonSearch.advancedOptions, FinalMinPrice, drXmlHotel, dtHotelRoom, dtCancellation, DtRoomRateBreackUp, SearchParam));
-                                        if (ops != null)
-                                            options.Add(ops);
-                                        #endregion
-                                    }
-
-                                    #endregion
-                                }
-                                #endregion
-                            }
-                            #endregion
-                            #endregion
-
-
-                        }
-                        #endregion
-
-                    }
-
-                }
-                return options;
-            }
-            catch (Exception ex)
-            {
-
-                await _exception.Error(ex);
-                ItemEN.ResponseType = "NoCount";
-                return options;
-            }
-            finally
-            {
-                #region ResProcessTimer
-                try
-                {
-                    if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_ean.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
-                    {
-                        timer_room_ean.Stop();
-                        SearchParam.SupplierTime += ",|Finish:" + Provider + " Process Response  " + "|Time :" + timer_room_ean.Elapsed.ToString();
-                        _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_ean.Elapsed.ToString(), Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));
-                    }
-                }
-                catch (Exception x)
-                {
-                    await _exception.Error(x);
-                }
-                #endregion
-            }
-        }
-
-        //only text json change
-        public async Task<List<Options>> ean_HotelSearchWithRooms_Optimize3(HotelX ItemEN, CommonSearch commonSearch, string xmlcity, string xmlcountry, HotelSearchParameter SearchParam, double ExpediaCurrencyFactor, DataTable dtROE, string Suppliername, string ResponseData, string CID, string Currency, DataRow[] ExpDetail, string xmlhotelcode, string platform, string echotoken, string Sign, string ApiKey, string Version, string URL, string Provider, string ProccessCutOffTime, int processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string StoreSupplierResErrorLog)
-        {
-            System.Diagnostics.Stopwatch timer_room_ean = new System.Diagnostics.Stopwatch();
-            timer_room_ean.Start();
-
-            List<Options> options = new List<Options>();
-
-            try
-            {
-                #region DataTable
-                DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
-                #endregion
-                if (ResponseData != string.Empty)
-                {
-                    #region PriceOnly RS
-                    //if (ResponseData.ToLower().Contains("eanwserror") || ResponseData.Trim() == "")
-                    //{
-                    //    ItemEN.ResponseType = "NoCount";
-                    //    return options;
-                    //}
-                    //DataSet Dsean = Common.GetDataSetFromXMLString(ResponseData);
-                    //string Provider = "ean";
-
-                    List<EAN.RootObject_EAN2> Root = null;
-
-                    try
-                    {
-                        var optionss = new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true,
-                            ReadCommentHandling = JsonCommentHandling.Skip,
-                            AllowTrailingCommas = true
-                        };
-                        Root = JsonSerializer.Deserialize<List<EAN.RootObject_EAN2>>(ResponseData, optionss);
-                        //List<EAN.RootObject_EAN2> Root = JsonSerializer.Deserialize<List<EAN.RootObject_EAN2>>(ResponseData, optionss);
-                    }
-                    catch (Exception)
-                    {
-                        Root = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EAN.RootObject_EAN2>>(ResponseData); //140525
-                    }
-
-
-                    //List<EAN.RootObject_EAN2> Root = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EAN.RootObject_EAN2>>(ResponseData); //140525
-
-                    #endregion
-                    #region Pax Occupancy
-                    int AdultsOcc = 0;
-                    int ChildOcc = 0;
-                    int TotalAdult = 0;
-                    int TotalChild = 0;
-
-                    for (int a = 0; a < SearchParam.Rooms.Count; a++)
-                    {
-                        AdultsOcc = SearchParam.Rooms[a].NoofAdults;
-                        ChildOcc = SearchParam.Rooms[a].NoofChild;
-                        TotalAdult = TotalAdult + AdultsOcc;
-                        TotalChild = TotalChild + ChildOcc;
-                    }
-                    #endregion
-                    #region EAN Occupancy Block
-                    List<string> Occupancy1 = new List<string>();
-                    var resultEAN = SearchParam.Rooms.GroupBy(x => new { x.RoomName, x.NoofAdults, x.NoofChild, x.Child1Age, x.Child2Age }).Select(n => new { RoomName = n.Key.RoomName, NoofAdults = n.Key.NoofAdults, NoofChild = n.Key.NoofChild, ChildAge = n.ToList(), Count = n.Count() });
-                    foreach (var item in resultEAN)//For each Item
-                    {
-                        string TotalOcc = "";
-                        int ADT = 0;
-                        string CHD = "";
-                        ADT = item.NoofAdults;
-                        switch (item.NoofChild)
-                        {
-                            case 0:
-                                break;
-                            case 1:
-                                CHD = "-" + item.ChildAge[0].Child1Age;
-                                break;
-                            case 2:
-                                CHD = "-" + item.ChildAge[0].Child1Age;
-                                CHD = CHD + "," + item.ChildAge[0].Child2Age;
-                                break;
-                        }
-                        TotalOcc = ADT.ToString() + CHD;
-                        Occupancy1.Add(TotalOcc + "$$$" + item.Count);
-                    }
-                    #endregion
-                    for (int h = 0; h < Root.Count; h++)
-                    {
-
-                        ItemEN.ResponseType = "Success";
-                        //Check Time If High then return NoCount
-                        if (ProccessCutOffTime == "1" && timer_room_ean.ElapsedMilliseconds > processTimeout)
-                        {
-                            //timer_room_ean.Stop();
-                            break;
-                        }
-                        //--end
-                        string ItemCode = Root[h].property_id;
-                        #region "When not Need Room"  
-                        // add hotel code from price only and room code blank here
-                        if (SearchParam.Filters.IsShowRooms == 0)
-                        {
-                            #region "Hotel Code Block "
-                            double TotalCharges = 0;
-                            {
-                                #region Add by jay
-
-
-                                double MainPrice = 0;
-                                double FinalPrice = 0;
-
-                                #region Old Code
-                                for (int j = 0; j < Convert.ToInt32(Root[h].rooms.Count); j++)
-                                {
-                                    for (int k = 0; k < Convert.ToInt32(Root[h].rooms[j].rates.Count); k++)
-                                    {
-                                        Dictionary<string, EAN.OccupancyPricing> asdad1 = Root[h].rooms[j].rates[k].occupancy_pricing;
-                                        FinalPrice = 0;
-
-                                        for (int x = 0; x < Occupancy1.Count; x++)
-                                        {
-                                            string Occ = ""; //160425
-                                            string Count = ""; //160425
-                                            string[] spitid = Occupancy1[x].Split(new String[] { "$$$" }, StringSplitOptions.None);
-
-                                            Occ = spitid[0]; //160425 
-                                            Count = spitid[1]; //160425
-                                            foreach (var kvp in asdad1)
-                                            {
-                                                if (kvp.Key != Occ) //160425 
-                                                    continue;
-                                                else
-                                                {
-                                                    #region DataRaw and Variable Declaration
-                                                    double OurProfit = 0;
-
-                                                    List<List<Nightly>> nightly = kvp.Value.nightly;
-                                                    IEnumerable<Nightly> stay = kvp.Value.stay;
-                                                    Dictionary<string, FeeDetail> fees = kvp.Value.fees;
-                                                    Dictionary<string, FeeDetail> totals = kvp.Value.totals;
-
-                                                    double Price = Convert.ToDouble(totals["inclusive"].billable_currency.value) * Convert.ToInt32(spitid[1]);
-                                                    if (totals["gross_profit"] == null || totals["gross_profit"].billable_currency == null || totals["gross_profit"].billable_currency.value == null)//added on 30JAN2024
-                                                    {
-                                                        continue;//2-2-2024
-                                                    }
-                                                    //double Profit = Convert.ToDouble(acc.totals.marketing_fee.billable_currency.value) * Convert.ToInt32(spitid[1]);
-                                                    double Profit = Convert.ToDouble(totals["gross_profit"].billable_currency.value) * Convert.ToInt32(ItemEN.EanProfit) / 100 * Convert.ToInt32(spitid[1]);
-                                                    if (Convert.ToString(totals["inclusive"].billable_currency.currency).ToLower() != "usd")
-                                                    {
-                                                        continue;
-                                                    }
-                                                    else
-                                                        Price = Price * ExpediaCurrencyFactor;
-
-                                                    FinalPrice += Price;
-
-                                                    if (Convert.ToString(totals["marketing_fee"].billable_currency.currency).ToLower() != "usd")
-                                                    {
-                                                        continue;
-                                                    }
-                                                    else
-                                                        Profit = Profit * ExpediaCurrencyFactor;
-                                                    OurProfit += Profit;
-                                                    FinalPrice = FinalPrice - OurProfit;
-                                                    #endregion
-                                                }
-
-
-                                            }
-                                        }
-                                        if (MainPrice == 0)
-                                            MainPrice = FinalPrice;
-                                        else
-                                        {
-                                            if (MainPrice > FinalPrice)
-                                                MainPrice = FinalPrice;
-                                        }
-                                    }
-                                }
-                                #endregion
-
-
-                                #endregion
-                                DataRow drXmlHotel = DtHotel.NewRow();
-                                drXmlHotel["XMLHotelCode"] = ItemCode;
-                                drXmlHotel["Reviews"] = 0;
-                                drXmlHotel["OfficeID"] = 0;
-                                drXmlHotel["ContractID"] = CID;
-                                drXmlHotel["IsShowSupplier"] = false;
-                                drXmlHotel["OwnSystemHotelId"] = 0;
-                                drXmlHotel["Favorite"] = 0;
-                                drXmlHotel["XmlHotelCity"] = xmlcity;
-                                drXmlHotel["XMLCountry"] = xmlcountry;
-                                drXmlHotel["XMLCity"] = xmlcity;
-                                drXmlHotel["XMLCode"] = xmlcountry;
-                                drXmlHotel["SupplierName"] = Suppliername;
-                                drXmlHotel["BookingStatus"] = "Available";
-                                drXmlHotel["SupplierCurrency"] = Currency;
-                                drXmlHotel["FinalSellingPrice"] = FinalPrice;
-                                drXmlHotel["SellingPrice"] = FinalPrice;
-                                DtHotel.Rows.Add(drXmlHotel);
-                                TotalCharges = FinalPrice;
-                                #endregion
-                                if (TotalCharges > 0)
-                                {
-                                    #region "Room code Block"
-                                    bool willAddOrNot = true;
-                                    Int64 RaynaID = 0;
-                                    Int64 GiataId = 0;
-                                    int Rating = 0;
-                                    Int64 OwnsystemHotelId = 0;
-                                    double MinPrice = TotalCharges;
-                                    _markup.GetHotelDataCommon(ref MinPrice, ref willAddOrNot, ref OwnsystemHotelId, ref RaynaID, ref GiataId, ref Rating, ref drXmlHotel, commonSearch.AgentId, commonSearch.TariffID, commonSearch.dsAgentDetails, commonSearch.supplierGiataMaster, SearchParam, commonSearch.dtCountryCityMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId, commonSearch.SubAgentMarkup, commonSearch.SearchByHotel, commonSearch.HotelIDS);
-                                    if (willAddOrNot)
-                                    {
-                                        #region "Room Logic"
-                                        DataTable dt_HotelRoom = _commonMethod.GenerateRoomtypeDataTableNewV2();
-                                        DataTable dt_Cancellation = _commonMethod.GenerateCancellationDataTableNewV2();
-                                        DataTable dt_RateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
-                                        #endregion
-                                        decimal LowestPrice = Convert.ToDecimal(MinPrice).CalculatePrice(commonSearch.tokenData, commonSearch.advancedOptions, ExpediaInfo.EANCurrency);
-                                        Options ops = (await _supplierRes.GetCommonRoomForSuppliers(GiataId, commonSearch.tokenData, commonSearch.advancedOptions, Convert.ToDouble(LowestPrice), drXmlHotel, dt_HotelRoom, dt_Cancellation, dt_RateBreackUp, SearchParam));
-                                        if (ops != null)
-                                            options.Add(ops);
-                                    }
-                                    else
-                                    {
-
-                                    }
-                                    #endregion
-                                }
-                            }
-                        }
-                        #endregion
-                        #region "When Need Rooms"
-                        //add Hotel code blank and rooms code in room block
-                        else
-                        {
-                            double FinalMinPrice = 0;
-                            #region Hotels
-                            //object Occupancy = Root[h].rooms[0].rates[0].occupancy_pricing;
-                            //JToken[] asdad = Newtonsoft.Json.Linq.JToken.Parse(Occupancy.ToString()).ToArray();
-
-                            #region "Hotel Block here"
-
-                            //var aaa = asdad[0];
-                            //string ItemCode = Root[i].property_id;
-                            double FinalPrice = 1;
-                            //foreach (JToken item in asdad)
-                            //{
-                            //    JProperty questionAnswerDetails = ((JProperty)item);
-                            //    string Name = questionAnswerDetails.Name;
-                            //    string value = Convert.ToString(questionAnswerDetails.Value);
-                            //    ng acc = JsonConvert.DeserializeObject<ng>(value);
-                            //    double Price = Convert.ToDouble(acc.totals.inclusive.billable_currency.value);
-                            //    if (FinalPrice == 0)
-                            //        FinalPrice = Price;
-                            //    else
-                            //    {
-                            //        if (FinalPrice > Price)
-                            //            FinalPrice = Price;
-                            //    }
-                            //}
-                            DataRow drXmlHotel = DtHotel.NewRow();
-                            drXmlHotel["XMLHotelCode"] = ItemCode;
-                            //drXmlHotel["HotelName"] = "";
-                            //drXmlHotel["HotelFrontImage"] = "";
-                            //drXmlHotel["Location"] = "";
-                            //drXmlHotel["lat"] = "";
-                            //drXmlHotel["longitute"] = "";
-                            drXmlHotel["Rating"] = 0;
-                            drXmlHotel["Reviews"] = 0;
-                            //drXmlHotel["Description"] = "";
-                            // drXmlHotel["EssentialInformation"] = "";
-                            drXmlHotel["OfficeID"] = 0;
-                            drXmlHotel["ContractID"] = CID;
-                            drXmlHotel["IsShowSupplier"] = false;
-                            drXmlHotel["OwnSystemHotelId"] = 0;
-                            //drXmlHotel["Address"] = "";
-                            drXmlHotel["Favorite"] = 0;
-                            drXmlHotel["XmlHotelCity"] = xmlcity;
-                            drXmlHotel["XMLCountry"] = xmlcountry;
-                            drXmlHotel["XMLCity"] = xmlcity;
-                            drXmlHotel["XMLCode"] = xmlcountry;
-                            drXmlHotel["SupplierName"] = Suppliername;
-                            drXmlHotel["BookingStatus"] = "Available";
-                            drXmlHotel["SupplierCurrency"] = Currency;
-                            drXmlHotel["FinalSellingPrice"] = FinalPrice;
-                            drXmlHotel["SellingPrice"] = FinalPrice;
-                            DtHotel.Rows.Add(drXmlHotel);
-                            FinalMinPrice = FinalPrice;
-                            #endregion
-                            #region "GetRooms for this hotel"
-                            bool willAddOrNot = true;
-                            Int64 RaynaID = 0;
-                            Int64 GiataId = 0;
-                            int RatingHotel = 0;
-                            Int64 OwnsystemHotelId = 0;
-                            double MinPrice = 1;
-
-                            _markup.GetHotelDataCommon(ref MinPrice, ref willAddOrNot, ref OwnsystemHotelId, ref RaynaID, ref GiataId, ref RatingHotel, ref drXmlHotel, commonSearch.AgentId, commonSearch.TariffID, commonSearch.dsAgentDetails, commonSearch.supplierGiataMaster, SearchParam, commonSearch.dtCountryCityMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId, commonSearch.SubAgentMarkup, commonSearch.SearchByHotel, commonSearch.HotelIDS);
-                            if (willAddOrNot)
-                            {
-                                DataTable dtHotelRoom = _commonMethod.GenerateRoomtypeDataTableNewV2();
-                                DataTable dtCancellation = _commonMethod.GenerateCancellationDataTableNewV2();
-                                DataTable DtRoomRateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
-                                int CutOffDays = CacheMaster.CutOffDays;
-                                CutOffDays = _commonMethod.GetCutOffDays(commonSearch.dtSuplierMarkup, Provider);
-                                #region "Room Logic"
-                                //DataTable XMLTBORoomOnly = Common.GenerateRoomtypeDataTableNewV2();
-
-                                //if (SearchParam.Filters.IsShowRooms == 1)
-                                {
-                                    #region "Hotel Block here"
-                                    double AgentPercentage = 0.0;
-                                    double AgentMarkupAmount = 0.0;
-                                    Boolean isPerce = true;
-                                    bool blnIsShowSupplier = false;
-                                    _markup.getAgetMarkupSetting(Provider, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate);
-                                    DataSet dsFinal = new DataSet();
-                                    DataTable dt_HotelRoom = _commonMethod.GenerateRoomtypeDataTableNewV2();
-                                    DataTable dt_Cancellation = _commonMethod.GenerateCancellationDataTableNewV2();
-                                    DataTable dt_RateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
-
-                                    //string Sign = Convert.ToString(ExpDetail[0]["UserName"]);
-                                    //string ApiKey = Convert.ToString(ExpDetail[0]["Password"]);
-                                    //string Version = Convert.ToString(ExpDetail[0]["version"]);
-                                    //string URL = Convert.ToString(ExpDetail[0]["WebSiteURL"]);
-                                    string EssInfo = "";// Get_EAN_PropertyContent(ItemCode, platform, echotoken, Sign, ApiKey, Version, URL, Provider);
-                                                        //var result = SearchParam.Rooms.GroupBy(x => new { x.RoomName, x.NoofAdults, x.NoofChild, x.Child1Age, x.Child2Age }).Select(n => new { RoomName = n.Key.RoomName, NoofAdults = n.Key.NoofAdults, NoofChild = n.Key.NoofChild, ChildAge = n.ToList(), Count = n.Count() });
-
-                                    //if (ResponseData.Contains("eanwserror") || ResponseData.ToString() == "" || ResponseData == null)
-                                    // return options;
-                                    //List<RootObject_EAN2> Root = JsonConvert.DeserializeObject<List<RootObject_EAN2>>(ResponseData);
-
-
-
-                                    //List<string> Occupancy1 = new List<string>();
-                                    //foreach (var item in result)//For each Item
-                                    //{
-                                    //    string TotalOcc = "";
-                                    //    //for (int i = 0; i < item.Count; i++)
-                                    //    {
-                                    //        int ADT = 0;
-                                    //        string CHD = "";
-                                    //        ADT = item.NoofAdults;
-                                    //        switch (item.NoofChild)
-                                    //        {
-                                    //            case 0:
-                                    //                break;
-                                    //            case 1:
-                                    //                CHD = "-" + item.ChildAge[0].Child1Age;
-                                    //                break;
-                                    //            case 2:
-                                    //                CHD = "-" + item.ChildAge[0].Child1Age;
-                                    //                CHD = CHD + "," + item.ChildAge[0].Child2Age;
-                                    //                break;
-                                    //        }
-                                    //        TotalOcc = ADT.ToString() + CHD;
-                                    //        Occupancy1.Add(TotalOcc + "$$$" + item.Count);
-                                    //    }
-                                    //}
-
-                                    //for (int i = 0; i < Root.Count; i++)
-                                    {
-                                        string Item_Code = Root[h].property_id;
-                                        int Rooms = Convert.ToInt32(Root[h].rooms.Count);
-                                        for (int j = 0; j < Rooms; j++)
-                                        {
-                                            int Rate = Convert.ToInt32(Root[h].rooms[j].rates.Count);
-                                            string RoomId = Root[h].rooms[j].id;
-                                            string RoomName = Root[h].rooms[j].room_name.Replace("-", " ");
-                                            for (int k = 0; k < Rate; k++)
-                                            {
-                                                Dictionary<string, EAN.OccupancyPricing> asdad_Room = Root[h].rooms[j].rates[k].occupancy_pricing;
-
-
-                                                //var aaa = asdad[0];
-                                                string RateId = Root[h].rooms[j].rates[k].id;
-                                                //string RatePlamCode = RoomId + "$$$" + RateId + "$$$";
-                                                //string PromoId = Root[h].rooms[j].rates[k].promo_id;
-                                                Boolean IsRefundable = Convert.ToBoolean(Root[h].rooms[j].rates[k].refundable);
-                                                string AmenitiesId = "";
-                                                string AmenitiesName = "";
-                                                string TotalAmenities = "";
-
-                                                if (true)// (Convert.ToInt32(ConfigurationManager.AppSettings["EANMealLogic"]) == 1)
-                                                {
-                                                    if (Root[h].rooms[j].rates[k].amenities != null)
-                                                    {
-                                                        int Amenities = Convert.ToInt32(Root[h].rooms[j].rates[k].amenities.Count);
-                                                        List<string> StrMealList = new List<string>();
-                                                        foreach (var item in Root[h].rooms[j].rates[k].amenities)
-                                                        {
-                                                            AmenitiesId = Convert.ToString(item.Value.id);
-                                                            AmenitiesName = Convert.ToString(item.Value.name);
-                                                            if (MealNameCheck(AmenitiesName))
-                                                            {
-                                                                StrMealList.Add(AmenitiesName);
-                                                            }
-                                                        }
-                                                        StrMealList.Sort();
-                                                        for (int i = 0; i < StrMealList.Count; i++)
-                                                        {
-                                                            if (TotalAmenities == string.Empty)
-                                                                TotalAmenities = StrMealList[i];
-                                                            else
-                                                                TotalAmenities = TotalAmenities + " , " + StrMealList[i];
-                                                        }
-                                                    }
-                                                }
-                                                //
-                                                else
-                                                {
-                                                    if (Root[h].rooms[j].rates[k].amenities != null)
-                                                    {
-                                                        foreach (var item in Root[h].rooms[j].rates[k].amenities)
-                                                        {
-                                                            //AmenitiesId = Convert.ToString(item.Value.id);
-                                                            AmenitiesName = Convert.ToString(item.Value.name);
-                                                            if (TotalAmenities == string.Empty)
-                                                                TotalAmenities = AmenitiesName;
-                                                            else
-                                                                TotalAmenities = TotalAmenities + " , " + AmenitiesName;
-                                                        }
-                                                    }
-                                                }
-
-                                                string PromotionId = "";
-                                                string PromotionName = "";
-                                                string TotalPromotion = "";
-
-                                                string DealId = "";
-                                                string DealName = "";
-                                                string TotalDeal = "";
-
-                                                #region Comment Code
-                                                //if (Root[h].rooms[j].rates[k].promotions != null)
-                                                //{
-                                                //if (Root[h].rooms[j].rates[k].promotions.value_adds != null)
-                                                //{
-                                                //    foreach (var item in Root[h].rooms[j].rates[k].promotions.value_adds)
-                                                //    {
-                                                //        //PromotionId = Convert.ToString(item.Value.id);
-                                                //        PromotionName = Convert.ToString(item.Value.description);
-
-                                                //        if (TotalPromotion == string.Empty)
-                                                //            TotalPromotion = PromotionName;
-                                                //        else
-                                                //            TotalPromotion = TotalPromotion + " , " + PromotionName;
-                                                //    }
-                                                //}
-
-                                                //if (Root[h].rooms[j].rates[k].promotions.deal != null)
-                                                //{
-                                                //    {
-                                                //        DealId = Convert.ToString(Root[h].rooms[j].rates[k].promotions.deal.id);
-                                                //        DealName = Convert.ToString(Root[h].rooms[j].rates[k].promotions.deal.description);
-
-                                                //        if (TotalDeal == string.Empty)
-                                                //            TotalDeal = DealName;
-                                                //        else
-                                                //            TotalDeal = TotalDeal + " , " + DealName;
-                                                //    }
-                                                //}
-                                                //}
-                                                #endregion
-
-
-                                                if (Root[h].rooms[j].rates[k].bed_groups != null)
-                                                {
-                                                    int BedGroup = Root[h].rooms[j].rates[k].bed_groups.Count;
-                                                    string ESS = "";
-                                                    if (BedGroup > 1)
-                                                        ESS = "<br><b>Bed Type is not Guaranteed<b>";
-                                                    string BedName = "";
-                                                    //for (int m = 0; m < BedGroup; m++)
-                                                    foreach (var item1 in Root[h].rooms[j].rates[k].bed_groups)
-                                                    {
-                                                        //string BedGroupMethod = Convert.ToString(Root[h].rooms[j].rates[k].bed_groups[m].links.price_check.method);
-                                                        //string BedGroupLink = Convert.ToString(Root[h].rooms[j].rates[k].bed_groups[m].links.price_check.href);
-                                                        //if (Root[h].rooms[j].rates[k].bed_groups[m].configuration != null)
-                                                        //    BedName = Root[h].rooms[j].rates[k].bed_groups[m].configuration[0].type;
-                                                        //string BedGroupMethod = Convert.ToString(item1.Value.links.price_check.method);
-                                                        string BedGroupLink = Convert.ToString(item1.Value.links.price_check.href);
-                                                        if (item1.Value.description != null)
-                                                            BedName = item1.Value.description.Replace("-", " ");
-                                                        string RatePlamCode = RoomId + "$$$" + RateId + "$$$" + BedGroupLink + "$$$" + Guid.NewGuid();
-                                                        double MainPrice = 0;
-                                                        double OurProfit = 0;
-                                                        double StrikeTroughMain = 0;
-                                                        string EssentialAdd = "";
-                                                        for (int x = 0; x < Occupancy1.Count; x++)
-                                                        {
-                                                            string Occ = "";
-                                                            string Count = "";
-                                                            string OccID = Occupancy1[x];
-                                                            string[] spitid = OccID.Split(new String[] { "$$$" }, StringSplitOptions.None);
-                                                            Occ = spitid[0];
-                                                            Count = spitid[1];
-                                                            foreach (var kvp in asdad_Room)
-                                                            {
-                                                                if (kvp.Key != Occ)
-                                                                    continue;
-                                                                else
-                                                                {
-
-
-                                                                    List<List<Nightly>> nightly = kvp.Value.nightly;
-                                                                    IEnumerable<Nightly> stay = kvp.Value.stay;
-                                                                    Dictionary<string, FeeDetail> fees = kvp.Value.fees;
-                                                                    Dictionary<string, FeeDetail> totals = kvp.Value.totals;
-
-                                                                    #region DataRaw and Variable Declaration
-                                                                    double Price = 0;
-                                                                    if (totals.ContainsKey("inclusive"))
-                                                                        Price = Convert.ToDouble(totals["inclusive"].billable_currency.value);
-
-                                                                    if (!totals.ContainsKey("gross_profit") || totals["gross_profit"].billable_currency == null || totals["gross_profit"].billable_currency.value == null)//added on 30JAN2024
-                                                                    {
-                                                                        continue;
-                                                                    }
-
-                                                                    double Profit = 0;
-                                                                    if (totals.ContainsKey("gross_profit"))
-                                                                        Profit = Convert.ToDouble(totals["gross_profit"].billable_currency.value) * Convert.ToInt32(ItemEN.EanProfit) / 100;
-
-                                                                    double StrikeTrough = 0;
-                                                                    if (totals.ContainsKey("strikethrough"))
-                                                                    {
-                                                                        StrikeTrough = Convert.ToDouble(totals["strikethrough"].billable_currency.value);
-
-                                                                    }
-                                                                    Price = Price * Convert.ToInt32(Count);
-                                                                    Profit = Profit * Convert.ToInt32(Count);
-                                                                    StrikeTrough = StrikeTrough * Convert.ToInt32(Count);
-
-
-                                                                    if (totals.ContainsKey("inclusive"))
-                                                                    {
-                                                                        string Billable_Currency = Convert.ToString(totals["inclusive"].billable_currency.currency);
-                                                                        if (Billable_Currency.ToLower() != commonSearch.tokenData.SiteCurrency?.ToLower())
-                                                                        {
-                                                                            double CurrencyFactor1 = _commonMethod.GetROEByCurrency(Billable_Currency, dtROE);//280125
-                                                                                                                                                              //DataTable dtInrCurrency = await _commonMethod.GetCountryCurrency(Billable_Currency);
-                                                                                                                                                              //double CurrencyFactor1 = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
-                                                                            Price = Price * CurrencyFactor1;
-                                                                        }
-                                                                        else
-                                                                            Price = Price * ExpediaCurrencyFactor;
-                                                                    }
-
-                                                                    MainPrice += Price;
-
-                                                                    if (totals.ContainsKey("marketing_fee"))
-                                                                    {
-                                                                        string Billable_CurrencyProfit = Convert.ToString(totals["marketing_fee"].billable_currency.currency);
-                                                                        if (Billable_CurrencyProfit.ToLower() != commonSearch.tokenData.SiteCurrency?.ToLower())
-                                                                        {
-                                                                            double CurrencyFactor2 = _commonMethod.GetROEByCurrency(Billable_CurrencyProfit, dtROE);//280125
-                                                                                                                                                                    //DataTable dtInrCurrency = await _commonMethod.GetCountryCurrency(Billable_CurrencyProfit);
-                                                                                                                                                                    //double CurrencyFactor2 = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
-                                                                            Profit = Profit * CurrencyFactor2;
-                                                                        }
-                                                                        else
-                                                                            Profit = Profit * ExpediaCurrencyFactor;
-                                                                    }
-
-                                                                    OurProfit += Profit;
-
-                                                                    if (totals.ContainsKey("strikethrough"))
-                                                                    {
-                                                                        string StrikeTrough_Currency = Convert.ToString(totals["strikethrough"].billable_currency.currency);
-                                                                        if (StrikeTrough_Currency.ToLower() != commonSearch.tokenData.SiteCurrency?.ToLower())
-                                                                        {
-                                                                            double CurrencyFactor4 = _commonMethod.GetROEByCurrency(StrikeTrough_Currency, dtROE);//280125
-                                                                                                                                                                  //DataTable dtInrCurrency = await _commonMethod.GetCountryCurrency(StrikeTrough_Currency);
-                                                                                                                                                                  //double CurrencyFactor4 = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
-                                                                            StrikeTrough = StrikeTrough * CurrencyFactor4;
-                                                                        }
-                                                                        else
-                                                                            StrikeTrough = StrikeTrough * ExpediaCurrencyFactor;
-                                                                        StrikeTroughMain += StrikeTrough;
-
-                                                                    }
-
-
-                                                                    if (fees != null)
-                                                                    {
-                                                                        if (fees.ContainsKey("mandatory_fee"))
-                                                                        {
-                                                                            string FeesDesc1 = "";
-                                                                            string FeesCurrency1 = "";
-                                                                            double FeesPrice1 = 0;
-
-                                                                            FeesDesc1 = "<b>Mandatory Fees</b>";
-
-                                                                            FeesPrice1 += Convert.ToDouble(fees["mandatory_fee"].billable_currency.value);
-                                                                            FeesCurrency1 = Convert.ToString(fees["mandatory_fee"].billable_currency.currency);
-
-                                                                            EssentialAdd = FeesDesc1 + "<b> : </b>" + FeesPrice1 + " (" + FeesCurrency1 + ") ";
-
-                                                                        }
-                                                                        if (fees.ContainsKey("mandatory_tax"))
-                                                                        {
-                                                                            string FeesDesc2 = "";
-                                                                            string FeesCurrency2 = "";
-                                                                            double FeesPrice2 = 0;
-
-                                                                            FeesDesc2 = "<b>Mandatory Taxes</b>";
-
-                                                                            FeesPrice2 += Convert.ToDouble(fees["mandatory_tax"].billable_currency.value);
-                                                                            FeesCurrency2 = Convert.ToString(fees["mandatory_tax"].billable_currency.currency);
-
-                                                                            if (EssentialAdd != string.Empty)
-                                                                                EssentialAdd = " , " + FeesDesc2 + " : " + FeesPrice2 + " (" + FeesCurrency2 + ") ";
-                                                                            else
-                                                                                EssentialAdd = FeesDesc2 + "<b> : </b>" + FeesPrice2 + " (" + FeesCurrency2 + ") ";
-
-                                                                        }
-                                                                        if (fees.ContainsKey("resort_fee"))
-                                                                        {
-                                                                            string FeesDesc3 = "";
-                                                                            string FeesCurrency3 = "";
-                                                                            double FeesPrice3 = 0;
-
-                                                                            FeesDesc3 = "<b>Resort Fees</b>";
-
-                                                                            FeesPrice3 += Convert.ToDouble(fees["resort_fee"].billable_currency.value);
-                                                                            FeesCurrency3 = Convert.ToString(fees["resort_fee"].billable_currency.currency);
-
-                                                                            if (EssentialAdd != string.Empty)
-                                                                                EssentialAdd = " , " + FeesDesc3 + " : " + FeesPrice3 + " (" + FeesCurrency3 + ") ";
-                                                                            else
-                                                                                EssentialAdd = FeesDesc3 + " : " + FeesPrice3 + " (" + FeesCurrency3 + ") ";
-                                                                        }
-                                                                    }
-
-                                                                    if (EssentialAdd != string.Empty)
-                                                                        EssentialAdd = EssentialAdd + "For" + RoomName + " " + BedName;
-                                                                    else
-                                                                        EssentialAdd = "";
-
-
-                                                                    #endregion
-
-                                                                    #region RateBreakUp
-                                                                    double markup = 0;
-
-                                                                    #endregion
-
-                                                                }
-                                                            }
-
-                                                        }
-
-                                                        double VatOnRateBrackUp = 0;
-                                                        double tempmin = MainPrice - OurProfit;
-                                                        tempmin = _markup.ProcessHotelRateBreakupPrice_WithMarkup(1, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), Convert.ToDouble(tempmin), commonSearch.B2CMarkup, commonSearch.IsParentId, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, ref VatOnRateBrackUp);
-
-
-
-                                                        #region Rooms
-                                                        //Boolean IsRefundable = Convert.ToBoolean(Root[h].rooms[j].rates[k].refundable);
-
-                                                        DataRow drEANRoom = dtHotelRoom.NewRow();
-                                                        drEANRoom["OwnSystemHotelId"] = OwnsystemHotelId;
-                                                        drEANRoom["RoomTypeName"] = IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable";
-                                                        drEANRoom["RoomTypeCode"] = RatePlamCode;
-                                                        drEANRoom["MealId"] = TotalAmenities != "" ? TotalAmenities : "Room Only";
-                                                        drEANRoom["MealName"] = TotalAmenities != "" ? TotalAmenities : "Room Only";
-                                                        drEANRoom["ContractID"] = ItemCode;
-                                                        drEANRoom["BoardType"] = TotalAmenities != "" ? TotalAmenities : "Room Only";
-                                                        drEANRoom["RoomTypeId"] = RatePlamCode;
-                                                        drEANRoom["AdultsOccupancy"] = TotalAdult;
-                                                        drEANRoom["ChildOccupancy"] = TotalChild;
-                                                        drEANRoom["MaxExtraBed"] = "0";
-                                                        drEANRoom["RoomNo"] = 1;
-                                                        drEANRoom["RoomSequenceNo"] = Guid.NewGuid();
-                                                        drEANRoom["Type"] = "";
-                                                        drEANRoom["BookingStatus"] = "Available";
-                                                        drEANRoom["UniqueNo"] = OwnsystemHotelId;
-                                                        drEANRoom["OfferDescription"] = "";
-                                                        drEANRoom["OfferCode"] = "";
-                                                        drEANRoom["EssentialInformation"] = EssInfo + "<br>" + EssentialAdd + ESS;
-
-                                                        drEANRoom["CompanyBuyingPriceExpedia"] = MainPrice;
-                                                        drEANRoom["GrossProfitOnline"] = 0;
-                                                        double discountprice = 0;
-                                                        discountprice = StrikeTroughMain;
-                                                        if (discountprice > (MainPrice))
-                                                        {
-                                                            discountprice = _markup.ProcessHotelRateBreakupPrice_WithMarkup(1, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), Convert.ToDouble(discountprice), commonSearch.B2CMarkup, commonSearch.IsParentId, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, ref VatOnRateBrackUp);
-
-                                                            drEANRoom["GrossWitohutDiscount"] = discountprice;
-                                                        }
-
-                                                        MainPrice = MainPrice - OurProfit;
-
-                                                        double ItemPrice = Convert.ToDouble(MainPrice);
-
-                                                        drEANRoom["OurProfit"] = OurProfit;
-                                                        drEANRoom["CurrencyFactor"] = ExpediaCurrencyFactor;
-
-                                                        _markup.ProcessHotelRoom_WithMarkup(ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref ItemPrice, ref drEANRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
-
-                                                        drEANRoom["SupplierName"] = Provider;
-                                                        dtHotelRoom.Rows.Add(drEANRoom);
-                                                        #endregion
-
-
-
-                                                        if (Provider.ToLower() == "ean_b2b" || Provider.ToLower() == "ean_pkg")
-                                                        {
-                                                            #region Cancellation Policy
-
-                                                            if (IsRefundable)
-                                                            {
-                                                                DateTime Start = DateTime.Now.Date;
-                                                                DateTime End = DateTime.Now.Date;
-                                                                int Night = 0;
-                                                                double CancellationAmount = 0;
-                                                                double CancellationPecentage = 0;
-                                                                double CancellationCharge = 0;
-                                                                Currency = ExpediaInfo.EANCurrency;
-                                                                if (Root[h].rooms[j].rates[k].cancel_penalties != null)
-                                                                {
-                                                                    int CancellationPolicy = Convert.ToInt32(Root[h].rooms[j].rates[k].cancel_penalties.Count);
-                                                                    for (int l = 0; l < CancellationPolicy; l++)
-                                                                    {
-                                                                        Start = Convert.ToDateTime(Root[h].rooms[j].rates[k].cancel_penalties[l].start);
-                                                                        End = Convert.ToDateTime(Root[h].rooms[j].rates[k].cancel_penalties[l].end);
-                                                                        Currency = Convert.ToString(Root[h].rooms[j].rates[k].cancel_penalties[l].currency);
-
-                                                                        if (Root[h].rooms[j].rates[k].cancel_penalties[l].nights != null)
-                                                                        {
-                                                                            Night = Convert.ToInt32(Root[h].rooms[j].rates[k].cancel_penalties[l].nights);
-                                                                            CancellationCharge = MainPrice;// (MainPrice / SearchParam.NoofNights) * Night;
-                                                                        }
-                                                                        else if (Root[h].rooms[j].rates[k].cancel_penalties[l].amount != null)
-                                                                        {
-                                                                            CancellationAmount = Convert.ToDouble(Root[h].rooms[j].rates[k].cancel_penalties[l].amount);
-                                                                            CancellationCharge = CancellationCharge + CancellationAmount;
-                                                                        }
-                                                                        else if (Root[h].rooms[j].rates[k].cancel_penalties[l].percent != null)
-                                                                        {
-                                                                            double CanelPercent = 0;
-                                                                            CancellationPecentage = Convert.ToDouble(Root[h].rooms[j].rates[k].cancel_penalties[l].percent.Replace("%", ""));
-                                                                            CanelPercent = MainPrice * CancellationPecentage;
-                                                                            CancellationCharge = CancellationCharge + CanelPercent;
-
-                                                                        }
-                                                                    }
-                                                                }
-
-                                                                if (CancellationCharge > MainPrice)
-                                                                    CancellationCharge = MainPrice;
-
-
-                                                                double CancelCharge = CancellationCharge;
-
-                                                                DateTime CancelDate = DateTime.Now.Date;
-                                                                CancelDate = Convert.ToDateTime(Start);
-                                                                DateTime NowDate = DateTime.Now.Date;
-                                                                if (CancelDate <= DateTime.Now.Date)
-                                                                    CancelDate = DateTime.Now.Date;
-                                                                else
-                                                                    CancelDate = CancelDate.AddDays(CutOffDays).Date;
-
-                                                                if (CancelDate.AddDays(-1) <= DateTime.Now.Date)
-                                                                    CancelDate = DateTime.Now.Date;
-                                                                #region Vat
-                                                                double VatOnPolicy = 0;
-                                                                double MainAgentCharge = CancelCharge;
-                                                                double CompanyChargeAmount = CancelCharge;
-                                                                CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), CancelCharge, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                #endregion
-                                                                if (CancelDate.Date < DateTime.Now.Date)
-                                                                    CancelDate = DateTime.Now.Date;
-
-                                                                if (NowDate < CancelDate && CancelDate.Date > DateTime.Now.Date)
-                                                                {
-                                                                    double zero = 0;
-
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref zero, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", DateTime.Now.Date, CancelDate.AddDays(-1), 0, 0, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate), DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, CancelCharge, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-                                                                }
-                                                                else
-                                                                {
-                                                                    #region Vat
-                                                                    VatOnPolicy = 0;
-                                                                    MainAgentCharge = MainPrice;
-                                                                    CompanyChargeAmount = MainPrice;
-                                                                    CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                    #endregion
-
-                                                                    if (CancelDate < DateTime.Now.Date)
-                                                                        CancelDate = DateTime.Now.Date;
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                                   Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate),
-                                                                                                                   DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                //if (CancelDate < DateTime.Now.Date)
-                                                                //    CancelDate = DateTime.Now.Date;
-                                                                #region Vat
-                                                                double VatOnPolicy = 0;
-                                                                double MainAgentCharge = MainPrice;
-                                                                double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                #endregion
-
-
-                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                               Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
-                                                                                                               DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                dtCancellation.AcceptChanges();
-                                                            }
-
-
-
-                                                            #endregion
-                                                        }
-                                                        else
-                                                        {
-                                                            #region Cancellation Policy New
-
-                                                            if (IsRefundable)// (IsRefundable)
-                                                            {
-                                                                DateTime Start = DateTime.Now.Date;
-                                                                DateTime End = DateTime.Now.Date;
-                                                                int Night = 0;
-                                                                double CancellationAmount = 0;
-                                                                double CancellationPecentage = 0;
-                                                                double CancellationCharge = 0;
-                                                                bool IsNonRef = false;
-                                                                Currency = ExpediaInfo.EANCurrency;
-                                                                bool IsTrue = true;
-                                                                bool ForPol = true;
-
-                                                                if (Root[h].rooms[j].rates[k].cancel_penalties != null)
-                                                                {
-                                                                    int CancellationPolicy = Convert.ToInt32(Root[h].rooms[j].rates[k].cancel_penalties.Count);
-                                                                    DateTime EndDate = DateTime.Now.Date;
-
-                                                                    for (int l = 0; l < CancellationPolicy; l++)
-                                                                    {
-                                                                        double CancelCharge = 0;
-                                                                        Start = Convert.ToDateTime(Root[h].rooms[j].rates[k].cancel_penalties[l].start);
-                                                                        End = Convert.ToDateTime(Root[h].rooms[j].rates[k].cancel_penalties[l].end);
-                                                                        Currency = Convert.ToString(Root[h].rooms[j].rates[k].cancel_penalties[l].currency);
-
-                                                                        if (Root[h].rooms[j].rates[k].cancel_penalties[l].nights != null)
-                                                                        {
-                                                                            Night = Convert.ToInt32(Root[h].rooms[j].rates[k].cancel_penalties[l].nights);
-                                                                            CancellationCharge = MainPrice;// (MainPrice / SearchParam.NoofNights) * Night;
-                                                                            CancelCharge = CancellationCharge;
-                                                                        }
-                                                                        else if (Root[h].rooms[j].rates[k].cancel_penalties[l].amount != null)
-                                                                        {
-                                                                            CancellationAmount = Convert.ToDouble(Root[h].rooms[j].rates[k].cancel_penalties[l].amount);
-                                                                            CancellationCharge = CancellationCharge + CancellationAmount;
-                                                                            CancelCharge = CancellationCharge * ExpediaCurrencyFactor;
-                                                                        }
-                                                                        else if (Root[h].rooms[j].rates[k].cancel_penalties[l].percent != null)
-                                                                        {
-                                                                            double CanelPercentPrice = 0;
-                                                                            CancellationPecentage = Convert.ToDouble(Root[h].rooms[j].rates[k].cancel_penalties[l].percent.Replace("%", ""));
-                                                                            //CanelPercent = MainPrice * CancellationPecentage;
-                                                                            CancellationCharge = (MainPrice * CancellationPecentage) / 100;
-                                                                            //CancellationCharge = CancellationCharge + CanelPercentPrice;
-                                                                            CancelCharge = CancellationCharge;
-                                                                        }
-
-
-                                                                        if (CancelCharge > MainPrice)
-                                                                            CancellationCharge = MainPrice;
-
-
-                                                                        DateTime CancelDate = DateTime.Now.Date;
-                                                                        //CancelDate = Convert.ToDateTime(Start).AddDays(1).Date;
-                                                                        CancelDate = Convert.ToDateTime(Start);
-                                                                        DateTime NowDate = DateTime.Now.Date;
-                                                                        if (CancelDate <= DateTime.Now.Date)
-                                                                            CancelDate = DateTime.Now.Date;
-                                                                        else
-                                                                            CancelDate = CancelDate.AddDays(CutOffDays).Date;
-
-                                                                        if (CancelDate.AddDays(-1) <= DateTime.Now.Date)
-                                                                            CancelDate = DateTime.Now.Date;
-
-                                                                        DateTime LastStart1 = DateTime.Now.Date;
-                                                                        DateTime NextStartDate = DateTime.Now.Date;
-
-                                                                        if (CancellationPolicy > 1 && ForPol && CancellationPolicy != (l + 1))
-                                                                        {
-                                                                            NextStartDate = Convert.ToDateTime(Root[h].rooms[j].rates[k].cancel_penalties[l + 1].start);
-                                                                            NextStartDate = NextStartDate.AddDays(CutOffDays).Date;
-                                                                            if (NextStartDate.Date <= DateTime.Now.Date)
-                                                                            {
-                                                                                ForPol = false;
-                                                                                continue;
-
-                                                                            }
-
-                                                                        }
-
-                                                                        if (CancellationPolicy > 1 && CancellationPolicy != (l + 1))
-                                                                        {
-                                                                            LastStart1 = Convert.ToDateTime(Root[h].rooms[j].rates[k].cancel_penalties[l + 1].start);
-
-                                                                            if (End.Date == LastStart1.Date)
-                                                                                End = End.AddDays(-1).Date;
-
-                                                                            End = End.AddDays(CutOffDays).Date; //add on 5/5
-                                                                        }
-
-                                                                        if (CancellationPolicy == (l + 1))
-                                                                        {
-                                                                            End = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
-                                                                            // CancelDate = Start;
-
-                                                                            CancelDate = Convert.ToDateTime(Start);
-
-                                                                            if (CancelDate <= DateTime.Now.Date)
-                                                                                CancelDate = DateTime.Now.Date;
-                                                                            else
-                                                                                CancelDate = CancelDate.AddDays(CutOffDays).Date;
-
-                                                                        }
-                                                                        if (CancellationPolicy == 1)
-                                                                            IsTrue = true;
-
-                                                                        if (CancellationPolicy >= 3 && l == 1)
-                                                                        {
-                                                                            End = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
-                                                                            CancelCharge = MainPrice;
-                                                                        }
-
-
-                                                                        #region Vat
-                                                                        double VatOnPolicy = 0;
-                                                                        double MainAgentCharge = CancelCharge;
-                                                                        double CompanyChargeAmount = CancelCharge;
-                                                                        CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), CancellationCharge, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                        #endregion
-                                                                        if (CancelDate.Date < DateTime.Now.Date)
-                                                                            CancelDate = DateTime.Now.Date;
-
-                                                                        if (NowDate < CancelDate && CancelDate.Date > DateTime.Now.Date && IsTrue)
-                                                                        {
-                                                                            if (IsTrue && l == 0)
-                                                                            {
-                                                                                double zero = 0;
-                                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref zero, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                            Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", DateTime.Now.Date, CancelDate.AddDays(-1), 0, 0, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                                dtCancellation.AcceptChanges();
-                                                                            }
-
-                                                                            dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                             Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate), End.Date, MainAgentCharge, CancelCharge, "", VatOnPolicy, "", "NO", "", "", "", ""));
-                                                                            dtCancellation.AcceptChanges();
-
-
-                                                                            IsTrue = true;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            //if (CancelDate < DateTime.Now.Date)
-                                                                            //    CancelDate = DateTime.Now.Date;
-                                                                            //DtEAN_Cancellation.Rows.Add(Common.setCancellationPolicyRow(ref CompanyChargeAmount, DtEAN_Cancellation.NewRow(), CurrencyFactor, Currency, SupplierName, ownsystemid, Convert.ToString(1),
-                                                                            //                                               Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate),
-                                                                            //                                               DateTime.ParseExact(objSearPera.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                            //DtEAN_Cancellation.AcceptChanges();
-
-                                                                            #region Vat
-                                                                            VatOnPolicy = 0;
-                                                                            MainAgentCharge = CancellationCharge;
-                                                                            CompanyChargeAmount = CancellationCharge;
-                                                                            CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), CancellationCharge, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                            #endregion
-
-                                                                            if (CancelDate < DateTime.Now.Date)
-                                                                                CancelDate = DateTime.Now.Date;
-                                                                            dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CancellationCharge, dtCancellation.NewRow(), ExpediaCurrencyFactor, Currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                               Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(CancelDate),
-                                                                                                               End.Date, MainAgentCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                            dtCancellation.AcceptChanges();
-
-                                                                            IsTrue = false;
-
-                                                                            if (CancellationPolicy >= 3 && l == 1)
-                                                                                break;
-
-                                                                        }
-
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-
-
-                                                                    #region Vat
-                                                                    double VatOnPolicy = 0;
-                                                                    double MainAgentCharge = MainPrice;
-                                                                    double CompanyChargeAmount = MainPrice;
-                                                                    double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                    #endregion
-
-                                                                    dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                                Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
-                                                                                                                DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                    dtCancellation.AcceptChanges();
-
-                                                                    break;
-                                                                }
-
-                                                                #region Cancellation Policy
-
-                                                            }
-                                                            else
-                                                            {
-                                                                //if (CancelDate < DateTime.Now.Date)
-                                                                //    CancelDate = DateTime.Now.Date;
-
-                                                                #region Vat
-                                                                double VatOnPolicy = 0;
-                                                                double MainAgentCharge = MainPrice;
-                                                                double CancelCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchParam.Rooms.Count * SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), MainPrice, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatOnPolicy);
-                                                                #endregion
-
-                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainPrice, dtCancellation.NewRow(), ExpediaCurrencyFactor, ExpediaInfo.EANCurrency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
-                                                                                                                 Convert.ToString(RatePlamCode), IsRefundable ? RoomName + " " + BedName : RoomName + " " + BedName + "- Non Refundable", TotalAmenities != "" ? TotalAmenities : "Room Only", Convert.ToDateTime(DateTime.Now.Date),
-                                                                                                                 DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), CancelCharge, CancelCharge, "", 0, Guid.NewGuid().ToString(), "Yes", "", ""));
-                                                                dtCancellation.AcceptChanges();
-                                                            }
-                                                            #endregion
-
-                                                            #endregion
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        #region Tables Merge
-
-                                        Options ops = (await _supplierRes.GetCommonRoomForSuppliers(GiataId, commonSearch.tokenData, commonSearch.advancedOptions, FinalMinPrice, drXmlHotel, dtHotelRoom, dtCancellation, DtRoomRateBreackUp, SearchParam));
-                                        if (ops != null)
-                                            options.Add(ops);
-                                        #endregion
-                                    }
-
-                                    #endregion
-                                }
-                                #endregion                                
-                            }
-                            #endregion
-                            #endregion
-
-
-                        }
-                        #endregion
-
-                    }
-
-                }
-                return options;
-            }
-            catch (Exception ex)
-            {
-
-                await _exception.Error(ex);
-                ItemEN.ResponseType = "NoCount";
-                return options;
-            }
-            finally
-            {
-                #region ResProcessTimer
-                try
-                {
-                    if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_ean.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
-                    {
-                        timer_room_ean.Stop();
-                        SearchParam.SupplierTime += ",|Finish:" + Provider + " Process Response  " + "|Time :" + timer_room_ean.Elapsed.ToString();
-                        _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_ean.Elapsed.ToString(), Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));
-                    }
-                }
-                catch (Exception x)
-                {
-                    await _exception.Error(x);
-                }
-                #endregion
-            }
-        }
-
-        private double CalculateMinimumEANPrice(List<EAN.Room_EAN2> rooms, List<(string Occ, int Count)> parsedOccupancies, int eanProfitPercent, double expediaCurrencyFactor, DataTable dtROE)
-        {
-            double minPrice = double.MaxValue;
-
-            foreach (var room in rooms)
-            {
-                foreach (var rate in room.rates)
-                {
-                    var occupancyPricing = rate.occupancy_pricing;
-                    double totalFinalPrice = 0;
-
-                    foreach (var (occ, count) in parsedOccupancies)
-                    {
-                        if (!occupancyPricing.TryGetValue(occ, out var pricing) || pricing?.totals == null)
-                            continue;
-
-
-                        var totals = pricing.totals;
-
-                        if (totals == null || !totals.TryGetValue("inclusive", out var inclusiveDetail) ||
-                            inclusiveDetail?.billable_currency?.value == null ||
-                            !totals.TryGetValue("gross_profit", out var grossProfitDetail) ||
-                            grossProfitDetail?.billable_currency?.value == null)
-                            continue;
-
-                        string inclusiveCurrency = inclusiveDetail.billable_currency.currency?.ToLower() ?? "";
-                        if (inclusiveCurrency != "usd") continue;
-
-                        double price = Convert.ToDouble(inclusiveDetail.billable_currency.value) * count;
-                        double profit = Convert.ToDouble(grossProfitDetail.billable_currency.value) * eanProfitPercent / 100.0 * count;
-
-                        price *= expediaCurrencyFactor;
-
-                        if (totals.TryGetValue("marketing_fee", out var marketingFee))
-                        {
-                            string feeCurrency = marketingFee.billable_currency?.currency?.ToLower() ?? "";
-                            if (feeCurrency != "usd") continue;
-
-                            profit *= expediaCurrencyFactor;
-                        }
-
-                        double finalPrice = price - profit;
-                        totalFinalPrice += finalPrice;
-                    }
-
-                    if (totalFinalPrice > 0 && totalFinalPrice < minPrice)
-                        minPrice = totalFinalPrice;
-                }
-            }
-
-            return minPrice == double.MaxValue ? 0 : minPrice;
-        }
-
-
-        #endregion
+        
 
         public bool MealNameCheck(string EANMealName)
         {
@@ -5706,10 +2879,10 @@ namespace XConnect.Expedia
                 //string ResponseData_Exx = "";
                 ResponseDto ResponseData_Exx = new ResponseDto();
                 if (true)// (SupplierName.ToLower() == "ean_b2bv3" || SupplierName.ToLower() == "ean_pkgv3")
-                    //ResponseData_Exx = GetEANResponse(URL + ExpediaInfo.EAN_VersionV3 + "content?language=en-US&supply_source=expedia&property_id=" + HotelId, 60000, SupplierName, Sign, ApiKey, echotoken, platform, "", "", "", IP);
-                    ResponseData_Exx = await GetEANResponse(URL + ExpediaInfo.EAN_VersionV3 + "content?language=en-US&supply_source=expedia&property_id=" + HotelId, 60000, SupplierName, Sign, ApiKey, echotoken, platform, "GET", "", "", IP);
+                    //ResponseData_Exx = GetEANResponse(URL + _supplierConfig.Expedia.EAN_VersionV3 + "content?language=en-US&supply_source=expedia&property_id=" + HotelId, 60000, SupplierName, Sign, ApiKey, echotoken, platform, "", "", "", IP);
+                    ResponseData_Exx = await GetEANResponse(URL + _supplierConfig.Expedia.EAN_VersionV3 + "content?language=en-US&supply_source=expedia&property_id=" + HotelId, 60000, SupplierName, Sign, ApiKey, echotoken, platform, "GET", "", "", IP);
                 else
-                    ResponseData_Exx = await GetEANResponse(URL + ExpediaInfo.EAN_Version + "content?language=en-US&property_id=" + HotelId, 60000, SupplierName, Sign, ApiKey, echotoken, platform, "GET", "", "", IP);
+                    ResponseData_Exx = await GetEANResponse(URL + _supplierConfig.Expedia.EAN_Version + "content?language=en-US&property_id=" + HotelId, 60000, SupplierName, Sign, ApiKey, echotoken, platform, "GET", "", "", IP);
 
                 //if (ResponseData_Exx != "" || ResponseData_Exx != null)
                 if (ResponseData_Exx.Response != "" || ResponseData_Exx.Response != null)
@@ -6713,20 +3886,20 @@ namespace XConnect.Expedia
 
                 EANV3BookRequest.Address AddressObj = new EANV3BookRequest.Address();
                 //AddressObj.line_1 = "555 1st St";
-                AddressObj.line_1 = ExpediaInfo.address1_Xpedia;
+                AddressObj.line_1 = _supplierConfig.Expedia.address1_Xpedia;
                 //AddressObj.city = "Seattle";
-                AddressObj.city = ExpediaInfo.city_Xpedia;
+                AddressObj.city = _supplierConfig.Expedia.city_Xpedia;
                 //AddressObj.state_province_code = "WA";
                 //AddressObj.postal_code = "98121";
-                AddressObj.postal_code = ExpediaInfo.postalCode_Xpedia;
+                AddressObj.postal_code = _supplierConfig.Expedia.postalCode_Xpedia;
                 //AddressObj.country_code = "US";
-                AddressObj.country_code = ExpediaInfo.countryCode_Xpedia;
+                AddressObj.country_code = _supplierConfig.Expedia.countryCode_Xpedia;
 
                 EANV3BookRequest.BillingContact BillingContactObj = new EANV3BookRequest.BillingContact();
                 //BillingContactObj.given_name = "John";
-                BillingContactObj.given_name = ExpediaInfo.firstName_Xpedia;
+                BillingContactObj.given_name = _supplierConfig.Expedia.firstName_Xpedia;
                 //BillingContactObj.family_name = "Smith";
-                BillingContactObj.family_name = ExpediaInfo.lastName_Xpedia;
+                BillingContactObj.family_name = _supplierConfig.Expedia.lastName_Xpedia;
                 //BillingContactObj.email = "chintan@technoheaven.net";
                 //BillingContactObj.email = XMLHotelBookingCommon.email_Xpedia;
                 //BillingContactObj.phone = "919099493112";
@@ -6759,11 +3932,11 @@ namespace XConnect.Expedia
                 RootObjBook.payments = PaymentObj;
 
                 EANV3BookRequest.Phone PhoneObj = new EANV3BookRequest.Phone();
-                PhoneObj.country_code = ExpediaInfo.country_code_Xpedia;
-                PhoneObj.area_code = ExpediaInfo.area_code_Xpedia;
-                PhoneObj.number = ExpediaInfo.number_Xpedia;
+                PhoneObj.country_code = _supplierConfig.Expedia.country_code_Xpedia;
+                PhoneObj.area_code = _supplierConfig.Expedia.area_code_Xpedia;
+                PhoneObj.number = _supplierConfig.Expedia.number_Xpedia;
                 RootObjBook.phone = PhoneObj;
-                RootObjBook.email = ExpediaInfo.email_Xpedia;
+                RootObjBook.email = _supplierConfig.Expedia.email_Xpedia;
 
                 BookReq = Newtonsoft.Json.JsonConvert.SerializeObject(RootObjBook);
                 return BookReq.ToString();
@@ -6821,17 +3994,17 @@ namespace XConnect.Expedia
                 }
 
                 EANV3BookRequest.Address AddressObj = new EANV3BookRequest.Address();
-                AddressObj.line_1 = ExpediaInfo.address1_Xpedia;
-                AddressObj.city = ExpediaInfo.city_Xpedia;
-                AddressObj.postal_code = ExpediaInfo.postalCode_Xpedia;
+                AddressObj.line_1 = _supplierConfig.Expedia.address1_Xpedia;
+                AddressObj.city = _supplierConfig.Expedia.city_Xpedia;
+                AddressObj.postal_code = _supplierConfig.Expedia.postalCode_Xpedia;
                 //AddressObj.country_code = "US";
-                AddressObj.country_code = ExpediaInfo.countryCode_Xpedia;
+                AddressObj.country_code = _supplierConfig.Expedia.countryCode_Xpedia;
 
                 EANV3BookRequest.BillingContact BillingContactObj = new EANV3BookRequest.BillingContact();
                 //BillingContactObj.given_name = "John";
-                BillingContactObj.given_name = ExpediaInfo.firstName_Xpedia;
+                BillingContactObj.given_name = _supplierConfig.Expedia.firstName_Xpedia;
                 //BillingContactObj.family_name = "Smith";
-                BillingContactObj.family_name = ExpediaInfo.lastName_Xpedia;
+                BillingContactObj.family_name = _supplierConfig.Expedia.lastName_Xpedia;
                 BillingContactObj.address = AddressObj;
 
                 List<EANV3BookRequest.Payment> PaymentObj = new List<EANV3BookRequest.Payment>();
@@ -6848,11 +4021,11 @@ namespace XConnect.Expedia
                 RootObjBook.payments = PaymentObj;
 
                 EANV3BookRequest.Phone PhoneObj = new EANV3BookRequest.Phone();
-                PhoneObj.country_code = ExpediaInfo.country_code_Xpedia;
-                PhoneObj.area_code = ExpediaInfo.area_code_Xpedia;
-                PhoneObj.number = ExpediaInfo.number_Xpedia;
+                PhoneObj.country_code = _supplierConfig.Expedia.country_code_Xpedia;
+                PhoneObj.area_code = _supplierConfig.Expedia.area_code_Xpedia;
+                PhoneObj.number = _supplierConfig.Expedia.number_Xpedia;
                 RootObjBook.phone = PhoneObj;
-                RootObjBook.email = ExpediaInfo.email_Xpedia;
+                RootObjBook.email = _supplierConfig.Expedia.email_Xpedia;
 
                 BookReq = Newtonsoft.Json.JsonConvert.SerializeObject(RootObjBook);
                 return BookReq.ToString();

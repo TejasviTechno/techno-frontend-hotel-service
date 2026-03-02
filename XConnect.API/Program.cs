@@ -24,6 +24,7 @@ using Serilog.Formatting.Compact;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Exporter;
+using static XConnect.Supplier.Booking.Com.detailres;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -311,6 +312,7 @@ builder.Services.Configure<MongoSettings>(builder.Configuration.GetSection("Mong
 builder.Services.Configure<RabitMQSettings>(builder.Configuration.GetSection("RabitMQSettings"));
 builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("RedisSettings"));//Added on 14-AUG-2025
 builder.Services.Configure<RemoteServices>(builder.Configuration.GetSection("RemoteServices"));//Added on 09-FEB-26
+builder.Services.Configure<SupplierConfiguration>(builder.Configuration.GetSection("SupplierConfiguration"));//Added on 26-FEB-26
 
 var app = builder.Build();
 

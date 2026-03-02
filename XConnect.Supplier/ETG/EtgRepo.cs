@@ -36,9 +36,10 @@ namespace XConnect.Supplier.ETG
         private readonly ISupplierRes _supplierRes;
         private readonly IMemoryCache _cache;
         private readonly KeySettings _keySettings;
+        private readonly SupplierConfiguration _supplierConfig;//Added on 27-FEB-26
 
 
-        public EtgRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception)
+        public EtgRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
@@ -46,6 +47,7 @@ namespace XConnect.Supplier.ETG
             _cache = cache;
             _keySettings = keySettings.Value;
             _exception = exception;
+            _supplierConfig = supplierConfig.Value;
         }
         public void GetOstrovokRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> lstOstrovok_Details, List<SupplierSearchConfig> lstOstrovokSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, int Hit, DataTable dtROE, TokenData tokenData, DataSet dtXMLCity)
         {
@@ -125,9 +127,9 @@ namespace XConnect.Supplier.ETG
                                                             //if (Hit > 0)
                                                             xhotels.ProcessTimeout = Convert.ToInt32(OstrovokSearchConfig[k].HotelSearchTimeOut2);
                                                             if (_keySettings.SupplierProxy == "0")
-                                                                xhotels.URL = Convert.ToString(Ostrovok_Details.WebSiteURL) + ETGInfo.search_serp_hotels;
+                                                                xhotels.URL = Convert.ToString(Ostrovok_Details.WebSiteURL) + _supplierConfig.ETG.search_serp_hotels;
                                                             else
-                                                                xhotels.URL = Convert.ToString(Ostrovok_Details.WebSiteURLforAPI) + ETGInfo.search_serp_hotels;
+                                                                xhotels.URL = Convert.ToString(Ostrovok_Details.WebSiteURLforAPI) + _supplierConfig.ETG.search_serp_hotels;
                                                             xhotels.Action = "";
                                                             xhotels.UserName = UserName;
                                                             xhotels.PassWord = PassWord;
@@ -818,7 +820,7 @@ namespace XConnect.Supplier.ETG
 
                         string ItemCode = Convert.ToString(ETGResponse.data.hotels[i].id);
                         string Error = "";
-                        string URLRoom = "https://api.worldota.net/api/b2b/v3/search/hp/";
+                        string URLRoom = _supplierConfig.ETG.hotelinfourl;// "https://api.worldota.net/api/b2b/v3/search/hp/";
 
                         if (ETGResponse.data.hotels[i].rates != null)
                         {
@@ -939,8 +941,10 @@ namespace XConnect.Supplier.ETG
                                     DataTable dtOstvHotelRoom = _commonMethod.GenerateRoomtypeDataTableNewV2();
                                     DataTable dtOstvCancellation = _commonMethod.GenerateCancellationDataTableNewV2();
                                     DataTable dtOstvHotelRoomRateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
-                                    int CutOffDays = XMLHotelBookingCommon.CutOffDays;
+                                    int CutOffDays = CacheMaster.CutOffDays;
                                     CutOffDays = _commonMethod.GetCutOffDays(commonSearch.dtSuplierMarkup, Provider);
+                                    //int CutOffDays = XMLHotelBookingCommon.CutOffDays;//ttt
+                                    //CutOffDays = _commonMethod.GetCutOffDays(commonSearch.dtSuplierMarkup, Provider);
                                     #region "Room Logic"
                                     if (SearchParam.Filters.IsShowRooms == 1)
                                     {
@@ -1232,7 +1236,8 @@ namespace XConnect.Supplier.ETG
                 string key = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserName + ":" + PassWord));
                 //string strHost = WebConfigurationManager.AppSettings["RatehawkURL"] + "/search/hp/";
                 //string strHost = WebConfigurationManager.AppSettings["RatehawkURL"] + "/search/serp/hotels/";
-                string strHost = RatehawkURL + ETGInfo.search_serp_hotels;
+                //string strHost = RatehawkURL + ETGInfo.search_serp_hotels;
+                string strHost = RatehawkURL + _supplierConfig.ETG.search_serp_hotels;
                 //string strHost = WebConfigurationManager.AppSettings["RatehawkURL"] + "/search/serp/region/";
                 string UniqueNo = "";
                 bool IsRooom = false;
@@ -1645,7 +1650,8 @@ namespace XConnect.Supplier.ETG
                 string Password = Convert.ToString(OstrovokDetails[0]["Password"]);
                 string UserCartDetailId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]);
                 string Key = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserName + ":" + Password));
-                string PrebookURL = Convert.ToString(OstrovokDetails[0]["WebSiteURL"]) + "/serp/prebook";
+                //string PrebookURL = Convert.ToString(OstrovokDetails[0]["WebSiteURL"]) + "/serp/prebook";
+                string PrebookURL = Convert.ToString(OstrovokDetails[0]["WebSiteURL"]) + _supplierConfig.ETG.Prebook;
                 int UserCartId = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[0]["UserCartID"]);
                 string RoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["RoomTypeID"]); // new added
                 string free_cancellation_before = "";
@@ -1740,7 +1746,11 @@ namespace XConnect.Supplier.ETG
                             FinalPrice = (sellingAmount) * CurrencyFactor;
 
                         }
+                        
                         bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus(book_hash, UserCartId);
+                        
+
+                        
                         FinalPrice = Convert.ToDouble(Math.Round(FinalPrice, 2));
                         priceCheckCMDto.ItemPrice = FinalPrice;
 
@@ -1891,7 +1901,279 @@ namespace XConnect.Supplier.ETG
             priceCheckCMDto.Flag = false;
             return priceCheckCMDto;
         }
+        public async Task<PriceCheckCMDto> Get_Ostrovok_Prebook_new(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, DataRow[] OstrovokDetails, double FinalPrice, double CompanyBuyingPrice, TokenData TokenData, string Searchkey, int AgentId, int i = 0, string Supplier = "")
+        {
+            PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
+            string responsetype = "Success";
+            string time = "";
+            string Error = "";
+            string SupplierName = Supplier;
+            string PrebookRQ = "-";
+            string PrebookResponseData = "-";
+            string XmlId = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["XMLHotelId"]);
+            string GiataId = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["GiataId"]);
+            string ServiceId = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["ServiceId"]);
+            try
+            {
+                DataTable dtROE = TokenData.dtROE;
+                int rates_id = 0;
+                string book_hash = "";
+                double sellingAmount = 0;
+                bool price_changed = false;
+                string UserName = Convert.ToString(OstrovokDetails[0]["UserName"]);
+                string Password = Convert.ToString(OstrovokDetails[0]["Password"]);
+                string UserCartDetailId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]);
+                string Key = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserName + ":" + Password));
+                //string PrebookURL = Convert.ToString(OstrovokDetails[0]["WebSiteURL"]) + "/serp/prebook";
+                string PrebookURL = Convert.ToString(OstrovokDetails[0]["WebSiteURL"]) + _supplierConfig.ETG.Prebook;
+                int UserCartId = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[0]["UserCartID"]);
+                string RoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["RoomTypeID"]); // new added
+                string free_cancellation_before = "";
+                //string ServerIp = GetUserPlatform();
+                //string ServerIp = GetUserPlatform();
+                //ServerIp = ServerIp.Split(new String[] { "$$" }, StringSplitOptions.None)[1];
 
+                #region Data
+                //SearchParameter objSearPara = (SearchParameter)HttpContext.Current.Session["SearchPara"];
+                double CurrencyFactor = 1;
+                DataSet dsTemp = new DataSet();
+                #region New BookHash               
+                string[] array = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["RoomTypeId"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                //string Currency = array[3];
+                string Etg_UniqueId = array[6];
+
+                #endregion
+                PrebookRQ = Convert.ToString(OstrovokPrBookRequest(Etg_UniqueId));
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), "", PrebookRQ, "-", "Before Hit Prebook Request", SupplierName, "Response Pending", "-", "Withinearth");
+                #endregion
+                DataRow[] policies = null;
+                if (PrebookRQ != "")
+                {
+                    #region Price Check RS
+
+                    //PrebookResponseData = GetOstrovokRoomResponse(PrebookRQ, PrebookURL, Key, ref Error, UserCartDetailId);
+                    PrebookResponseData = await GetRatehawkRoomResponse(PrebookRQ, PrebookURL, Key, UserCartDetailId);
+
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), UserCartDetailId, PrebookRQ, PrebookResponseData + Error, "After Hit Prebook Response", SupplierName, "Prebook Response Confirm", "-", "Withinearth");
+
+
+                    if (PrebookResponseData == string.Empty || PrebookResponseData == "" || PrebookResponseData == null)
+                    {
+                        //SuppReason = "NRS";// No Response from supplier side
+                        responsetype = "GeneralError";
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
+
+                        priceCheckCMDto.Flag = false;
+                        return priceCheckCMDto;
+                    }
+                    DataSet EtgResponse = new DataSet();
+                    XmlDocument doc = Newtonsoft.Json.JsonConvert.DeserializeXmlNode("{\"Row\":" + PrebookResponseData + "}", "root");
+                    XmlReader xmlReader = new XmlNodeReader(doc);
+                    EtgResponse.ReadXml(xmlReader);
+                    #endregion
+
+                    #region Price Check Logic
+                    if (PrebookResponseData != null && EtgResponse.Tables["Row"].Rows[0]["status"].ToString() == "ok")
+                    {
+                        if (EtgResponse.Tables.Contains("changes"))
+                        {
+                            if (EtgResponse.Tables["changes"].Columns.Contains("price_changed") == true)
+                            {
+                                price_changed = Convert.ToBoolean(EtgResponse.Tables["changes"].Rows[0]["price_changed"]);
+
+                                if (price_changed == true)
+                                {
+                                    PrebookResponseData = "#Price Changed Tag Received from supplier =  " + price_changed + PrebookResponseData;
+                                    //SuppReason = "PCS.";// Price change from supplier side
+                                    responsetype = "GeneralError";
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
+
+
+                                    priceCheckCMDto.Flag = true;
+                                    return priceCheckCMDto;
+                                }
+                            }
+                        }
+                        int hotels_id = Convert.ToInt32(EtgResponse.Tables["hotels"].Rows[0]["hotels_Id"]);
+                        if (EtgResponse.Tables.Contains("rates"))
+                        {
+                            DataRow[] drRooms = EtgResponse.Tables["rates"].Select("hotels_Id='" + hotels_id + "'");
+                            book_hash = Convert.ToString(drRooms[0]["book_hash"]);
+                            rates_id = Convert.ToInt32(drRooms[0]["rates_Id"]);
+                            DataRow[] payment_option = EtgResponse.Tables["payment_options"].Select("rates_Id='" + rates_id + "'");
+                            int payment_optionId = Convert.ToInt32(payment_option[0]["payment_options_Id"]);
+
+                            DataRow[] drpayment_type = EtgResponse.Tables["payment_types"].Select("payment_options_Id='" + payment_optionId + "'");
+                            double Amount = Convert.ToDouble(drpayment_type[0]["amount"]);
+                            string Currency = Convert.ToString(drpayment_type[0]["currency_code"]);
+                            int payment_typeId = Convert.ToInt32(drpayment_type[0]["payment_types_Id"]);
+                            DataRow[] cancellation_penalty = EtgResponse.Tables["cancellation_penalties"].Select("payment_types_Id='" + payment_typeId + "'");
+                            int cancellation_penaltyId = Convert.ToInt32(cancellation_penalty[0]["cancellation_penalties_Id"]);
+                            free_cancellation_before = Convert.ToString(cancellation_penalty[0]["free_cancellation_before"]);
+                            policies = EtgResponse.Tables["policies"].Select("cancellation_penalties_Id='" + payment_optionId + "'");
+
+                            if (Currency.ToLower() != TokenData.SiteCurrency.ToLower())
+                            {
+                                CurrencyFactor = _commonMethod.GetROEByCurrency(Currency, TokenData.dtROE);
+                            }
+                            sellingAmount = Amount;
+                            FinalPrice = (sellingAmount) * CurrencyFactor;
+
+                        }
+
+                       // bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus(book_hash, UserCartId);
+                        objdata.ShoppingCartDetails[0].EachoToken = book_hash;
+
+                        FinalPrice = Convert.ToDouble(Math.Round(FinalPrice, 2));
+                        priceCheckCMDto.ItemPrice = FinalPrice;
+
+                        if (Convert.ToDouble(Math.Round(FinalPrice.TruncateDecimalPlaces(2))) > Math.Round(CompanyBuyingPrice.TruncateDecimalPlaces(2)))
+                        {
+                            PrebookResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + PrebookResponseData;
+                            responsetype = "GeneralError";
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
+                            //SuppReason = "PCS";// Price change from supplier side
+
+                            priceCheckCMDto.Flag = true;
+                            return priceCheckCMDto;
+                        }
+                        #region Policy Check
+                        //DateTime CancellationDeadLine = Convert.ToDateTime("2000/01/01");
+                        //if (dtPolicy.Rows.Count > 0)
+                        //{
+                        //    //DataRow[] dsHotelData = dtPolicy.Select("RoomTypeID='" + RoomTypeId + "'");
+
+                        //    if (dsHotelData.Count() >= 1)
+                        //    {
+                        //        if (dsHotelData.Count() > 1)
+                        //        {
+                        //            CancellationDeadLine = Convert.ToDateTime(dsHotelData[1]["FromDate"]).AddDays(-1);
+                        //        }
+
+                        //        else
+                        //        {
+                        //            CancellationDeadLine = Convert.ToDateTime(dsHotelData[0]["FromDate"]);
+                        //        }
+
+                        //    }
+                        //}
+                        //if (CancellationDeadLine != Convert.ToDateTime("2000/01/01"))
+                        {
+                            //DateTime DeadlineDate = DateTime.Now;
+                            string purchaseToken = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["purchaseToken"]);
+
+                            if (purchaseToken.ToLower() != "nonref")
+                            {
+                                string[] formats = {
+            "yyyy-MM-ddTHH:mm:ss",  // e.g. 3/12/2026 4:00:00 PM
+            "M/d/yyyy h:mm:ss tt",// e.g. 03/12/2026 04:00:00 PM
+            "dd/MM/yyyy HH:mm:ss",  // e.g. 12/03/2026 16:00:00
+            "dd/MM/yyyy",           // e.g. 12/03/2026
+            "M/d/yyyy",              // e.g. 3/12/2026
+            "yyyy/MM/dd"              // e.g. 3/12/2026
+        };
+
+                                //DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                //DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                                DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, formats, CultureInfo.InvariantCulture);
+                                //DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
+
+                                //CancellationDeadLine = CancellationDeadLine.AddDays(-1).Date;
+                                // string policiedate = "";
+                                //string curDate1 = DateTime.Now.Date.ToString("dd/MM/yyyy");
+                                //string currentdate = (Convert.ToString(curDate1)).Substring(3, 2) + "/" + (Convert.ToString(curDate1)).Substring(0, 2) + "/" + (Convert.ToString(curDate1)).Substring(6, 4);
+                                DateTime CancelDate = DateTime.Now.Date;// DateTime.ParseExact(currentdate, "MM/dd/yyyy", null);
+                                if (free_cancellation_before != "")
+                                {
+                                    DateTime dateString11 = DateTime.Parse(free_cancellation_before, CultureInfo.InvariantCulture).Date;
+                                    //string formattedDate = dateString11.ToString("dd/MM/yyyy");
+                                    string formattedDate = dateString11.ToString("yyyy/MM/dd");
+
+                                    //CancelDate = DateTime.ParseExact(formattedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                    CancelDate = DateTime.ParseExact(formattedDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+
+                                }
+                                else
+                                {
+                                    CancelDate = DateTime.Now.Date;
+                                }
+
+
+                                //for (int bbb = 0; bbb < policies.Length; bbb++)
+                                //{
+                                //    string startAt = Convert.ToString(policies[bbb]["start_at"]);
+                                //    if (startAt != "")
+                                //    {
+                                //        string PolicieDate = Convert.ToString(policies[bbb]["start_at"]);
+                                //        policiedate = (Convert.ToString(PolicieDate)).Substring(8, 2) + "/" + (Convert.ToString(PolicieDate)).Substring(5, 2) + "/" + (Convert.ToString(PolicieDate)).Substring(0, 4);
+                                //        CancelDate = DateTime.ParseExact(policiedate, "dd/MM/yyyy", null);
+                                //    }
+                                //}
+                                //string cancelDateStr = CancelDate.ToString("yyyy-MM-dd");
+                                //DeadlineDate = DateTime.ParseExact(cancelDateStr, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                                // DeadlineDate = DeadlineDate.AddDays(CutOffDays).Date;
+                                //if (CancellationDeadLine.Date > DeadlineDate.Date)
+                                if (free_cancellation_beforeroom.Date != CancelDate.Date)
+                                {
+                                    FinalPrice = 0;
+                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UserCartDetailId), PrebookRQ, "-", "(After Price Check BookingTime) Cancellation Policy Change", SupplierName, "Request Confirm", " - ", "Withinearth");
+                                    PrebookResponseData = "#Policy Changed " + "#Main Policy = " + free_cancellation_beforeroom + " #New Policy = " + CancelDate + " #Response= " + PrebookResponseData;
+                                    responsetype = "GeneralError";
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
+
+                                    priceCheckCMDto.Flag = true;
+                                    priceCheckCMDto.ItemPrice = FinalPrice;
+                                    return priceCheckCMDto;
+
+                                }
+
+                                //}
+                            }
+                        }
+                        #endregion
+                    }
+                    else
+                    {
+                        //SuppReason = "PFS";// Prebook fail from supplier side
+                        responsetype = "GeneralError";
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
+                        priceCheckCMDto.Flag = false;
+                        return priceCheckCMDto;
+
+                    }
+                    #endregion
+                }
+                else
+                {
+                    responsetype = "GeneralError";
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
+                    priceCheckCMDto.Flag = false;
+                    return priceCheckCMDto;
+                }
+                #region RPT Success
+                try
+                {
+                    responsetype = "Success";
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
+                }
+                catch (Exception e)
+                {
+                    _ = _exception.Error(e, Searchkey);
+                }
+                #endregion
+            }
+            catch (Exception e)
+            {
+                responsetype = "GeneralError";
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, e.Message.ToString() + "#" + PrebookResponseData, Error);
+                _ = _exception.Error(e);
+                priceCheckCMDto.Flag = true;
+                priceCheckCMDto.ItemPrice = 0;
+                return priceCheckCMDto;
+            }
+            priceCheckCMDto.Flag = false;
+            return priceCheckCMDto;
+        }
         public string OstrovokPrBookRequest(string Etg_UniqueId)
         {
             string FinalHashKey = "";

@@ -173,7 +173,7 @@ namespace Xconnect.BLL
 
         private readonly IVCN _vcn;
 
-
+        private readonly SupplierConfiguration _supplierConfig;
 
         #region Supplier DI
         private readonly IExpedia _expedia;
@@ -235,7 +235,7 @@ namespace Xconnect.BLL
 
 
 
-        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn)
+        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig)
         {
             _dlConnection = dlConnection;
             _cache = cache;
@@ -301,6 +301,7 @@ namespace Xconnect.BLL
             _pricetravel = pricetravel;
             _letsfly = letsfly;
             _vcn = vcn;
+            _supplierConfig = supplierConfig.Value;
         }
 
         #region Static Data - used
@@ -4812,9 +4813,9 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                                             case "expedia":
                                                                 string eprovider = "";
                                                                 //if (item.Supplier.ToLower() == "ean_b2bv3" || item.Supplier.ToLower() == "ean_pkgv3")
-                                                                //    eprovider = item.URL + ExpediaInfo.EAN_VersionV3 + ExpediaInfo.EAN_HotelList_Url;// + "&EAN APIKey=" + item.PassWord + "&language=en-US&Customer-Ip=" + eIP + "&customerUserAgent=" + ePlatFormNew + "&customerSessionId=" + item.EchoToken + "&currencyCode=" + item.CurrencyCode;//+ (IsJson ? "" : "&xml="
+                                                                //    eprovider = item.URL + _supplierConfig.Expedia.EAN_VersionV3 + _supplierConfig.Expedia.EAN_HotelList_Url;// + "&EAN APIKey=" + item.PassWord + "&language=en-US&Customer-Ip=" + eIP + "&customerUserAgent=" + ePlatFormNew + "&customerSessionId=" + item.EchoToken + "&currencyCode=" + item.CurrencyCode;//+ (IsJson ? "" : "&xml="
                                                                 //else
-                                                                //    eprovider = item.URL + ExpediaInfo.EAN_Version + ExpediaInfo.EAN_HotelList_Url;// + "&EAN APIKey=" + item.PassWord + "&language=en-US&Customer-Ip=" + eIP + "&customerUserAgent=" + ePlatFormNew + "&customerSessionId=" + item.EchoToken + "&currencyCode=" + item.CurrencyCode;//+ (IsJson ? "" : "&xml="
+                                                                //    eprovider = item.URL + _supplierConfig.Expedia.EAN_Version + _supplierConfig.Expedia.EAN_HotelList_Url;// + "&EAN APIKey=" + item.PassWord + "&language=en-US&Customer-Ip=" + eIP + "&customerUserAgent=" + ePlatFormNew + "&customerSessionId=" + item.EchoToken + "&currencyCode=" + item.CurrencyCode;//+ (IsJson ? "" : "&xml="
 
                                                                 string ereqUrl = item.URL + RQ.Request;
                                                                 response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, ereqUrl, item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType, item.UserId, false, item.PlatForm, item.EchoToken, advancedOptions.CustomerIpAddress).ConfigureAwait(false);
@@ -6118,7 +6119,7 @@ new SqlParameter("@AgentId", AgentId),
                     {
 
 
-                        Key = "http://xml.hotelresb2b.com/xml/listen_xml.jsp?codigousu=NEWL&clausu=xml493331&afiliacio=RS&secacc=124774";
+                        Key = _supplierConfig.Restel.Key; //"http://xml.hotelresb2b.com/xml/listen_xml.jsp?codigousu=NEWL&clausu=xml493331&afiliacio=RS&secacc=124774";
                         strHost = Key;
                         requestUri = strHost;
                     }
@@ -22788,9 +22789,9 @@ new SqlParameter("@AgentId", AgentId),
                                                             string ApiKey = Convert.ToString(XPDetails[0]["Password"]);
 
                                                             if (Supplier.ToLower() == "ean_pkgv3" || Supplier.ToLower() == "ean_b2bv3")
-                                                                URL = URL + ExpediaInfo.EAN_VersionOnlyV3;
+                                                                URL = URL + _supplierConfig.Expedia.EAN_VersionOnlyV3;
                                                             else
-                                                                URL = URL + ExpediaInfo.EAN_VersionOnly;
+                                                                URL = URL + _supplierConfig.Expedia.EAN_VersionOnly;
 
                                                             DataSet ds = new DataSet();
                                                             DataSet XpediResponse = await _expedia.ReturnEANDatatable(ds, HotelCode, "", URL, "", Sign, ApiKey, platform, Supplier, IP); //  Get Supplier response
@@ -31807,9 +31808,9 @@ new SqlParameter("@AgentId", AgentId),
                                                             string ApiKey = Convert.ToString(XPDetails[0]["Password"]);
 
                                                             if (Supplier.ToLower() == "ean_pkgv3" || Supplier.ToLower() == "ean_b2bv3")
-                                                                URL = URL + ExpediaInfo.EAN_VersionOnlyV3;
+                                                                URL = URL + _supplierConfig.Expedia.EAN_VersionOnlyV3;
                                                             else
-                                                                URL = URL + ExpediaInfo.EAN_VersionOnly;
+                                                                URL = URL + _supplierConfig.Expedia.EAN_VersionOnly;
 
                                                             DataSet ds = new DataSet();
                                                             DataSet XpediResponse = await _expedia.ReturnEANDatatable(ds, HotelCode, "", URL, "", Sign, ApiKey, platform, Supplier, IP); //  Get Supplier response
@@ -34105,7 +34106,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     double FinalPrice = 0;
                                                     double CompanyBuyingPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]);
                                                     //bool IsPrice_Update = Common.Get_Ostrovok_Prebook(dsCartDetails, OstrovokDetails, ref FinalPrice, CompanyBuyingPrice, TokenData, Searchkey);
-                                                    PriceCheckCMDto priceCheckCMDto = await _etg.Get_Ostrovok_Prebook(dsCartDetails, ratehawk_Details, FinalPrice, CompanyBuyingPrice, TokenData, Searchkey, AgentId, i, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]));
+                                                    PriceCheckCMDto priceCheckCMDto = await _etg.Get_Ostrovok_Prebook_new(objdata,dsCartDetails, ratehawk_Details, FinalPrice, CompanyBuyingPrice, TokenData, Searchkey, AgentId, i, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]));
 
                                                     bool IsPrice_Update = priceCheckCMDto.Flag;
                                                     FinalPrice = priceCheckCMDto.ItemPrice;
@@ -40985,7 +40986,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
                                                                                 bookingStatus = 6;
                                                                                 string PreBookUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
-                                                                                string BookUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(DidaInfo.Dida_Booking_Action);
+                                                                                string BookUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.Dida.Dida_Booking_Action);
                                                                                 string UserID = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
                                                                                 string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
                                                                                 string XMLHotelId = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
@@ -41442,9 +41443,9 @@ new SqlParameter("@AgentId", AgentId),
                                                                                             string RetriveBookRes = "";
                                                                                             if (true)// (Supplier.ToLower() == "ean_b2bv3" || Supplier.ToLower() == "ean_pkgv3")
                                                                                             {
-                                                                                                ResponseDto responseDto1 = await _expedia.GetEANResponse(Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, Supplier, Sign, ApiKey, echoToken, userAgent, "GET", "", SearchKey, IP);
+                                                                                                ResponseDto responseDto1 = await _expedia.GetEANResponse(Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, 120000, Supplier, Sign, ApiKey, echoToken, userAgent, "GET", "", SearchKey, IP);
                                                                                                 RetriveBookRes = responseDto1.Response;
-                                                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + 0, Supplier, "Response Confirm", "-", "WithinEarth");
+                                                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + 0, Supplier, "Response Confirm", "-", "WithinEarth");
 
                                                                                                 #region Added on 18-DEC-205
 
@@ -41459,9 +41460,9 @@ new SqlParameter("@AgentId", AgentId),
                                                                                                             else
                                                                                                                 System.Threading.Thread.Sleep(5000);
 
-                                                                                                            ResponseDto responseDto11 = await _expedia.GetEANResponse(Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, Supplier, Sign, ApiKey, echoToken, userAgent, "GET", "", SearchKey, IP);
+                                                                                                            ResponseDto responseDto11 = await _expedia.GetEANResponse(Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, 120000, Supplier, Sign, ApiKey, echoToken, userAgent, "GET", "", SearchKey, IP);
                                                                                                             RetriveBookRes = responseDto11.Response;
-                                                                                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + (k + 1), Supplier, "Response Confirm", "-", "WithinEarth");
+                                                                                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + (k + 1), Supplier, "Response Confirm", "-", "WithinEarth");
 
                                                                                                             if (RetriveBookRes.ToLower().Contains("status"))
                                                                                                             {
@@ -41479,11 +41480,11 @@ new SqlParameter("@AgentId", AgentId),
                                                                                             }
                                                                                             else
                                                                                             {
-                                                                                                ResponseDto responseDto2 = await _expedia.GetEANResponse(Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, Supplier, Sign, ApiKey, echoToken, userAgent, "GET", "", SearchKey, IP);
+                                                                                                ResponseDto responseDto2 = await _expedia.GetEANResponse(Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, 120000, Supplier, Sign, ApiKey, echoToken, userAgent, "GET", "", SearchKey, IP);
                                                                                                 RetriveBookRes = responseDto2.Response;
-                                                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + 0, Supplier, "Response Confirm", "-", "WithinEarth");
+                                                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + 0, Supplier, "Response Confirm", "-", "WithinEarth");
                                                                                             }
-                                                                                            RequestSPR = ExpediaInfo.EAN_VersionOnly;
+                                                                                            RequestSPR = _supplierConfig.Expedia.EAN_VersionOnly;
                                                                                             ReponseSPR = RetriveBookRes;
 
 
@@ -41681,17 +41682,17 @@ new SqlParameter("@AgentId", AgentId),
                                                                                                 string RetriveBookRes = "";
                                                                                                 if (true)// (Supplier.ToLower() == "ean_b2bv3" || Supplier.ToLower() == "ean_pkgv3")
                                                                                                 {
-                                                                                                    ResponseDto responseDto3 = await _expedia.GetEANResponse(Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, Supplier, Sign, ApiKey, echoToken, userAgent, "GET", "", SearchKey, IP);
+                                                                                                    ResponseDto responseDto3 = await _expedia.GetEANResponse(Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, 120000, Supplier, Sign, ApiKey, echoToken, userAgent, "GET", "", SearchKey, IP);
                                                                                                     RetriveBookRes = responseDto3.Response;
-                                                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking." + 0, Supplier, "Response Confirm", "-", "WithinEarth");
+                                                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking." + 0, Supplier, "Response Confirm", "-", "WithinEarth");
                                                                                                 }
                                                                                                 else
                                                                                                 {
-                                                                                                    ResponseDto responseDto4 = await _expedia.GetEANResponse(Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, Supplier, Sign, ApiKey, echoToken, userAgent, "GET", "", SearchKey, IP);
+                                                                                                    ResponseDto responseDto4 = await _expedia.GetEANResponse(Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, 120000, Supplier, Sign, ApiKey, echoToken, userAgent, "GET", "", SearchKey, IP);
                                                                                                     RetriveBookRes = responseDto4.Response;
-                                                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking." + 0, Supplier, "Response Confirm", "-", "WithinEarth");
+                                                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking." + 0, Supplier, "Response Confirm", "-", "WithinEarth");
                                                                                                 }
-                                                                                                RequestSPR = ExpediaInfo.EAN_VersionOnly;
+                                                                                                RequestSPR = _supplierConfig.Expedia.EAN_VersionOnly;
                                                                                                 ReponseSPR = RetriveBookRes;
 
 
@@ -41775,9 +41776,9 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 {
                                                                                     string ENRq = "";
                                                                                     if (true)// (Supplier.ToLower() == "ean_b2bv3" || Supplier.ToLower() == "ean_pkgv3")
-                                                                                        ENRq = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia;
+                                                                                        ENRq = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia;
                                                                                     else
-                                                                                        ENRq = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia;
+                                                                                        ENRq = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia;
 
                                                                                     string ENRs = DynamicRetrive == false ? ResponseData_Ex : ResponseData_Ex + "</br>" + "Retrive Response : " + RetriveMainResposne;
 
@@ -41800,9 +41801,9 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 //newRowEAN["XMLRequest"] = "Token=" + ereqUrl1 + "_Request=" + EANBookRequest;
                                                                                 //newRowEAN["XMLResponse"] = ResponseData_Ex;
                                                                                 if (true)// (Supplier.ToLower() == "ean_b2bv3" || Supplier.ToLower() == "ean_pkgv3")
-                                                                                    newRowEAN["XMLRequest"] = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia;
+                                                                                    newRowEAN["XMLRequest"] = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia;
                                                                                 else
-                                                                                    newRowEAN["XMLRequest"] = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia;
+                                                                                    newRowEAN["XMLRequest"] = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia;
                                                                                 newRowEAN["XMLResponse"] = DynamicRetrive == false ? ResponseData_Ex : ResponseData_Ex + "</br>" + "Retrive Response : " + RetriveMainResposne;
                                                                                 newRowEAN["RoomStatus"] = bookingStatus;
                                                                                 newRowEAN["SupplierName"] = dsCartDetails.Tables[1].DefaultView[0]["SupplierName"];
@@ -47743,9 +47744,9 @@ new SqlParameter("@AgentId", AgentId),
                                                             string RetriveBookRes = "";
                                                             if (true)// (Supplier.ToLower() == "ean_b2bv3" || Supplier.ToLower() == "ean_pkgv3")
                                                             {
-                                                                ResponseDto responseDto1 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
+                                                                ResponseDto responseDto1 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
                                                                 RetriveBookRes = responseDto1.Response;
-                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + 0, supplierName, "Response Confirm", "-", "WithinEarth");
+                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + 0, supplierName, "Response Confirm", "-", "WithinEarth");
 
                                                                 #region Added on 18-DEC-205
 
@@ -47760,9 +47761,9 @@ new SqlParameter("@AgentId", AgentId),
                                                                             else
                                                                                 System.Threading.Thread.Sleep(5000);
 
-                                                                            ResponseDto responseDto11 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
+                                                                            ResponseDto responseDto11 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
                                                                             RetriveBookRes = responseDto11.Response;
-                                                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + (k + 1), supplierName, "Response Confirm", "-", "WithinEarth");
+                                                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + (k + 1), supplierName, "Response Confirm", "-", "WithinEarth");
 
                                                                             if (RetriveBookRes.ToLower().Contains("status"))
                                                                             {
@@ -47780,11 +47781,11 @@ new SqlParameter("@AgentId", AgentId),
                                                             }
                                                             else
                                                             {
-                                                                ResponseDto responseDto2 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
+                                                                ResponseDto responseDto2 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
                                                                 RetriveBookRes = responseDto2.Response;
-                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + 0, supplierName, "Response Confirm", "-", "WithinEarth");
+                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking" + 0, supplierName, "Response Confirm", "-", "WithinEarth");
                                                             }
-                                                            RequestSPR = ExpediaInfo.EAN_VersionOnly;
+                                                            RequestSPR = _supplierConfig.Expedia.EAN_VersionOnly;
                                                             ReponseSPR = RetriveBookRes;
 
 
@@ -47982,18 +47983,18 @@ new SqlParameter("@AgentId", AgentId),
                                                                 string RetriveBookRes = "";
                                                                 if (true)// (Supplier.ToLower() == "ean_b2bv3" || Supplier.ToLower() == "ean_pkgv3")
                                                                 {
-                                                                    ResponseDto responseDto3 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, suppliername, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
+                                                                    ResponseDto responseDto3 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, 120000, suppliername, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
                                                                     RetriveBookRes = responseDto3.Response;
-                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking." + 0, suppliername, "Response Confirm", "-", "withinearth");
+                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking." + 0, suppliername, "Response Confirm", "-", "withinearth");
 
                                                                 }
                                                                 else
                                                                 {
-                                                                    ResponseDto responseDto4 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, 120000, suppliername, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
+                                                                    ResponseDto responseDto4 = await _expedia.GetEANResponse(Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, 120000, suppliername, Sign, ApiKey, echoToken, userAgent, "GET", "", bookRequest.SearchKey, IP);
                                                                     RetriveBookRes = responseDto4.Response;
-                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking." + 0, suppliername, "Response Confirm", "-", "WithinEarth");
+                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), "", Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia, RetriveBookRes, "After Request hit Retrive Booking." + 0, suppliername, "Response Confirm", "-", "WithinEarth");
                                                                 }
-                                                                RequestSPR = ExpediaInfo.EAN_VersionOnly;
+                                                                RequestSPR = _supplierConfig.Expedia.EAN_VersionOnly;
                                                                 ReponseSPR = RetriveBookRes;
 
 
@@ -48078,9 +48079,9 @@ new SqlParameter("@AgentId", AgentId),
                                                 {
                                                     string ENRq = "";
                                                     if (true)// (Supplier.ToLower() == "ean_b2bv3" || Supplier.ToLower() == "ean_pkgv3")
-                                                        ENRq = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia;
+                                                        ENRq = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia;
                                                     else
-                                                        ENRq = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia;
+                                                        ENRq = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia;
 
                                                     string ENRs = DynamicRetrive == false ? ResponseData_Ex : ResponseData_Ex + "</br>" + "Retrive Response : " + RetriveMainResposne;
 
@@ -48097,7 +48098,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 bookResponse_1.agentVouchers[j].UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
                                                 bookResponse_1.agentVouchers[j].UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
                                                 bookResponse_1.agentVouchers[j].AgentVoucherNo = AgentVoucherNo;
-                                                bookResponse_1.agentVouchers[j].XMLRequest = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(XPDetails[0]["WebsiteURL"]) + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + ExpediaInfo.email_Xpedia;
+                                                bookResponse_1.agentVouchers[j].XMLRequest = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia;
                                                 bookResponse_1.agentVouchers[j].XMLResponse = DynamicRetrive == false ? ResponseData_Ex : ResponseData_Ex + "</br>" + "Retrive Response : " + RetriveMainResposne;
                                                 bookResponse_1.agentVouchers[j].RoomStatus = Convert.ToString(bookingStatus);
                                                 bookResponse_1.agentVouchers[j].SupplierName = suppliername;
@@ -50673,8 +50674,8 @@ new SqlParameter("@AgentId", AgentId),
                                     string RefNO = Convert.ToString(AgentVoucherNo_Cancle);
                                     string ID = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
                                     string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
-                                    string PreCancelltion_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(DidaInfo.Dida_PreCancel_Action);
-                                    string CancelConfirm_URl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(DidaInfo.Dida_CancelConfirm_Action);
+                                    string PreCancelltion_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.Dida.Dida_PreCancel_Action);
+                                    string CancelConfirm_URl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.Dida.Dida_CancelConfirm_Action);
                                     //Hit PreCancelltion Req before cancellation
                                     string ErrorLog = "";
                                     string Req = "";
@@ -51070,15 +51071,15 @@ new SqlParameter("@AgentId", AgentId),
 
                                     if (true)// (Supplier.ToString().ToUpper() == "EAN_B2BV3" || Supplier.ToString().ToUpper() == "EAN_PKGV3")
                                     {
-                                        ResponseDto responseDto = await _expedia.GetEANResponse(URLRetrive + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
+                                        ResponseDto responseDto = await _expedia.GetEANResponse(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
                                         RetriveBookRes = responseDto.Response;
-                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(URLRetrive + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia), Convert.ToString(RetriveBookRes), "After Request hit Retrive Booking", Supplier.ToString(), "Request Confirm", PNRNo, "WithinEarth");
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia), Convert.ToString(RetriveBookRes), "After Request hit Retrive Booking", Supplier.ToString(), "Request Confirm", PNRNo, "WithinEarth");
                                     }
                                     else
                                     {
-                                        ResponseDto responseDto1 = await _expedia.GetEANResponse(URLRetrive + ExpediaInfo.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
+                                        ResponseDto responseDto1 = await _expedia.GetEANResponse(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
                                         RetriveBookRes = responseDto1.Response;
-                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(URLRetrive + ExpediaInfo.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia), Convert.ToString(RetriveBookRes), "After Request hit Retrive Booking", Supplier.ToString(), "Request Confirm", PNRNo, "WithinEarth");
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia), Convert.ToString(RetriveBookRes), "After Request hit Retrive Booking", Supplier.ToString(), "Request Confirm", PNRNo, "WithinEarth");
                                     }
 
                                     if (RetriveBookRes != "")
@@ -51116,15 +51117,15 @@ new SqlParameter("@AgentId", AgentId),
                                                         string RetriveBookResCancel = "";
                                                         if (true)//(Supplier.ToString().ToUpper() == "EAN_B2BV3" || Supplier.ToString().ToUpper() == "EAN_PKGV3")
                                                         {
-                                                            ResponseDto responseDto3 = await _expedia.GetEANResponse(URLRetrive + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
+                                                            ResponseDto responseDto3 = await _expedia.GetEANResponse(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
                                                             RetriveBookResCancel = responseDto3.Response;
-                                                            _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia), Convert.ToString(RetriveBookResCancel), "Retrive Booking request hit cancellation time after cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+                                                            _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia), Convert.ToString(RetriveBookResCancel), "Retrive Booking request hit cancellation time after cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
                                                         }
                                                         else
                                                         {
-                                                            ResponseDto responseDto4 = await _expedia.GetEANResponse(URLRetrive + ExpediaInfo.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
+                                                            ResponseDto responseDto4 = await _expedia.GetEANResponse(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
                                                             RetriveBookResCancel = responseDto4.Response;
-                                                            _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ExpediaInfo.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia), Convert.ToString(RetriveBookResCancel), "Retrive Booking request hit cancellation time after cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+                                                            _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia), Convert.ToString(RetriveBookResCancel), "Retrive Booking request hit cancellation time after cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
                                                         }
 
                                                         if (RetriveBookResCancel != "" || RetriveBookResCancel != null)

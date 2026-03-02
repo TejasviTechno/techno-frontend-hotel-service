@@ -21,6 +21,7 @@ namespace XConnect.Supplier.ETG.Interface
 
         //prebook 23-07-25
         Task<PriceCheckCMDto> Get_Ostrovok_Prebook(DataSet dsCartDetails, DataRow[] OstrovokDetails, double FinalPrice, double CompanyBuyingPrice, TokenData TokenData, string Searchkey, int AgentId, int i = 0,string Supplier="");
+        Task<PriceCheckCMDto> Get_Ostrovok_Prebook_new(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, DataRow[] OstrovokDetails, double FinalPrice, double CompanyBuyingPrice, TokenData TokenData, string Searchkey, int AgentId, int i = 0,string Supplier="");
 
         string OSTVBookingRequest(DataSet dsCartDetails, DataTable dtPassengers, int i, int j, string Password, string UniqueNo, int NoOfRoom, string RoomTypeId, string HotelCode, string SellingAmount, string type, string Currency);
         string OSTVBookingFinishStatusRequest(string UniqueNo);
