@@ -27,16 +27,18 @@ namespace XConnect.Supplier.Restel
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
+        private readonly SupplierConfiguration _supplierConfig;//Added on 27-FEB-26
 
 
 
-        public RestelRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings)
+        public RestelRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _exception = exception;
             _keySettings = keySettings.Value;
+            _supplierConfig = supplierConfig.Value;
         }
         public void GetRestelRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> lstRestelDetails, List<SupplierSearchConfig> lstRestelSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, int Hit, DataTable dtROE, TokenData tokenData, DataSet dtXMLCity)
         {
@@ -1478,7 +1480,8 @@ namespace XConnect.Supplier.Restel
                 //Set HttpWebRequest properties
                 if (Provider.ToLower() == "restel")
                 {
-                    string Key = "http://xml.hotelresb2b.com/xml/listen_xml.jsp?codigousu=NEWL&clausu=xml493331&afiliacio=RS&secacc=124774";
+
+                    string Key = _supplierConfig.Restel.Key; //"http://xml.hotelresb2b.com/xml/listen_xml.jsp?codigousu=NEWL&clausu=xml493331&afiliacio=RS&secacc=124774";
                     httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(Key);
                     httpWebRequest.Method = "POST";
                     httpWebRequest.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; MS Web Services Client Protocol 1.1.4322.2300)";
