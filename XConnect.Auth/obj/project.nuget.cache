@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "t6cFJ+g/D4Y=",
+  "dgSpecHash": "g7+ulhO9/EA=",
   "success": true,
-  "projectFilePath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Auth\\XConnect.Auth.csproj",
+  "projectFilePath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Auth\\XConnect.Auth.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Techno\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Techno\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

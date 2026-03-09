@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZBx2sXCJ6vM=",
+  "dgSpecHash": "SMKjGiRqHm0=",
   "success": true,
-  "projectFilePath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.API\\XConnect.API.csproj",
+  "projectFilePath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.API\\XConnect.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Techno\\.nuget\\packages\\autofac\\8.0.0\\autofac.8.0.0.nupkg.sha512",
     "C:\\Users\\Techno\\.nuget\\packages\\autofac.extensions.dependencyinjection\\9.0.0\\autofac.extensions.dependencyinjection.9.0.0.nupkg.sha512",

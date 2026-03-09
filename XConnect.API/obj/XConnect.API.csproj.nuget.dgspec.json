@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.API\\XConnect.API.csproj": {}
+    "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.API\\XConnect.API.csproj": {}
   },
   "projects": {
-    "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.API\\XConnect.API.csproj": {
+    "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.API\\XConnect.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.API\\XConnect.API.csproj",
+        "projectUniqueName": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.API\\XConnect.API.csproj",
         "projectName": "XConnect.API",
-        "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.API\\XConnect.API.csproj",
+        "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.API\\XConnect.API.csproj",
         "packagesPath": "C:\\Users\\Techno\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.API\\obj\\",
+        "outputPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\NuGet.Config",
+          "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\NuGet.Config",
           "C:\\Users\\Techno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -35,17 +35,17 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Auth\\XConnect.Auth.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Auth\\XConnect.Auth.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Auth\\XConnect.Auth.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Auth\\XConnect.Auth.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.BAL\\XConnect.BAL.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.BAL\\XConnect.BAL.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.BAL\\XConnect.BAL.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.BAL\\XConnect.BAL.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj"
               }
             }
           }
@@ -158,24 +158,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Auth\\XConnect.Auth.csproj": {
+    "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Auth\\XConnect.Auth.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Auth\\XConnect.Auth.csproj",
+        "projectUniqueName": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Auth\\XConnect.Auth.csproj",
         "projectName": "XConnect.Auth",
-        "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Auth\\XConnect.Auth.csproj",
+        "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Auth\\XConnect.Auth.csproj",
         "packagesPath": "C:\\Users\\Techno\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Auth\\obj\\",
+        "outputPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Auth\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\NuGet.Config",
+          "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\NuGet.Config",
           "C:\\Users\\Techno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -193,17 +193,17 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Common\\XConnect.CommonUtilities.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Common\\XConnect.CommonUtilities.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Common\\XConnect.CommonUtilities.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Common\\XConnect.CommonUtilities.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\XConnection.DAL.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\XConnection.DAL.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\XConnection.DAL.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\XConnection.DAL.csproj"
               }
             }
           }
@@ -249,24 +249,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.BAL\\XConnect.BAL.csproj": {
+    "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.BAL\\XConnect.BAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.BAL\\XConnect.BAL.csproj",
+        "projectUniqueName": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.BAL\\XConnect.BAL.csproj",
         "projectName": "XConnect.BAL",
-        "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.BAL\\XConnect.BAL.csproj",
+        "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.BAL\\XConnect.BAL.csproj",
         "packagesPath": "C:\\Users\\Techno\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.BAL\\obj\\",
+        "outputPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.BAL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\NuGet.Config",
+          "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\NuGet.Config",
           "C:\\Users\\Techno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -284,17 +284,17 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Common\\XConnect.CommonUtilities.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Common\\XConnect.CommonUtilities.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Common\\XConnect.CommonUtilities.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Common\\XConnect.CommonUtilities.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Supplier\\XConnect.Supplier.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Supplier\\XConnect.Supplier.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Supplier\\XConnect.Supplier.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Supplier\\XConnect.Supplier.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\XConnection.DAL.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\XConnection.DAL.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\XConnection.DAL.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\XConnection.DAL.csproj"
               }
             }
           }
@@ -348,24 +348,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Common\\XConnect.CommonUtilities.csproj": {
+    "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Common\\XConnect.CommonUtilities.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Common\\XConnect.CommonUtilities.csproj",
+        "projectUniqueName": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Common\\XConnect.CommonUtilities.csproj",
         "projectName": "XConnect.CommonUtilities",
-        "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Common\\XConnect.CommonUtilities.csproj",
+        "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Common\\XConnect.CommonUtilities.csproj",
         "packagesPath": "C:\\Users\\Techno\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Common\\obj\\",
+        "outputPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\NuGet.Config",
+          "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\NuGet.Config",
           "C:\\Users\\Techno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -383,14 +383,14 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\XConnection.DAL.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\XConnection.DAL.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\XConnection.DAL.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\XConnection.DAL.csproj"
               }
             }
           }
@@ -460,24 +460,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
+    "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj",
+        "projectUniqueName": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj",
         "projectName": "XConnect.ErrorLogHandler",
-        "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj",
+        "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj",
         "packagesPath": "C:\\Users\\Techno\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\obj\\",
+        "outputPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\NuGet.Config",
+          "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\NuGet.Config",
           "C:\\Users\\Techno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -495,8 +495,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\XConnection.DAL.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\XConnection.DAL.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\XConnection.DAL.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\XConnection.DAL.csproj"
               }
             }
           }
@@ -542,24 +542,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.MarkupModule\\XConnect.Markup.csproj": {
+    "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.MarkupModule\\XConnect.Markup.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.MarkupModule\\XConnect.Markup.csproj",
+        "projectUniqueName": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.MarkupModule\\XConnect.Markup.csproj",
         "projectName": "XConnect.Markup",
-        "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.MarkupModule\\XConnect.Markup.csproj",
+        "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.MarkupModule\\XConnect.Markup.csproj",
         "packagesPath": "C:\\Users\\Techno\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.MarkupModule\\obj\\",
+        "outputPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.MarkupModule\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\NuGet.Config",
+          "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\NuGet.Config",
           "C:\\Users\\Techno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -577,11 +577,11 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj"
               }
             }
           }
@@ -623,24 +623,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj": {
+    "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj",
+        "projectUniqueName": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj",
         "projectName": "XConnect.Models",
-        "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj",
+        "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj",
         "packagesPath": "C:\\Users\\Techno\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\obj\\",
+        "outputPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\NuGet.Config",
+          "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\NuGet.Config",
           "C:\\Users\\Techno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -701,24 +701,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Supplier\\XConnect.Supplier.csproj": {
+    "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Supplier\\XConnect.Supplier.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Supplier\\XConnect.Supplier.csproj",
+        "projectUniqueName": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Supplier\\XConnect.Supplier.csproj",
         "projectName": "XConnect.Supplier",
-        "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Supplier\\XConnect.Supplier.csproj",
+        "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Supplier\\XConnect.Supplier.csproj",
         "packagesPath": "C:\\Users\\Techno\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Supplier\\obj\\",
+        "outputPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Supplier\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\NuGet.Config",
+          "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\NuGet.Config",
           "C:\\Users\\Techno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -736,17 +736,17 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Common\\XConnect.CommonUtilities.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Common\\XConnect.CommonUtilities.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Common\\XConnect.CommonUtilities.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Common\\XConnect.CommonUtilities.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.MarkupModule\\XConnect.Markup.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.MarkupModule\\XConnect.Markup.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.MarkupModule\\XConnect.Markup.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.MarkupModule\\XConnect.Markup.csproj"
               },
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj"
               }
             }
           }
@@ -792,24 +792,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\XConnection.DAL.csproj": {
+    "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\XConnection.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\XConnection.DAL.csproj",
+        "projectUniqueName": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\XConnection.DAL.csproj",
         "projectName": "XConnection.DAL",
-        "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\XConnection.DAL.csproj",
+        "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\XConnection.DAL.csproj",
         "packagesPath": "C:\\Users\\Techno\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnection.DAL\\obj\\",
+        "outputPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnection.DAL\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\NuGet.Config",
+          "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\NuGet.Config",
           "C:\\Users\\Techno\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -827,8 +827,8 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj": {
-                "projectPath": "D:\\Project\\New Vrsion Hotel API\\xconnect-api\\XConnect.Models\\XConnect.Models.csproj"
+              "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj": {
+                "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj"
               }
             }
           }
@@ -874,7 +874,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
