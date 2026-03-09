@@ -63,6 +63,7 @@ namespace XConnect.BAL.Interface
         Task<DataSet> gethotelstaticdatalistsuboptimize_v1_Address(HotelSync para);
         Task<DataSet> GetHotelStaticDataOptimizeImage(HotelSync para);
         Task<DataSet> ForPOIListing(HotelSync para);
+        Task<DataSet> Filtering(HotelSync para);
         Task<DataSet> ForNeighbourHoodFiltering(HotelSync para);
         Task<DataSet> FotPropertyThemesFiltering(HotelSync para);
         Task<DataSet> FotPropertyCategoryFiltering(HotelSync para);

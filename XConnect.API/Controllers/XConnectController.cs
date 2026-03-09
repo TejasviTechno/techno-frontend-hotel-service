@@ -3845,6 +3845,64 @@ namespace XConnect.API.Controllers
 
         }
 
+        [Route("Filtering")]
+        [HttpPost]
+        public async Task<IActionResult> Filtering(CommonRequest data)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            TokenData TokenData = new TokenData();
+
+            try
+            {
+                //string IP = HttpContext.Items["ClientIp"]?.ToString();
+                //var userAgent = HttpContext.Items["User-Agent"]?.ToString();
+
+                string IP = _platformService.GetIPAddress();
+                string userAgent = _platformService.GetBrowserInfo(_platformService.GetRequest());
+
+
+                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                if (Convert.ToBoolean(authData.tokenData.AgentId))
+                {
+                    //StaticDataCity payload = Newtonsoft.Json.JsonConvert.DeserializeObject<StaticDataCity>(data.Request.ToString());
+
+                    HotelSync para = Newtonsoft.Json.JsonConvert.DeserializeObject<HotelSync>(data.Request.ToString());
+
+
+                    // List<StaticData> lstFiltOption = await _hotelXML.GetHotelStaticDataOptimize(Convert.ToInt32(payload.CityId), Convert.ToInt32(payload.LocationId), payload.Type);
+
+                    //DataSet HotelDetailList = await _hotelXML.GetHotelStaticDataOptimize(para);
+                    DataSet HotelDetailList = await _hotelXML.Filtering(para);
+                    if (HotelDetailList != null)
+                    {
+                        timer.Stop();
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, HotelDetailList, "application/json", data, HotelDetailList, authData.tokenData, "Filtering", true, timer.Elapsed.ToString(), ErrorCode.NoError, para.CityId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+
+                    }
+                    else
+                    {
+                        timer.Stop();
+                        error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", authData.tokenData, "Filtering", true, timer.Elapsed.ToString(), ErrorCode.InternalError, para.CityId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+                    }
+                }
+                else
+                {
+                    timer.Stop();
+                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, 401, "application/json", data, "", authData.tokenData, "Filtering", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "", IP, "", "", "", 0, 0, 0, "", null);
+                }
+            }
+            catch (Exception ex)
+            {
+                timer.Stop();
+                error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
+                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "Filtering", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "", "", "", "", "", 0, 0, 0, "", null);
+
+            }
+
+        }
+
         [Route("ForNeighbourHoodFiltering")]
         [HttpPost]
         public async Task<IActionResult> ForNeighbourHoodFiltering(CommonRequest data)
