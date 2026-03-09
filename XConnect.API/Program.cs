@@ -25,6 +25,10 @@ using OpenTelemetry.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Exporter;
 using static XConnect.Supplier.Booking.Com.detailres;
+using QueueManager.Config;
+using QueueManager.Contracts.Models.ElasticSearch;
+using XConnect.Analytics.Interface;
+using XConnect.Analytics;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -204,6 +208,19 @@ builder.Services.AddSingleton<RabbitMQPublisher>();
 builder.Services.AddScoped<RadisConnection>();
 builder.Services.AddScoped<IExceptionLogStore, MongoExceptionLogStore>(); //Added on 31-DEC-25
 
+#region analytic package
+builder.Services.Configure<ElasticsearchOptions>(
+  builder.Configuration.GetSection("ElasticsearchAnalytics")
+);
+builder.Services.AddQueueServices();
+
+builder.Services.AddScoped<IAnalytics, PrepareClientData>();
+builder.Services.AddScoped<IPushAnalytics, Analytic>();
+
+builder.Services.AddScoped<IAnalyticsSupplier, PrepareSupplierData>();
+builder.Services.AddScoped<IPushAnalyticsSupplier, AnalyticSupplier>();
+
+#endregion
 
 #region Supplier DI
 //builder.Services.AddScoped<IAdonis, AdonisRepo>();

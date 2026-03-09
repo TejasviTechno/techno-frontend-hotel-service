@@ -209,3 +209,27 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XCon
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\refint\XConnect.Auth.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Auth\obj\Debug\net9.0\ref\XConnect.Auth.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnect.Auth.deps.json
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnect.Auth.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnect.Auth.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnect.CommonUtilities.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnect.ErrorLogHandler.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnect.Models.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnection.DAL.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnect.CommonUtilities.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnect.ErrorLogHandler.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnect.Models.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnection.DAL.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.csproj.AssemblyReference.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.GeneratedMSBuildEditorConfig.editorconfig
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.AssemblyInfoInputs.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.AssemblyInfo.cs
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.csproj.CoreCompileInputs.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.sourcelink.json
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\obj\Debug\net9.0\XConnect.1DAFA237.Up2Date
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\obj\Debug\net9.0\refint\XConnect.Auth.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\obj\Debug\net9.0\XConnect.Auth.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\obj\Debug\net9.0\ref\XConnect.Auth.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnect.Analytics.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Auth\bin\Debug\net9.0\XConnect.Analytics.pdb

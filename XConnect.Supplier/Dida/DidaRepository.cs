@@ -1827,7 +1827,108 @@ namespace Xconnect.Expedia
                 return "";
             }
         }
+        public string DidaBookingRequest_newversion(BookRequest_newversion bookRequest ,DataTable dtPassengers, int i, int j, string ClientID, string UserName, string Password, int UniqueNo, string PreBookRef, int NoOfRoom, string AgentCode)
+        {
+            try
+            {
+                //j=Room & i = Hotel
+                int NoOfChild = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofChild);
+                int NoOfAdults = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofAdult);
+                string checkindate = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
+                string checkin = (checkindate).Substring(0, 4) + "-" + (checkindate).Substring(4, 2) + "-" + (checkindate).Substring(6, 2);// + "T03:00:00+03:00";
+                string checkoutdate = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
+                string checkout = (checkoutdate).Substring(0, 4) + "-" + (checkoutdate).Substring(4, 2) + "-" + (checkoutdate).Substring(6, 2);// + "T03:00:00+03:00";
 
+                string AgentReference = "WE_" + Convert.ToString(AgentCode + "_" + UniqueNo);
+                string firstName = ""; string lastName = ""; string title = "";
+                string BookingRQ = "";
+
+                int Rooms = NoOfRoom;//Convert.ToInt32(dtPassengers.DefaultView.Count);
+                StringBuilder SBPassanger = new StringBuilder();
+                StringBuilder SBContect = new StringBuilder();
+                for (int r = 0; r < Rooms; r++)//no of room loop
+                {
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and (RoomNo=" + (r + 1) + ")";
+                    dtPassengers.DefaultView.Sort = "IsLead DESC";
+                    string SpecialRequest = Convert.ToString(dtPassengers.DefaultView[0]["Message"]).Trim();
+                    SBPassanger.Append("{\"RoomNum\": " + (r + 1) + ",");
+                    SBPassanger.Append("\"GuestInfo\": [");
+                    for (int k = 0; k < dtPassengers.DefaultView.Count; k++)
+                    {
+                        DataRow[] drPassengers = dtPassengers.DefaultView.ToTable().Select("IsLead='1'");
+                        if (drPassengers.Length == 0)
+                        {
+                            if (Convert.ToString(dtPassengers.DefaultView[k]["PaxType"]).Trim().ToLower() == "adult")
+                                dtPassengers.DefaultView[k]["IsLead"] = 1;
+                        }
+                        firstName = Convert.ToString(dtPassengers.DefaultView[k]["FirstName"]).Trim();
+                        lastName = Convert.ToString(dtPassengers.DefaultView[k]["LastName"]).Trim();
+                        title = Convert.ToString(dtPassengers.DefaultView[k]["Prefix"]).Trim().Replace(".", "");
+                        int ChildAge = Convert.ToInt32(dtPassengers.DefaultView[k]["ChildAge"]);
+                        if (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1)
+                        {
+                            SBContect.Append("\"Contact\": {");
+                            SBContect.Append("\"Name\": {");
+                            SBContect.Append("\"Last\": \"" + lastName + "\",");
+                            SBContect.Append("\"First\": \"" + firstName + "\"");
+                            SBContect.Append("},");
+                            SBContect.Append("\"Email\": \"" + _supplierConfig.Dida.email + "\",");
+                            SBContect.Append("\"Phone\": \"" + _supplierConfig.Dida.WorkPhone + "\"");
+                            SBContect.Append("},");
+                        }
+                        SBPassanger.Append("{");
+                        if (Convert.ToString(dtPassengers.DefaultView[k]["PaxType"]).Trim().ToLower() == "adult")
+                            SBPassanger.Append("\"IsAdult\": true,");
+                        else
+                            SBPassanger.Append("\"IsAdult\": false,");
+                        SBPassanger.Append("\"Name\": {");
+                        SBPassanger.Append("\"Last\": \"" + lastName + "\",");
+                        SBPassanger.Append("\"First\": \"" + firstName + "\"");
+                        SBPassanger.Append("}");
+                        if (Convert.ToString(dtPassengers.DefaultView[k]["PaxType"]).Trim().ToLower() != "adult")
+                        {
+                            int ChildAge1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge1);
+                            int ChildAge2 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge2);
+                            if (NoOfChild == 1)
+                                SBPassanger.Append(",\"Age\":" + ChildAge);
+                            if (NoOfChild == 2)
+                                SBPassanger.Append(",\"Age\":" + ChildAge);
+                        }
+                        SBPassanger.Append("}");
+
+                        if ((k + 1) != dtPassengers.DefaultView.Count)
+                            SBPassanger.Append(",");
+                    }
+                    SBPassanger.Append("]}");
+                    if ((r + 1) != Rooms)
+                        SBPassanger.Append(",");
+                }
+                StringBuilder BookRQ = new StringBuilder();
+                BookRQ.Append("{\"CheckOutDate\": \"" + checkout + "\",");
+                BookRQ.Append("\"CheckInDate\": \"" + checkin + "\",");
+                BookRQ.Append("\"NumOfRooms\": " + Rooms + ",");
+                BookRQ.Append("\"Header\": {");
+                BookRQ.Append("\"LicenseKey\": \"" + Password + "\",");
+                BookRQ.Append("\"ClientID\": \"" + UserName + "\"},");
+                BookRQ.Append("\"GuestList\": [");
+                BookRQ.Append(SBPassanger.ToString());
+
+                BookRQ.Append("],");
+                BookRQ.Append(SBContect.ToString());
+
+                BookRQ.Append("\"ClientReference\": \"" + AgentReference + "\",");
+                BookRQ.Append("\"ReferenceNo\": \"" + PreBookRef + "\"");
+                BookRQ.Append("}");
+
+                BookingRQ = BookRQ.ToString();
+                return BookingRQ;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return "";
+            }
+        }
         public string DidaPreCancelltionReq(string BookingId, string Id, string password, string url)
         {
             try

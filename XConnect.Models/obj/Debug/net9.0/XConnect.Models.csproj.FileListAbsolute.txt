@@ -117,3 +117,16 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XC
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\refint\XConnect.Models.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\XConnect.Models.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.Models\obj\Debug\net9.0\ref\XConnect.Models.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\bin\Debug\net9.0\XConnect.Models.deps.json
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\bin\Debug\net9.0\XConnect.Models.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\bin\Debug\net9.0\XConnect.Models.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\obj\Debug\net9.0\XConnect.Models.csproj.AssemblyReference.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\obj\Debug\net9.0\XConnect.Models.GeneratedMSBuildEditorConfig.editorconfig
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\obj\Debug\net9.0\XConnect.Models.AssemblyInfoInputs.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\obj\Debug\net9.0\XConnect.Models.AssemblyInfo.cs
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\obj\Debug\net9.0\XConnect.Models.csproj.CoreCompileInputs.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\obj\Debug\net9.0\XConnect.Models.sourcelink.json
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\obj\Debug\net9.0\XConnect.Models.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\obj\Debug\net9.0\refint\XConnect.Models.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\obj\Debug\net9.0\XConnect.Models.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Models\obj\Debug\net9.0\ref\XConnect.Models.dll

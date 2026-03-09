@@ -10,6 +10,7 @@ using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols;
 using XConnect.CommonUtilities;
@@ -24,6 +25,7 @@ using static Azure.Core.HttpHeader;
 using static XConnect.Models.ErrorLog;
 using static XConnect.Supplier.Booking.Com.preebookrs;
 using static XConnect.Supplier.ETG.ETGSearchResponse;
+using static XConnect.Supplier.Yalago.Yalago;
 using Options = XConnect.Models.Options;
 
 namespace XConnect.Supplier.ETG
@@ -981,7 +983,7 @@ namespace XConnect.Supplier.ETG
                                                     break;
                                                 }
                                                 string Etg_MatchHas = Convert.ToString(ETGResponse.data.hotels[i].rates[room].match_hash);
-                                                string search_hash = Convert.ToString(ETGResponse.data.hotels[i].rates[room].search_hash);
+                                               // string search_hash = Convert.ToString(ETGResponse.data.hotels[i].rates[room].search_hash);
 
 
                                                 string TaxEssential = "";
@@ -1045,7 +1047,7 @@ namespace XConnect.Supplier.ETG
                                                 sellingAmount = Convert.ToDouble(ETGResponse.data.hotels[i].rates[room].payment_options.payment_types[0].amount);
                                                 double companybuying = sellingAmount * CurrencyFactorOstrovok;
                                                 double TotalPrice = (sellingAmount + commission) * CurrencyFactorOstrovok;
-                                                string RoomTypeId = RoomName + "$$$" + sellingAmount + "$$$" + ItemCode + "$$$" + Currency + "$$$" + XMLnationality + "$$$" + Etg_MatchHas + "$$$" + search_hash;
+                                                string RoomTypeId = RoomName + "$$$" + sellingAmount + "$$$" + ItemCode + "$$$" + Currency + "$$$" + XMLnationality + "$$$" + Etg_MatchHas;// + "$$$" + search_hash;
                                                 int night = SearchParam.NoofNights;
                                                 double NightRate = TotalPrice / night;
                                                 #region RateBreakup
@@ -1243,12 +1245,7 @@ namespace XConnect.Supplier.ETG
                 bool IsRooom = false;
                 int IsHit = 0;
                 string Request = "";// GetETG_Multiple_RoomOnly(SearchPara, Nationality, UserName, PassWord, UserID, xmlhotelcode, IsHit, Convert.ToString(SearchPara.CityID), Currency, IsRooom);
-                string DataaResponse = "";// GetEtgRoomResponse(Request, strHost, key, ref error, UniqueNo);
-                //DataSet ETG_RoomResponse = new DataSet();
-                //XmlDocument docc = JsonConvert.DeserializeXmlNode("{\"Row\":" + DataaResponse + "}", "root");
-                //XmlReader xmllReader = new XmlNodeReader(docc);
-                //ETG_RoomResponse.ReadXml(xmllReader);
-                //string URL = "https://api.worldota.net/api/b2b/v3";
+                string DataaResponse = "";
                 ResponseDto responseDto = await GetEtgHotelDataResponse(RatehawkURL + "/hotel/info/?data={%22id%22:%22" + xmlhotelcode + "%22,%22language%22:%22en%22}", key);
                 string DataResponse = responseDto.Response;
                 error = responseDto.Error;
@@ -1505,74 +1502,7 @@ namespace XConnect.Supplier.ETG
 
 
                     }
-                    #region Comment Code
-                    //string hotels_id = Convert.ToString(ETG_RoomResponse.Tables["hotels"].Rows[0]["hotels_id"]);
-                    //string hotels_id = Convert.ToString(ETG_RoomResponse.Tables["hotels"].Rows[i]["hotels_id"]);
-                    //string hotels_id = Convert.ToString(ETG_RoomResponse.Tables[2].Rows[0]["hotels_id"]);
-
-                    //DataRow[] drRooms = ETG_RoomResponse.Tables["rates"].Select("hotels_Id='" + hotels_id + "'");
-
-                    //for (int room = 0; room < drRooms.Length; room++)
-                    //{
-                    //    string rates_Id = Convert.ToString(drRooms[room]["rates_Id"]);
-
-                    //    DataRow[] payment_option = ETG_RoomResponse.Tables["payment_options"].Select("rates_Id='" + rates_Id + "'");
-
-                    //    int payment_optionId = Convert.ToInt32(payment_option[0]["payment_options_Id"]);
-
-                    //    DataRow[] payment_type = ETG_RoomResponse.Tables["payment_types"].Select("payment_options_Id='" + payment_optionId + "'");
-
-
-                    //    int payment_typeId = Convert.ToInt32(payment_type[0]["payment_types_Id"]);
-
-                    //    if (ETG_RoomResponse.Tables.Contains("tax_data"))
-                    //    {
-                    //        DataRow[] drTaxData = ETG_RoomResponse.Tables["tax_data"].Select("payment_types_Id='" + payment_typeId + "'");
-                    //        for (int s = 0; s < drTaxData.Length; s++)
-                    //        {
-                    //            string taxdataid = Convert.ToString(drTaxData[s]["tax_data_Id"]);
-                    //            DataRow[] drTaxData1 = ETG_RoomResponse.Tables["taxes"].Select("tax_data_Id='" + taxdataid + "'");
-
-                    //            for (int z = 0; z < drTaxData1.Length; z++)
-                    //            {
-                    //                string Include = Convert.ToString(drTaxData1[z]["included_by_supplier"]);
-                    //                string SubTaxEssential = "";
-                    //                if (Include.ToLower() == "false")
-                    //                {
-                    //                    if (z == 0)
-                    //                    {
-                    //                        SubTaxEssential = "<br><br><b>TAX INFORMATION FOR CUSTOMER WHICH NEEDS TO PAY AT HOTEL</b><br><br>";
-                    //                    }
-                    //                    SubTaxEssential = SubTaxEssential + Convert.ToString(drTaxData1[z]["name"]) + " : " + Convert.ToString(drTaxData1[z]["amount"]) + " " + Convert.ToString(drTaxData1[z]["currency_code"]) + "<br>";
-
-                    //                }
-                    //                if (SubTaxEssential != string.Empty)
-                    //                    TaxEssential = TaxEssential + "<br>" + SubTaxEssential;
-                    //            }
-                    //            if (TaxEssential != string.Empty)
-                    //                TaxEssential = TaxEssential + "<br><br>";
-                    //        }
-
-                    //    }
-                    //    if (ETG_RoomResponse.Tables.Contains("amenities_data") == true)
-                    //    {
-                    //        if (ETG_RoomResponse.Tables["amenities_data"].Columns.Contains("rates_Id") == true && ETG_RoomResponse.Tables["amenities_data"].Columns.Contains("amenities_data_Text") == true)
-                    //        {
-                    //            DataRow[] drRooms_info = ETG_RoomResponse.Tables["amenities_data"].Select("rates_Id='" + rates_Id + "'");
-                    //            var ids = drRooms_info.AsEnumerable().Select(r => r.Field<string>("amenities_data_Text")).ToList();
-
-                    //            for (int INF = 0; INF < ids.Count; INF++)
-                    //            {
-                    //                if (INF == 0)
-                    //                    info1 = "</br><b>AMENITY: </b></br></br>";
-                    //                info1 = info1 + Convert.ToString("* " + ids[INF] + ".");
-                    //                if (ids.Count - 1 != INF)
-                    //                    info1 = info1 + "</br>";
-                    //            }
-                    //        }
-                    //    }
-                    //}
-                    #endregion
+                    
                 }
                 EssentialInfo = Essential + TaxEssential + Convert.ToString(info1);
 
@@ -1605,7 +1535,7 @@ namespace XConnect.Supplier.ETG
                 Request.Headers.Add("Authorization", "Basic " + Key);
                 Request.Headers.Add("Cookie", "uid=TfTb5l9y0pXCLwUEFjIzAg==; __cfduid=dc92f2e7430bb431322c0d874a0d15e1d1603953156");
                 Request.Headers.Add("Accept-Encoding", "gzip, deflate");
-                HttpWebResponse response = (HttpWebResponse)await Request.GetResponseAsync();
+                HttpWebResponse response = (HttpWebResponse)Request.GetResponse();
                 Stream streamResponse = response.GetResponseStream();
                 if (response.ContentEncoding.ToLower().Contains("gzip"))
                     streamResponse = new System.IO.Compression.GZipStream(streamResponse, System.IO.Compression.CompressionMode.Decompress);
@@ -1614,12 +1544,12 @@ namespace XConnect.Supplier.ETG
                 else
                     streamResponse = response.GetResponseStream();
                 StreamReader streamReader = new StreamReader(streamResponse);
-                responsedata = await streamReader.ReadToEndAsync();
+                responsedata = streamReader.ReadToEnd();
             }
             catch (Exception ex)
             {
-                Error = ex.Message;
                 _ = _exception.Error(ex);
+                Error = ex.Message.ToString();
             }
             responseDto.Response = responsedata;
             responseDto.Error = Error;
@@ -1937,10 +1867,11 @@ namespace XConnect.Supplier.ETG
                 //SearchParameter objSearPara = (SearchParameter)HttpContext.Current.Session["SearchPara"];
                 double CurrencyFactor = 1;
                 DataSet dsTemp = new DataSet();
-                #region New BookHash               
-                string[] array = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["RoomTypeId"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
-                //string Currency = array[3];
-                string Etg_UniqueId = array[6];
+                //adde by trupti
+                #region New BookHas  
+                string[] BookingPolicy = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["purchaseToken"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string booking_policy_id = BookingPolicy[0];
+                string Etg_UniqueId = booking_policy_id;
 
                 #endregion
                 PrebookRQ = Convert.ToString(OstrovokPrBookRequest(Etg_UniqueId));
@@ -2038,26 +1969,7 @@ namespace XConnect.Supplier.ETG
                             return priceCheckCMDto;
                         }
                         #region Policy Check
-                        //DateTime CancellationDeadLine = Convert.ToDateTime("2000/01/01");
-                        //if (dtPolicy.Rows.Count > 0)
-                        //{
-                        //    //DataRow[] dsHotelData = dtPolicy.Select("RoomTypeID='" + RoomTypeId + "'");
-
-                        //    if (dsHotelData.Count() >= 1)
-                        //    {
-                        //        if (dsHotelData.Count() > 1)
-                        //        {
-                        //            CancellationDeadLine = Convert.ToDateTime(dsHotelData[1]["FromDate"]).AddDays(-1);
-                        //        }
-
-                        //        else
-                        //        {
-                        //            CancellationDeadLine = Convert.ToDateTime(dsHotelData[0]["FromDate"]);
-                        //        }
-
-                        //    }
-                        //}
-                        //if (CancellationDeadLine != Convert.ToDateTime("2000/01/01"))
+                       
                         {
                             //DateTime DeadlineDate = DateTime.Now;
                             string purchaseToken = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["purchaseToken"]);
@@ -2076,12 +1988,7 @@ namespace XConnect.Supplier.ETG
                                 //DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                                 //DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                                 DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, formats, CultureInfo.InvariantCulture);
-                                //DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
-
-                                //CancellationDeadLine = CancellationDeadLine.AddDays(-1).Date;
-                                // string policiedate = "";
-                                //string curDate1 = DateTime.Now.Date.ToString("dd/MM/yyyy");
-                                //string currentdate = (Convert.ToString(curDate1)).Substring(3, 2) + "/" + (Convert.ToString(curDate1)).Substring(0, 2) + "/" + (Convert.ToString(curDate1)).Substring(6, 4);
+                                
                                 DateTime CancelDate = DateTime.Now.Date;// DateTime.ParseExact(currentdate, "MM/dd/yyyy", null);
                                 if (free_cancellation_before != "")
                                 {
@@ -2099,20 +2006,6 @@ namespace XConnect.Supplier.ETG
                                 }
 
 
-                                //for (int bbb = 0; bbb < policies.Length; bbb++)
-                                //{
-                                //    string startAt = Convert.ToString(policies[bbb]["start_at"]);
-                                //    if (startAt != "")
-                                //    {
-                                //        string PolicieDate = Convert.ToString(policies[bbb]["start_at"]);
-                                //        policiedate = (Convert.ToString(PolicieDate)).Substring(8, 2) + "/" + (Convert.ToString(PolicieDate)).Substring(5, 2) + "/" + (Convert.ToString(PolicieDate)).Substring(0, 4);
-                                //        CancelDate = DateTime.ParseExact(policiedate, "dd/MM/yyyy", null);
-                                //    }
-                                //}
-                                //string cancelDateStr = CancelDate.ToString("yyyy-MM-dd");
-                                //DeadlineDate = DateTime.ParseExact(cancelDateStr, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                                // DeadlineDate = DeadlineDate.AddDays(CutOffDays).Date;
-                                //if (CancellationDeadLine.Date > DeadlineDate.Date)
                                 if (free_cancellation_beforeroom.Date != CancelDate.Date)
                                 {
                                     FinalPrice = 0;
@@ -2576,6 +2469,341 @@ namespace XConnect.Supplier.ETG
                 _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
                 return "";
             }
+        }
+
+        public async Task<DataSet> Ratehawk_cancellation(string ISBooking, double CompanyBuy, string MealCode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData TokenData, string SearchKey = "", string GiataId = "0", int hotelRating = 0, string xmlcity = "")
+        {
+            //DataTable dtEtgCancellation = GenerateCancellationDataTableNewV2();
+            //DataTable dtEtgHotelRoom = Common.GenerateRoomtypeDataTableNewV2();
+           // DataTable dtEtgHotelRoomRateBreackUp = Common.GenerateoomRateBreackUpDataTableNewV2();
+            DataTable dtEtgHotelRoom = _commonMethod.GenerateRoomtypeDataTableNewV2();
+            DataTable dtEtgCancellation = _commonMethod.GenerateCancellationDataTableNewV2();
+            DataTable dtEtgHotelRoomRateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
+           string Error = "";
+            try
+            {
+                ISBooking = "NotAvailable";
+                DataTable dtROE = TokenData.dtROE;
+                double CurrencyFactorRatehawk = 1;
+                DataRow[] drSuplierMarkup = (dtSuplierMarkup.Select("SupplierName='" + provider + "'"));
+                int SupplierId = Convert.ToInt32(drSuplierMarkup[0]["SupplierID"]);
+                string userName = Convert.ToString(drSuplierMarkup[0]["Username"]);
+                string password = Convert.ToString(drSuplierMarkup[0]["Password"]);
+                //string URL = drSuplierMarkup[0]["WebSiteURL"] + "/search/hp/";
+                string URL =Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) ;
+                DataRow[] drSearchConfig = (dtSearchConfig.Select("SupplierID='" + SupplierId + "'"));
+                int SearchTimeOut = Convert.ToInt32(drSearchConfig[0]["BookingConfirmationTimeout"]);
+
+                string[] HBArray = Convert.ToString(roomtypeid).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string RoomCode = HBArray[0]; //RoomName
+                string Hotel_Id = HBArray[2]; //Hotel Code
+                string XMLNationality = HBArray[4]; //Nationality
+                string roomTimeMatchHas = HBArray[5]; //MatchHas
+
+                string essential = "";
+                try
+                {
+                    essential = await RateHawk_EssentialInfo(SearchPara, provider, Hotel_Id, userName, password, "", "", roomtypeid, URL, SearchKey);
+
+                    //essential = ThirdPartyXML.Get_ratehawk_EInfo(Hotel_Id, ownsystemid, roomtypeid, SearchPara, password, URL, userName, SearchPara.SearchKey);
+                }
+                catch (Exception ex)
+                {
+                    _exception.Error(ex);
+                }
+
+               
+
+                double CompanyBuyPrice = Convert.ToDouble(CompanyBuy);
+
+
+                int CutOffDays = XMLHotelBookingCommon.CutOffDays;
+                CutOffDays = _commonMethod.GetCutOffDays(dtSuplierMarkup, provider);
+
+                //int CutOffDays = XMLHotelBookingCommon.CutOffDays;
+                //CutOffDays = GetCutOffDays(dtSuplierMarkup, provider);
+                Boolean isPerce = true;
+                double AgentPercentage = 0.0;
+                Boolean blnIsShowSupplier = false;
+                double AgentMarkupAmount = 0.0;
+                //Common.getAgetMarkupSetting(provider, GiataId, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, Convert.ToInt32(dtAgentDetail.Rows[0]["AgentID"]), hotelRating, SearchPara.CityID, Convert.ToString(SearchPara.CountryID), Convert.ToString(SearchPara.CheckInDate));
+               _markup.getAgetMarkupSetting(provider, Convert.ToString(GiataId), dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, Convert.ToInt32(dtAgentDetail.Rows[0]["AgentID"]), hotelRating, SearchPara.CityID, Convert.ToString(SearchPara.CountryID), SearchPara.CheckInDate);
+
+                double AgentCompanyPercentage = Convert.ToDouble(SearchPara.AgentCompanyPercentage);
+                bool IsB2C = Convert.ToBoolean(Convert.ToByte(SearchPara.IsB2BOrB2C));
+
+                double B2CMarkup = (IsB2C == false ? AgentCompanyPercentage : XMLHotelBookingCommon.B2CMarkup);
+                //double B2CMarkup = (IsB2C == false ? AgentCompanyPercentage : 10);
+                if (IsB2C == true)
+                    AgentPercentage = 0;
+
+                string RETGCurrency = Convert.ToString(drSuplierMarkup[0]["CurrencyShortName"]);
+                double CurrencyFactorETG = 1;
+                //if (RETGCurrency.ToLower() != TokenData.SiteCurrency.ToLower())
+                //{
+                //    CurrencyFactorETG = _commonMethod.GetROEByCurrency(RETGCurrency, TokenData.dtROE);
+                //}
+
+               // string Currency = Convert.ToString(ConfigurationManager.AppSettings["RatehawkCurrency"]);
+                string RoomRequest = ETGHotelRequest(SearchPara, XMLNationality, Hotel_Id, xmlcity, RETGCurrency);
+                string ETGURL = URL + _supplierConfig.ETG.search_serp_hp;
+                string RoomResponseData = ResponseETGSupplier(ref Error, RoomRequest, ETGURL, userName, password, "ratehawk");
+
+              
+                if (RoomResponseData == "")
+                    return dsHotel;
+
+
+               DataSet ratehawkResponse = null;
+                string ConvertXml = "";
+                try
+                {
+                    //ConvertXml = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(objResponse.Response).InnerXml;
+                    ConvertXml = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(RoomResponseData, "root").InnerXml;
+                    ratehawkResponse = _commonMethod.GetDataSetFromXMLString(ConvertXml);
+                }
+                catch (Exception ex)
+                {
+                    _ = _exception.ErrorBooking(ex, TokenData.AgentId.ToString());
+                }
+
+                if (ratehawkResponse == null)
+                    return dsHotel;
+
+                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(RoomCode), Convert.ToString(ownsystemid), Convert.ToString(RoomRequest), Convert.ToString(RoomResponseData + Error), "Room Request Response before Policy", provider, "Room Response", SearchKey, "FSTravel Booking");
+
+                string book_hash = "";
+                string roomName = "";
+                string mealName = "";
+
+                double SubAgentMarkup = 0;
+                int IsParentId = 1;
+                if (dtAgentDetail != null)
+                {
+                    IsParentId = Convert.ToInt32(dtAgentDetail.Rows[0]["IsParentId"]);
+                    SubAgentMarkup = Convert.ToDouble(dtAgentDetail.Rows[0]["B2CMarkupPer"]);
+                }
+
+                for (int i = 0; i < ratehawkResponse.Tables["rates"].Rows.Count; i++)
+                {
+                    string match_has = Convert.ToString(ratehawkResponse.Tables["rates"].Rows[i]["match_hash"]);
+                    if (match_has != "")
+                    {
+                        if (roomTimeMatchHas == match_has)
+                        {
+                            ISBooking = "Available";
+                            book_hash = Convert.ToString(ratehawkResponse.Tables["rates"].Rows[i]["book_hash"]);
+                            roomName = Convert.ToString(ratehawkResponse.Tables["rates"].Rows[i]["room_name"]);
+                            mealName = Convert.ToString(ratehawkResponse.Tables["rates"].Rows[i]["meal"]);
+                            if (mealName.ToLower() == "nomeal" || mealName == "")
+                            {
+                                mealName = "Room Only";
+                            }
+
+                            // policy code
+                            int payment_optionId = Convert.ToInt32(ratehawkResponse.Tables["payment_options"].Rows[i]["payment_options_Id"]);
+
+
+                            DataRow[] payment_type = ratehawkResponse.Tables["payment_types"].Select("payment_options_Id='" + payment_optionId + "'");
+                            int payment_typeId = Convert.ToInt32(payment_type[0]["payment_types_Id"]);
+
+                            DataRow[] cancellation_penalty = ratehawkResponse.Tables["cancellation_penalties"].Select("payment_types_Id='" + payment_typeId + "'");
+                            int cancellation_penaltyId = Convert.ToInt32(cancellation_penalty[0]["cancellation_penalties_Id"]);
+                            string free_cancellation_before = Convert.ToString(cancellation_penalty[0]["free_cancellation_before"]);
+                            RETGCurrency = Convert.ToString(payment_type[0]["currency_code"]);
+                            //if (Currency.ToLower() != Convert.ToString(ConfigurationManager.AppSettings["SiteCurrency"]))
+                            //{
+                            //    CurrencyFactorRatehawk = Common.GetROEByCurrency(Currency, dtROE);
+                            //}
+
+                            if (RETGCurrency.ToLower() != TokenData.SiteCurrency.ToLower())
+                            {
+                                CurrencyFactorETG = _commonMethod.GetROEByCurrency(RETGCurrency, TokenData.dtROE);
+                            }
+
+                            DataRow[] policies = ratehawkResponse.Tables["policies"].Select("cancellation_penalties_Id='" + payment_optionId + "'");
+
+                            #region CancelltionPolicy New Added 11-02-2026
+                            string curDate1 = DateTime.Now.Date.ToString("dd/MM/yyyy");
+                            string currentdate = (Convert.ToString(curDate1)).Substring(3, 2) + "/" + (Convert.ToString(curDate1)).Substring(0, 2) + "/" + (Convert.ToString(curDate1)).Substring(6, 4);
+                            double ChargeAmount = 0;
+                            DateTime curDate = DateTime.Now.Date;
+                            double Zero = 0;
+
+                            DateTime CancelDate = DateTime.ParseExact(currentdate, "MM/dd/yyyy", null);
+                            string cancellation = "";
+
+                            if (string.IsNullOrEmpty(free_cancellation_before))
+                            {
+                                CancelDate = DateTime.Now.Date;
+                                cancellation = "nonref";
+                                ChargeAmount = Convert.ToDouble(policies[0]["amount_show"]) * CurrencyFactorRatehawk;
+                            }
+                            else
+                            {
+                                DateTime free_cancellation_before1 = Convert.ToDateTime(free_cancellation_before);
+                                CancelDate = free_cancellation_before1;// DateTime.ParseExact(free_cancellation_before, "dd/MM/yyyy", null);
+                                cancellation = Convert.ToString(free_cancellation_before1);
+                                DataRow lastRow = policies.LastOrDefault();
+                                ChargeAmount = Convert.ToDouble(lastRow["amount_show"]) * CurrencyFactorRatehawk;
+                            }
+
+                            if (CancelDate.AddDays(CutOffDays).Date > curDate)
+                            {
+                                CancelDate = CancelDate.AddDays(CutOffDays).Date;
+                            }
+                            else
+                            {
+                                CancelDate = DateTime.Now.Date;
+                            }
+                            double VatOnPolicy = 0;
+                            double VatOnPolicyChargeAmount = ChargeAmount;
+                            double CompanyChargeAmount = ChargeAmount;
+
+                            double MainAgentCharge = ChargeAmount;
+                            ChargeAmount = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchPara.NoofNights, SearchPara.CityID, Convert.ToString(SearchPara.CountryID), ChargeAmount, isPerce, B2CMarkup, AgentPercentage, AgentMarkupAmount, IsParentId, SubAgentMarkup, ref VatOnPolicy);
+                            double CancelCharge = ChargeAmount;
+                            if (curDate < CancelDate)
+                            {
+                                dtEtgCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref Zero, dtEtgCancellation.NewRow(), CurrencyFactorRatehawk, RETGCurrency, provider, Convert.ToString(ownsystemid), Convert.ToString(roomno), Convert.ToString(roomtypeid),
+                                                                          roomName, Convert.ToString(""), curDate, CancelDate.AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59), 0, 0, "", 0, "", "NO", book_hash, essential, "", ""));
+                                dtEtgCancellation.AcceptChanges();
+
+                                dtEtgCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtEtgCancellation.NewRow(), CurrencyFactorRatehawk, RETGCurrency, provider, Convert.ToString(ownsystemid), Convert.ToString(roomno), Convert.ToString(roomtypeid),
+                                                                      roomName, Convert.ToString(""), CancelDate, DateTime.ParseExact(SearchPara.CheckInDate, "dd/MM/yyyy", null), ChargeAmount, ChargeAmount, "", 0, "", "NO", book_hash, essential, "", ""));
+                                dtEtgCancellation.AcceptChanges();
+                            }
+                            else
+                            {
+                                dtEtgCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtEtgCancellation.NewRow(), CurrencyFactorRatehawk, RETGCurrency, provider, Convert.ToString(ownsystemid), Convert.ToString(roomno), Convert.ToString(roomtypeid),
+                                                                           roomName, Convert.ToString(""), curDate, DateTime.ParseExact(SearchPara.CheckInDate, "dd/MM/yyyy", null), ChargeAmount, ChargeAmount, "", 0, "", "YES", book_hash, essential, "", ""));
+                                dtEtgCancellation.AcceptChanges();
+                            }
+                            dsHotel.Tables[2].Merge(dtEtgCancellation);
+                            #endregion
+                            
+
+                        }
+                    }
+                }
+            }
+            catch (Exception exx)
+            {
+                ISBooking = "NotAvailable";
+                _exception.Error(exx);
+                return dsHotel;
+            }
+
+            return dsHotel;
+        }
+        public  string ETGHotelRequest(HotelSearchParameter SearchParam, string Nationality, string ETGHotelIds, string Citycode, string Currency)
+        {
+            try
+            {
+                DataTable dtPriceDetail =  _commonMethod.GetRoomPriceTableStructure();
+                int RoomNo = SearchParam.Rooms.Count;
+                int MaxRating = SearchParam.StarStart;
+                //string residency = "gb";
+                string language = "en";
+                int Adult = 0;
+                int Child = 0;
+                //int region_id = 965849721;
+
+                string checkin2 = (SearchParam.CheckInDate).Substring(6, 4) + "-" + (SearchParam.CheckInDate).Substring(3, 2) + "-" + (SearchParam.CheckInDate).Substring(0, 2);
+                string checkout2 = (SearchParam.CheckOutDate).Substring(6, 4) + "-" + (SearchParam.CheckOutDate).Substring(3, 2) + "-" + (SearchParam.CheckOutDate).Substring(0, 2);
+
+                #region Price Only and Room Only RQ
+                string Request = "";
+                StringBuilder RootObject = new StringBuilder();
+                RootObject.Append("{");
+                RootObject.Append("\"checkin\": \"" + checkin2 + "\",");
+                RootObject.Append("\"checkout\": \"" + checkout2 + "\",");
+                RootObject.Append("\"residency\": \"" + Nationality + "\",");
+                RootObject.Append("\"language\": \"" + language + "\",");
+                RootObject.Append("\"guests\": [");
+                for (int i = 0; i < RoomNo; i++)
+                {
+                    int ChildAge1 = SearchParam.Rooms[i].Child1Age;
+                    int ChildAge2 = SearchParam.Rooms[i].Child2Age;
+                    Adult = SearchParam.Rooms[i].NoofAdults;
+                    Child = SearchParam.Rooms[i].NoofChild;
+
+                    RootObject.Append("{");
+                    RootObject.Append("\"adults\": " + Adult + ",");
+                    if (Child == 1)
+                        RootObject.Append("\"children\": [" + ChildAge1 + "]}");
+                    else if (Child == 2)
+                        RootObject.Append("\"children\": [" + ChildAge1 + "," + ChildAge2 + "]}");
+                    else
+                        RootObject.Append("\"children\": [] }");
+                    if (RoomNo - 1 != i)
+                        RootObject.Append(",");
+                }
+                RootObject.Append("],");
+                RootObject.Append("\"id\":\"" + ETGHotelIds + "\",");
+                RootObject.Append("\"currency\": \"" + Currency + "\"");
+                RootObject.Append("}");
+                Request = RootObject.ToString();
+                return Request;
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+            }
+            return string.Empty;
+        }
+        public string ResponseETGSupplier(ref string Error, string RoomRequest, string strHost, string UserName, string Password, string Provider)
+        {
+            string strOutput = "";
+            string Key = "";
+            HttpWebRequest Request;
+            try
+            {
+                Key = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserName + ":" + Password));
+                //Request = (HttpWebRequest)HttpWebRequest.Create(strHost);
+
+                Request = (HttpWebRequest)HttpWebRequest.Create(strHost);
+                Request.Method = "POST";
+                Request.ContentType = "application/json; charset=utf-8";
+                Request.Headers.Add("Authorization", "Basic " + Key);
+                Request.Headers.Add("Accept-Encoding", "gzip");
+                Request.KeepAlive = true;
+                //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                //               | SecurityProtocolType.Tls11
+                //               | SecurityProtocolType.Tls12
+                //               | SecurityProtocolType.Ssl3;
+                //ServicePointManager.Expect100Continue = false;
+
+
+                Stream newStream = null;
+                byte[] data = Encoding.ASCII.GetBytes(RoomRequest);
+                Request.ContentLength = data.Length;
+
+                newStream = Request.GetRequestStream();
+                newStream.Write(data, 0, data.Length);
+
+
+
+                HttpWebResponse Response = (HttpWebResponse)Request.GetResponse();
+                Stream responseStream = Response.GetResponseStream();
+                responseStream = new System.IO.Compression.GZipStream(responseStream, System.IO.Compression.CompressionMode.Decompress);
+                StreamReader Reader = new StreamReader(responseStream, Encoding.Default);
+
+                
+                strOutput = Reader.ReadToEnd();
+                responseStream.Close();
+                Reader.Close();
+                Response.Close();
+            }
+            catch (Exception ex)
+            {
+                strOutput = "";
+                Error = ex.Message;
+                _commonMethod.XMLRequestResponseTrack(RoomRequest, ex.Message, Provider == "" ? "ratehawk" : Provider, "Proper");
+                //Common.ErrorBooking(ex, "", "", "");
+            }
+            return strOutput;
         }
     }
 }

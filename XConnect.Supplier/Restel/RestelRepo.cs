@@ -1480,8 +1480,9 @@ namespace XConnect.Supplier.Restel
                 //Set HttpWebRequest properties
                 if (Provider.ToLower() == "restel")
                 {
-
-                    string Key = _supplierConfig.Restel.Key; //"http://xml.hotelresb2b.com/xml/listen_xml.jsp?codigousu=NEWL&clausu=xml493331&afiliacio=RS&secacc=124774";
+                   
+                    string Key = TravcoURL + "?codigousu=" + _supplierConfig.Restel.codigousu + "&clausu=" + _supplierConfig.Restel.clausu + "&afiliacio=" + _supplierConfig.Restel.afiliacio + "&secacc=" + _supplierConfig.Restel.secacc;
+                   // string Key = _supplierConfig.Restel.Key; //"http://xml.hotelresb2b.com/xml/listen_xml.jsp?codigousu=NEWL&clausu=xml493331&afiliacio=RS&secacc=124774";
                     httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(Key);
                     httpWebRequest.Method = "POST";
                     httpWebRequest.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; MS Web Services Client Protocol 1.1.4322.2300)";
@@ -2043,6 +2044,157 @@ namespace XConnect.Supplier.Restel
                 return "";
             }
         }
+        public string Get_Restel_BookingRequest_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] RestelDetails, string UniqueNo, bool IsPriceUpdate, int i, int j, string PreBookingToken, string UserID, string Password, string AgentUniqueNo)
+        {
+            try
+            {
+                #region Booking RQ
+
+                //string CheckIn = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]);
+                string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
+                CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                //string CheckOut = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckOutDate"]);
+                string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
+                CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                //string PropertyId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["ContractID"]);
+               // string PropertyId = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
+                string PropertyId = Convert.ToString(bookRequest.userCart.HotelId);
+               // string MealId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["MealPlanCode"]);
+                string MealId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].MealPlan);
+
+                string ExternalReference = "BOOK_" + AgentUniqueNo + "_" + UniqueNo;
+               // int NoOfNoghts = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["NoOfNight"]);
+                int NoOfNoghts = Convert.ToInt32(bookRequest.userCart.NoOfNight);
+
+                string SPUI = Convert.ToString(bookRequest.userCart.UserCartDetails[j].spui);
+                string RoomType = "";
+                if (IsPriceUpdate)
+                    RoomType = "";
+                else
+                    RoomType = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
+                string NationalityCode = "";
+                string abc1 = MealId;
+                string[] abc = null;
+                if (abc1.Contains("$$$"))
+                {
+                    abc1 = MealId.Replace("$$$", "$");
+                    abc = abc1.Split('$');
+                }
+                #region  IsLead Filter Logic
+                string isLead = string.Empty;
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and RoomNo='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomNo) + "' and IsLead=1";
+                if (dtPassengers.DefaultView.Count == 0)
+                    isLead = "true";
+                dtPassengers.DefaultView.RowFilter = "";
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and RoomNo='" + (bookRequest.userCart.UserCartDetails[j].RoomNo) + "' and UserCartId='" + bookRequest.userCart.UserCartId + "'";
+                dtPassengers.DefaultView.Sort = "IsLead desc";
+                #endregion
+
+                StringBuilder LeadPax = new StringBuilder();
+                if (dtPassengers.DefaultView.Count > 0)
+                {
+                    for (int p = 0; p < dtPassengers.DefaultView.Count; p++)
+                    {
+                        string FName = Convert.ToString(dtPassengers.DefaultView[p]["FirstName"]);
+                        string LName = Convert.ToString(dtPassengers.DefaultView[p]["LastName"]);
+                        int ChildAgex = Convert.ToInt32(dtPassengers.DefaultView[p]["ChildAge"]);
+                        string Prefix = Convert.ToString(dtPassengers.DefaultView[p]["Prefix"]).Replace(".", "");
+                        string PaxType = Convert.ToString(dtPassengers.DefaultView[p]["PaxType"]);
+
+                        DataRow[] drPassengers = dtPassengers.DefaultView.ToTable().Select("IsLead='1'");
+                        if (drPassengers.Length == 0)
+                        {
+                            if (Convert.ToString(dtPassengers.DefaultView[p]["PaxType"]).Trim().ToLower() == "adult")
+                                dtPassengers.DefaultView[p]["IsLead"] = 1;
+                        }
+                        if (Convert.ToInt16(dtPassengers.DefaultView[p]["IsLead"]) == 1)
+                        {
+                            LeadPax.Append("<nombre_cliente>" + Prefix + " " + FName + " " + LName + "</nombre_cliente>");
+                        }
+                    }
+                }
+
+                StringBuilder BookRQ = new StringBuilder();
+                BookRQ.Append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
+                BookRQ.Append("<!DOCTYPE peticion SYSTEM \"http://xml.hotelresb2b.com/xml/dtd/pet_reserva_3.dtd\">");
+                BookRQ.Append("<peticion>");
+                BookRQ.Append("<nombre></nombre>");
+                BookRQ.Append("<agencia></agencia>");
+                BookRQ.Append("<tipo>202</tipo>");
+                BookRQ.Append("<parametros>");
+                BookRQ.Append("<codigo_hotel>" + PropertyId + "</codigo_hotel>");
+                BookRQ.Append(LeadPax.ToString());
+                BookRQ.Append("<observaciones></observaciones>");
+                BookRQ.Append("<num_mensaje/>");
+                BookRQ.Append("<num_expediente>11990</num_expediente>");
+                BookRQ.Append("<forma_pago>25</forma_pago>");  //12 Hotel Payment  25 Credit 44 Prepayment 
+                BookRQ.Append("<tipo_targeta></tipo_targeta>");
+                BookRQ.Append("<num_targeta></num_targeta>");
+                BookRQ.Append("<cvv_targeta></cvv_targeta>");
+                BookRQ.Append("<mes_expiracion_targeta></mes_expiracion_targeta>");
+                BookRQ.Append("<ano_expiracion_targeta></ano_expiracion_targeta>");
+                BookRQ.Append("<titular_targeta></titular_targeta>");
+                BookRQ.Append("<res>");
+                if (abc1.Contains("$"))
+                {
+                    for (int mi = 0; mi < abc.Length - 1; mi++)
+                    {
+                        BookRQ.Append("<lin>" + abc[mi] + "</lin>");
+                    }
+                }
+                else
+                {
+                    BookRQ.Append("<lin>" + MealId + "</lin>");
+                }
+                BookRQ.Append("</res>");
+                BookRQ.Append("<paxes>");
+                if (dtPassengers.DefaultView.Count > 0)
+                {
+                    dtPassengers.DefaultView.RowFilter = "";
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartId='" + bookRequest.userCart.UserCartId + "'";
+                    dtPassengers.DefaultView.Sort = "IsLead desc";
+                    for (int p = 0; p < dtPassengers.DefaultView.Count; p++)
+                    {
+                        string FName = Convert.ToString(dtPassengers.DefaultView[p]["FirstName"]);
+                        string LName = Convert.ToString(dtPassengers.DefaultView[p]["LastName"]);
+                        int ChildAgex = Convert.ToInt32(dtPassengers.DefaultView[p]["ChildAge"]);
+                        string Prefix = Convert.ToString(dtPassengers.DefaultView[p]["Prefix"]).Replace(".", "");
+                        string PaxType = Convert.ToString(dtPassengers.DefaultView[p]["PaxType"]);
+
+                        BookRQ.Append("<pax>");
+                        if (Convert.ToString(Prefix).Trim().ToLower() == "mr")
+                            BookRQ.Append("<titulo>Sr.</titulo>"); //Guest title
+                        else
+                            BookRQ.Append("<titulo>Sra.</titulo>"); //Guest title
+                        BookRQ.Append("<nombrePax>" + FName + "</nombrePax>"); //Client Name 
+                        BookRQ.Append("<apellidos>" + LName + "</apellidos>");//Client Surname 
+                        if (Convert.ToString(PaxType).Trim().ToLower() == "adult")
+                            BookRQ.Append("<edad>32</edad>");//Age
+                        else
+                            BookRQ.Append("<edad>" + ChildAgex + "</edad>");//Age
+                        BookRQ.Append("</pax>");
+                    }
+                }
+                //<pax>
+                //  <titulo>Sra.</titulo>
+                //  <nombrePax>PruebaUno</nombrePax>
+                //  <apellidos>PruebasUno PruebasUno </ apellidos >
+                //  < edad ></ edad >
+                //</ pax >
+                BookRQ.Append("</paxes>");
+                BookRQ.Append("</parametros>");
+                BookRQ.Append("</peticion>");
+                string BookingRQ = BookRQ.ToString();
+
+                return BookingRQ;
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                _ =_exception.Error(ex);
+                return "";
+            }
+        }
 
         public string FinalRestelBookingRequest(string localizer, string confi)
         {
@@ -2098,6 +2250,40 @@ namespace XConnect.Supplier.Restel
             catch (Exception ex)
             {
                 _ =_exception.ErrorNew(ex, _LogAPI.CancelBooking);
+            }
+            return PreCancellationRQ;
+        }
+        public string Get_Restel_PreCancelRQRS_newversion(string BookingReference, DataRow[] RestelDetails, string UserID, string Password, ref double CancellationCost, ref string CancellationToken)
+        {
+            string PreCancellationRQ = "";
+            try
+            {
+                #region Pre Booking Cancel RQ
+
+                string Url = Convert.ToString(RestelDetails[0]["WebSiteURL"]);
+                string BookRef = BookingReference.Split('|')[0];
+                string BookRef1 = BookingReference.Split('|')[1];
+
+                StringBuilder PreCancelRQ = new StringBuilder();
+                PreCancelRQ.Append("<?xml version=\"1.0\" encoding=\"iso-8859-1\" ?>");
+                PreCancelRQ.Append("<!DOCTYPE peticion SYSTEM \"http://xml.hotelresb2b.com/xml/dtd/pet_cancelacion.dtd\">");
+                PreCancelRQ.Append("<peticion>");
+                PreCancelRQ.Append("<nombre></nombre>");
+                PreCancelRQ.Append("<agencia></agencia>");
+                PreCancelRQ.Append("<tipo>401</tipo>");
+                PreCancelRQ.Append("<parametros>");
+                //PreCancelRQ.Append("<localizador_largo>"++"</localizador_largo>");
+                //PreCancelRQ.Append("<localizador_corto>"++"</localizador_corto>");
+                PreCancelRQ.Append("<localizador_largo>" + BookRef + "</localizador_largo>");
+                PreCancelRQ.Append("<localizador_corto>" + BookRef1 + "</localizador_corto>");
+                PreCancelRQ.Append("</parametros>");
+                PreCancelRQ.Append("</peticion>");
+                PreCancellationRQ = PreCancelRQ.ToString();
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
             }
             return PreCancellationRQ;
         }
