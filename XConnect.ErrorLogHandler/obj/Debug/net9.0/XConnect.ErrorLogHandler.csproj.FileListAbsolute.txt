@@ -187,3 +187,21 @@ D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Erro
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\refint\XConnect.ErrorLogHandler.dll
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.ErrorLogHandler.pdb
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\ref\XConnect.ErrorLogHandler.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\bin\Debug\net9.0\XConnect.ErrorLogHandler.deps.json
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\bin\Debug\net9.0\XConnect.ErrorLogHandler.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\bin\Debug\net9.0\XConnect.ErrorLogHandler.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\bin\Debug\net9.0\XConnect.Models.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\bin\Debug\net9.0\XConnection.DAL.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\bin\Debug\net9.0\XConnection.DAL.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\bin\Debug\net9.0\XConnect.Models.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.ErrorLogHandler.csproj.AssemblyReference.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.ErrorLogHandler.GeneratedMSBuildEditorConfig.editorconfig
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.ErrorLogHandler.AssemblyInfoInputs.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.ErrorLogHandler.AssemblyInfo.cs
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.ErrorLogHandler.csproj.CoreCompileInputs.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.ErrorLogHandler.sourcelink.json
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.26BB576B.Up2Date
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.ErrorLogHandler.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\refint\XConnect.ErrorLogHandler.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\XConnect.ErrorLogHandler.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.ErrorLogHandler\obj\Debug\net9.0\ref\XConnect.ErrorLogHandler.dll

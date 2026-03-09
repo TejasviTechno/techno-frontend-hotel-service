@@ -5732,17 +5732,17 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.API\\XConnect.API.csproj",
+      "projectUniqueName": "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.API\\XConnect.API.csproj",
       "projectName": "XConnect.API",
-      "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.API\\XConnect.API.csproj",
+      "projectPath": "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.API\\XConnect.API.csproj",
       "packagesPath": "C:\\Users\\Techno\\.nuget\\packages\\",
-      "outputPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.API\\obj\\",
+      "outputPath": "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\NuGet.Config",
+        "D:\\New folder (4)\\techno-frontend-hotel-service\\NuGet.Config",
         "C:\\Users\\Techno\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -5760,17 +5760,17 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Auth\\XConnect.Auth.csproj": {
-              "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Auth\\XConnect.Auth.csproj"
+            "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.Auth\\XConnect.Auth.csproj": {
+              "projectPath": "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.Auth\\XConnect.Auth.csproj"
             },
-            "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.BAL\\XConnect.BAL.csproj": {
-              "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.BAL\\XConnect.BAL.csproj"
+            "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.BAL\\XConnect.BAL.csproj": {
+              "projectPath": "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.BAL\\XConnect.BAL.csproj"
             },
-            "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
-              "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
+            "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj": {
+              "projectPath": "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.ErrorLogHandler\\XConnect.ErrorLogHandler.csproj"
             },
-            "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj": {
-              "projectPath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj"
+            "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj": {
+              "projectPath": "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.Models\\XConnect.Models.csproj"
             }
           }
         }
@@ -5785,7 +5785,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.100"
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
       "net9.0": {
@@ -5883,11 +5883,17 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
   "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.API\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    },
     {
       "code": "NU1603",
       "level": "Warning",

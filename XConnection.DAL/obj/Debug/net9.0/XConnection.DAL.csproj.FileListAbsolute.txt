@@ -165,3 +165,19 @@ D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.D
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\refint\XConnection.DAL.dll
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.pdb
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\ref\XConnection.DAL.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\bin\Debug\net9.0\XConnection.DAL.deps.json
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\bin\Debug\net9.0\XConnection.DAL.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\bin\Debug\net9.0\XConnection.DAL.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\bin\Debug\net9.0\XConnect.Models.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\bin\Debug\net9.0\XConnect.Models.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.csproj.AssemblyReference.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.AssemblyInfoInputs.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.AssemblyInfo.cs
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.csproj.CoreCompileInputs.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.sourcelink.json
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnect.EBD15483.Up2Date
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\refint\XConnection.DAL.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\ref\XConnection.DAL.dll

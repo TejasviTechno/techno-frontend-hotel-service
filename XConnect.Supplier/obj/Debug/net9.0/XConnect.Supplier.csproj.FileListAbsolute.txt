@@ -255,3 +255,29 @@ D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Supp
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\ref\XConnect.Supplier.dll
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.Analytics.dll
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.Analytics.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.Supplier.deps.json
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.Supplier.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.Supplier.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.Analytics.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.CommonUtilities.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.ErrorLogHandler.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.Markup.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.Models.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnection.DAL.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.CommonUtilities.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.ErrorLogHandler.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.Markup.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.Models.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnect.Analytics.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\bin\Debug\net9.0\XConnection.DAL.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.csproj.AssemblyReference.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.GeneratedMSBuildEditorConfig.editorconfig
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.AssemblyInfoInputs.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.AssemblyInfo.cs
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.csproj.CoreCompileInputs.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.sourcelink.json
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\XConnect.C9222F34.Up2Date
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\refint\XConnect.Supplier.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\XConnect.Supplier.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.Supplier\obj\Debug\net9.0\ref\XConnect.Supplier.dll

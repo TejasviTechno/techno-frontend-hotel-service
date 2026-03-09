@@ -1,12 +1,8 @@
 {
   "version": 2,
-<<<<<<< HEAD
-  "dgSpecHash": "nNCTngJEFbU=",
-=======
-  "dgSpecHash": "YJ29uPxyEuA=",
->>>>>>> feature-smit
+  "dgSpecHash": "cqu0GnhuUwY=",
   "success": true,
-  "projectFilePath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.BAL\\XConnect.BAL.csproj",
+  "projectFilePath": "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.BAL\\XConnect.BAL.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Techno\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Techno\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
@@ -107,5 +103,12 @@
     "C:\\Users\\Techno\\.nuget\\packages\\usercontext\\10.0.11\\usercontext.10.0.11.nupkg.sha512",
     "C:\\Users\\Techno\\.nuget\\packages\\zstdsharp.port\\0.7.3\\zstdsharp.port.0.7.3.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.BAL\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }

@@ -209,3 +209,23 @@ D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.Mark
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\refint\XConnect.Markup.dll
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.pdb
 D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\ref\XConnect.Markup.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Markup.deps.json
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Markup.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Markup.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.ErrorLogHandler.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Models.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnection.DAL.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.ErrorLogHandler.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Models.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnection.DAL.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.csproj.AssemblyReference.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.GeneratedMSBuildEditorConfig.editorconfig
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.AssemblyInfoInputs.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.AssemblyInfo.cs
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.csproj.CoreCompileInputs.cache
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.sourcelink.json
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.0E5A62E2.Up2Date
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\refint\XConnect.Markup.dll
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.pdb
+D:\New folder (4)\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\ref\XConnect.Markup.dll

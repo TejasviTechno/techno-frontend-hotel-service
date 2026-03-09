@@ -1,12 +1,8 @@
 {
   "version": 2,
-<<<<<<< HEAD
-  "dgSpecHash": "SMKjGiRqHm0=",
-=======
-  "dgSpecHash": "8Gigy45iuCU=",
->>>>>>> feature-smit
+  "dgSpecHash": "pIxz2fQXmZo=",
   "success": true,
-  "projectFilePath": "D:\\TRUPTI\\TRUPTI\\NEWVERSIONAPI\\Hotel\\techno-frontend-hotel-service\\XConnect.API\\XConnect.API.csproj",
+  "projectFilePath": "D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.API\\XConnect.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Techno\\.nuget\\packages\\autofac\\8.0.0\\autofac.8.0.0.nupkg.sha512",
     "C:\\Users\\Techno\\.nuget\\packages\\autofac.extensions.dependencyinjection\\9.0.0\\autofac.extensions.dependencyinjection.9.0.0.nupkg.sha512",
@@ -135,6 +131,12 @@
     "C:\\Users\\Techno\\.nuget\\packages\\zstdsharp.port\\0.7.3\\zstdsharp.port.0.7.3.nupkg.sha512"
   ],
   "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file D:\\New folder (4)\\techno-frontend-hotel-service\\XConnect.API\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    },
     {
       "code": "NU1603",
       "level": "Warning",
