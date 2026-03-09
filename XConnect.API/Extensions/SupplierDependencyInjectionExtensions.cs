@@ -100,6 +100,10 @@ using XConnect.Supplier.PriceTravel.Interface;
 using XConnect.Supplier.PriceTravel;
 using XConnect.Supplier.Letsfly.Interface;
 using XConnect.Supplier.Letsfly;
+using XConnect.Supplier.AkbarTravel.Interface;
+using XConnect.Supplier.AkbarTravel;
+
+
 
 namespace XConnect.API.Extensions
 {
@@ -159,6 +163,8 @@ namespace XConnect.API.Extensions
             services.AddScoped<IPkFare, PkFareRepository>();
             services.AddScoped<IPriceTravel, PriceTravelRepo>();
             services.AddScoped<ILetsfly, LetsflyRepo>();
+            services.AddScoped<IAkbartravel, AkbartravelRepo>();
+           
 
             return services;
         }

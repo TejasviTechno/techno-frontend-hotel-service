@@ -149,3 +149,19 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XC
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\refint\XConnection.DAL.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnection.DAL\obj\Debug\net9.0\ref\XConnection.DAL.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\bin\Debug\net9.0\XConnection.DAL.deps.json
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\bin\Debug\net9.0\XConnection.DAL.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\bin\Debug\net9.0\XConnection.DAL.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\bin\Debug\net9.0\XConnect.Models.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\bin\Debug\net9.0\XConnect.Models.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.csproj.AssemblyReference.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.AssemblyInfoInputs.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.AssemblyInfo.cs
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.csproj.CoreCompileInputs.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.sourcelink.json
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnect.EBD15483.Up2Date
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\refint\XConnection.DAL.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\XConnection.DAL.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnection.DAL\obj\Debug\net9.0\ref\XConnection.DAL.dll

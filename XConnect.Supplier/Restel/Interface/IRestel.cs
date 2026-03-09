@@ -22,11 +22,13 @@ namespace XConnect.Supplier.Restel.Interface
         Task<PriceCheckCMDto> Get_Restel_PriceCheck(DataSet dsCartDetails, DataRow[] RestelDetails, int i, int j, string UniqueNo, string AgentUniqueNo, double FinalPrice, string a, double CompanyBuyingPrice,  string PreBookingToken, DataTable dtCheckPriceReqStructure, string Searchkey, int AgentId = 0,TokenData tokenData = null);
 
         string Get_Restel_BookingRequest(DataSet dsCartDetails, DataTable dtPassengers, DataRow[] RestelDetails, string UniqueNo, bool IsPriceUpdate, int i, int j, string PreBookingToken, string UserID, string Password, string AgentUniqueNo);
+        string Get_Restel_BookingRequest_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] RestelDetails, string UniqueNo, bool IsPriceUpdate, int i, int j, string PreBookingToken, string UserID, string Password, string AgentUniqueNo);
 
         Task<ResponseDto> GetRestelResponse(string request, string TravcoURL, Int32 TimeOut, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "",string TechName="");
 
         string FinalRestelBookingRequest(string localizer, string confi);
 
         string Get_Restel_PreCancelRQRS(string BookingReference, DataRow[] RestelDetails, string UserID, string Password, DataTable DtCancellationError, ref double CancellationCost, ref string CancellationToken);
+        string Get_Restel_PreCancelRQRS_newversion(string BookingReference, DataRow[] RestelDetails, string UserID, string Password, ref double CancellationCost, ref string CancellationToken);
     }
 }

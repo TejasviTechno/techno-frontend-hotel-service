@@ -34,6 +34,8 @@ using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using XConnect.Analytics;
+using XConnect.Analytics.Interface;
 
 
 
@@ -51,6 +53,7 @@ namespace XConnect.CommonUtilities
         private readonly ConnectionStrings _connectionStrings;
         private readonly MongoSettings _mongoSettings;
         private readonly RabitMQSettings _rabitmqSettings;
+        private readonly IAnalyticsSupplier _analyticSupplier;
 
 
         public static string SEARCH_KEY = "";
@@ -73,7 +76,7 @@ namespace XConnect.CommonUtilities
         private readonly IExceptionLogStore _stores;
         private readonly ILogger<CommonMethodRepo> _logger;
 
-        public CommonMethodRepo(IException exception, IDLConnection dlConnection, IMemoryCache cache, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IOptions<MongoSettings> mongoSettings, MongoDbFactoryNew factory, RabbitMQPublisher publisher, IOptions<RabitMQSettings> rabitmqSettings, IHttpClientFactory httpClientFactory, IExceptionLogStore stores, ILogger<CommonMethodRepo> logger)
+        public CommonMethodRepo(IException exception, IDLConnection dlConnection, IMemoryCache cache, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IOptions<MongoSettings> mongoSettings, MongoDbFactoryNew factory, RabbitMQPublisher publisher, IOptions<RabitMQSettings> rabitmqSettings, IHttpClientFactory httpClientFactory, IExceptionLogStore stores, ILogger<CommonMethodRepo> logger, IAnalyticsSupplier analyticSupplier)
         {
             _exception = exception;
             _dlConnection = dlConnection;
@@ -99,6 +102,7 @@ namespace XConnect.CommonUtilities
             _httpClientFactory = httpClientFactory;
             _stores = stores;
             _logger = logger;
+            _analyticSupplier = analyticSupplier;
         }
 
         //15-JAN-26
@@ -6239,12 +6243,35 @@ namespace XConnect.CommonUtilities
                 await _exception.Error(ex);
             }
         }
-        public async Task FireAway_SPL_SQL(ConcurrentBag<HotelX> AllTask, int AgentId)
+        public async Task FireAway_SPL_SQL(ConcurrentBag<HotelX> AllTask, int AgentId, HotelSearchParameter searchpara)
         {
             try
             {
                 DataTable Supplierreport = HtmlExtensions.ConvertToDataTableforConcurrentBag(AllTask);
                 DataTable SupplierPerformancereport1 = Supplierreport.DefaultView.ToTable(true, "AgentID", "Supplier", "ReportType", "ResponseType", "RSTimeout", "ResponseStatus", "StrHotelIds", "Host"); //Host Added on 17-Dec-2025
+
+                #region Analytics
+                try
+                {
+                    _analyticSupplier.PushHotelSearchSupplierDataForAnalyticsAsyc(new AnalyticsData
+                    {
+                        Result = AllTask,
+                        Action = "SupplierReportsearch",
+                        Version = "v1",
+                        HttpStatusCode = Convert.ToInt32(HttpStatusCode.OK),
+                        Stage = "Search",
+                        Payload = searchpara,
+                        ElapsedTime = 0,
+                        Description = "Supplier request",
+                        StaticResult = null,
+                        Search_Key = searchpara.SearchKey,
+                    });
+                }
+                catch (Exception ex)
+                {
+                    await _exception.Error(ex);
+                }
+                #endregion
 
                 if (_mongoSettings.SupplierPerformanceReport_MongoDB == "1")//Update on 10-MAY-2025
                 {

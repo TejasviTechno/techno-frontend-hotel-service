@@ -938,6 +938,7 @@ namespace XConnect.Models
         public DataRow[] PkFare_Codes { get; set; }
 
         public DataRow[] LetsFly_Codes { get; set; }
+        public DataRow[] Akbartravel_codes { get; set; }//tjp
     }
 
     public class SupplierDetails
@@ -1838,6 +1839,7 @@ namespace XConnect.Models
         //new
         public int HotelId { get; set; }
         public string Nationality { get; set; }
+        public int NoOfNight { get; set; }   //added by trupti
 
         public List<UserCartDetails> UserCartDetails { get; set; }
     }
@@ -1862,7 +1864,13 @@ namespace XConnect.Models
         public string PurchaseToken { get; set; }
         public string EachoToken { get; set; }
         public int RoomNo { get; set; }
-        
+        public double ChildAge1 { get; set; }//added by trupti
+        public double ChildAge2 { get; set; }//added by trupti
+        public double ChildAge3 { get; set; }//added by trupti
+        public double ChildAge4 { get; set; }//added by trupti
+        public double Rate { get; set; }//added by trupti
+        public string spui { get; set; }//added by trupti
+
     }
 
     public class BookResponse_newversion
@@ -2047,6 +2055,22 @@ namespace XConnect.Models
     {
         public CancelRQ CancelRQ { get; set; }
     }
+    public class CancelBookingRequest_new
+    {
+        public string SearchKey { get; set; }
+        public CancelRQ CancelRQ { get; set; }
+
+        public UserCart userCart { get; set; }
+        public string Techname {  get; set; }   
+        public string Provider {  get; set; }   
+        public string AgentVoucherNo {  get; set; }   
+        public string OnlineHotelBookingDetailId {  get; set; }   
+        public string RefNo {  get; set; }   
+
+
+
+        
+    }
     #endregion
     #region "Response"
     public class HotelRoom_Cancel
@@ -2090,6 +2114,13 @@ namespace XConnect.Models
         public string PNRNo { get; set; } = "";
 
     }
+    public class CancelBookingResponse_newversion //230425
+    {
+        public CancelBookingResponse CancelBookingResponse { get; set; }
+        public string PNRNo { get; set; } = "";
+
+    }
+
 
     #endregion
     #endregion

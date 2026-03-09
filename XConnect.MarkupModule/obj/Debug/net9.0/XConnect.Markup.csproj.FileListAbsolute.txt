@@ -189,3 +189,23 @@ D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\refint\XConnect.Markup.dll
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.pdb
 D:\Project\New Vrsion Hotel API\xconnect-api\XConnect.MarkupModule\obj\Debug\net9.0\ref\XConnect.Markup.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Markup.deps.json
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Markup.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Markup.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.ErrorLogHandler.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Models.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnection.DAL.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.ErrorLogHandler.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnect.Models.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\bin\Debug\net9.0\XConnection.DAL.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.csproj.AssemblyReference.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.GeneratedMSBuildEditorConfig.editorconfig
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.AssemblyInfoInputs.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.AssemblyInfo.cs
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.csproj.CoreCompileInputs.cache
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.sourcelink.json
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.0E5A62E2.Up2Date
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\refint\XConnect.Markup.dll
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\XConnect.Markup.pdb
+D:\TRUPTI\TRUPTI\NEWVERSIONAPI\Hotel\techno-frontend-hotel-service\XConnect.MarkupModule\obj\Debug\net9.0\ref\XConnect.Markup.dll

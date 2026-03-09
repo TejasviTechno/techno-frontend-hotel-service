@@ -662,11 +662,11 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "Microsoft.Extensions.Configuration/9.0.1": {
+      "Microsoft.Extensions.Configuration/9.0.9": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "9.0.1",
-          "Microsoft.Extensions.Primitives": "9.0.1"
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.9",
+          "Microsoft.Extensions.Primitives": "9.0.9"
         },
         "compile": {
           "lib/net9.0/Microsoft.Extensions.Configuration.dll": {
@@ -682,10 +682,10 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "Microsoft.Extensions.Configuration.Abstractions/9.0.1": {
+      "Microsoft.Extensions.Configuration.Abstractions/9.0.9": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "9.0.1"
+          "Microsoft.Extensions.Primitives": "9.0.9"
         },
         "compile": {
           "lib/net9.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
@@ -720,10 +720,10 @@
           "buildTransitive/netstandard2.0/Microsoft.Extensions.Configuration.Binder.targets": {}
         }
       },
-      "Microsoft.Extensions.DependencyInjection/9.0.1": {
+      "Microsoft.Extensions.DependencyInjection/9.0.9": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.1"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.9"
         },
         "compile": {
           "lib/net9.0/Microsoft.Extensions.DependencyInjection.dll": {
@@ -1000,7 +1000,7 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "Microsoft.Extensions.Primitives/9.0.1": {
+      "Microsoft.Extensions.Primitives/9.0.9": {
         "type": "package",
         "compile": {
           "lib/net9.0/Microsoft.Extensions.Primitives.dll": {
@@ -1445,6 +1445,22 @@
           "lib/net5.0/Pipelines.Sockets.Unofficial.dll": {
             "related": ".xml"
           }
+        }
+      },
+      "QueueSystem/10.0.8": {
+        "type": "package",
+        "dependencies": {
+          "Elasticsearch.Net": "7.17.5",
+          "Microsoft.Extensions.Configuration": "9.0.9",
+          "Microsoft.Extensions.DependencyInjection": "9.0.9",
+          "Microsoft.Extensions.Options": "8.0.0",
+          "UAParser": "3.1.47"
+        },
+        "compile": {
+          "lib/net9.0/QueueManager.dll": {}
+        },
+        "runtime": {
+          "lib/net9.0/QueueManager.dll": {}
         }
       },
       "RabbitMQ.Client/7.1.2": {
@@ -2144,6 +2160,19 @@
           "lib/netcoreapp2.1/_._": {}
         }
       },
+      "UAParser/3.1.47": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp2.0/UAParser.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netcoreapp2.0/UAParser.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "UserContext/10.0.14": {
         "type": "package",
         "dependencies": {
@@ -2168,6 +2197,22 @@
         },
         "runtime": {
           "lib/net7.0/ZstdSharp.dll": {}
+        }
+      },
+      "XConnect.Analytics/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "9.0.0",
+          "QueueSystem": "10.0.8",
+          "UserContext": "10.0.11",
+          "XConnect.Models": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/XConnect.Analytics.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/XConnect.Analytics.dll": {}
         }
       },
       "XConnect.Auth/1.0.0": {
@@ -2214,12 +2259,13 @@
         "dependencies": {
           "MathNet.Numerics": "5.0.0",
           "Microsoft.Extensions.Caching.Memory": "9.0.1",
-          "Microsoft.Extensions.Configuration.Abstractions": "9.0.1",
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.9",
           "Microsoft.Extensions.Http": "9.0.1",
           "MongoDB.Driver": "3.1.0",
           "Newtonsoft.Json": "13.0.3",
           "RabbitMQ.Client": "7.1.2",
           "StackExchange.Redis": "2.9.11",
+          "XConnect.Analytics": "1.0.0",
           "XConnect.ErrorLogHandler": "1.0.0",
           "XConnect.Models": "1.0.0",
           "XConnection.DAL": "1.0.0"
@@ -3268,10 +3314,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.Configuration/9.0.1": {
-      "sha512": "VuthqFS+ju6vT8W4wevdhEFiRi1trvQtkzWLonApfF5USVzzDcTBoY3F24WvN/tffLSrycArVfX1bThm/9xY2A==",
+    "Microsoft.Extensions.Configuration/9.0.9": {
+      "sha512": "w87wF/90/VI0ZQBhf4rbMEeyEy0vi2WKjFmACsNAKNaorY+ZlVz7ddyXkbADvaWouMKffNmR0yQOGcrvSSvKGg==",
       "type": "package",
-      "path": "microsoft.extensions.configuration/9.0.1",
+      "path": "microsoft.extensions.configuration/9.0.9",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3291,15 +3337,15 @@
         "lib/net9.0/Microsoft.Extensions.Configuration.xml",
         "lib/netstandard2.0/Microsoft.Extensions.Configuration.dll",
         "lib/netstandard2.0/Microsoft.Extensions.Configuration.xml",
-        "microsoft.extensions.configuration.9.0.1.nupkg.sha512",
+        "microsoft.extensions.configuration.9.0.9.nupkg.sha512",
         "microsoft.extensions.configuration.nuspec",
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.Configuration.Abstractions/9.0.1": {
-      "sha512": "+4hfFIY1UjBCXFTTOd+ojlDPq6mep3h5Vq5SYE3Pjucr7dNXmq4S/6P/LoVnZFz2e/5gWp/om4svUFgznfULcA==",
+    "Microsoft.Extensions.Configuration.Abstractions/9.0.9": {
+      "sha512": "p5RKAY9POvs3axwA/AQRuJeM8AHuE8h4qbP1NxQeGm0ep46aXz1oCLAp/oOYxX1GsjStgdhHrN3XXLLXr0+b3w==",
       "type": "package",
-      "path": "microsoft.extensions.configuration.abstractions/9.0.1",
+      "path": "microsoft.extensions.configuration.abstractions/9.0.9",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3319,7 +3365,7 @@
         "lib/net9.0/Microsoft.Extensions.Configuration.Abstractions.xml",
         "lib/netstandard2.0/Microsoft.Extensions.Configuration.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.Extensions.Configuration.Abstractions.xml",
-        "microsoft.extensions.configuration.abstractions.9.0.1.nupkg.sha512",
+        "microsoft.extensions.configuration.abstractions.9.0.9.nupkg.sha512",
         "microsoft.extensions.configuration.abstractions.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -3363,10 +3409,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.DependencyInjection/9.0.1": {
-      "sha512": "qZI42ASAe3hr2zMSA6UjM92pO1LeDq5DcwkgSowXXPY8I56M76pEKrnmsKKbxagAf39AJxkH2DY4sb72ixyOrg==",
+    "Microsoft.Extensions.DependencyInjection/9.0.9": {
+      "sha512": "zQV2WOSP+3z1EuK91ULxfGgo2Y75bTRnmJHp08+w/YXAyekZutX/qCd88/HOMNh35MDW9mJJJxPpMPS+1Rww8A==",
       "type": "package",
-      "path": "microsoft.extensions.dependencyinjection/9.0.1",
+      "path": "microsoft.extensions.dependencyinjection/9.0.9",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3388,7 +3434,7 @@
         "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.xml",
         "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.dll",
         "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.xml",
-        "microsoft.extensions.dependencyinjection.9.0.1.nupkg.sha512",
+        "microsoft.extensions.dependencyinjection.9.0.9.nupkg.sha512",
         "microsoft.extensions.dependencyinjection.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -3813,10 +3859,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.Primitives/9.0.1": {
-      "sha512": "bHtTesA4lrSGD1ZUaMIx6frU3wyy0vYtTa/hM6gGQu5QNrydObv8T5COiGUWsisflAfmsaFOe9Xvw5NSO99z0g==",
+    "Microsoft.Extensions.Primitives/9.0.9": {
+      "sha512": "z4pyMePOrl733ltTowbN565PxBw1oAr8IHmIXNDiDqd22nFpYltX9KhrNC/qBWAG1/Zx5MHX+cOYhWJQYCO/iw==",
       "type": "package",
-      "path": "microsoft.extensions.primitives/9.0.1",
+      "path": "microsoft.extensions.primitives/9.0.9",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3836,7 +3882,7 @@
         "lib/net9.0/Microsoft.Extensions.Primitives.xml",
         "lib/netstandard2.0/Microsoft.Extensions.Primitives.dll",
         "lib/netstandard2.0/Microsoft.Extensions.Primitives.xml",
-        "microsoft.extensions.primitives.9.0.1.nupkg.sha512",
+        "microsoft.extensions.primitives.9.0.9.nupkg.sha512",
         "microsoft.extensions.primitives.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -4420,6 +4466,17 @@
         "lib/netstandard2.1/Pipelines.Sockets.Unofficial.xml",
         "pipelines.sockets.unofficial.2.2.8.nupkg.sha512",
         "pipelines.sockets.unofficial.nuspec"
+      ]
+    },
+    "QueueSystem/10.0.8": {
+      "sha512": "9TXRb9hoyk06AIEls1x0gUmh6AJOBGFXJuKK9n/nx6bYnNLXyP36mVXhyNz7Ye0RqjM4mJtpC/vZwMlV5GLXbw==",
+      "type": "package",
+      "path": "queuesystem/10.0.8",
+      "files": [
+        ".nupkg.metadata",
+        "lib/net9.0/QueueManager.dll",
+        "queuesystem.10.0.8.nupkg.sha512",
+        "queuesystem.nuspec"
       ]
     },
     "RabbitMQ.Client/7.1.2": {
@@ -5540,6 +5597,33 @@
         "system.threading.tasks.extensions.nuspec"
       ]
     },
+    "UAParser/3.1.47": {
+      "sha512": "I68Jl/Vs5RQZdz9BbmYtnXgujg0jVd61LhKbyNZOCm9lBxZFGxLbiQo6yFj21VYi7DzPvEvrVOmeC6v41AoLfw==",
+      "type": "package",
+      "path": "uaparser/3.1.47",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net20/UAParser.dll",
+        "lib/net20/UAParser.xml",
+        "lib/net35/UAParser.dll",
+        "lib/net35/UAParser.xml",
+        "lib/net40/UAParser.dll",
+        "lib/net40/UAParser.xml",
+        "lib/net45/UAParser.dll",
+        "lib/net45/UAParser.xml",
+        "lib/netcoreapp2.0/UAParser.dll",
+        "lib/netcoreapp2.0/UAParser.xml",
+        "lib/netstandard1.0/UAParser.dll",
+        "lib/netstandard1.0/UAParser.xml",
+        "lib/netstandard1.3/UAParser.dll",
+        "lib/netstandard1.3/UAParser.xml",
+        "lib/netstandard1.6/UAParser.dll",
+        "lib/netstandard1.6/UAParser.xml",
+        "uaparser.3.1.47.nupkg.sha512",
+        "uaparser.nuspec"
+      ]
+    },
     "UserContext/10.0.14": {
       "sha512": "0chgeeI+iaxhM3Y2kjcwQJE1XUYtAhYfXwZc+CLiaSZSTdAHxEXAiYK8+NOyShSBpg9Rie+ZFwfuR8AIlPDdwg==",
       "type": "package",
@@ -5568,6 +5652,11 @@
         "zstdsharp.port.0.7.3.nupkg.sha512",
         "zstdsharp.port.nuspec"
       ]
+    },
+    "XConnect.Analytics/1.0.0": {
+      "type": "project",
+      "path": "../XConnect.Analytics/XConnect.Analytics.csproj",
+      "msbuildProject": "../XConnect.Analytics/XConnect.Analytics.csproj"
     },
     "XConnect.Auth/1.0.0": {
       "type": "project",
