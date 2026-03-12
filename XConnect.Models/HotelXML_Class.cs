@@ -1495,7 +1495,7 @@ namespace XConnect.Models
         public int NoofAdult { get; set; }
         public int NoofChild { get; set; }
         public int NoofInfant { get; set; }
-        public double ChildAge { get; set; }
+        public string ChildAge { get; set; }
         public double ServiceSellingAmount { get; set; }
         public double BaseServiceSellingAmount { get; set; }
         public double ServiceBuyingAmount { get; set; }

@@ -15977,7 +15977,7 @@ new SqlParameter("@AgentId", AgentId),
                 userCart_Prebook.CountryId = Convert.ToInt32(objdata.CountryId);
                 userCart_Prebook.CityId = Convert.ToInt32(objdata.CityId);
 
-                userCart_Prebook.HotelId = Convert.ToInt32(123);
+                userCart_Prebook.HotelId = Convert.ToInt32(objdata.ServiceId);
                 userCart_Prebook.HotelAddress = Convert.ToString(objdata.Address);
                 userCart_Prebook.HotelContactNo = Convert.ToString(objdata.HotelContactNo);
                 userCart_Prebook.NoofNights = Convert.ToInt32((objdata.CheckOutDate.Date - objdata.CheckInDate.Date).Days);
@@ -15993,7 +15993,7 @@ new SqlParameter("@AgentId", AgentId),
                     userCartDetails_Pre.NoofAdult = Convert.ToInt32(objdata.ShoppingCartDetails[room].NoofAdults);
                     userCartDetails_Pre.NoofChild = Convert.ToInt32(objdata.ShoppingCartDetails[room].NoofChild);
                     userCartDetails_Pre.NoofInfant = Convert.ToInt32(0);
-                    userCartDetails_Pre.ChildAge = Convert.ToDouble(0);
+                    userCartDetails_Pre.ChildAge = Convert.ToString(objdata.ShoppingCartDetails[room].Child1Age) + "," + Convert.ToString(objdata.ShoppingCartDetails[room].Child2Age);
                     //userCartDetails_Pre.ServiceSellingAmount = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
                     userCartDetails_Pre.ServiceSellingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency)) : value : Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
                     //userCartDetails_Pre.BaseServiceSellingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
@@ -47825,7 +47825,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     ResponseDto responseDto = await _expedia.GetEANResponseBooking(ereqUrl1, 120000, supplierName, Sign, ApiKey, echoToken, userAgent, Method, EANBookRequest, bookRequest.SearchKey, IP);
                                                     //ResponseDto responseDto = null;
                                                     ResponseData_Ex = responseDto.Response;
-                                                    Error =  responseDto.Error;
+                                                    Error = responseDto.Error;
 
                                                     RequestSPR = EANBookRequest;
                                                     ReponseSPR = ResponseData_Ex;
