@@ -35745,7 +35745,7 @@ new SqlParameter("@AgentId", AgentId),
                                     }
 
                                     pax.PaxType = bookRequest.BookRQ.HotelRooms[i].PaxType;
-                                    pax.ChildAge = Convert.ToInt32(bookRequest.BookRQ.HotelRooms[i].ChildAge);
+                                    pax.ChildAge = Convert.ToString(bookRequest.BookRQ.HotelRooms[i].ChildAge);
 
                                     paxlist.Add(pax);
                                 }
@@ -47730,7 +47730,7 @@ new SqlParameter("@AgentId", AgentId),
                             }
 
                             pax.PaxType = bookRequest.BookRQ.HotelRooms[i].PaxType;
-                            pax.ChildAge = Convert.ToInt32(bookRequest.BookRQ.HotelRooms[i].ChildAge);
+                            pax.ChildAge = Convert.ToString(bookRequest.BookRQ.HotelRooms[i].ChildAge);
 
                             paxlist.Add(pax);
                         }

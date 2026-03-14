@@ -1851,7 +1851,7 @@ namespace XConnect.Models
         public int NoofAdult { get; set; }
         public int NoofChild { get; set; }
         public int NoofInfant { get; set; }
-        public double ChildAge { get; set; }
+        public string ChildAge { get; set; }//140326
         public double ServiceBuyingAmount { get; set; }
         public double BaseServiceBuyingAmount { get; set; }
         public string CheckInDate { get; set; }
@@ -2343,7 +2343,7 @@ namespace XConnect.Models
         public int RoomNo { get; set; }
         public string RoomType { get; set; }
         public string PaxType { get; set; }
-        public int ChildAge { get; set; }
+        public string ChildAge { get; set; }//140326
         public int IsCombo { get; set; }
         public string AgentReferenceNo { get; set; }
         public string TravelPNR { get; set; }
