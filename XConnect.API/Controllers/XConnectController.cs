@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Net;
 
 using System.Text.Json;
+using UserContextMiddleWare.Services;
 using Xconnect.API.Extensions;
 using Xconnect.API.Middleware;
 using Xconnect.BLL;
@@ -37,12 +38,13 @@ namespace XConnect.API.Controllers
         private readonly PlatformService _platformService;
         private readonly KeySettings _keySettings;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserContextAccessor _userContextAccessor;
         _Error error = new _Error();
 
 
 
 
-        public XConnectController(IAuthenticationTokenAgent authenticationTokenAgent, IHotelXML hotelXML, IException exception, PlatformService platformService, IOptions<KeySettings> keySettings, IHttpContextAccessor httpContextAccessor)
+        public XConnectController(IAuthenticationTokenAgent authenticationTokenAgent, IHotelXML hotelXML, IException exception, PlatformService platformService, IOptions<KeySettings> keySettings, IHttpContextAccessor httpContextAccessor, IUserContextAccessor userContextAccessor)
         {
             _authenticationTokenAgent = authenticationTokenAgent;
             _hotelXML = hotelXML;
@@ -50,7 +52,7 @@ namespace XConnect.API.Controllers
             _platformService = platformService;
             _keySettings = keySettings.Value;
             _httpContextAccessor = httpContextAccessor;
-
+            _userContextAccessor = userContextAccessor;
         }
 
         [Route("Countries")]
@@ -235,7 +237,8 @@ namespace XConnect.API.Controllers
             data.IsSearch = 1;
             DateTime EntryTime = DateTime.Now;
 
-            string IP = _platformService.GetIPAddress();
+            //string IP = _platformService.GetIPAddress();
+            string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
             //string IP = GetClientIpAddress();
             string Search_Key = "";//Added on 1-MAR-2025
             try
@@ -469,6 +472,7 @@ namespace XConnect.API.Controllers
 
 
             string IP = _platformService.GetIPAddress();
+            //string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
             // string IP = GetClientIpAddress();
             string Search_Key = "";//Added on 1-MAR-2025
             try
@@ -710,7 +714,8 @@ namespace XConnect.API.Controllers
             data.IsSearch = 1;
             DateTime EntryTime = DateTime.Now;
 
-            string IP = _platformService.GetIPAddress();
+            //string IP = _platformService.GetIPAddress();
+            string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
             // string IP = GetClientIpAddress();
             string Search_Key = "";//Added on 1-MAR-2025
             try
@@ -2409,6 +2414,7 @@ namespace XConnect.API.Controllers
             string Seach_Key = "";
 
             string IP = _platformService.GetIPAddress();
+            //string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
             string userAgent = _platformService.GetUserPlatform(IP);
             string MainURL = _platformService.GetHostName();
             try
@@ -2720,7 +2726,8 @@ namespace XConnect.API.Controllers
             TokenData TokenData = new TokenData();
             string Seach_Key = "";
 
-            string IP = _platformService.GetIPAddress();
+            //string IP = _platformService.GetIPAddress();
+            string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
             string userAgent = _platformService.GetUserPlatform(IP);
             string MainURL = _platformService.GetHostName();
             try
@@ -2824,7 +2831,8 @@ namespace XConnect.API.Controllers
             TokenData TokenData = new TokenData();
             string Seach_Key = "";
 
-            string IP = _platformService.GetIPAddress();
+            //string IP = _platformService.GetIPAddress();
+            string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
             string userAgent = _platformService.GetUserPlatform(IP);
             string MainURL = _platformService.GetHostName();
             try
@@ -2928,7 +2936,8 @@ namespace XConnect.API.Controllers
             TokenData TokenData = new TokenData();
             string Seach_Key = "";
 
-            string IP = _platformService.GetIPAddress();
+            //string IP = _platformService.GetIPAddress();
+            string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
             string userAgent = _platformService.GetUserPlatform(IP);
             string MainURL = _platformService.GetHostName();
             try
@@ -3397,7 +3406,8 @@ namespace XConnect.API.Controllers
             TokenData TokenData = new TokenData();
             string Seach_Key = "";
 
-            string IP = _platformService.GetIPAddress();
+            //string IP = _platformService.GetIPAddress();
+            string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
             string userAgent = _platformService.GetUserPlatform(IP);
             string MainURL = _platformService.GetHostName();
             try
