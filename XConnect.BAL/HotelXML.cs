@@ -47813,7 +47813,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     string ApiKey = Convert.ToString(XPDetails[0]["Password"]);
                                                     //string Version = Convert.ToString(XPDetails[0]["Version"]);
                                                     //string platform = Platform;//Common.GetUserPlatform();
-                                                    string echoToken = Convert.ToString(bookRequest.userCart.UserCartDetails[j].EachoToken); //Convert.ToString(HttpContext.Current.Session["EchoToken"]);
+                                                    string echoToken = Convert.ToString(bookRequest.userCart.UserCartDetails[j].PurchaseToken); //Convert.ToString(HttpContext.Current.Session["EchoToken"]);
                                                     string[] spitid = ereqUrl.Split(new String[] { "$$$" }, StringSplitOptions.None);
                                                     ereqUrl1 = spitid[0].ToString();
                                                     string Method = spitid[1].ToString();
