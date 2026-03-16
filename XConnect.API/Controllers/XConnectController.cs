@@ -2726,8 +2726,8 @@ namespace XConnect.API.Controllers
             TokenData TokenData = new TokenData();
             string Seach_Key = "";
 
-            //string IP = _platformService.GetIPAddress();
-            string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
+            string IP = _platformService.GetIPAddress();
+            //string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
             string userAgent = _platformService.GetUserPlatform(IP);
             string MainURL = _platformService.GetHostName();
             try
@@ -3406,8 +3406,8 @@ namespace XConnect.API.Controllers
             TokenData TokenData = new TokenData();
             string Seach_Key = "";
 
-            //string IP = _platformService.GetIPAddress();
-            string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
+            string IP = _platformService.GetIPAddress();
+            //string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
             string userAgent = _platformService.GetUserPlatform(IP);
             string MainURL = _platformService.GetHostName();
             try
