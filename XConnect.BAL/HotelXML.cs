@@ -48199,15 +48199,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                 List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
                                                 AgentVoucher agentVoucher = new AgentVoucher();
-                                                //bookResponse_1.agentVouchers[j].UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                //bookResponse_1.agentVouchers[j].UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                                //bookResponse_1.agentVouchers[j].AgentVoucherNo = AgentVoucherNo;
-                                                //bookResponse_1.agentVouchers[j].XMLRequest = DynamicRetrive == false ? "Token=" + ereqUrl1 + "_Request=" + EANBookRequest : "Token=" + ereqUrl1 + "_Request=" + EANBookRequest + "</br>" + "Retrive Request :" + Convert.ToString(XPDetails[0]["WebsiteURL"]) + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries?affiliate_reference_id=" + Ex_Guid + "&email=" + _supplierConfig.Expedia.email_Xpedia;
-                                                //bookResponse_1.agentVouchers[j].XMLResponse = DynamicRetrive == false ? ResponseData_Ex : ResponseData_Ex + "</br>" + "Retrive Response : " + RetriveMainResposne;
-                                                //bookResponse_1.agentVouchers[j].RoomStatus = Convert.ToString(bookingStatus);
-                                                //bookResponse_1.agentVouchers[j].SupplierName = suppliername;
-                                                //// bookResponse_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
-                                                ///
+                                                
                                                 agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
                                                 agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
                                                 agentVoucher.AgentVoucherNo = AgentVoucherNo;
@@ -48251,6 +48243,24 @@ new SqlParameter("@AgentId", AgentId),
                                             bookResponse_1.agentVouchers[j].SupplierName = suppliername;
                                             //bookResponse_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
+                                            #endregion
+
+                                            #region BookingData
+
+                                            List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                            AgentVoucher agentVoucher = new AgentVoucher();
+
+                                            agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                            agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                            agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                            agentVoucher.XMLRequest = RequestSPR;
+                                            agentVoucher.XMLResponse = ReponseSPR + " ### Error: " + ex.Message + "";
+                                            agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                            agentVoucher.SupplierName = suppliername;
+                                            agentVouchers.Add(agentVoucher);
+                                            //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                            bookResponse_1.agentVouchers = agentVouchers;
                                             #endregion
                                         }
                                         break;
