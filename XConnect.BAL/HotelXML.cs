@@ -1263,6 +1263,8 @@ namespace Xconnect.BLL
                             else
                                 hotel.HotelOption = new List<Options>();
 
+                           
+
 
                             HotelResult.Add(hotel);
                         }

@@ -655,9 +655,12 @@ namespace XConnect.Models
     public class Options_Comp
     {
         public string HotelOptionId { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string SupplierName { get; set; } //170326
         public decimal MinPrice { get; set; }
         public bool IsCombineRoom { get; set; }
-
+       
         public List<List<_FinalRoomList_Comp>> HotelRooms { get; set; }
     }
 
@@ -784,6 +787,7 @@ namespace XConnect.Models
         public string RateDetailsToken { get; set; }
         public string MappedMealName { get; set; }
         public string SupplierCurrency { get; set; } //Added on 4-FEB-26
+        public string SupplierName { get; set; } //170326
     }
     public class _FinalPolicy
     {

@@ -257,6 +257,7 @@ namespace XConnect.CommonUtilities
 
                         //final.Price = Convert.ToDecimal(Mainrooms[i][j].FinalSellingPrice);
                         final.Price = Math.Round(Convert.ToDecimal(Mainrooms[i][j].FinalSellingPrice), 2);//Added on 25-FEB-26
+                        final.SupplierName = Convert.ToString(Mainrooms[i][j].SupplierName);//170326
 
                         if (tokenData.IsFromAPI)
                             final.Price = final.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency); //comment bcoz no need to return in agent currency 04-FEB-25 

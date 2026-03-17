@@ -7799,6 +7799,8 @@ namespace XConnect.CommonUtilities
 
                         List<List<_FinalRoomList_Comp>> finalRoom = new List<List<_FinalRoomList_Comp>>();
 
+                        string SupplierName = "";//170326
+
                         for (int roomNoSeq = 0; roomNoSeq < finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms?.Count; roomNoSeq++)//each rooms
                         {
                             List<_FinalRoomList_Comp> finalRoomList = new List<_FinalRoomList_Comp>();
@@ -7823,9 +7825,16 @@ namespace XConnect.CommonUtilities
                                 RoomList.MappedMealName = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].MappedMealName;
 
                                 if (!IsFromAPI)
+                                {
                                     RoomList.SupplierCurrency = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].SupplierCurrency;//Added on 04-FEB-26
+                                    SupplierName = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].SupplierName;//170326
+                                }
                                 else
+                                {
                                     RoomList.SupplierCurrency = null;
+                                    SupplierName = null;
+
+                                }
 
                                 if (withcancellation)
                                 {
@@ -7855,6 +7864,8 @@ namespace XConnect.CommonUtilities
                         finalOption.IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom;
 
                         finalOption.HotelOptionId = giataSeq + "|" + ownhotelid + "|" + supplierId + "|" + hotelSeq;
+                        finalOption.SupplierName = SupplierName;//170326
+
                         finalOptionList.Add(finalOption);
                     }
                     finallist.HotelOption = finalOptionList;

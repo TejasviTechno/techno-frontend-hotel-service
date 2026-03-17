@@ -39,13 +39,18 @@ namespace XConnect.Analytics
         {
             try
             {
+                var isDebugMode = _configuration.GetValue<bool>("EnvironmentType:isDebug");
+                if (isDebugMode)
+                {
+                    _logger.LogError("Entry at PushHotelDetailsClientDataForAnalyticsAsyc");
+                }
 
 
                 var resultData = analyticsData.Result as AvailHotelList_Comp;  // response 
 
                 var mainSearchPayload = analyticsData.Payload as HotelSearchParameter; // request
 
-                var isDebugMode = _configuration.GetValue<bool>("EnvironmentType:isDebug");
+               
                 var clientsLocalTimeZone = _configuration.GetValue<string>("EnvironmentType:clientsLocalTimeZone") ?? "Arabian Standard Time";
 
                 var locationItem = resultData?.AvailabilityRS?.HotelResult?.FirstOrDefault();
@@ -118,6 +123,10 @@ namespace XConnect.Analytics
                 var fareInfo = service.GetFareInfo();
                 var SearchAvailTrace = service.GetSearchAvailTrace();
 
+                if (isDebugMode)
+                {
+                    _logger.LogError("Entry2  at PushHotelDetailsClientDataForAnalyticsAsyc");
+                }
 
 
                 var clientData = new ClientData

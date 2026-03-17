@@ -672,6 +672,7 @@ namespace XConnect.API.Controllers
                             timer.Stop();
                             return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, authData.tokenData, "availabilitywithCancellation", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.CityID.ToString(), IP, Convert.ToString(payload.Filters.HotelIDs), Convert.ToString(payload.CheckInDate), Convert.ToString(payload.CheckOutDate), payload.NoofNights, payload.Rooms.Count, 0, Search_Key, EntryTime, "", "", "", 200, payload, timer.ElapsedMilliseconds);
                             //return Ok(lstFiltOption);
+
                         }
                     }
                     else
