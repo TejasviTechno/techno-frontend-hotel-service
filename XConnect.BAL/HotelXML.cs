@@ -11399,6 +11399,7 @@ new SqlParameter("@AgentId", AgentId),
                                  || APIName.ToLower() == "recheck"
                                  || APIName.ToLower() == "prebook"
                                  || APIName.ToLower() == "book"
+                                 || APIName.ToLower() == "book_newversion"
                                  || APIName.ToLower() == "cancelbooking")
                             {
                                 string stage = APIName;
@@ -11420,6 +11421,9 @@ new SqlParameter("@AgentId", AgentId),
 
                                     case "cancelbooking":
                                         stage = "Cancel";
+                                        break;
+                                    case "book_newversion":
+                                        stage = "Book";
                                         break;
 
                                     default:
@@ -31331,7 +31335,8 @@ new SqlParameter("@AgentId", AgentId),
 
                                                         if (flag == 1 || flag == 2 || flag == 3 || flag == 4)
                                                             ErrorPop = true;
-                                                        bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus(ReferenceNo, UserCartId);
+                                                        //bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus(ReferenceNo, UserCartId);
+                                                        objdata.ShoppingCartDetails[0].EachoToken = ReferenceNo; 
                                                         if (Convert.ToDouble(Math.Round(FinalPrice, 2)) > (Math.Round(Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]), 2)))
                                                         {
                                                             ReponseSPR = "#Price Changed " + "#Main Price = " + Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]) + " #New Price = " + FinalPrice + " #Response= " + ReponseSPR;
@@ -31372,7 +31377,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             ProcessPriceTable(1 * BookNight, CityId, CountryId, ref dtPriceUpdateTable, ref serviceTot, CurerntPrice, isPerce, AgentMarkupAmount, AgentPercentage, SubAgentMarkup, IsParentId, B2CMarkup, dsCartDetails, j, "Dida", TokenData);
                                                             #endregion
                                                         }
-                                                        if (FinalPrice == 0 || ErrorPop || IsSuccess == false)
+                                                        if (FinalPrice == 0 || ErrorPop)//|| IsSuccess == false
                                                         {
                                                             responsetype = "GeneralError";
                                                             dtPriceDetail = await ProcessPricePoupTable(true, PackageId, UserCartID, DidaCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, 0, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, 0);
@@ -48235,17 +48240,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                             _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
 
-                                            #region BookingData
-                                            bookResponse_1.agentVouchers[j].UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                            bookResponse_1.agentVouchers[j].UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                            bookResponse_1.agentVouchers[j].AgentVoucherNo = AgentVoucherNo;
-                                            bookResponse_1.agentVouchers[j].XMLRequest = RequestSPR;
-                                            bookResponse_1.agentVouchers[j].XMLResponse = ReponseSPR + " ### Error: " + ex.Message + "";
-                                            bookResponse_1.agentVouchers[j].RoomStatus = Convert.ToString(1);
-                                            bookResponse_1.agentVouchers[j].SupplierName = suppliername;
-                                            //bookResponse_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
-
-                                            #endregion
+                                            
 
                                             #region BookingData
 
@@ -48350,15 +48345,24 @@ new SqlParameter("@AgentId", AgentId),
                                                     }
                                                     else
                                                         bookingStatus = 2;
+                                                    
+
                                                     #region BookingData
-                                                    bookResponse_1.agentVouchers[j].UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                    bookResponse_1.agentVouchers[j].UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                                    bookResponse_1.agentVouchers[j].AgentVoucherNo = AgentVoucherNo;
-                                                    bookResponse_1.agentVouchers[j].XMLRequest = DidaBookRequest;
-                                                    bookResponse_1.agentVouchers[j].XMLResponse = Responsebook;
-                                                    bookResponse_1.agentVouchers[j].RoomStatus = Convert.ToString(bookingStatus);
-                                                    bookResponse_1.agentVouchers[j].SupplierName = suppliername;
-                                                    // bookResponse_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                    List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                                    AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                    agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                    agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                    agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                    agentVoucher.XMLRequest = DidaBookRequest;
+                                                    agentVoucher.XMLResponse = Responsebook;
+                                                    agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                    agentVoucher.SupplierName = suppliername;
+                                                    agentVouchers.Add(agentVoucher);
+                                                    //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                    bookResponse_1.agentVouchers = agentVouchers;
                                                     #endregion
                                                 }
                                                 else
@@ -48384,15 +48388,24 @@ new SqlParameter("@AgentId", AgentId),
                                                             }
                                                             else
                                                                 bookingStatus = 2;
+                                                           
+
                                                             #region BookingData
-                                                            bookResponse_1.agentVouchers[j].UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                            bookResponse_1.agentVouchers[j].UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                                            bookResponse_1.agentVouchers[j].AgentVoucherNo = AgentVoucherNo;
-                                                            bookResponse_1.agentVouchers[j].XMLRequest = DidaBookRequest;
-                                                            bookResponse_1.agentVouchers[j].XMLResponse = Responsebook;
-                                                            bookResponse_1.agentVouchers[j].RoomStatus = Convert.ToString(bookingStatus);
-                                                            bookResponse_1.agentVouchers[j].SupplierName = suppliername;
-                                                            // bookResponse_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                            List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                                            AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                            agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                            agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                            agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                            agentVoucher.XMLRequest = DidaBookRequest;
+                                                            agentVoucher.XMLResponse = Responsebook;
+                                                            agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                            agentVoucher.SupplierName = suppliername;
+                                                            agentVouchers.Add(agentVoucher);
+                                                            //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                            bookResponse_1.agentVouchers = agentVouchers;
                                                             #endregion
                                                             // dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), AgentVoucherNo, DidaBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                         }
@@ -48422,15 +48435,23 @@ new SqlParameter("@AgentId", AgentId),
                                                             }
 
                                                             AgentVoucherNo = BookingID;
+                                                            
                                                             #region BookingData
-                                                            bookResponse_1.agentVouchers[j].UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                            bookResponse_1.agentVouchers[j].UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                                            bookResponse_1.agentVouchers[j].AgentVoucherNo = AgentVoucherNo;
-                                                            bookResponse_1.agentVouchers[j].XMLRequest = DidaBookRequest;
-                                                            bookResponse_1.agentVouchers[j].XMLResponse = Responsebook;
-                                                            bookResponse_1.agentVouchers[j].RoomStatus = Convert.ToString(bookingStatus);
-                                                            bookResponse_1.agentVouchers[j].SupplierName = suppliername;
-                                                            // bookResponse_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                            List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                                            AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                            agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                            agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                            agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                            agentVoucher.XMLRequest = DidaBookRequest;
+                                                            agentVoucher.XMLResponse = Responsebook;
+                                                            agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                            agentVoucher.SupplierName = suppliername;
+                                                            agentVouchers.Add(agentVoucher);
+                                                            //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                            bookResponse_1.agentVouchers = agentVouchers;
                                                             #endregion
                                                             //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), AgentVoucherNo, DidaBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                         }
@@ -48446,14 +48467,21 @@ new SqlParameter("@AgentId", AgentId),
                                                         else
                                                             bookingStatus = 2;
                                                         #region BookingData
-                                                        bookResponse_1.agentVouchers[j].UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                        bookResponse_1.agentVouchers[j].UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                                        bookResponse_1.agentVouchers[j].AgentVoucherNo = AgentVoucherNo;
-                                                        bookResponse_1.agentVouchers[j].XMLRequest = DidaBookRequest;
-                                                        bookResponse_1.agentVouchers[j].XMLResponse = Responsebook;
-                                                        bookResponse_1.agentVouchers[j].RoomStatus = Convert.ToString(bookingStatus);
-                                                        bookResponse_1.agentVouchers[j].SupplierName = suppliername;
-                                                        // bookResponse_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                        List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                                        AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                        agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                        agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                        agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                        agentVoucher.XMLRequest = DidaBookRequest;
+                                                        agentVoucher.XMLResponse = Responsebook;
+                                                        agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                        agentVoucher.SupplierName = suppliername;
+                                                        agentVouchers.Add(agentVoucher);
+                                                        //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                        bookResponse_1.agentVouchers = agentVouchers;
                                                         #endregion
                                                         //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), AgentVoucherNo, DidaBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                     }

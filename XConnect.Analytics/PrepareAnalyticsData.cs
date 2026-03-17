@@ -149,7 +149,21 @@ namespace XConnect.Analytics
                 };
 
 
+
                 _pushAnalytics.PushClientDataForAnalyticsAsyc(clientData);
+
+                if (isDebugMode)
+                {
+                    var json = JsonSerializer.Serialize(clientData, new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                    });
+
+                    _logger.LogInformation("ClientData: {ClientData}", json);
+                    _logger.LogError("Success clientData PushHotelDetailsClientDataForAnalyticsAsyc");
+
+                }
             }
             catch (Exception ex)
             {
