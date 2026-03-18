@@ -26,6 +26,7 @@ using XConnect.Supplier.Dida;
 using XConnect.Supplier.Dida.Interface;
 using static Azure.Core.HttpHeader;
 using static XConnect.Models.ErrorLog;
+using static XConnect.Supplier.Booking.Com.preebookrs;
 using Options = XConnect.Models.Options;
 
 namespace Xconnect.Expedia
@@ -1516,7 +1517,7 @@ namespace Xconnect.Expedia
 
         #endregion
 
-        public async Task<PriceCheckDidaDto> DidaPreBookingReq(string ReferenceNo, string ID, string Password, string HotelCode, string RCode, int NoOfAdults, int NoOfChild, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int ChildAge1, int ChildAge2, int NoOfRoom, string Nationality, string CDate, string Searchkey = "", int AgentId = 0, string DidaCurrency="USD")
+        public async Task<PriceCheckDidaDto> DidaPreBookingReq(string ReferenceNo, string ID, string Password, string HotelCode, string RCode, int NoOfAdults, int NoOfChild, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int ChildAge1, int ChildAge2, int NoOfRoom, string Nationality, string CDate, string Searchkey = "", int AgentId = 0, string DidaCurrency="USD", double CurrencyFactorDida=1)
         {
             PriceCheckDidaDto priceCheckDidaDto = new PriceCheckDidaDto();
             // flag:0= priceCheck Success
@@ -1536,8 +1537,9 @@ namespace Xconnect.Expedia
             int flag = 1;
             try
             {
-                DataTable dtInrCurrency = _commonMethod.GetCountryCurrency(DidaCurrency);
-                double CurrencyFactorDida = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
+                
+               // DataTable dtInrCurrency = _commonMethod.GetCountryCurrency(DidaCurrency);
+               // double CurrencyFactorDida = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
                 CheckInDate = CheckInDate.Substring(0, 4) + "-" + CheckInDate.Substring(4, 2) + "-" + CheckInDate.Substring(6, 2);
                 CheckOutDate = CheckOutDate.Substring(0, 4) + "-" + CheckOutDate.Substring(4, 2) + "-" + CheckOutDate.Substring(6, 2);
                 StringBuilder PreBookRQ = new StringBuilder();

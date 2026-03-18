@@ -31326,8 +31326,16 @@ new SqlParameter("@AgentId", AgentId),
                                                         string ReferenceNo = "";
                                                         bool ErrorPop = false;
                                                         string CDate = spitidRoomTypeId[2];
+
+                                                        double CurrencyFactorDida = 1;
+                                                        DidaCurrency = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["SupplierCurrency"]);
+                                                        if (DidaCurrency.ToLower() != TokenData.SiteCurrency.ToLower())
+                                                        {
+                                                            CurrencyFactorDida = _commonMethod.GetROEByCurrency(DidaCurrency, TokenData.dtROE);
+                                                        }
+
                                                         //int flag = await _dida.DidaPreBookingReq(ReferenceNo, UserID, Password, XMLHotelId, RoomTypeId, NoOfAdults, NoOfChild, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, Convert.ToString(UserCartDetailId), AgentUniqueNo, false, ChildAge1, ChildAge2, NoOfRoom, Nationality, CDate, Searchkey, AgentId);
-                                                        PriceCheckDidaDto priceCheckDidaDto = await _dida.DidaPreBookingReq(ReferenceNo, UserID, Password, XMLHotelId, RoomTypeId, NoOfAdults, NoOfChild, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, Convert.ToString(UserCartDetailId), AgentUniqueNo, false, ChildAge1, ChildAge2, NoOfRoom, Nationality, CDate, Searchkey, AgentId);
+                                                        PriceCheckDidaDto priceCheckDidaDto = await _dida.DidaPreBookingReq(ReferenceNo, UserID, Password, XMLHotelId, RoomTypeId, NoOfAdults, NoOfChild, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, Convert.ToString(UserCartDetailId), AgentUniqueNo, false, ChildAge1, ChildAge2, NoOfRoom, Nationality, CDate, Searchkey, AgentId, DidaCurrency, CurrencyFactorDida);
                                                         int flag = priceCheckDidaDto.Flag;
                                                         FinalPrice = priceCheckDidaDto.FinalPrice;
                                                         ReferenceNo = priceCheckDidaDto.ReferenceNo;
