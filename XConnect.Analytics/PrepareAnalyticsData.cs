@@ -74,11 +74,11 @@ namespace XConnect.Analytics
 
                 var productInfo = new AnalyticsProductInfo
                 {
-                    Name = analyticsData?.Search_Key ?? "anonymous",
+                    Name = mainSearchPayload?.CityName ?? "anonymous",
 
                     //Name = resultData?.AvailabilityRS?.SearchKey ?? "anonymous",//productDetail?.RestaurantNameDefault ?? "anonymous",
-                    City = mainSearchPayload?.CityID.ToString() ?? "anonymous",
-                    Country = mainSearchPayload?.CountryID.ToString() ?? "anonymous",
+                    City = mainSearchPayload?.CityName ?? "anonymous",
+                    Country = mainSearchPayload?.CountryCode ?? "anonymous",
                 };
                 
                 //var productInfo = new AnalyticsProductInfo();
@@ -151,19 +151,8 @@ namespace XConnect.Analytics
 
 
                 _pushAnalytics.PushClientDataForAnalyticsAsyc(clientData);
-
-                if (isDebugMode)
-                {
-                    var json = JsonSerializer.Serialize(clientData, new JsonSerializerOptions
-                    {
-                        WriteIndented = true,
-                        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-                    });
-
-                    _logger.LogInformation("ClientData: {ClientData}", json);
-                    _logger.LogError("Success clientData PushHotelDetailsClientDataForAnalyticsAsyc");
-
-                }
+                
+               
             }
             catch (Exception ex)
             {
