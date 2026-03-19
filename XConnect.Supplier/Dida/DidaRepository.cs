@@ -1866,7 +1866,9 @@ namespace Xconnect.Expedia
                         firstName = Convert.ToString(dtPassengers.DefaultView[k]["FirstName"]).Trim();
                         lastName = Convert.ToString(dtPassengers.DefaultView[k]["LastName"]).Trim();
                         title = Convert.ToString(dtPassengers.DefaultView[k]["Prefix"]).Trim().Replace(".", "");
-                        int ChildAge = Convert.ToInt32(dtPassengers.DefaultView[k]["ChildAge"]);
+                        string ChildAge = Convert.ToString(dtPassengers.DefaultView[k]["ChildAge"]);
+                        int ChildAge1 =Convert.ToInt32( ChildAge.Split(',')[0]);
+                        int ChildAge2 =Convert.ToInt32( ChildAge.Split(',')[1]);
                         if (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1)
                         {
                             SBContect.Append("\"Contact\": {");
@@ -1889,12 +1891,12 @@ namespace Xconnect.Expedia
                         SBPassanger.Append("}");
                         if (Convert.ToString(dtPassengers.DefaultView[k]["PaxType"]).Trim().ToLower() != "adult")
                         {
-                            int ChildAge1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge1);
-                            int ChildAge2 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge2);
+                           // int ChildAge1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge1);
+                            //int ChildAge2 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge2);
                             if (NoOfChild == 1)
-                                SBPassanger.Append(",\"Age\":" + ChildAge);
+                                SBPassanger.Append(",\"Age\":" + ChildAge1);
                             if (NoOfChild == 2)
-                                SBPassanger.Append(",\"Age\":" + ChildAge);
+                                SBPassanger.Append(",\"Age\":" + ChildAge2);
                         }
                         SBPassanger.Append("}");
 

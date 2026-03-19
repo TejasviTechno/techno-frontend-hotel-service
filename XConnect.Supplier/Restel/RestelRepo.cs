@@ -2097,7 +2097,7 @@ namespace XConnect.Supplier.Restel
                     {
                         string FName = Convert.ToString(dtPassengers.DefaultView[p]["FirstName"]);
                         string LName = Convert.ToString(dtPassengers.DefaultView[p]["LastName"]);
-                        int ChildAgex = Convert.ToInt32(dtPassengers.DefaultView[p]["ChildAge"]);
+                        string ChildAgex = Convert.ToString(dtPassengers.DefaultView[p]["ChildAge"]);
                         string Prefix = Convert.ToString(dtPassengers.DefaultView[p]["Prefix"]).Replace(".", "");
                         string PaxType = Convert.ToString(dtPassengers.DefaultView[p]["PaxType"]);
 
@@ -2157,7 +2157,8 @@ namespace XConnect.Supplier.Restel
                     {
                         string FName = Convert.ToString(dtPassengers.DefaultView[p]["FirstName"]);
                         string LName = Convert.ToString(dtPassengers.DefaultView[p]["LastName"]);
-                        int ChildAgex = Convert.ToInt32(dtPassengers.DefaultView[p]["ChildAge"]);
+                        string ChildAgex = Convert.ToString(dtPassengers.DefaultView[p]["ChildAge"]);
+                        int ChildAge1 = Convert.ToInt32(ChildAgex.Split(';')[0]);
                         string Prefix = Convert.ToString(dtPassengers.DefaultView[p]["Prefix"]).Replace(".", "");
                         string PaxType = Convert.ToString(dtPassengers.DefaultView[p]["PaxType"]);
 
@@ -2171,7 +2172,7 @@ namespace XConnect.Supplier.Restel
                         if (Convert.ToString(PaxType).Trim().ToLower() == "adult")
                             BookRQ.Append("<edad>32</edad>");//Age
                         else
-                            BookRQ.Append("<edad>" + ChildAgex + "</edad>");//Age
+                            BookRQ.Append("<edad>" + ChildAge1 + "</edad>");//Age
                         BookRQ.Append("</pax>");
                     }
                 }
