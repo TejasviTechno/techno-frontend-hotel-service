@@ -16040,7 +16040,7 @@ new SqlParameter("@AgentId", AgentId),
                     userCartDetails_Pre.RoomMealInfo = Convert.ToString(objdata.ShoppingCartDetails[room].RoomMealInfo);
                     userCartDetails_Pre.PurchaseToken = Convert.ToString(objdata.ShoppingCartDetails[room].PurchaseToken);
                     userCartDetails_Pre.EachoToken = Convert.ToString(objdata.ShoppingCartDetails[room].EachoToken);
-                    userCartDetails_Pre.EachoToken = Convert.ToString(objdata.ShoppingCartDetails[room].SPUI);
+                    //userCartDetails_Pre.EachoToken = Convert.ToString(objdata.ShoppingCartDetails[room].SPUI);
                     userCartDetails_Pre.RoomNo = Convert.ToInt32(objdata.ShoppingCartDetails[room].RoomNo);//Updated
 
                     if (!objdata.IsCombineRoom || room == 0)

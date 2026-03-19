@@ -1837,9 +1837,18 @@ namespace Xconnect.Expedia
                 int NoOfChild = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofChild);
                 int NoOfAdults = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofAdult);
                 string checkindate = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
-                string checkin = (checkindate).Substring(0, 4) + "-" + (checkindate).Substring(4, 2) + "-" + (checkindate).Substring(6, 2);// + "T03:00:00+03:00";
+                //string checkin = (checkindate).Substring(0, 4) + "-" + (checkindate).Substring(4, 2) + "-" + (checkindate).Substring(6, 2);// + "T03:00:00+03:00";
                 string checkoutdate = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
-                string checkout = (checkoutdate).Substring(0, 4) + "-" + (checkoutdate).Substring(4, 2) + "-" + (checkoutdate).Substring(6, 2);// + "T03:00:00+03:00";
+                //string checkout = (checkoutdate).Substring(0, 4) + "-" + (checkoutdate).Substring(4, 2) + "-" + (checkoutdate).Substring(6, 2);// + "T03:00:00+03:00";
+
+                // Parse the strings to DateTime
+                DateTime checkInDate = DateTime.Parse(checkindate);
+                DateTime checkOutDate = DateTime.Parse(checkoutdate);
+
+                // Convert to "yyyy-MM-dd" format
+                string checkin = checkInDate.ToString("yyyy-MM-dd");
+                string checkout = checkOutDate.ToString("yyyy-MM-dd");
+
 
                 string AgentReference = "WE_" + Convert.ToString(AgentCode + "_" + UniqueNo);
                 string firstName = ""; string lastName = ""; string title = "";
