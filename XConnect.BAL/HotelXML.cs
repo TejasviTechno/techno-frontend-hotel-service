@@ -48319,9 +48319,9 @@ new SqlParameter("@AgentId", AgentId),
                                                     System.Diagnostics.Stopwatch timerdida = new System.Diagnostics.Stopwatch();
 
                                                     timerdida.Start();
-                                                    //ResponseDto responseDto = await _dida.GetDidaResponse(DidaBookRequest, BookUrl, UniqueNo);
-                                                    //Responsebook = responseDto.Response;
-                                                    //Error = responseDto.Error;
+                                                    ResponseDto responseDto = await _dida.GetDidaResponse(DidaBookRequest, BookUrl, UniqueNo);
+                                                    Responsebook = responseDto.Response;
+                                                    Error = responseDto.Error;
 
                                                     DidaResponse = Responsebook;
                                                     timerdida.Stop();
