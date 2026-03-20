@@ -48515,6 +48515,24 @@ new SqlParameter("@AgentId", AgentId),
                                         }
                                         catch (Exception ex)
                                         {
+                                            #region BookingData
+
+                                            List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                            AgentVoucher agentVoucher = new AgentVoucher();
+
+                                            agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                            agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                            agentVoucher.AgentVoucherNo = "";
+                                            agentVoucher.XMLRequest = DidaBookRequest;
+                                            agentVoucher.XMLResponse = DidaResponse;
+                                            agentVoucher.RoomStatus = Convert.ToString(2);
+                                            agentVoucher.SupplierName = suppliername;
+                                            agentVouchers.Add(agentVoucher);
+                                            //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                            bookResponse_1.agentVouchers = agentVouchers;
+                                            #endregion
+
                                             #region SupplierPerformanceReport Catch
                                             try
                                             {
@@ -48757,6 +48775,311 @@ new SqlParameter("@AgentId", AgentId),
                                             }
                                             #endregion
                                             _ = _exception.Error(ex);
+                                        }
+                                        break;
+                                    #endregion
+                                    #region "Ostrovok_Direct"
+                                    case "etg":
+                                        //case "ratehawk":
+                                        //case "ratehawk_b2c":
+                                        string EtgBookRequest = "";
+                                        try
+                                        {
+                                            #region Data
+                                            DataTable dtPolicy = null;
+                                            // int j = 0;
+                                            int UserCartId1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                            string xslRequest = "";
+                                            string RatehawkResponse = "";
+                                            string booking_form_order_id = "";
+                                            string UserCartDetailId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                            // string URl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/hotel/order/booking/form/";
+                                            string URl = Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.ETG.booking_form;
+                                            //ETGPriceCheck eTGPriceCheck = await _etg.Get_OSTV_PriceCheck(dsCartDetails, XPDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, false, "P", URl, tokenData, xslRequest, RatehawkResponse, booking_form_order_id, userAgent);
+                                            ETGPriceCheck eTGPriceCheck = await _etg.Get_OSTV_PriceCheck_newversion(bookRequest, XPDetails, 0, 0, UniqueNo, false, "P", URl, tokenData, xslRequest, RatehawkResponse, booking_form_order_id, userAgent);
+                                            bool ispriceupdate = eTGPriceCheck.ispriceupdate;
+                                            xslRequest = eTGPriceCheck.xslRequest;
+                                            RatehawkResponse = eTGPriceCheck.RatehawkResponse;
+                                            booking_form_order_id = eTGPriceCheck.booking_form_order_id;
+                                            if (ispriceupdate)
+                                            {
+                                                bookingStatus = 2;
+
+                                                #region BookingData
+
+                                                List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                                AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                agentVoucher.XMLRequest = "preBooking Request: " + xslRequest;
+                                                agentVoucher.XMLResponse = "prebooking  response:" + RatehawkResponse;
+                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                agentVoucher.SupplierName = suppliername;
+                                                agentVouchers.Add(agentVoucher);
+                                                //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                bookResponse_1.agentVouchers = agentVouchers;
+                                                #endregion
+                                                //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(UserCartId1), Convert.ToString(UserCartDetailId), AgentVoucherNo, "preBooking Request:" + xslRequest, "prebooking  response:" + RatehawkResponse, Supplier, bookingStatus, voucherpackageid));
+
+                                            }
+                                            else
+                                            {
+                                                bookingStatus = 1;
+                                                //string BookUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/hotel/order/booking/finish/";
+                                                string BookUrl = Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.ETG.booking_finish;
+                                                string UserID = Convert.ToString(XPDetails[0]["UserName"]);
+                                                string XMLHotelId = Convert.ToString(bookRequest.userCart.XMLHotelId);
+                                                string[] spitidRoomTypeId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                                string RoomTypeId = spitidRoomTypeId[0];
+                                                string SellingAmount = spitidRoomTypeId[1];
+                                                string Password = Convert.ToString(XPDetails[0]["Password"]);
+                                                string Currency = spitidRoomTypeId[3];
+                                                string CheckInDate = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
+                                                string CheckOutDate = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
+                                                string WebSiteURL = Convert.ToString(XPDetails[0]["WebSiteURL"]);
+                                                //double Rate = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["Rate"]);
+                                                string Order_Booking_Id = UserCartDetailId;
+                                                int NoOfRoom = Convert.ToInt32(bookRequest.userCart.UserCartDetails.Count);
+                                                string EtgUserID = Convert.ToString(XPDetails[0]["UserID"]);
+                                                string Key = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserID + ":" + Password));
+                                                double FinalPrice = 0;
+                                                //DataRow[] CartResponse = dsCartDetails.Tables[1].Select("UserCartID='" + UserCartId1 + "'");
+                                                //string Order_Id = Convert.ToString(CartResponse[0]["Eachotoken"]);
+                                                string Order_Id = Convert.ToString(bookRequest.userCart.UserCartDetails[j].EachoToken);
+                                                string type = "deposit";
+                                                #endregion
+                                                string EtgBookingRequest = _etg.OSTVBookingRequest_newvesrion(bookRequest, dtPassengers, 0, j, Password, Order_Booking_Id, NoOfRoom, RoomTypeId, XMLHotelId, SellingAmount, type, Currency);
+                                                EtgBookRequest = EtgBookingRequest;
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), EtgBookRequest, "-", "Before Hit Booking Request", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", "-", "WithinEarth");
+                                                string Responsebook = "";
+                                                isNonRefundable = false;
+                                                Error = "";
+                                                //Responsebook = Common.GetOstrovokRoomResponse(EtgBookingRequest, BookUrl, Key, ref Error, UniqueNo);
+                                                Responsebook = await _etg.GetRatehawkRoomResponse(EtgBookingRequest, BookUrl, Key, UniqueNo);
+                                                RequestSPR = EtgBookRequest;
+                                                ReponseSPR = Responsebook;
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), EtgBookRequest, Responsebook + Error, "After Hit Booking Request", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Confirm Response", "-", "WithinEarth");
+                                                string EtgBookingFSResponse = "";
+                                                //string FSUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/hotel/order/booking/finish/status/";
+                                                string FSUrl = Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.ETG.booking_finish_status;
+                                                string EtgBookingFSReqest = _etg.OSTVBookingFinishStatusRequest(Order_Booking_Id);
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), EtgBookingFSReqest, "-", "Before Hit Booking Status Finish Request Block", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", "-", "WithinEarth");
+                                                //EtgBookingFSResponse = Common.GetOstrovokRoomResponse(EtgBookingFSReqest, FSUrl, Key, ref Error, UniqueNo);
+                                                EtgBookingFSResponse = await _etg.GetRatehawkRoomResponse(EtgBookingFSReqest, FSUrl, Key, UniqueNo);
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), EtgBookingFSReqest, EtgBookingFSResponse + Error, "After Hit Booking Status Finish Request", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Confirm Response", "-", "WithinEarth");
+                                                {
+                                                    DataSet dsResponsebook = new DataSet();
+                                                    XmlDocument doc = JsonConvert.DeserializeXmlNode("{\"Row\":" + EtgBookingFSResponse + "}", "root");
+                                                    XmlReader xmlReader = new XmlNodeReader(doc);
+                                                    dsResponsebook.ReadXml(xmlReader);
+
+                                                    string Status = Convert.ToString(dsResponsebook.Tables[0].Rows[0]["status"]);
+
+                                                    string ReEtgBookingFSResponse = "";
+                                                    if (Status != "error")
+                                                    {
+                                                        int Percent = Convert.ToInt32(dsResponsebook.Tables[1].Rows[0]["percent"]);
+
+                                                        #region "As per supplier requirement"
+                                                        if (Percent != 100 && Status != "ok")
+                                                        {
+                                                            for (int p = 0; p < 12; p++)
+                                                            {
+                                                                //ReEtgBookingFSResponse = Common.GetOstrovokRoomResponse(EtgBookingFSReqest, FSUrl, Key, ref Error, UniqueNo);
+                                                                ReEtgBookingFSResponse = await _etg.GetRatehawkRoomResponse(EtgBookingFSReqest, FSUrl, Key, UniqueNo);
+                                                                try
+                                                                {
+                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), EtgBookingFSReqest, ReEtgBookingFSResponse + Error, "After Hit loop Booking Status Finish Request ", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Waiting For Response", "-", "Withinearth");
+                                                                    DataSet RedsResponsebook = new DataSet();
+                                                                    XmlDocument Redoc = JsonConvert.DeserializeXmlNode("{\"Row\":" + ReEtgBookingFSResponse + "}", "root");
+                                                                    XmlReader RexmlReader = new XmlNodeReader(Redoc);
+                                                                    RedsResponsebook.ReadXml(RexmlReader);
+                                                                    if (RedsResponsebook.Tables.Contains("Row"))
+                                                                    {
+                                                                        var Tbl = RedsResponsebook.Tables["Row"];
+                                                                        if (Tbl.Columns.Contains("status"))
+                                                                            Status = Convert.ToString(RedsResponsebook.Tables[0].Rows[0]["status"]);
+                                                                    }
+                                                                    if (RedsResponsebook.Tables.Contains("data"))
+                                                                    {
+                                                                        var Tbl_per = RedsResponsebook.Tables["data"];
+                                                                        if (Tbl_per.Columns.Contains("percent"))
+                                                                            Percent = Convert.ToInt32(RedsResponsebook.Tables[1].Rows[0]["percent"]);
+                                                                    }
+                                                                    if (Percent == 100 && Status == "ok")
+                                                                        break;
+                                                                    if (Status.ToLower() == "error")
+                                                                    {
+                                                                        Percent = 0;
+                                                                        break;
+                                                                    }
+                                                                    //System.Threading.Thread.Sleep(3000);
+                                                                    System.Threading.Thread.Sleep(5000); //As per Ahmed 
+                                                                }
+                                                                catch (Exception)
+                                                                {
+                                                                    System.Threading.Thread.Sleep(5000); //As per Ahmed 
+                                                                }
+                                                            }
+                                                        }
+                                                        #endregion
+                                                        if (Percent == 100 && Status.ToLower() == "ok")
+                                                        {
+                                                            string bookid = Convert.ToString(Order_Id);
+                                                            switch (Status.ToLower())
+                                                            {
+                                                                case "ok":
+                                                                    bookingStatus = 6;
+                                                                    break;
+                                                                case "error":
+                                                                    bookingStatus = 2;
+                                                                    break;
+                                                                default:
+                                                                    bookingStatus = 1;
+                                                                    break;
+                                                            }
+                                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), EtgBookingFSReqest, ReEtgBookingFSResponse + Error, "After Hit loop Booking Status Finish Request. bookingstatus: " + bookingStatus, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Final Confirm Response", "-", "Withinearth");
+
+                                                            AgentVoucherNo = Order_Booking_Id + "##" + booking_form_order_id;
+                                                            // dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(UserCartId1), Convert.ToString(UserCartDetailId), AgentVoucherNo, "Booking finish:" + EtgBookRequest + " Booking finish status: " + EtgBookingFSReqest, "Booking finish response:" + Responsebook + "Booking finish status response:" + EtgBookingFSResponse, Supplier, bookingStatus, voucherpackageid));
+                                                            #region BookingData
+
+                                                            List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                                            AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                            agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                            agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                            agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                            agentVoucher.XMLRequest = "Booking finish:" + EtgBookRequest + " Booking finish status: " + EtgBookingFSReqest;
+                                                            agentVoucher.XMLResponse = "Booking finish response:" + Responsebook + "Booking finish status response:" + EtgBookingFSResponse;
+                                                            agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                            agentVoucher.SupplierName = suppliername;
+                                                            agentVouchers.Add(agentVoucher);
+                                                            //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                            bookResponse_1.agentVouchers = agentVouchers;
+                                                            #endregion
+                                                        }
+                                                        else
+                                                        {
+                                                            bookingStatus = 1; // Booking Not Conform
+                                                                               // dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(UserCartId1), Convert.ToString(UserCartDetailId), AgentVoucherNo, "Booking finish:" + EtgBookRequest + " Booking finish status: " + EtgBookingFSReqest, "Booking finish response:" + Responsebook + "Booking finish status response:" + EtgBookingFSResponse, Supplier, bookingStatus, voucherpackageid));
+
+                                                            #region BookingData
+
+                                                            //List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                                            //AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                            //agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                            //agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                            //agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                            //agentVoucher.XMLRequest = "Booking finish:" + EtgBookRequest + " Booking finish status: " + EtgBookingFSReqest;
+                                                            //agentVoucher.XMLResponse = "Booking finish response:" + Responsebook + "Booking finish status response:" + EtgBookingFSResponse;
+                                                            //agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                            //agentVoucher.SupplierName = suppliername;
+                                                            //agentVouchers.Add(agentVoucher);
+                                                            ////_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                            //bookResponse_1.agentVouchers = agentVouchers;
+                                                            #endregion
+                                                            if (Convert.ToString(Status) == "error" || (EtgBookingFSResponse == ""))
+                                                            {
+                                                                AgentVoucherNo = "";
+                                                                if (isNonRefundable == true)
+                                                                {
+                                                                    bookingStatus = 1;
+                                                                    AgentVoucherNo = "On Request";
+                                                                }
+                                                                else
+                                                                    bookingStatus = 2;
+
+                                                                #region BookingData
+
+                                                                List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                                                AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                                agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                                agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                                agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                                agentVoucher.XMLRequest = "Booking finish:" + EtgBookRequest + " Booking finish status: " + EtgBookingFSReqest;
+                                                                agentVoucher.XMLResponse = "Booking finish response:" + Responsebook + "Booking finish status response:" + EtgBookingFSResponse;
+                                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                                agentVoucher.SupplierName = suppliername;
+                                                                agentVouchers.Add(agentVoucher);
+                                                                //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                                bookResponse_1.agentVouchers = agentVouchers;
+                                                                #endregion
+                                                                //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(UserCartId1), Convert.ToString(UserCartDetailId), AgentVoucherNo, "Booking finish:" + EtgBookRequest + " Booking finish status: " + EtgBookingFSReqest, "Booking finish response:" + Responsebook + "Booking finish status response:" + EtgBookingFSResponse, Supplier, bookingStatus, voucherpackageid));
+                                                            }
+                                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), EtgBookingFSReqest, "Else Part --" + Error, "After Hit Booking Status Finish Request:" + bookingStatus, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Not Confirm", "-", "Withinearth");
+
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        bookingStatus = 2;
+                                                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(UserCartDetailId), EtgBookRequest, "Else Part ---" + Error, "After Hit Booking Request With Error", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Not Confirm", "-", "Withinearth");
+
+                                                        #region BookingData
+
+                                                        List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                                        AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                        agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                        agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                        agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                        agentVoucher.XMLRequest = "Booking finish:" + EtgBookRequest + " Booking finish status: " + EtgBookingFSReqest;
+                                                        agentVoucher.XMLResponse = "Booking finish response:" + Responsebook + "Booking finish status response:" + EtgBookingFSResponse;
+                                                        agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                        agentVoucher.SupplierName = suppliername;
+                                                        agentVouchers.Add(agentVoucher);
+                                                        //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                        bookResponse_1.agentVouchers = agentVouchers;
+                                                        #endregion
+                                                        // dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(UserCartId1), Convert.ToString(UserCartDetailId), AgentVoucherNo, "Booking finish:" + EtgBookRequest + " Booking finish status: " + EtgBookingFSReqest, "Booking finish response:" + Responsebook + "Booking finish status response:" + EtgBookingFSResponse, Supplier, bookingStatus, voucherpackageid));
+                                                    }
+                                                    #region SupplierPR Booking
+                                                    if (bookingStatus == 6)
+                                                    {
+                                                        responsetype = "Success";
+                                                    }
+                                                    else
+                                                    {
+                                                        responsetype = "GeneralError";
+                                                    }
+                                                    try
+                                                    {
+                                                        // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "Book", AgentId, time, responsetype, EtgBookingFSReqest, EtgBookingFSResponse, Error);
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                    }
+                                                    #endregion
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            #region SupplierPerformanceReport Catch
+                                            try
+                                            {
+                                                Error = ex.Message + ex.StackTrace.ToString();
+                                                responsetype = "GeneralError";
+                                                //_ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "Book", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                            }
+                                            #endregion
+                                            _ = _exception.Error(ex);
+                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), EtgBookRequest, ex.ToString(), "Error Bolock", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Not Confirm", "-", "WithinEarth");
                                         }
                                         break;
                                     #endregion
