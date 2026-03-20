@@ -431,7 +431,15 @@ namespace Xconnect.Auth
 
                         _cache.Set(keydataRoE, dtRoeNew, cacheEntryOptions);
                     }
+                    else
+                    {
+                        // Create an exception for the invalid API response
+                        var ex = new Exception(
+                            $"ROE API call failed. StatusCode: {dtRoeNew?.statusCode}, Result is null: {dtRoeNew?.result == null}"
+                        );
 
+                        _ = _exception.Error(ex);
+                    }
 
                 }
                 if (dtRoeNew?.result != null)
@@ -450,7 +458,7 @@ namespace Xconnect.Auth
             }
             catch (Exception ex)
             {
-                await _exception.Error(ex);
+                _=  _exception.Error(ex);
                 return null;
             }
         }

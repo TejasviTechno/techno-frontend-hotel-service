@@ -24,10 +24,11 @@ namespace XConnect.Supplier.ETG.Interface
         Task<PriceCheckCMDto> Get_Ostrovok_Prebook_new(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, DataRow[] OstrovokDetails, double FinalPrice, double CompanyBuyingPrice, TokenData TokenData, string Searchkey, int AgentId, int i = 0,string Supplier="");
 
         string OSTVBookingRequest(DataSet dsCartDetails, DataTable dtPassengers, int i, int j, string Password, string UniqueNo, int NoOfRoom, string RoomTypeId, string HotelCode, string SellingAmount, string type, string Currency);
+        string OSTVBookingRequest_newvesrion(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, int j, string Password, string UniqueNo, int NoOfRoom, string RoomTypeId, string HotelCode, string SellingAmount, string type, string Currency);
         string OSTVBookingFinishStatusRequest(string UniqueNo);
 
         Task<ETGPriceCheck> Get_OSTV_PriceCheck(DataSet dsCartDetails, DataRow[] Ostrovok_Details, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, bool isForBooking, string IsFor, string URl, TokenData TokenData, string xslRequest, string ResponseData, string order_id,string UserPlatform);
-
+        Task<ETGPriceCheck> Get_OSTV_PriceCheck_newversion(BookRequest_newversion bookRequest, DataRow[] Ostrovok_Details, int i, int j, string UniqueNo, bool isForBooking, string IsFor, string URl, TokenData TokenData, string xslRequest, string ResponseData, string order_id, string UserPlatform);
         Task<string> GetRatehawkRoomResponse(string strxmlRQRS, string strHost, string Key, string UniqueNo = "");
         Task<ResponseDto> GetETGRoomResponse(string strxmlRQRS, string strHost, string Key, string UniqueNo = "");
 

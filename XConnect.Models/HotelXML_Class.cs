@@ -1843,6 +1843,7 @@ namespace XConnect.Models
         //new
         public int HotelId { get; set; }
         public string Nationality { get; set; }
+        public string XMLHotelId { get; set; }
         public int NoOfNight { get; set; }   //added by trupti
 
         public List<UserCartDetails> UserCartDetails { get; set; }

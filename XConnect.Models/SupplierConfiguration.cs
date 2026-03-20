@@ -75,6 +75,9 @@ namespace XConnect.Models
         public string ETG_Mail { get; set; }
         public string ETG_Mobile { get; set; }
         public string Prebook { get; set; }
+        public string booking_form { get; set; }
+        public string booking_finish { get; set; }
+        public string booking_finish_status { get; set; }
         public string search_serp_hp { get; set; }//added by trupti 
     }
     public class HotelbedsConfig

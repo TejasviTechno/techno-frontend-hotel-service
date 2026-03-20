@@ -2267,7 +2267,88 @@ namespace XConnect.Supplier.ETG
                 return "";
             }
         }
+        public string OSTVBookingRequest_newvesrion(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, int j, string Password, string UniqueNo, int NoOfRoom, string RoomTypeId, string HotelCode, string SellingAmount, string type, string Currency)
+        {
+            try
+            {
+                int No_Child = 0;
+                int childAge1 = 0;
+                string child1 = "";
+                string child2 = "";
+                string FirstName = "";
+                string LastName = "";
+                string BookingRequest = "";
+                string language = "en";
+                string partner_comment = "";
+                string mail_Id = ETGInfo.ETG_Mail;
+                string mobile = ETGInfo.ETG_Mobile;
+                string comment = "comment string";
+                StringBuilder BookingReq = new StringBuilder();
+                BookingReq.Append("{");
+                BookingReq.Append("\"user\": {");
+                BookingReq.Append("\"email\": \"" + mail_Id + "\",");
+                BookingReq.Append("\"comment\": \"" + comment + "\",");
+                BookingReq.Append("\"phone\": \"" + mobile + "\"");
+                BookingReq.Append("},");
+                BookingReq.Append("\"partner\": {");
+                BookingReq.Append("\"partner_order_id\": \"" + UniqueNo + "\",");
+                BookingReq.Append("\"comment\": \"" + partner_comment + "\",");
+                BookingReq.Append("\"amount_sell_b2b2c\": \"" + SellingAmount + "\"");
+                BookingReq.Append("},");
+                BookingReq.Append("\"language\": \"" + language + "\",");
+                BookingReq.Append("\"rooms\": [");
+                for (int r = 0; r < NoOfRoom; r++)
+                {
+                    BookingReq.Append("{");
+                    BookingReq.Append("\"guests\": [");
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartID=" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartId + " and RoomNo='" + Convert.ToInt32(r + 1) + "'");
 
+                    for (int k = 0; k < dtPassengers.DefaultView.Count; k++)
+                    {
+                        childAge1 = Convert.ToInt32(dtPassengers.DefaultView[k]["ChildAge"]);
+                        FirstName = Convert.ToString(dtPassengers.DefaultView[k]["FirstName"]);
+                        LastName = Convert.ToString(dtPassengers.DefaultView[k]["LastName"]);
+                        if (Convert.ToString(dtPassengers.DefaultView[k]["PaxType"]).Trim().ToLower() == "adult")
+                        {
+                            BookingReq.Append("{");
+                            BookingReq.Append("\"first_name\": \"" + FirstName + "\",");
+                            BookingReq.Append("\"last_name\": \"" + LastName + "\"");
+                        }
+                        if (Convert.ToString(dtPassengers.DefaultView[k]["PaxType"]).Trim().ToLower() != "adult")
+                        {
+                            BookingReq.Append("{");
+                            BookingReq.Append("\"first_name\": \"" + FirstName + "\",");
+                            BookingReq.Append("\"last_name\": \"" + LastName + "\",");
+                            BookingReq.Append("\"is_child\": true,");
+                            BookingReq.Append("\"age\": " + childAge1);
+                            No_Child++;
+                        }
+                        BookingReq.Append("}");
+                        if (dtPassengers.DefaultView.Count - 1 != k)
+                            BookingReq.Append(",");
+                    }
+                    BookingReq.Append("]}");
+                    if (NoOfRoom - 1 != r)
+                        BookingReq.Append(",");
+                }
+                BookingReq.Append("],");
+                BookingReq.Append("\"upsell_data\": [");
+                BookingReq.Append("],");
+                BookingReq.Append("\"payment_type\": {");
+                BookingReq.Append("\"type\": \"" + type + "\",");
+                BookingReq.Append("\"amount\": \"" + SellingAmount + "\",");
+                BookingReq.Append("\"currency_code\": \"" + Currency + "\"");
+                BookingReq.Append("}}");
+                BookingRequest = BookingReq.ToString();
+
+                return BookingRequest;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return "";
+            }
+        }
         public string OSTVBookingFinishStatusRequest(string UniqueNo)
         {
             try
@@ -2419,6 +2500,149 @@ namespace XConnect.Supplier.ETG
             catch (Exception ex)
             {
                 
+                _ = _exception.Error(ex);
+                eTGPriceCheck.ispriceupdate = true;
+                return eTGPriceCheck;
+            }
+
+            eTGPriceCheck.ispriceupdate = false;
+            return eTGPriceCheck;
+        }
+        public async Task<ETGPriceCheck> Get_OSTV_PriceCheck_newversion(BookRequest_newversion bookRequest, DataRow[] Ostrovok_Details, int i, int j, string UniqueNo, bool isForBooking, string IsFor, string URl, TokenData TokenData, string xslRequest, string ResponseData, string order_id, string UserPlatform)
+        {
+            ETGPriceCheck eTGPriceCheck = new ETGPriceCheck();
+            string UserName = Convert.ToString(Ostrovok_Details[0]["UserName"]);
+            string Password = Convert.ToString(Ostrovok_Details[0]["Password"]);
+            string SupplierName = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName).ToLower();
+            // double CompanyBuyingPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]);
+            double CompanyBuyingPrice = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].ServiceBuyingAmount);
+            double FinalPrice = 0;
+            string Error = "";
+            string time = "";
+
+            try
+            {
+                #region Price Check RQ and Declaration
+                #region Data
+
+                #region New BookHas
+                string[] BookingPolicy = Convert.ToString(bookRequest.userCart.UserCartDetails[j].PurchaseToken).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string booking_policy_id = BookingPolicy[0];
+                string Etg_UniqueId = booking_policy_id;
+                #endregion
+
+                double CurrencyFactor = 1;
+                DataSet dsTemp = new DataSet();
+                string[] array = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string roomId = array[0];
+
+                DataTable dtROE = TokenData.dtROE;
+
+                string language = "en";
+                string UserIP = UserPlatform;
+                UserIP = UserIP.Split(new String[] { "$$" }, StringSplitOptions.None)[1];
+                //string UserIP = Common.GetIPAddress();
+                int UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                //string userCartId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartID"]);
+                string UserCartDetailId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                string Order_Booking_Id = UserCartDetailId;
+                string RoomTypeId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
+                // string FinalBookHash = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["EachoToken"]);
+                string FinalBookHash = Convert.ToString(bookRequest.userCart.UserCartDetails[j].EachoToken);
+                #endregion
+                xslRequest = Convert.ToString(OSTVPriceCheckRequest(Order_Booking_Id, FinalBookHash, language, UserIP));
+                eTGPriceCheck.xslRequest = xslRequest;
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), xslRequest, "-", "After Hit Price Check Request", "ratehawk", "Price Check Response Pending", "-", "WithinEarth");
+                #endregion
+
+                if (xslRequest != "")
+                {
+                    if (!isForBooking)
+                    {
+                        // dtCheckPriceReqStructure.Rows.Add(AddCheckPriceReq(dtCheckPriceReqStructure.NewRow(), i + 1, UserCartId, Convert.ToInt32(UserCartDetailId), RoomTypeId, SupplierName, xslRequest));
+                    }
+                    #region Price Check RS
+                    string Key = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserName + ":" + Password));
+                    System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+                    timerroomprocess.Start();
+                    //ResponseData = GetOstrovokRoomResponse(xslRequest, URl, Key, ref Error, UniqueNo);
+                    ResponseData = await GetRatehawkRoomResponse(xslRequest, URl, Key, UniqueNo);
+                    eTGPriceCheck.RatehawkResponse = ResponseData;
+                    timerroomprocess.Stop();
+                    time = timerroomprocess.Elapsed.ToString();
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), xslRequest, ResponseData + Error, "After Hit Price Check Response", "ratehawk", "Price Check Response Confirm", "-", "WithinEarth");
+
+                    if (Error != "")
+                    {
+                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), xslRequest, ResponseData + Error, "After Hit Price Check Response", "ratehawk", "Price Check  Response Not Confirm", "-", "WithinEarth");
+
+                    }
+                    if (ResponseData == string.Empty || ResponseData == "" || ResponseData == null)
+                    {
+                        eTGPriceCheck.ispriceupdate = true;
+                        return eTGPriceCheck;
+                    }
+
+
+                    DataSet EtgResponse = new DataSet();
+                    XmlDocument doc = Newtonsoft.Json.JsonConvert.DeserializeXmlNode("{\"Row\":" + ResponseData + "}", "root");
+                    XmlReader xmlReader = new XmlNodeReader(doc);
+                    EtgResponse.ReadXml(xmlReader);
+                    #endregion
+
+                    #region Price Check Logic
+                    if (ResponseData != null && EtgResponse.Tables[0].Rows[0]["status"].ToString() == "ok")
+                    {
+                        {
+
+                            for (int h = 0; h < EtgResponse.Tables[0].Rows.Count; h++)
+                            {
+                                DataRow[] Payment_types = EtgResponse.Tables["payment_types"].Select("is_need_credit_card_data='" + false + "'");
+                                double sellingAmount = Convert.ToDouble(Payment_types[0]["amount"]);
+                                double commission = 0;
+                                string Currency = Convert.ToString(Payment_types[0]["currency_code"]);
+                                if (Currency.ToLower() != TokenData.SiteCurrency.ToLower())
+                                {
+                                    CurrencyFactor = _commonMethod.GetROEByCurrency(Currency, TokenData.dtROE);
+
+                                }
+                                //end ddr
+                                FinalPrice = (sellingAmount + commission) * CurrencyFactor;
+                                order_id = Convert.ToString(EtgResponse.Tables[1].Rows[0]["order_id"]);
+                                eTGPriceCheck.booking_form_order_id = order_id;
+                            }
+                            if (IsFor == "P")
+                            {
+                                CompanyBuyingPrice = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].ServiceBuyingAmount);
+                            }
+                            else
+                            {
+                                //CompanyBuyingPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["Rate"]);
+                                CompanyBuyingPrice = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].BaseServiceBuyingAmount);
+                            }
+                            FinalPrice = Convert.ToDouble(Math.Round(FinalPrice, 2));
+
+
+                            if (Convert.ToDouble(Math.Round(FinalPrice.TruncateDecimalPlaces(2))) > Math.Round(CompanyBuyingPrice.TruncateDecimalPlaces(2)))
+                            {
+                                eTGPriceCheck.ispriceupdate = true;
+                                return eTGPriceCheck;
+                            }
+
+                        }
+                    }
+                    #endregion
+                }
+                else
+                {
+
+                    eTGPriceCheck.ispriceupdate = true;
+                    return eTGPriceCheck;
+                }
+            }
+            catch (Exception ex)
+            {
+
                 _ = _exception.Error(ex);
                 eTGPriceCheck.ispriceupdate = true;
                 return eTGPriceCheck;
