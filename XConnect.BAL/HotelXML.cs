@@ -5725,7 +5725,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
 
                         // if (Convert.ToInt16(AgentId) == 4)
                         {
-                            _ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara));
+                            _ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
                             //SupplierPerformancereport(AllTask, AgentId);
                         }
                         timerroom3.Stop();
@@ -11408,7 +11408,15 @@ new SqlParameter("@AgentId", AgentId),
                                     case "availabilitywithcancellation":
                                     case "availability":
                                     case "availabilitywithcancellationv2":
-                                        stage = "Search";
+                                        bool isapi = tokendata.IsFromAPI;
+                                        if (isapi)
+                                        {
+                                            stage = "Search";
+                                        }
+                                        else
+                                        {
+                                            stage = "SearchById";
+                                        }
                                         break;
 
                                     case "recheck":

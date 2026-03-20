@@ -6243,7 +6243,7 @@ namespace XConnect.CommonUtilities
                 await _exception.Error(ex);
             }
         }
-        public async Task FireAway_SPL_SQL(ConcurrentBag<HotelX> AllTask, int AgentId, HotelSearchParameter searchpara)
+        public async Task FireAway_SPL_SQL(ConcurrentBag<HotelX> AllTask, int AgentId, HotelSearchParameter searchpara, bool isapi = true)
         {
             try
             {
@@ -6253,13 +6253,22 @@ namespace XConnect.CommonUtilities
                 #region Analytics
                 try
                 {
+                    string stage = "Search";
+                    if (isapi)
+                    {
+                        stage = "Search";
+                    }
+                    else
+                    {
+                        stage = "SearchById";
+                    }
                     _analyticSupplier.PushHotelSearchSupplierDataForAnalyticsAsyc(new AnalyticsData
                     {
                         Result = AllTask,
                         Action = "SupplierReportsearch",
                         Version = "v1",
                         HttpStatusCode = Convert.ToInt32(HttpStatusCode.OK),
-                        Stage = "Search",
+                        Stage = stage,
                         Payload = searchpara,
                         ElapsedTime = 0,
                         Description = "Supplier request",
