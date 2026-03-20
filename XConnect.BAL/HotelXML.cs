@@ -6151,7 +6151,8 @@ new SqlParameter("@AgentId", AgentId),
                     {
 
 
-                        Key = _supplierConfig.Restel.Key; //"http://xml.hotelresb2b.com/xml/listen_xml.jsp?codigousu=NEWL&clausu=xml493331&afiliacio=RS&secacc=124774";
+                        //Key = _supplierConfig.Restel.Key; //"http://xml.hotelresb2b.com/xml/listen_xml.jsp?codigousu=NEWL&clausu=xml493331&afiliacio=RS&secacc=124774";
+                        Key = strHost + "?codigousu=" + _supplierConfig.Restel.codigousu + "&clausu=" + _supplierConfig.Restel.clausu + "&afiliacio=" + _supplierConfig.Restel.afiliacio + "&secacc=" + _supplierConfig.Restel.secacc;
                         strHost = Key;
                         requestUri = strHost;
                     }
