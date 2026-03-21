@@ -137,7 +137,7 @@ namespace XConnect.CommonUtilities.Interface
         string getMappedRoom_rlm(string originalRoomName, DataTable DtHotelInformation, int HotelId, ref string S_RoomNo);
 
         DataRow AddCheckPriceReq(DataRow drTemp, int srno, int usercartid, int usercartdetailid, string roomtype, string suppliername, string req);
-        void ThirdPartyBookingHistory(string UniqueNo, string AgentUniqueNo, string XMLRequest, string XMLResponse, string Stage, string Provider, string StatusBooking, string ReferenceNo, string Website);
+        void ThirdPartyBookingHistory(string UniqueNo, string AgentUniqueNo, string XMLRequest, string XMLResponse, string Stage, string Provider, string StatusBooking, string ReferenceNo, string Website, string Searchkey = "");
         DataTable getCheckPriceReqTableStructure();
 
         

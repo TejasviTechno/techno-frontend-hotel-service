@@ -3455,7 +3455,7 @@ namespace XConnect.CommonUtilities
         }
 
 
-        public void ThirdPartyBookingHistory(string UniqueNo, string AgentUniqueNo, string XMLRequest, string XMLResponse, string Stage, string Provider, string StatusBooking, string ReferenceNo, string Website)
+        public void ThirdPartyBookingHistory(string UniqueNo, string AgentUniqueNo, string XMLRequest, string XMLResponse, string Stage, string Provider, string StatusBooking, string ReferenceNo, string Website,string Searchkey = "")
         {
             Website = "API Out";
             SqlConnection conn1 = new SqlConnection(_connectionStrings.connectionStr_Logserver2_TP);//@Newadded on 12-mar-2024
@@ -3463,15 +3463,15 @@ namespace XConnect.CommonUtilities
             {
 
                 #region Get SEARCH_KEY
-                string Searchkey = "";
-                try
-                {
-                    Searchkey = SEARCH_KEY;
-                }
-                catch (Exception x)
-                {
-                    _exception.Error(x);
-                }
+                //string Searchkey = "";
+                //try
+                //{
+                //    Searchkey = SEARCH_KEY;
+                //}
+                //catch (Exception x)
+                //{
+                //    _exception.Error(x);
+                //}
                 #endregion
 
                 Task.Run(() => SaveThirdPartyBookingHistoryLog(UniqueNo, AgentUniqueNo, XMLRequest, XMLResponse, Stage, Provider, StatusBooking, ReferenceNo, Website, Searchkey));//Added on 10-MAR-2025 #NoDependancy on VM 10.32.8.16
