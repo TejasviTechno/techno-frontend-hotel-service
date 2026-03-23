@@ -15998,6 +15998,8 @@ new SqlParameter("@AgentId", AgentId),
                 userCart_Prebook.NoofNights = Convert.ToInt32((objdata.CheckOutDate.Date - objdata.CheckInDate.Date).Days);
                 userCart_Prebook.NoofRoom = Convert.ToInt32(para.Rooms.Count);
                 userCart_Prebook.Nationality = Convert.ToString(objdata.Nationality);
+                userCart_Prebook.IsCombineRoom = Convert.ToBoolean(objdata.IsCombineRoom);//230326
+
 
                 List<UserCartDetails_Prebook> userCartDetails_Prebook = new List<UserCartDetails_Prebook>();
                 double value = 0;
