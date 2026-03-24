@@ -3594,7 +3594,7 @@ namespace XConnect.API.Controllers
                 //{
                 StaticDataCity payload = Newtonsoft.Json.JsonConvert.DeserializeObject<StaticDataCity>(data.Request.ToString());
 
-                List<StaticData> lstFiltOption = await _hotelXML.GetStaticDataByCity(Convert.ToInt32(payload.CityId), Convert.ToInt32(payload.LocationId), payload.Type);
+                List<StaticData> lstFiltOption = await _hotelXML.GetStaticDataByCity(Convert.ToInt32(payload.CityId), Convert.ToString(payload.LocationId), payload.Type);
                 if (lstFiltOption != null)
                 {
                     timer.Stop();

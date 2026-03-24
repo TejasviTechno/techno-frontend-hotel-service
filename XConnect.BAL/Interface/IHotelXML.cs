@@ -57,7 +57,7 @@ namespace XConnect.BAL.Interface
         //Task RecycleAppPool(string appPoolName);
 
         #region MobileTeamNerVersion
-        Task<List<StaticData>> GetStaticDataByCity(int CityId, int LoactionID, string Type);
+        Task<List<StaticData>> GetStaticDataByCity(int CityId, string LoactionID, string Type);
         Task<DataTable> GetCitiesWithHotel(string CityName);
         Task<DataSet> GetHotelStaticDataOptimize(HotelSync para);
         Task<DataSet> gethotelstaticdatalistsuboptimize_v1_Address(HotelSync para);

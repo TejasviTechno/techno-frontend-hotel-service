@@ -56936,7 +56936,7 @@ new SqlParameter("@AgentId", AgentId),
                 return null;
             }
         }
-        public async Task<List<StaticData>> GetStaticDataByCity(int CityId, int LocationId, string Type = "")
+        public async Task<List<StaticData>> GetStaticDataByCity(int CityId, string LocationId, string Type = "")
         {
             try
             {
