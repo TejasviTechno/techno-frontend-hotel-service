@@ -1590,6 +1590,8 @@ namespace XConnect.Supplier.Restel
                 string RoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]);
                 string MealId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["MealPlanCode"]);
                 string UserID = Convert.ToString(RestelDetails[0]["UserID"]);
+                string TravcoURL = Convert.ToString(RestelDetails[0]["WebSiteURL"]);
+
                 string RestelCurrency = Convert.ToString(RestelDetails[0]["CurrencyShortName"]);
                 FinalPrice = CompanyBuyingPrice;
                 //-New added code
@@ -1706,7 +1708,7 @@ namespace XConnect.Supplier.Restel
                 timerroomprocess.Start();
 
                 //ResponseData = GetRestelResponse(ref Error, "xml=" + resreq.ToString(), "", 120000, "Restel", null, false, Searchkey);
-                ResponseDto responseDto = await GetRestelResponse("xml=" + resreq.ToString(), "", 120000, SupplierName, null, false, Searchkey);
+                ResponseDto responseDto = await GetRestelResponse("xml=" + resreq.ToString(), TravcoURL, 120000, SupplierName, null, false, Searchkey);
                 ResponseData = responseDto.Response;
                 Error = responseDto.Error;
 
