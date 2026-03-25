@@ -3690,7 +3690,167 @@ namespace XConnect.Supplier.IWTX
                 return "";
             }
         }
+        public string BookingRequest_IWTX_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] IWTXDetails, string UniqueNo, int i, int jj, string ReferenceNo)
+        {
+            try
+            {
+                #region Booking RQ
 
+                string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckInDate);
+                CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckOutDate);
+                CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+
+                //string PropertyId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[jj]["ContractID"]);
+                string Meal = Convert.ToString(bookRequest.userCart.UserCartDetails[0].MealPlan);
+                string Roomidsplit = Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId);
+                string[] Roomids = Roomidsplit.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string RoomTypeCode = Roomids[0].ToString();
+                string MealPlanCodes = Roomids[1].ToString();
+                string RoomId = Roomids[2].ToString();
+                string RoomType = Roomids[3].ToString();
+                string HotelCode = Roomids[4].ToString();
+                string ContractTokenId = Roomids[5].ToString();
+                string XmlCity = Roomids[6].ToString();
+                string IWTX_Currency = Roomids[7].ToString();
+                string Price1 = Roomids[8].ToString();
+                string Uniqueid = Roomids[9].ToString();
+                string RoomConfigurationId = Roomids[10].ToString();
+                //string RoomConfiNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[n]["RoomNumber"]);
+               // string XmlNationality = "";//Convert.ToString(bookRequest.userCart.UserCartDetails[0].XmlNationality);
+                string XmlNationality = Roomids[Roomids.Length - 1];  // IN
+                string usercartid = Convert.ToString(bookRequest.userCart.UserCartDetails[0].UserCartId);
+                int UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].UserCartDetailId);
+
+                //string AgentReference = Convert.ToString(ReferenceNo + ":" + (i + 1)); //"Book_" + Convert.ToString(Common.getSession("AgentCode") + "_" + ReferenceNo) + "_" + UniqueNo;
+
+                Random rnd = new Random();
+                int randomNumber = rnd.Next(1, 100);
+                string AgentReference = Convert.ToString(UserCartDetailId + ":" + randomNumber);
+
+                double Price = Convert.ToDouble(Price1);
+
+
+
+                string UserName = Convert.ToString(IWTXDetails[0]["UserName"]);
+                string Password = Convert.ToString(IWTXDetails[0]["Password"]);
+
+
+                string Prefix = "", Name = "", SurName = "";
+                bool PrimaryIndicator = false;
+
+                string AgentVoucherNo = Convert.ToString(UserCartDetailId);
+
+                #endregion
+
+                #region"RQ"
+
+                string Request = "";
+                StringBuilder BookRQ = new StringBuilder();
+                BookRQ.Append("<HotelBookingRequest>");
+
+                BookRQ.Append("<Profile>");
+                BookRQ.Append("<Password>" + Password + "</Password>");
+                BookRQ.Append("<Code>" + UserName + "</Code>");
+                //BookRQ.Append("<Password>D3V_1234</Password>");
+                //BookRQ.Append("<Code>DEV_IWTX</Code>");
+                BookRQ.Append("<TokenNumber>" + Uniqueid + "</TokenNumber>");
+                BookRQ.Append("</Profile>");
+
+                BookRQ.Append("<PassengerDetails>");
+
+                int noofpacks = 0;
+
+                for (int k = 0; k < bookRequest.userCart.UserCartDetails.Count; k++)
+                //for (int k = 0; k < 1; k++)
+                {
+                    //Now filter passanger table
+
+                    if (dtPassengers.Rows.Count > 0)
+                    {
+                        dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId) + "' and RoomNo='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomNo) + "'";
+                        dtPassengers.DefaultView.Sort = "IsLead desc";
+                        if (dtPassengers.DefaultView.Count > 0)
+                        {
+                            for (int n = 0; n < dtPassengers.DefaultView.Count; n++)
+                            {
+                                noofpacks++;
+                                BookRQ.Append("<Passenger>");
+                                BookRQ.Append("<PaxNumber>" + noofpacks.ToString() + "</PaxNumber>");
+                                //BookRQ.Append("<RoomNo>" + RoomConfigurationId + "</RoomNo>");
+                                BookRQ.Append("<RoomNo>" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomNo) + "</RoomNo>");
+                                //BookRQ.Append("<RoomNo>1</RoomNo>");
+                                BookRQ.Append("<Title>" + Convert.ToString(dtPassengers.DefaultView[n]["Prefix"]).Replace(".", "") + "</Title>");
+                                BookRQ.Append("<PassengerType>" + (Convert.ToString(dtPassengers.DefaultView[n]["PaxType"]).ToLower() == "adult" ? "ADT" : "CHD") + "</PassengerType>");
+                                if (Convert.ToString(dtPassengers.DefaultView[n]["PaxType"]).ToLower() == "adult")
+                                    BookRQ.Append("<Age>30</Age>");
+                                //BookRQ.Append("<DateOfBirth>19890121</DateOfBirth>");//Optional
+                                if (Convert.ToString(dtPassengers.DefaultView[n]["PaxType"]).ToLower() == "child")
+                                    BookRQ.Append("<Age>" + Convert.ToString(dtPassengers.DefaultView[n]["ChildAge"]) + "</Age>");//Optional for Adult                            
+                                BookRQ.Append("<FirstName>" + Convert.ToString(dtPassengers.DefaultView[n]["FirstName"]).Trim() + "</FirstName>");
+                                BookRQ.Append("<LastName>" + Convert.ToString(dtPassengers.DefaultView[n]["LastName"]).Trim() + "</LastName>");
+                                BookRQ.Append("<Nationality>" + XmlNationality + "</Nationality>");//240326
+                                BookRQ.Append("<Gender>" + (Convert.ToString(dtPassengers.DefaultView[n]["Prefix"]).ToLower() == "mrs." || Convert.ToString(dtPassengers.DefaultView[n]["Prefix"]).ToLower() == "mr." ? "M" : "F") + "</Gender>");
+                                BookRQ.Append("</Passenger>");
+                            }
+                        }
+                    }
+                }
+                BookRQ.Append("</PassengerDetails>");
+
+                //Hotel Details
+
+                BookRQ.Append("<HotelDetails>");
+                BookRQ.Append("<StartDate>" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckInDate) + "</StartDate>");
+                BookRQ.Append("<EndDate>" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckOutDate) + "</EndDate>");
+                BookRQ.Append("<HotelCode>" + Convert.ToString(HotelCode) + "</HotelCode>");//240326
+                BookRQ.Append("<CityCode>" + XmlCity + "</CityCode>");
+                BookRQ.Append("<AgencyRef>" + AgentReference + "</AgencyRef>");
+                //Room Details
+                BookRQ.Append("<RoomDetails>");
+
+                for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
+                //for (int j = 0; j < 1; j++)
+                {
+                    Roomidsplit = Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId);
+                    Roomids = Roomidsplit.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                    RoomTypeCode = Roomids[0].ToString();
+                    MealPlanCodes = Roomids[1].ToString();
+                    //RoomId = Roomids[2].ToString();
+                    //RoomType = Roomids[3].ToString();
+                    //HotelCode = Roomids[4].ToString();
+                    ContractTokenId = Roomids[5].ToString();
+                    //XmlCity = Roomids[6].ToString();
+                    //IWTX_Currency = Roomids[7].ToString();
+                    Price1 = Roomids[8].ToString();
+                    //Uniqueid = Roomids[9].ToString();
+                    RoomConfigurationId = Roomids[10].ToString();
+                    Price = Convert.ToDouble(Price1);
+
+                    BookRQ.Append("<Room>");
+                    BookRQ.Append("<RoomConfigurationId>" + RoomConfigurationId + "</RoomConfigurationId>");//Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomNumber"])
+                    BookRQ.Append("<RoomTypeCode>" + RoomTypeCode + "</RoomTypeCode>");
+                    BookRQ.Append("<ContractTokenId>" + ContractTokenId + "</ContractTokenId>");
+                    BookRQ.Append("<MealPlanCode>" + MealPlanCodes + "</MealPlanCode>");
+                    BookRQ.Append("<Rate>" + Price + "</Rate>");
+                    BookRQ.Append("</Room>");
+
+
+                }
+                BookRQ.Append("</RoomDetails>");
+
+                BookRQ.Append("</HotelDetails>");
+                BookRQ.Append("</HotelBookingRequest>");
+                string BookingRQ = BookRQ.ToString();
+                return BookingRQ;
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return "";
+            }
+        }
         public string CancelationRequest_IWTX(DataRow[] IWTXDetails, string AgentVoucherNo, string Uniqueid)
         {
             try
