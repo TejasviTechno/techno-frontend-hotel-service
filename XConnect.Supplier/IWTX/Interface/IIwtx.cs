@@ -31,6 +31,7 @@ namespace XConnect.Supplier.IWTX.Interface
         Task<PriceCheckCMDto> PriceUpdate_IWTX(string RoomTypeCode, string MealPlanCode, string RoomType, string ContractTokenId, string XmlCity, string Uniqueid, int NoOfAdults, int NoofChild, int Child1Age, int Child2Age, int RoomConfigurationId, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] IWTXDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string iwtxprice, int AgentId, string Searchkey,TokenData tokenData,string Supplier);
 
         string BookingRequest_IWTX(DataSet dsCartDetails, DataTable dtPassengers, DataRow[] IWTXDetails, string UniqueNo, int i, int jj, string ReferenceNo);
+        string BookingRequest_IWTX_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] IWTXDetails, string UniqueNo, int i, int jj, string ReferenceNo);
 
         Task<ResponseDto> IWTXResponse(string URL, string request, string Provider, string SearchKey);
 

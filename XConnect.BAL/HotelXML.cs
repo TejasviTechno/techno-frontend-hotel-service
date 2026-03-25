@@ -15827,7 +15827,7 @@ new SqlParameter("@AgentId", AgentId),
                         drUserCartDetails["CheckOutDate"] = objdata.CheckOutDate.ToString("yyyyMMdd");
                         drUserCartDetails["EachoToken"] = objdata.ShoppingCartDetails[room].EachoToken;
                         drUserCartDetails["IsCombineRoom"] = objdata.IsCombineRoom;
-                        drUserCartDetails["XmlNationality"] = "";
+                        drUserCartDetails["XmlNationality"] = "";//24
                         drUserCartDetails["purchaseToken"] = objdata.ShoppingCartDetails[room].PurchaseToken;
                         drUserCartDetails["IsVouchered"] = Convert.ToInt32(objdata.IsVouchered);
                         drUserCartDetails["MappedMeal"] = Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
@@ -50483,11 +50483,12 @@ new SqlParameter("@AgentId", AgentId),
                                             string RatePlanCode = Roomids[4].ToString();
                                             string HotelCodeNew = Roomids[5].ToString();
                                             string Uniqueid = Roomids[9].ToString();
+                                            string xmlnationality = Roomids[Roomids.Length - 1];  // IN
 
                                                 //string IWTXRetrieveBookingRQ = "";
                                                 //string IWTXRetrieveBookingRS = "";
 
-                                                string IWTXBookRequest = "";//_iwtx.BookingRequest_IWTX(dsCartDetails, dtPassengers, SupplierDetailsCommon, UniqueNo, i, j, ReferenceNo);
+                                                string IWTXBookRequest = _iwtx.BookingRequest_IWTX_newversion(bookRequest, dtPassengers, XPDetails, UniqueNo, 0, 0, ReferenceNo);
 
                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(UserCartDetailId), IWTXBookRequest, "-", "Before Block hit Request  booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", "-", "WithInEarth");
                                             string Responsebook = "";
