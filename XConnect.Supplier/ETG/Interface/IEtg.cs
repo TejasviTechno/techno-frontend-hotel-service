@@ -18,6 +18,7 @@ namespace XConnect.Supplier.ETG.Interface
 
         //recheck 11-07-25
         Task<string> RateHawk_EssentialInfo(HotelSearchParameter SearchPara, string Supplier, string xmlhotelcode, string UserName, string PassWord, string Currency, string UserID, string RoomTypeId,string URL,string SearchKey);
+        Task<RecheckETG> RateHawk_EssentialInfoNew(HotelSearchParameter SearchPara, string Supplier, string xmlhotelcode, string UserName, string PassWord, string Currency, string UserID, string RoomTypeId,string URL,string SearchKey);
 
         //prebook 23-07-25
         Task<PriceCheckCMDto> Get_Ostrovok_Prebook(DataSet dsCartDetails, DataRow[] OstrovokDetails, double FinalPrice, double CompanyBuyingPrice, TokenData TokenData, string Searchkey, int AgentId, int i = 0,string Supplier="");

@@ -3696,10 +3696,19 @@ namespace XConnect.Supplier.IWTX
             {
                 #region Booking RQ
 
+               
                 string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckInDate);
-                CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                //CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
                 string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckOutDate);
-                CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                //CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+
+                // Parse the strings to DateTime
+                DateTime checkInDate = DateTime.Parse(CheckIn);
+                DateTime checkOutDate = DateTime.Parse(CheckOut);
+
+                // Convert to "yyyy-MM-dd" format
+                string checkin = checkInDate.ToString("yyyyMMdd");
+                string checkout = checkOutDate.ToString("yyyyMMdd");
 
                 //string PropertyId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[jj]["ContractID"]);
                 string Meal = Convert.ToString(bookRequest.userCart.UserCartDetails[0].MealPlan);
@@ -3801,8 +3810,8 @@ namespace XConnect.Supplier.IWTX
                 //Hotel Details
 
                 BookRQ.Append("<HotelDetails>");
-                BookRQ.Append("<StartDate>" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckInDate) + "</StartDate>");
-                BookRQ.Append("<EndDate>" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckOutDate) + "</EndDate>");
+                BookRQ.Append("<StartDate>" + Convert.ToString(checkin) + "</StartDate>");
+                BookRQ.Append("<EndDate>" + Convert.ToString(checkout) + "</EndDate>");
                 BookRQ.Append("<HotelCode>" + Convert.ToString(HotelCode) + "</HotelCode>");//240326
                 BookRQ.Append("<CityCode>" + XmlCity + "</CityCode>");
                 BookRQ.Append("<AgencyRef>" + AgentReference + "</AgencyRef>");
