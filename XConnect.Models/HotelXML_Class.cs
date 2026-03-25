@@ -13,6 +13,11 @@ namespace XConnect.Models
     {
     }
 
+    public class RecheckETG
+    {
+        public string EsentialInfo { get; set; } = "";
+        public string Book_Hash { get; set; } = "";
+    }
     public class RequestTrackingLog
     {
         public string SearchData { get; set; }

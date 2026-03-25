@@ -11904,7 +11904,7 @@ new SqlParameter("@AgentId", AgentId),
                     && TechName.ToLower() != "infinitehotelsfrance"//added on 16-07-25 //only when call availabilitywithcancellation call 
                     && TechName.ToLower() != "hotelstrack"//added on 17-11-25 //only when call availabilitywithcancellation call 
                     && TechName.ToLower() != "rezlive"
-                    && TechName.ToLower() != "etg"//added by trupti
+                   
                     )//added on 01-12-25 //only when call availabilitywithcancellation call 
                 //if (selectedRoom.CancellationPolicy.Count > 0 && roomex.SupplierName.ToLower() != "iwtx" && !(roomex.SupplierName.ToLower().Contains("_xtg")))//added on 01-APR-2025
                 //if (selectedRoom.CancellationPolicy.Count > 0 && roomex.SupplierName.ToLower() == "iwtx" ? false : true && IsJuniper ? false : true)//for Ticket#34626
@@ -11920,7 +11920,7 @@ new SqlParameter("@AgentId", AgentId),
                             || TechName.ToLower() == "webhotelier" || TechName.ToLower() == "teamamerica" || TechName.ToLower() == "xtg" || TechName.ToLower() == "dida"
                             //|| roomex.SupplierName.ToLower() == "robios"
                             || TechName.ToLower() == "juniper"
-                            //|| TechName.ToLower() == "etg" comment by trupti
+                            || TechName.ToLower() == "etg" 
                             || TechName.ToLower() == "pkfare" || TechName.ToLower() == "fitruums" || TechName.ToLower() == "hotelspro"
                             || TechName.ToLower() == "infinitehotelsfrance")
 
@@ -12184,7 +12184,19 @@ new SqlParameter("@AgentId", AgentId),
                                 }
                                 if (TechName.ToLower() == "etg")
                                 {
-                                    essential = await _etg.RateHawk_EssentialInfo(SearchPara, Provider, ItemCode, Username, password, roomex.SupplierCurrency, UserID, roomex.RoomTypeId, URL, SearchKey);
+                                    X_PolicyDetails policyex = new X_PolicyDetails();
+                                    policyex = selectedRoom.CancellationToken.DecryptPolicyTokenNew();
+                                    string purToken = "";
+                                    RecheckETG  recheckETG = await _etg.RateHawk_EssentialInfoNew(SearchPara, Provider, ItemCode, Username, password, roomex.SupplierCurrency, UserID, roomex.RoomTypeId, URL, SearchKey);
+                                    essential = recheckETG.EsentialInfo;
+                                    purToken = recheckETG.Book_Hash;
+
+
+                                    policyex.PurchaseToken = policyex.PurchaseToken + "&&&&"+ purToken;
+                                    string EPolicyToken = policyex.EncryptPolicyToken();
+                                    availResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].CancellationToken = EPolicyToken;
+
+
                                 }
                                 if (TechName.ToLower() == "juniper")
                                 {

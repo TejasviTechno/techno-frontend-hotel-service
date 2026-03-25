@@ -21,10 +21,12 @@ using XConnect.Models;
 using XConnect.Models.Hotel;
 using XConnect.Supplier.ETG.Interface;
 using XConnect.Supplier.HotelDo;
+using XConnect.Supplier.XTG;
 using static Azure.Core.HttpHeader;
 using static XConnect.Models.ErrorLog;
 using static XConnect.Supplier.Booking.Com.preebookrs;
 using static XConnect.Supplier.ETG.ETGSearchResponse;
+using static XConnect.Supplier.Webhoteliter.WebHotellier.WebHotelierRoomResponse;
 using static XConnect.Supplier.Yalago.Yalago;
 using Options = XConnect.Models.Options;
 
@@ -1513,6 +1515,352 @@ namespace XConnect.Supplier.ETG
                 return "";
             }
             return EssentialInfo;
+        }
+
+        public async Task<RecheckETG> RateHawk_EssentialInfoNew(HotelSearchParameter SearchPara, string Supplier, string xmlhotelcode, string UserName, string PassWord, string Currency, string UserID, string RoomTypeId, string RatehawkURL, string SearchKey)
+        {
+            RecheckETG recheckETG = new RecheckETG();
+            string EssentialInfo = "";
+            try
+            {
+                string reqId = Convert.ToString(DateTime.Now.Ticks);
+                string error = "";
+                string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string Nationality = spitid[4].ToString();
+                string roomTimeMatchHas = spitid[5];
+                string key = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserName + ":" + PassWord));
+                //string strHost = WebConfigurationManager.AppSettings["RatehawkURL"] + "/search/hp/";
+                //string strHost = WebConfigurationManager.AppSettings["RatehawkURL"] + "/search/serp/hotels/";
+                //string strHost = RatehawkURL + ETGInfo.search_serp_hotels;
+                string strHost = RatehawkURL + _supplierConfig.ETG.search_serp_hotels;
+                //string strHost = WebConfigurationManager.AppSettings["RatehawkURL"] + "/search/serp/region/";
+                string UniqueNo = "";
+                bool IsRooom = false;
+                int IsHit = 0;
+                string Request = "";// GetETG_Multiple_RoomOnly(SearchPara, Nationality, UserName, PassWord, UserID, xmlhotelcode, IsHit, Convert.ToString(SearchPara.CityID), Currency, IsRooom);
+                string DataaResponse = "";
+                ResponseDto responseDto = await GetEtgHotelDataResponse(RatehawkURL + "/hotel/info/?data={%22id%22:%22" + xmlhotelcode + "%22,%22language%22:%22en%22}", key);
+                string DataResponse = responseDto.Response;
+                error = responseDto.Error;
+
+
+                string Essential = "";
+                string info1 = "";
+
+                //ExManager.Exception.LogException("GetEtgHotelDataResponse" + DataResponse);
+                string TaxEssential = "";
+                _ = _commonMethod.XMLRequestResponseTrack(RatehawkURL, DataResponse, Supplier, "Proper", reqId, SearchPara.SearchKey);
+                if (DataResponse != string.Empty)
+                {
+                    //ExManager.Exception.LogException("GetEtgHotelDataResponse 123" + DataResponse);
+
+                    DataSet EtgResponse1 = new DataSet();
+                    XmlDocument doc1 = Newtonsoft.Json.JsonConvert.DeserializeXmlNode("{\"Row\":" + DataResponse + "}", "root");
+                    String Data2 = doc1.InnerXml.Substring(doc1.InnerXml.IndexOf("<metapolicy_struct"), doc1.InnerXml.IndexOf("</metapolicy_struct>") - doc1.InnerXml.IndexOf("<metapolicy_struct")) + "</metapolicy_struct>";
+                    Data2 = "<Root>" + Data2 + "</Root>";
+                    XmlReader xmlReader1 = new XmlNodeReader(doc1);
+                    EtgResponse1.ReadXml(xmlReader1);
+
+                    DataSet HotelBedsResponse = new DataSet();
+                    byte[] buffer = Encoding.UTF8.GetBytes(Data2);
+                    using (MemoryStream stream = new MemoryStream(buffer))
+                    {
+                        XmlReader reader = XmlReader.Create(stream);
+                        HotelBedsResponse.ReadXml(reader);
+                    }
+                    {
+                        if (EtgResponse1.Tables.Contains("policy_struct"))
+                        {
+                            for (int x = 0; x < EtgResponse1.Tables["policy_struct"].Rows.Count; x++)
+                            {
+                                string Title = ""; string TitleId = "";
+                                if (EtgResponse1.Tables["policy_struct"].Columns.Contains("title"))
+                                {
+                                    Title = Convert.ToString(EtgResponse1.Tables["policy_struct"].Rows[x]["title"]);
+                                }
+
+                                if (EtgResponse1.Tables["policy_struct"].Columns.Contains("policy_struct_Id"))
+                                {
+                                    TitleId = Convert.ToString(EtgResponse1.Tables["policy_struct"].Rows[x]["policy_struct_Id"]);
+                                    if (EtgResponse1.Tables.Contains("paragraphs"))
+                                    {
+                                        DataRow[] drparagraphs = EtgResponse1.Tables["paragraphs"].Select("policy_struct_Id='" + TitleId + "'");
+                                        if (drparagraphs.Length > 0)
+                                        {
+                                            if (x == 0)
+                                            {
+                                                Essential = "<b>IMPORTANT INFORMATION FOR CUSTOMER</b>";
+                                            }
+                                            Essential = Essential + "<br><br><b>" + Title + "</b><br><br>";
+                                            for (int y = 0; y < drparagraphs.Length; y++)
+                                            {
+                                                string Info = Convert.ToString(drparagraphs[y]["paragraphs_Text"]);
+                                                if (Info.Length < 5)
+                                                    continue;
+                                                if (Info != string.Empty)
+                                                {
+                                                    Essential = Essential + "* " + Info + "<br>";
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (EtgResponse1.Tables["policy_struct"].Columns.Contains("paragraphs"))
+                                {
+
+                                    if (x == 0)
+                                    {
+                                        Essential = "<b>IMPORTANT INFORMATION FOR CUSTOMER</b>";
+                                    }
+                                    Essential = Essential + "<br><br><b>" + Title + "</b><br><br>";
+                                    if (EtgResponse1.Tables["policy_struct"].Columns.Contains("paragraphs"))
+                                    {
+                                        string Info = Convert.ToString(EtgResponse1.Tables["policy_struct"].Rows[x]["paragraphs"]);
+
+                                        if (Info != string.Empty)
+                                        {
+                                            Essential = Essential + "* " + Info + "<br>";
+                                        }
+                                    }
+                                }
+
+                                //Essential = Essential + "<br><br>";
+                            }
+                        }
+                    }
+                    if (HotelBedsResponse.Tables.Count > 0)
+                    {
+                        //Essential = "";
+                        string metapolicyID = "";
+                        if (HotelBedsResponse.Tables[0].Columns.Contains("metapolicy_struct_Id") == true)
+                        {
+                            for (int mpii = 0; mpii < HotelBedsResponse.Tables[0].Rows.Count; mpii++)
+                            {
+                                metapolicyID = Convert.ToString(HotelBedsResponse.Tables[0].Rows[mpii]["metapolicy_struct_Id"]);
+                                if (metapolicyID != "")
+                                {
+                                    for (int mp = 1; mp < HotelBedsResponse.Tables.Count; mp++)
+                                    {
+
+                                        if (HotelBedsResponse.Tables[mp].Columns.Contains("metapolicy_struct_Id"))
+                                        {
+                                            DataRow[] drTabl1 = HotelBedsResponse.Tables[mp].Select("metapolicy_struct_Id='" + metapolicyID + "'");
+                                            if (drTabl1.Length > 0)
+                                            {
+                                                string MetaName = "";// string metacurrency = ""; double MetaPrice = 0.00; string metafeetype = ""; string metapriceperunit = ""; string agestart = "";
+                                                MetaName = Convert.ToString(HotelBedsResponse.Tables[mp].TableName);
+
+                                                for (int lll = 0; lll < drTabl1.Length; lll++)
+                                                {
+                                                    string info = "";
+                                                    info = "<br/><B>" + "Metapolicy" + "</B>";
+                                                    info = info + "<br/>**" + MetaName;
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("fee_type") == true)
+                                                    {
+                                                        string metafeetype = "";
+                                                        metafeetype = Convert.ToString(drTabl1[lll]["fee_type"]);
+                                                        info = info + "<br/>* fee_type : " + metafeetype;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("pets_type") == true)
+                                                    {
+                                                        string pets_type = "";
+                                                        pets_type = Convert.ToString(drTabl1[lll]["pets_type"]);
+                                                        info = info + "<br/>* pets_type : " + pets_type;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("visa_support") == true)
+                                                    {
+                                                        string visa_support = "";
+                                                        visa_support = Convert.ToString(drTabl1[lll]["visa_support"]);
+                                                        info = info + "<br/>* pets_type : " + visa_support;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("availability") == true)
+                                                    {
+                                                        string availability = "";
+                                                        availability = Convert.ToString(drTabl1[lll]["availability"]);
+                                                        info = info + "<br/>* availability : " + availability;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("day_period") == true)
+                                                    {
+                                                        string day_period = "";
+                                                        day_period = Convert.ToString(drTabl1[lll]["day_period"]);
+                                                        info = info + "<br/>* day_period : " + day_period;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("time") == true)
+                                                    {
+                                                        string time = "";
+                                                        time = Convert.ToString(drTabl1[lll]["time"]);
+                                                        info = info + "<br/>* time : " + time;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("amount") == true)
+                                                    {
+                                                        string amount = "";
+                                                        amount = Convert.ToString(drTabl1[lll]["amount"]);
+                                                        info = info + "<br/>* amount : " + amount;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("internet_type") == true)
+                                                    {
+                                                        string internet_type = "";
+                                                        internet_type = Convert.ToString(drTabl1[lll]["internet_type"]);
+                                                        info = info + "<br/>* internet_type : " + internet_type;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("work_area") == true)
+                                                    {
+                                                        string work_area = "";
+                                                        work_area = Convert.ToString(drTabl1[lll]["work_area"]);
+                                                        info = info + "<br/>* work_area : " + work_area;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("age_start") == true)
+                                                    {
+                                                        string agestart = "";
+                                                        agestart = Convert.ToString(drTabl1[lll]["age_start"]);
+                                                        info = info + "<br/>* age_start : " + agestart;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("deposit_type") == true)
+                                                    {
+                                                        string deposit_type = "";
+                                                        deposit_type = Convert.ToString(drTabl1[lll]["deposit_type"]);
+                                                        info = info + "<br/>* deposit_type : " + deposit_type;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("age_end") == true)
+                                                    {
+                                                        string ageend = "";
+                                                        ageend = Convert.ToString(drTabl1[lll]["age_end"]);
+                                                        info = info + "<br/>* age_end : " + ageend;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("inclusion") == true)
+                                                    {
+                                                        string inclusion = "";
+                                                        inclusion = Convert.ToString(drTabl1[lll]["inclusion"]);
+                                                        info = info + "<br/>* inclusion : " + inclusion;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("meal_type") == true)
+                                                    {
+                                                        string meal_type = "";
+                                                        meal_type = Convert.ToString(drTabl1[lll]["meal_type"]);
+                                                        info = info + "<br/>* meal_type : " + meal_type;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("extra_bed") == true)
+                                                    {
+                                                        string extra_bed = "";
+                                                        extra_bed = Convert.ToString(drTabl1[lll]["extra_bed"]);
+                                                        info = info + "<br/>* extra_bed : " + extra_bed;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("price_unit") == true)
+                                                    {
+                                                        string metapriceperunit = "";
+                                                        metapriceperunit = Convert.ToString(drTabl1[lll]["price_unit"]);
+                                                        info = info + "<br/>* price_unit:  " + metapriceperunit;
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("payment_type") == true)
+                                                    {
+                                                        string payment_type = "";
+                                                        payment_type = Convert.ToString(drTabl1[lll]["payment_type"]);
+                                                        info = info + "<br/>* payment_type:  " + payment_type;
+                                                    }
+
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("pricing_method") == true)
+                                                    {
+                                                        string pricing_method = "";
+                                                        pricing_method = Convert.ToString(drTabl1[lll]["pricing_method"]);
+                                                        info = info + "<br/>* pricing_method:  " + pricing_method;
+                                                    }
+
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("price") == true)
+                                                    {
+                                                        Double MetaPrice = 0.00;
+                                                        MetaPrice = Convert.ToDouble(drTabl1[lll]["price"]);
+                                                        info = info + "<br/>* price: " + MetaPrice + "(Customer needs to Pay at Property when Check-In) <br/> ";
+                                                    }
+                                                    if (HotelBedsResponse.Tables[MetaName].Columns.Contains("currency") == true)
+                                                    {
+                                                        string metacurrency = "";
+                                                        metacurrency = Convert.ToString(drTabl1[lll]["currency"]);
+                                                        info = info + " " + metacurrency;
+                                                    }
+                                                    Essential = Essential + " " + info;
+                                                    //System.IO.File.WriteAllText(@"D:\ftp\Blueglobz\ess.txt", Convert.ToString(Essential));
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+
+
+
+                        }
+
+
+                    }
+
+                }
+                EssentialInfo = Essential + TaxEssential + Convert.ToString(info1);
+                recheckETG.EsentialInfo = EssentialInfo;
+
+                #region For BookHasH
+
+                string RoomRequest = ETGHotelRequest(SearchPara, Nationality, xmlhotelcode, "", Currency);
+                string ETGURL = RatehawkURL + _supplierConfig.ETG.search_serp_hp;
+                string Error = "";
+                string RoomResponseData = ResponseETGSupplier(ref Error, RoomRequest, ETGURL, UserName, PassWord, "ratehawk");
+
+
+                if (RoomResponseData == "")
+                {
+                    recheckETG.Book_Hash = "";
+                    return recheckETG;
+                }
+
+
+                DataSet ratehawkResponse = null;
+                string ConvertXml = "";
+                try
+                {
+                    //ConvertXml = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(objResponse.Response).InnerXml;
+                    ConvertXml = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(RoomResponseData, "root").InnerXml;
+                    ratehawkResponse = _commonMethod.GetDataSetFromXMLString(ConvertXml);
+                }
+                catch (Exception ex)
+                {
+                    _ = _exception.ErrorBooking(ex, "");
+                }
+
+                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(""), Convert.ToString(xmlhotelcode), Convert.ToString(RoomRequest), Convert.ToString(RoomResponseData + Error), "Room Request Response before Policy", Supplier, "Room Response", SearchKey, "allproject");
+
+                string book_hash = "";
+                string roomName = "";
+                string mealName = "";
+
+                double SubAgentMarkup = 0;
+                int IsParentId = 1;
+
+
+                for (int i = 0; i < ratehawkResponse.Tables["rates"].Rows.Count; i++)
+                {
+                    string match_has = Convert.ToString(ratehawkResponse.Tables["rates"].Rows[i]["match_hash"]);
+                    if (match_has != "")
+                    {
+                        if (roomTimeMatchHas == match_has)
+                        {
+                            book_hash = Convert.ToString(ratehawkResponse.Tables["rates"].Rows[i]["book_hash"]);
+
+                            recheckETG.Book_Hash = book_hash;
+                        }
+                    }
+                }
+
+                #endregion
+
+            }
+            catch (Exception ex)
+            {
+                await _exception.ErrorNew(ex, _LogAPI.Recheck, SearchKey);
+                return recheckETG;
+            }
+            return recheckETG;
         }
 
         public async Task<ResponseDto> GetEtgHotelDataResponse(string strHost, string Key)
