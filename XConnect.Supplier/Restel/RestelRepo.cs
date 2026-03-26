@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using XConnect.CommonUtilities;
 using XConnect.CommonUtilities.Interface;
@@ -580,7 +581,7 @@ namespace XConnect.Supplier.Restel
                                                                 }
 
                                                             }
-                                                            RoomCode = Guid.NewGuid().ToString().Substring(0, 4) + "|" + BoardID;
+                                                            RoomCode = Guid.NewGuid().ToString().Substring(0, 4) + "|" + BoardID + "@@@" + ItemCode;
 
 
 
@@ -2060,7 +2061,7 @@ namespace XConnect.Supplier.Restel
                 CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
                 //string PropertyId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["ContractID"]);
                // string PropertyId = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
-                string PropertyId = Convert.ToString(bookRequest.userCart.HotelId);
+               
                // string MealId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["MealPlanCode"]);
                 string MealId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].MealPlan);
 
@@ -2074,6 +2075,11 @@ namespace XConnect.Supplier.Restel
                     RoomType = "";
                 else
                     RoomType = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
+
+
+                string[] spitidRoomTypeId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(new String[] { "@@@" }, StringSplitOptions.None);
+                string PropertyId = spitidRoomTypeId[1];    
+
                 string NationalityCode = "";
                 string abc1 = MealId;
                 string[] abc = null;
