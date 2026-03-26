@@ -17,8 +17,8 @@ namespace XConnect.Supplier.Letsfly
 
 
 
-        public static string LetsFly_contactname = "Ahmed Barahim";
-        public static string LetsFly_contactemail = "barahim@withinearth.com";
+        public static string LetsFly_contactname = "";
+        public static string LetsFly_contactemail = "";
         public static string LetsFly_contactphone = "+60173495341";
     }
 }
