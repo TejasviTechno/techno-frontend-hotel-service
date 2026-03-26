@@ -31,10 +31,11 @@ namespace XConnect.Supplier.Letsfly
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
+        private readonly SupplierConfiguration _supplierConfig;//Added on 27-FEB-26
 
 
 
-        public LetsflyRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception)
+        public LetsflyRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
 
@@ -42,6 +43,7 @@ namespace XConnect.Supplier.Letsfly
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
             _exception = exception;
+            _supplierConfig = supplierConfig.Value;
         }
 
         public void GetLetsflyRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, DataTable dtPreferredDataHotel, HotelSearchParameter SearchPara, List<SupplierSearchConfig> lstLetsFlySearchConfig, List<SupplierDetails> lstLetsFlyDetails, ref ConcurrentBag<HotelX> AllTask, string AgentCode, int Hit, TokenData tokenData, DataSet dtXMLCity)
@@ -122,9 +124,9 @@ namespace XConnect.Supplier.Letsfly
                                                                     Xhotel.ProcessTimeout = Convert.ToInt32(LetsFlySearchConfig[k].HotelSearchTimeOut2);
 
                                                                     if (_keySettings.SupplierProxy == "0")
-                                                                        Xhotel.URL = Convert.ToString(LetsFlyDetails.WebSiteURL) + LetsflyInfo.LetsFly_HotelSearch;
+                                                                        Xhotel.URL = Convert.ToString(LetsFlyDetails.WebSiteURL) + _supplierConfig.LetsFly.LetsFly_HotelSearch;
                                                                     else
-                                                                        Xhotel.URL = Convert.ToString(LetsFlyDetails.WebSiteURLforAPI) + LetsflyInfo.LetsFly_HotelSearch;
+                                                                        Xhotel.URL = Convert.ToString(LetsFlyDetails.WebSiteURLforAPI) + _supplierConfig.LetsFly.LetsFly_HotelSearch;
 
                                                                     Xhotel.UserId = Convert.ToString(LetsFlyDetails.UserID);
                                                                     Xhotel.UserName = UserName;
@@ -780,7 +782,8 @@ namespace XConnect.Supplier.Letsfly
 
                 if (prebookRequest != "")
                 {
-                    string Url = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + LetsflyInfo.LetsFly_PrebookURL;
+                    //string Url = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + LetsflyInfo.LetsFly_PrebookURL;
+                    string Url = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + _supplierConfig.LetsFly.LetsFly_PrebookURL;
                     string UserID = Convert.ToString(letsflyDetails[0]["UserID"]);
                     string UserName = Convert.ToString(letsflyDetails[0]["UserName"]);
                     string Password = Convert.ToString(letsflyDetails[0]["Password"]);
@@ -1002,7 +1005,8 @@ namespace XConnect.Supplier.Letsfly
 
                 if (prebookRequest != "")
                 {
-                    string Url = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + LetsflyInfo.LetsFly_PrebookURL;
+                   // string Url = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + LetsflyInfo.LetsFly_PrebookURL;
+                    string Url = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + _supplierConfig.LetsFly.LetsFly_PrebookURL;
                     string UserID = Convert.ToString(letsflyDetails[0]["UserID"]);
                     string UserName = Convert.ToString(letsflyDetails[0]["UserName"]);
                     string Password = Convert.ToString(letsflyDetails[0]["Password"]);
@@ -1433,9 +1437,9 @@ namespace XConnect.Supplier.Letsfly
                 RootObject.orderno = ReferenceNo;
                 RootObject.roomname = roomname;
                 RootObject.totalprice = Convert.ToDouble(Rate);
-                RootObject.contactname = Convert.ToString(LetsflyInfo.LetsFly_contactname);
-                RootObject.contactemail = Convert.ToString(LetsflyInfo.LetsFly_contactemail);
-                RootObject.contactphone = Convert.ToString(LetsflyInfo.LetsFly_contactphone);
+                RootObject.contactname = Convert.ToString(_supplierConfig.LetsFly.LetsFly_contactname);
+                RootObject.contactemail = Convert.ToString(_supplierConfig.LetsFly.LetsFly_contactemail);
+                RootObject.contactphone = Convert.ToString(_supplierConfig.LetsFly.LetsFly_contactphone);
                 RootObject.special_request = Convert.ToString(remark);
                 List<letsflybookingRQ.Customerinfo> custinfo = new List<letsflybookingRQ.Customerinfo>();
                 for (int r = 0; r < NoOfRooms; r++)
@@ -1554,9 +1558,10 @@ namespace XConnect.Supplier.Letsfly
                 RootObject.orderno = ReferenceNo;
                 RootObject.roomname = roomname;
                 RootObject.totalprice = Convert.ToDouble(Rate);
-                RootObject.contactname = Convert.ToString(LetsflyInfo.LetsFly_contactname);
-                RootObject.contactemail = Convert.ToString(LetsflyInfo.LetsFly_contactemail);
-                RootObject.contactphone = Convert.ToString(LetsflyInfo.LetsFly_contactphone);
+                //RootObject.contactname = Convert.ToString(LetsflyInfo.LetsFly_contactname);
+                RootObject.contactname = Convert.ToString(_supplierConfig.LetsFly.LetsFly_contactname);
+                RootObject.contactemail = Convert.ToString(_supplierConfig.LetsFly.LetsFly_contactemail);
+                RootObject.contactphone = Convert.ToString(_supplierConfig.LetsFly.LetsFly_contactphone);
                 RootObject.special_request = Convert.ToString(remark);
                 List<letsflybookingRQ.Customerinfo> custinfo = new List<letsflybookingRQ.Customerinfo>();
                 for (int r = 0; r < NoOfRooms; r++)

@@ -15,6 +15,7 @@ namespace XConnect.Models
         public DidaConfig Dida { get; set; }
         public RestelConfig Restel { get; set; }
         public TechnoConfig Techno { get; set; }
+        public LetsFlyConfig LetsFly { get; set; }
     }
 
     public class ExpediaConfig
@@ -112,5 +113,17 @@ namespace XConnect.Models
         public string WE_DMCCancelBookingURL { get; set; }
         public string WE_DMCCancelChargeURL { get; set; }
         public string WE_DMCBookingDetailURL { get; set; }
+    }
+    public class LetsFlyConfig
+    {
+        public string LetsFly_HotelSearch { get; set; }
+        public string LetsFly_PrebookURL { get; set; }
+        public string LetsFly_BookingURL { get; set; }
+        public string LetsFly_BookingInfoURL { get; set; }
+        public string LetsFly_BookingCancelURL { get; set; }
+
+        public string LetsFly_contactname { get; set; }
+        public string LetsFly_contactemail { get; set; }
+        public string LetsFly_contactphone { get; set; }
     }
 }

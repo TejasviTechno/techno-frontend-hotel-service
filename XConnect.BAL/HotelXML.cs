@@ -50797,8 +50797,10 @@ new SqlParameter("@AgentId", AgentId),
                                                 #region Data
 
                                                 bookingStatus = 6;
-                                                string BookUrl = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + Convert.ToString(LetsflyInfo.LetsFly_BookingURL);
-                                                string BookingInfoUrl = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + Convert.ToString(LetsflyInfo.LetsFly_BookingInfoURL);
+                                               // string BookUrl = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + Convert.ToString(LetsflyInfo.LetsFly_BookingURL);
+                                                string BookUrl = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.LetsFly.LetsFly_BookingURL);
+                                                //string BookingInfoUrl = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + Convert.ToString(LetsflyInfo.LetsFly_BookingInfoURL);
+                                                string BookingInfoUrl = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.LetsFly.LetsFly_BookingURL);
                                                 string UserID = Convert.ToString(letsflyDetails[0]["UserID"]);
                                                 string UserName = Convert.ToString(letsflyDetails[0]["UserName"]);
                                                 string Password = Convert.ToString(letsflyDetails[0]["Password"]);
