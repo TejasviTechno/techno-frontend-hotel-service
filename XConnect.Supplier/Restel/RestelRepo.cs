@@ -2069,7 +2069,7 @@ namespace XConnect.Supplier.Restel
                // int NoOfNoghts = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["NoOfNight"]);
                 int NoOfNoghts = Convert.ToInt32(bookRequest.userCart.NoOfNight);
 
-                string SPUI = Convert.ToString(bookRequest.userCart.UserCartDetails[j].spui);
+                //string SPUI = Convert.ToString(bookRequest.userCart.UserCartDetails[j].spui);
                 string RoomType = "";
                 if (IsPriceUpdate)
                     RoomType = "";

@@ -850,7 +850,231 @@ namespace XConnect.Supplier.Letsfly
                                         //string roomtypeid = roomid + "$$$" + sessionid + "$$$" + Price + "$$$" + roomname;
 
                                         string CurrencyCode = Convert.ToString(letsflyprebookresponse.rooms[r].currency);
-                                        bool IsSuccess = await _commonMethod.GetRoomNameUpdate(roomtypeid, UserCartId);
+
+                                        //objdata.ShoppingCartDetails[0].PurchaseToken = roomtypeid;
+                                       // bool IsSuccess = await _commonMethod.GetRoomNameUpdate(roomtypeid, UserCartId);
+
+                                        double CurrencyFactor = 1;
+                                        if (Convert.ToString(CurrencyCode).ToLower() != tokenData.SiteCurrency.ToLower())
+                                        {
+
+                                            try
+                                            {
+                                                responsetype = "GeneralError";
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
+
+                                            }
+                                            MainPrice = 0;
+
+                                            priceCheckDto.Flag = true;
+                                            priceCheckDto.ItemPrice = MainPrice;
+                                            return priceCheckDto;
+                                        }
+
+                                        MainPrice = Price * CurrencyFactor;
+                                        priceCheckDto.ItemPrice = MainPrice;
+
+                                        if (Math.Round(CompanyBuyingPrice, 2) != Math.Round(MainPrice, 2))
+                                        {
+                                            try
+                                            {
+                                                responsetype = "GeneralError";
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
+
+                                            }
+                                            MainPrice = 0;
+
+                                            priceCheckDto.Flag = true;
+                                            priceCheckDto.ItemPrice = MainPrice;
+                                            return priceCheckDto;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        try
+                                        {
+                                            responsetype = "GeneralError";
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
+
+                                        }
+                                        MainPrice = 0;
+
+                                        priceCheckDto.Flag = true;
+                                        priceCheckDto.ItemPrice = MainPrice;
+                                        return priceCheckDto;
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            try
+                            {
+                                responsetype = "GeneralError";
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                            }
+                            catch (Exception e)
+                            {
+                                _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
+
+                            }
+                            _ = _exception.ErrorNew(ex, ErrorLog._LogAPI.Prebook);
+
+                            MainPrice = 0;
+
+                            priceCheckDto.Flag = true;
+                            priceCheckDto.ItemPrice = MainPrice;
+                            return priceCheckDto;
+                        }
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    responsetype = "GeneralError";
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                }
+                catch (Exception e)
+                {
+                    _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
+
+                }
+                _ = _exception.ErrorNew(ex, ErrorLog._LogAPI.Prebook);
+
+                MainPrice = 0;
+
+                priceCheckDto.Flag = true;
+                priceCheckDto.ItemPrice = MainPrice;
+                return priceCheckDto;
+            }
+
+            try
+            {
+                responsetype = "Success";
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+            }
+            catch (Exception e)
+            {
+                _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
+
+            }
+
+            priceCheckDto.Flag = false;
+            return priceCheckDto;
+        }
+        public async Task<PriceCheckCMDto> GetLetsflyPriceCheckREQRES_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, DataRow[] letsflyDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData)
+        {
+            PriceCheckCMDto priceCheckDto = new PriceCheckCMDto();
+            string time = "";
+            string responsetype = "Success";
+            string Error = "";
+            string ResponseData = "";
+            string prebookRequest = "";
+
+            int UserCartDetailId = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
+            string HotelId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["XMLHotelId"]);
+            string RoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]);
+            string SupplierName = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]).ToLower();
+            //260326
+            string[] RoomTypeId1 = RoomTypeId.Split(new string[] { "###" }, StringSplitOptions.None);
+            string Nationality = RoomTypeId1[2];
+            //
+            try
+            {
+                prebookRequest = LetsFlyPriceCheckRequest(RoomTypeId, j, HotelId, dsCartDetails);
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, "", "Before Hit Price Check Response", SupplierName, "Price Check Request Confirm", "-", "withinearth");
+
+                if (prebookRequest != "")
+                {
+                    string Url = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + LetsflyInfo.LetsFly_PrebookURL;
+                    string UserID = Convert.ToString(letsflyDetails[0]["UserID"]);
+                    string UserName = Convert.ToString(letsflyDetails[0]["UserName"]);
+                    string Password = Convert.ToString(letsflyDetails[0]["Password"]);
+
+                    System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+                    timerroomprocess.Start();
+
+                    ResponseDto responseDto = await GetletsflyResponse(Url, UserID, UserName, Password, prebookRequest, Error, UniqueNo);
+                    ResponseData = responseDto.Response;
+                    Error = responseDto.Error;
+
+                    timerroomprocess.Stop();
+                    time = timerroomprocess.Elapsed.ToString();
+
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, ResponseData + Error, "After Hit Price Check Response", SupplierName, "Price Check Response Confirm", "-", "withinearth");
+
+                    if (string.IsNullOrEmpty(ResponseData) || ResponseData.Contains("Error"))
+                    {
+                        try
+                        {
+                            responsetype = "GeneralError";
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                        }
+                        catch (Exception e)
+                        {
+                            _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
+                        }
+                        priceCheckDto.Flag = true;
+                        return priceCheckDto;
+                    }
+
+                    letsflyprebook.letsflyprebookresponse letsflyprebookresponse = Newtonsoft.Json.JsonConvert.DeserializeObject<letsflyprebook.letsflyprebookresponse>(ResponseData);
+
+                    if (letsflyprebookresponse == null || letsflyprebookresponse.status != 0 && letsflyprebookresponse.rooms == null)
+                    {
+                        try
+                        {
+                            responsetype = "GeneralError";
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                        }
+                        catch (Exception e)
+                        {
+                            _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
+
+                        }
+                        priceCheckDto.Flag = true;
+                        return priceCheckDto;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            if (letsflyprebookresponse.rooms != null)
+                            {
+                                for (int r = 0; r < letsflyprebookresponse.rooms.Count; r++)
+                                {
+
+                                    double Price = Convert.ToDouble(letsflyprebookresponse.rooms[r].totalprice);
+
+                                    if (Price > 0)
+                                    {
+                                        string sessionid = Convert.ToString(letsflyprebookresponse.sessionid);
+                                        string roomid = Convert.ToString(letsflyprebookresponse.rooms[r].id);
+                                        string roomname = Convert.ToString(letsflyprebookresponse.rooms[r].name);
+                                        string hotelid = Convert.ToString(letsflyprebookresponse.hotelid);
+                                        string roomtypeid = roomid + "$$$" + sessionid + "$$$" + Price + "$$$" + roomname + "$$$" + hotelid + "$$$" + Nationality; //260326
+                                        //string roomtypeid = roomid + "$$$" + sessionid + "$$$" + Price + "$$$" + roomname;
+
+                                        string CurrencyCode = Convert.ToString(letsflyprebookresponse.rooms[r].currency);
+
+                                        objdata.ShoppingCartDetails[0].PurchaseToken = roomtypeid;
+                                        // bool IsSuccess = await _commonMethod.GetRoomNameUpdate(roomtypeid, UserCartId);
 
                                         double CurrencyFactor = 1;
                                         if (Convert.ToString(CurrencyCode).ToLower() != tokenData.SiteCurrency.ToLower())
@@ -1262,19 +1486,21 @@ namespace XConnect.Supplier.Letsfly
                 string firstName = "";
                 string lastName = "";
                 string BookingREQ = "";
-                //JsonSerializerSettings Setting = new JsonSerializerSettings
-                //{
-                //    NullValueHandling = NullValueHandling.Ignore,
-                //    DefaultValueHandling = DefaultValueHandling.Ignore
-                //};
-                //string letsflyHotelId = Convert.ToString(bookRequest.userCart.UserCartDetails[0].);
-                //string letsflyHotelId = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["XMLHotelId"]);
+               
                 int UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].UserCartDetailId);
-                string checkindate = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckInDate);
-                string checkin = checkindate.Substring(0, 4) + "-" + checkindate.Substring(4, 2) + "-" + checkindate.Substring(6, 2);
 
-                string checkoutdate = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckOutDate);
-                string checkout = checkoutdate.Substring(0, 4) + "-" + checkoutdate.Substring(4, 2) + "-" + checkoutdate.Substring(6, 2);
+                string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckInDate);
+                //CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckOutDate);
+                //CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+
+                // Parse the strings to DateTime
+                DateTime checkInDate = DateTime.Parse(CheckIn);
+                DateTime checkOutDate = DateTime.Parse(CheckOut);
+
+                // Convert to "yyyy-MM-dd" format
+                string checkin = checkInDate.ToString("yyyy-MM-dd");
+                string checkout = checkOutDate.ToString("yyyy-MM-dd");
 
                 int NoOfRooms = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].RoomNo);
                 //string XmlNationality = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["XmlNationality"]);
@@ -1293,13 +1519,13 @@ namespace XConnect.Supplier.Letsfly
                     {
                         if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].NoofChild) == 1)
                         {
-                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge1));
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge));
 
                         }
                         else if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].NoofChild) == 2)
                         {
-                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge1));
-                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge2));
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge));
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge));
                         }
                     }
                 }
