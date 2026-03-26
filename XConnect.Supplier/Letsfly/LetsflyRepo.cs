@@ -341,6 +341,7 @@ namespace XConnect.Supplier.Letsfly
 
                         var hotel = letsflyResponse.hotellist[hotelIndex];
                         var Hotelname = hotel.hotelname;
+                        string Hotelid = hotel.hotelid;
 
                         if (hotel.rooms == null || hotel.rooms.Count == 0)
                         {
@@ -507,7 +508,7 @@ namespace XConnect.Supplier.Letsfly
                                                     remarks = Convert.ToString(letsflyResponse.hotellist[hotelIndex].rooms[roomIndex].remarks);
                                                     string roomid = Convert.ToString(letsflyResponse.hotellist[hotelIndex].rooms[roomIndex].id);
 
-                                                    string roomtypeid = roomid + "###" + sessionid;
+                                                    string roomtypeid = roomid + "###" + sessionid+"###"+item.XmlNationality;
 
                                                     double Finalprice = Convert.ToDouble(letsflyResponse.hotellist[hotelIndex].rooms[roomIndex].totalprice);
                                                     Currency = Convert.ToString(letsflyResponse.hotellist[hotelIndex].rooms[roomIndex].currency);
@@ -768,7 +769,10 @@ namespace XConnect.Supplier.Letsfly
             string HotelId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["XMLHotelId"]);
             string RoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]);
             string SupplierName = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]).ToLower();
-
+            //260326
+            string[] RoomTypeId1 = RoomTypeId.Split(new string[] { "###" }, StringSplitOptions.None);
+            string Nationality = RoomTypeId1[2];
+            //
             try
             {
                 prebookRequest = LetsFlyPriceCheckRequest(RoomTypeId, j, HotelId, dsCartDetails);
@@ -841,7 +845,9 @@ namespace XConnect.Supplier.Letsfly
                                         string sessionid = Convert.ToString(letsflyprebookresponse.sessionid);
                                         string roomid = Convert.ToString(letsflyprebookresponse.rooms[r].id);
                                         string roomname = Convert.ToString(letsflyprebookresponse.rooms[r].name);
-                                        string roomtypeid = roomid + "$$$" + sessionid + "$$$" + Price + "$$$" + roomname;
+                                        string hotelid = Convert.ToString(letsflyprebookresponse.hotelid);
+                                        string roomtypeid = roomid + "$$$" + sessionid + "$$$" + Price + "$$$" + roomname + "$$$" + hotelid+"$$$"+ Nationality; //260326
+                                        //string roomtypeid = roomid + "$$$" + sessionid + "$$$" + Price + "$$$" + roomname;
 
                                         string CurrencyCode = Convert.ToString(letsflyprebookresponse.rooms[r].currency);
                                         bool IsSuccess = await _commonMethod.GetRoomNameUpdate(roomtypeid, UserCartId);
@@ -1249,7 +1255,125 @@ namespace XConnect.Supplier.Letsfly
                 return "";
             }
         }
+        public string Letsfly_BookingRequest_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, string RoomTypeId, string sessionid, string Rate, ref string ReferenceNo, int i, int j, string roomname,string hotelid,string nationality)
+        {
+            try
+            {
+                string firstName = "";
+                string lastName = "";
+                string BookingREQ = "";
+                //JsonSerializerSettings Setting = new JsonSerializerSettings
+                //{
+                //    NullValueHandling = NullValueHandling.Ignore,
+                //    DefaultValueHandling = DefaultValueHandling.Ignore
+                //};
+                //string letsflyHotelId = Convert.ToString(bookRequest.userCart.UserCartDetails[0].);
+                //string letsflyHotelId = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["XMLHotelId"]);
+                int UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].UserCartDetailId);
+                string checkindate = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckInDate);
+                string checkin = checkindate.Substring(0, 4) + "-" + checkindate.Substring(4, 2) + "-" + checkindate.Substring(6, 2);
 
+                string checkoutdate = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckOutDate);
+                string checkout = checkoutdate.Substring(0, 4) + "-" + checkoutdate.Substring(4, 2) + "-" + checkoutdate.Substring(6, 2);
+
+                int NoOfRooms = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].RoomNo);
+                //string XmlNationality = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["XmlNationality"]);
+
+                int NoOfAdults = 0;
+                int NoOfChild = 0;
+                string ChildAge = "";
+                ReferenceNo = ReferenceNo + "|" + UserCartDetailId;
+                List<int> Child = new List<int>();
+                for (int k = 0; k < NoOfRooms; k++)
+                {
+                    NoOfAdults += Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].NoofAdult);
+                    NoOfChild += Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].NoofChild);
+
+                    if (NoOfChild > 0)
+                    {
+                        if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].NoofChild) == 1)
+                        {
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge1));
+
+                        }
+                        else if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].NoofChild) == 2)
+                        {
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge1));
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge2));
+                        }
+                    }
+                }
+
+
+                string remark = "";
+                //if (dsCartDetails.Tables[0].Columns.Contains("SpecialRequest"))
+                //{
+                //    remark = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["SpecialRequest"]);
+                //    if (!string.IsNullOrEmpty(remark))
+                //    {
+                //        remark = remark.Replace("SpecialRequest:", "").Replace("$$", ",").Replace("/Remark:", ",");
+                //    }
+                //}
+                letsflybookingRQ.Root RootObject = new letsflybookingRQ.Root();
+
+                RootObject.hotelid = hotelid;
+                RootObject.checkin = checkin;
+                RootObject.checkout = checkout;
+                RootObject.roomcount = NoOfRooms;
+                RootObject.adults = NoOfAdults;
+                RootObject.children = NoOfChild;
+                RootObject.childrenages = string.Join(",", Child);
+                RootObject.roomtypeid = RoomTypeId;
+                RootObject.sessionid = sessionid;
+                RootObject.orderno = ReferenceNo;
+                RootObject.roomname = roomname;
+                RootObject.totalprice = Convert.ToDouble(Rate);
+                RootObject.contactname = Convert.ToString(LetsflyInfo.LetsFly_contactname);
+                RootObject.contactemail = Convert.ToString(LetsflyInfo.LetsFly_contactemail);
+                RootObject.contactphone = Convert.ToString(LetsflyInfo.LetsFly_contactphone);
+                RootObject.special_request = Convert.ToString(remark);
+                List<letsflybookingRQ.Customerinfo> custinfo = new List<letsflybookingRQ.Customerinfo>();
+                for (int r = 0; r < NoOfRooms; r++)
+                {
+                    if (dtPassengers.Rows.Count > 0)
+                    {
+                        dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId) + "' and UserCartID=" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].UserCartId + " and RoomNo='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomNo) + "'");
+
+                        dtPassengers.DefaultView.Sort = "IsLead DESC";
+                        int Islead = Convert.ToInt32(dtPassengers.DefaultView[0]["islead"]);
+
+                        if (dtPassengers.DefaultView.Count > 0)
+                        {
+                            for (int k = 0; k < dtPassengers.DefaultView.Count; k++)
+                            {
+                                letsflybookingRQ.Customerinfo customer = new letsflybookingRQ.Customerinfo();
+
+                                firstName = Convert.ToString(dtPassengers.DefaultView[k]["FirstName"]).Trim();
+                                lastName = Convert.ToString(dtPassengers.DefaultView[k]["LastName"]).Trim();
+                                customer.roomnum = Convert.ToInt32(dtPassengers.DefaultView[k]["RoomNo"]);
+                                customer.firstname = firstName;
+                                customer.lastname = lastName;
+                                customer.nationality = nationality;
+                                custinfo.Add(customer);
+
+
+                            }
+                        }
+                    }
+                }
+                RootObject.customerinfo = custinfo;
+                // string Request = JsonConvert.SerializeObject(RootObject, Setting);
+                string Request = Newtonsoft.Json.JsonConvert.SerializeObject(RootObject);
+                return Request;
+
+
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return "";
+            }
+        }
         public string LetsflyBookingCancelReq(string AgentVoucherNo)
         {
             try
