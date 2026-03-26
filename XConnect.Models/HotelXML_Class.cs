@@ -1875,12 +1875,7 @@ namespace XConnect.Models
         public string PurchaseToken { get; set; }
         public string EachoToken { get; set; }
         public int RoomNo { get; set; }
-        public double ChildAge1 { get; set; }//added by trupti
-        public double ChildAge2 { get; set; }//added by trupti
-        public double ChildAge3 { get; set; }//added by trupti
-        public double ChildAge4 { get; set; }//added by trupti
-        public double Rate { get; set; }//added by trupti
-        public string spui { get; set; }//added by trupti
+        
 
     }
 

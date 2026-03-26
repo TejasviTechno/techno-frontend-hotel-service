@@ -34632,7 +34632,10 @@ new SqlParameter("@AgentId", AgentId),
                                                         double FinalPrice = 0;
                                                         bool ErrorPop = false;
 
-                                                        PriceCheckCMDto priceCheckCMDto = await _letsfly.GetLetsflyPriceCheckREQRES(dsCartDetails, letsflyDetails, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData);
+
+
+
+                                                        PriceCheckCMDto priceCheckCMDto = await _letsfly.GetLetsflyPriceCheckREQRES_newversion(objdata,dsCartDetails, letsflyDetails, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData);
                                                         ErrorPop = priceCheckCMDto.Flag;
                                                         FinalPrice = priceCheckCMDto.ItemPrice;
 
@@ -49633,8 +49636,8 @@ new SqlParameter("@AgentId", AgentId),
                                             string RoomTypeId = spitidRoomTypeId[0];
                                             int NoOfAdults = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofAdult);
                                             int NoOfChild = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofChild);
-                                            int ChildAge1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge1);
-                                            int ChildAge2 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge2);
+                                            //int ChildAge1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge1);
+                                            //int ChildAge2 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge2);
                                             string CheckInDate = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
                                             string CheckOutDate = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
                                             //double Rate = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["Rate"]);
@@ -49914,7 +49917,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 string RatePlanCode = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
                                                 string SupplierName = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName);
                                                 int UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                                double CompanyBuyingPrices = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].Rate);
+                                                double CompanyBuyingPrices = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].BaseServiceBuyingAmount);
                                                 bool IsPriceUpdate = false;
                                                 UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
                                                 #endregion
