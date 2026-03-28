@@ -45,11 +45,12 @@ namespace XConnect.Supplier.IWTX
         private readonly IException _exception;
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
-        private readonly KeySettings _keySettings;
+        private readonly KeySettings _keySettings; 
+        private readonly SupplierConfiguration _supplierConfig;
 
 
 
-        public IWTXRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception)
+        public IWTXRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
 
@@ -57,6 +58,8 @@ namespace XConnect.Supplier.IWTX
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
             _exception = exception;
+            _supplierConfig = supplierConfig.Value;
+
         }
 
         public void IWTXRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> IWTXDetails, List<SupplierSearchConfig> IWTXSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string XMLCountry, string XMLNationality, int Hit, DataTable dtROE, TokenData tokenData)
@@ -117,7 +120,8 @@ namespace XConnect.Supplier.IWTX
                                             //if (Hit > 0)
                                             Xhotel.ProcessTimeout = Convert.ToInt32(IWTXSearchConfig[k].HotelSearchTimeOut2);
 
-                                            Xhotel.URL = Convert.ToString(IWTXDetails[0].WebSiteURL) + IWTXInfo.IWTX_HotelSearch;
+                                            //Xhotel.URL = Convert.ToString(IWTXDetails[0].WebSiteURL) + IWTXInfo.IWTX_HotelSearch;
+                                            Xhotel.URL = Convert.ToString(IWTXDetails[0].WebSiteURL) + _supplierConfig.IWTX.IWTX_HotelSearch;
                                             // Xhotel.URL = Convert.ToString(IWTXDetails[0].WebSiteURL) + "hotel/api/v1/search";
                                             // Xhotel.URL = Convert.ToString(IWTXDetails[0].WebSiteURL) + Convert.ToString(ConfigurationManager.AppSettings["IWTX_HotelSearch"]);
                                             Xhotel.UserId = Convert.ToString(IWTXDetails[0].UserID);
@@ -169,7 +173,8 @@ namespace XConnect.Supplier.IWTX
                                             //if (Hit > 0)
                                             Xhotel.ProcessTimeout = Convert.ToInt32(IWTXSearchConfig[k].HotelSearchTimeOut2);
 
-                                            Xhotel.URL = Convert.ToString(IWTXDetails[0].WebSiteURL) + IWTXInfo.IWTX_HotelSearch;
+                                            //Xhotel.URL = Convert.ToString(IWTXDetails[0].WebSiteURL) + IWTXInfo.IWTX_HotelSearch;
+                                            Xhotel.URL = Convert.ToString(IWTXDetails[0].WebSiteURL) + _supplierConfig.IWTX.IWTX_HotelSearch;
                                             // Xhotel.URL = Convert.ToString(IWTXDetails[0].WebSiteURL) + Convert.ToString(ConfigurationManager.AppSettings["IWTX_HotelSearch"]);
                                             Xhotel.UserId = Convert.ToString(IWTXDetails[0].UserID);
                                             Xhotel.UserName = UserName;
@@ -314,9 +319,10 @@ namespace XConnect.Supplier.IWTX
 
                                                                         //Xhotel.URL = Convert.ToString(IWTXChild.WebSiteURL) + IWTXInfo.IWTX_HotelSearch;
                                                                         if (_keySettings.SupplierProxy == "0")
-                                                                            Xhotel.URL = Convert.ToString(IWTXChild.WebSiteURL) + IWTXInfo.IWTX_HotelSearch;
+                                                                            //Xhotel.URL = Convert.ToString(IWTXChild.WebSiteURL) + IWTXInfo.IWTX_HotelSearch;
+                                                                            Xhotel.URL = Convert.ToString(IWTXChild.WebSiteURL) + _supplierConfig.IWTX.IWTX_HotelSearch;
                                                                         else
-                                                                            Xhotel.URL = Convert.ToString(IWTXChild.WebSiteURLforAPI) + IWTXInfo.IWTX_HotelSearch;
+                                                                            Xhotel.URL = Convert.ToString(IWTXChild.WebSiteURLforAPI) + _supplierConfig.IWTX.IWTX_HotelSearch;
 
 
                                                                         // Xhotel.URL = Convert.ToString(IWTXDetails[0].WebSiteURL) + "hotel/api/v1/search";
@@ -374,9 +380,9 @@ namespace XConnect.Supplier.IWTX
 
                                                                         //Xhotel.URL = Convert.ToString(IWTXChild.WebSiteURL) + IWTXInfo.IWTX_HotelSearch;
                                                                         if (_keySettings.SupplierProxy == "0")
-                                                                            Xhotel.URL = Convert.ToString(IWTXChild.WebSiteURL) + IWTXInfo.IWTX_HotelSearch;
+                                                                            Xhotel.URL = Convert.ToString(IWTXChild.WebSiteURL) + _supplierConfig.IWTX.IWTX_HotelSearch;
                                                                         else
-                                                                            Xhotel.URL = Convert.ToString(IWTXChild.WebSiteURLforAPI) + IWTXInfo.IWTX_HotelSearch;
+                                                                            Xhotel.URL = Convert.ToString(IWTXChild.WebSiteURLforAPI) + _supplierConfig.IWTX.IWTX_HotelSearch;
 
                                                                         // Xhotel.URL = Convert.ToString(IWTXDetails[0].WebSiteURL) + Convert.ToString(ConfigurationManager.AppSettings["IWTX_HotelSearch"]);
                                                                         Xhotel.UserId = Convert.ToString(IWTXChild.UserID);
@@ -2404,8 +2410,9 @@ namespace XConnect.Supplier.IWTX
                     //string IWTXUrl = "https://api.iwtxconnect.com/api/v1/details";
 
                     string Request = HotelDetailsRequest_IWTX(hotelcode, Username, Password, Action);
-                    //string ResponseData = IWTX_HoteldetailsResponse(IWTXInfo.IWTXUrl, Request, "iwtx", SearchKey);
-                    responseDto = await IWTXResponseNeAsync(IWTXInfo.IWTXUrl, Request, provider, SearchKey, "xml", true);
+                   
+                    //responseDto = await IWTXResponseNeAsync(IWTXInfo.IWTXUrl, Request, provider, SearchKey, "xml", true);
+                    responseDto = await IWTXResponseNeAsync(_supplierConfig.IWTX.IWTXUrl, Request, provider, SearchKey, "xml", true);
                     string ResponseData = responseDto.Response;
                     _commonMethod.XMLRequestResponseTrack_MainDB(Request, ResponseData, provider, Action, "IWTX_HoteldetailsResponse", SearchKey);
                     #region RemoveNode
@@ -2603,7 +2610,8 @@ namespace XConnect.Supplier.IWTX
 
 
                 DataRow[] drSearchConfig = (dtSearchConfig.Select("SupplierID='" + SupplierId + "'"));
-                string IWTXURL = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_PriceCheck); ;
+               // string IWTXURL = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_PriceCheck); 
+                string IWTXURL = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.IWTX.IWTX_PriceCheck); 
                 //string URL = Cancelpolicy_Url + "search/checkAvailability";
                 string Password = Convert.ToString(drSuplierMarkup[0]["Password"]);
                 string Username = Convert.ToString(drSuplierMarkup[0]["Username"]);
@@ -3182,7 +3190,8 @@ namespace XConnect.Supplier.IWTX
                 string Password = Convert.ToString(IWTXDetails[0]["Password"]);
                 string RoomId = "";
                 //string IWTXURL = "https://secure.illusionswebservices.iolcloud.com/illusionsHotelSearch.ashx";
-                string IWTXURL = Convert.ToString(IWTXDetails[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_PriceCheck);
+               // string IWTXURL = Convert.ToString(IWTXDetails[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_PriceCheck);
+                string IWTXURL = Convert.ToString(IWTXDetails[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.IWTX.IWTX_PriceCheck);
                 string HotelCode = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["XMLHotelId"]);
                 string CheckIn = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]);
                 CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
