@@ -44795,7 +44795,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 int NoOfRoom = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView.Count);
                                                                                 string countyid = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLCountryId"]);
                                                                                 //string BookUrl = "http://www.v3.staging.illusionswebservices.iwtx.com/illusionsHotelSearch.ashx";
-                                                                                string BookUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_Booking);
+                                                                                //string BookUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_Booking);
+                                                                                string BookUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.IWTX.IWTX_Booking);
 
                                                                                 //BookUrl = Common.Get_SiteMinder_BookURL(countyid);
                                                                                 //BookUrl = Convert.ToString(IWTXDetails[0]["WebSiteURL"]);
@@ -50486,7 +50487,8 @@ new SqlParameter("@AgentId", AgentId),
                                             int NoOfRoom = Convert.ToInt32(bookRequest.userCart.UserCartDetails.Count);
                                             //string countyid = Convert.ToString(bookRequest.userCart.UserCartDetails[j]["XMLCountryId"]);
                                             //string BookUrl = "http://www.v3.staging.illusionswebservices.iwtx.com/illusionsHotelSearch.ashx";
-                                            string BookUrl = Convert.ToString(XPDetails[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_Booking);
+                                           // string BookUrl = Convert.ToString(XPDetails[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_Booking);
+                                            string BookUrl = Convert.ToString(XPDetails[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.IWTX.IWTX_Booking);
 
                                             #endregion
 
@@ -55447,7 +55449,8 @@ new SqlParameter("@AgentId", AgentId),
                                     string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
                                     string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
                                     //string Url = "http://www.v3.staging.illusionswebservices.iwtx.com/illusionsHotelSearch.ashx";                              
-                                    string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_BookingCancel);
+                                   // string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_BookingCancel);
+                                    string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.IWTX.IWTX_BookingCancel);
                                     string suppliername = Convert.ToString(SupplierDetailsCommon[0]["SupplierName"]);
                                     string RoomTypeId = Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]);
                                     string[] Roomids = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);

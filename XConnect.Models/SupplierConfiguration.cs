@@ -10,12 +10,12 @@ namespace XConnect.Models
     {
         public ExpediaConfig Expedia { get; set; }
         public ETGConfig ETG { get; set; }
-       
         public HotelbedsConfig Hotelbeds { get; set; }
         public DidaConfig Dida { get; set; }
         public RestelConfig Restel { get; set; }
         public TechnoConfig Techno { get; set; }
         public LetsFlyConfig LetsFly { get; set; }
+        public IWTXConfig IWTX { get; set; }
     }
 
     public class ExpediaConfig
@@ -125,5 +125,13 @@ namespace XConnect.Models
         public string LetsFly_contactname { get; set; }
         public string LetsFly_contactemail { get; set; }
         public string LetsFly_contactphone { get; set; }
+    }
+    public class IWTXConfig
+    {
+        public string IWTX_HotelSearch { get; set; }
+        public string IWTXUrl { get; set; }
+        public string IWTX_PriceCheck { get; set; }
+        public string IWTX_Booking { get; set; }
+        public string IWTX_BookingCancel { get; set; }
     }
 }
