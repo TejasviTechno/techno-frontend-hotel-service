@@ -26367,13 +26367,7 @@ new SqlParameter("@AgentId", AgentId),
                                         string responsetype = "Success";
                                         string ResponseData = "";
                                         string currency = "";
-                                        //DataSet dsTempHotel = (DataSet)HttpContext.Current.Session["HotelData"];
-                                        //if (dsTempHotel != null && dsTempHotel.Tables.Count > 0 && dsTempHotel.Tables[0].Rows.Count > 0)
-                                        //{
-                                        //    dsTempHotel.Tables[0].DefaultView.RowFilter = "OwnsystemHotelId='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["ServiceId"] + "'");
-                                        //    if (dsTempHotel.Tables[0].DefaultView.Count > 0)
-                                        //        hotelRating = Convert.ToInt32(dsTempHotel.Tables[0].DefaultView[0]["Rating"]);
-                                        //}
+                                       
                                         _markup.getAgetMarkupSetting(Supplier.ToLower() == "oth" ? Convert.ToString(_keySettings.IsWithinearth) == "1" ? "withinearth" : "oth" : Supplier, Convert.ToString(dsCartDetails.Tables[0].Rows[i]["giataid"]), dsAgentDetails.Tables[1], dtCountryCityMarkup, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, agentID, hotelRating, CityId, CountryId, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["CheckInDate"]));
 
                                         #region "Vervotech Hotelcode check" //#vervo
@@ -26383,18 +26377,25 @@ new SqlParameter("@AgentId", AgentId),
                                         string MapSupplierName = "";
                                         bool IsVervoActive = false;
                                         #region Chceck Vervo Active or not
-                                        try
-                                        {
-                                            SqlParameter[] para = new SqlParameter[]{
-                                                new SqlParameter("@AgentId",  agentID),
-                                                };
-                                            IsVervoActive = Convert.ToBoolean(await _dlConnection.GetExecuteScalarSP("CheckVervoActiveByAgent_Xconnect", para));
+                                        //try
+                                        //{
+                                        //    SqlParameter[] para = new SqlParameter[]{
+                                        //        new SqlParameter("@AgentId",  agentID),
+                                        //        };
+                                        //    IsVervoActive = Convert.ToBoolean(await _dlConnection.GetExecuteScalarSP("CheckVervoActiveByAgent_Xconnect", para));
 
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            _ = _exception.Error(ex, Searchkey);
-                                        }
+                                        //}
+                                        //catch (Exception ex)
+                                        //{
+                                        //    _ = _exception.Error(ex, Searchkey);
+                                        //}
+
+                                        if (  _commonMethod.CheckVervopatchBookingTime(AgentCode))
+                                            IsVervoActive = false;
+
+                                        DataTable VervoTechCredentail =  _commonMethod.GetVervoTechCredentailAtRoomRequest();
+                                        if (Convert.ToInt32(VervoTechCredentail.Rows[0]["statusflag"]) == 1)
+                                            IsVervoActive = false;
                                         #endregion
                                         //if (IsVervoActive && !Common.ExcludeSupplierFromVervoMappingCheck(Supplier))
                                         //{
