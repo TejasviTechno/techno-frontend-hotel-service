@@ -154,6 +154,7 @@ using XConnect.Analytics.Interface;
 using Microsoft.Extensions.Logging;
 using XConnect.Supplier.AkbarTravel.Interface;
 using static XConnect.Models.SpeedCategory;
+//using static XConnect.Supplier.Omnibees.OmnibeesCancelRQ;
 //using System.Text.Json;
 
 
@@ -4883,7 +4884,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                                                 response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL, item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType, "", (Supplier.ToLower() == "hotelspro")).ConfigureAwait(false);
                                                                 break;
                                                             case "hotelbeds":
-                                                                response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL + "/1.0/hotels", item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType);
+                                                                response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL + _supplierConfig.Hotelbeds.hotels, item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType);
                                                                 break;
                                                             case "hoteldo":
                                                                 response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL + "/GetQuoteHotels", item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType);
@@ -12182,21 +12183,25 @@ new SqlParameter("@AgentId", AgentId),
                                     //}
                                     selectedRoom.BookingStatus = ISBooking;
                                 }
+                                //if (TechName.ToLower() == "etg")
+                                //{
+                                //    X_PolicyDetails policyex = new X_PolicyDetails();
+                                //    policyex = selectedRoom.CancellationToken.DecryptPolicyTokenNew();
+                                //    string purToken = "";
+                                //    RecheckETG  recheckETG = await _etg.RateHawk_EssentialInfoNew(SearchPara, Provider, ItemCode, Username, password, roomex.SupplierCurrency, UserID, roomex.RoomTypeId, URL, SearchKey);
+                                //    essential = recheckETG.EsentialInfo;
+                                //    purToken = recheckETG.Book_Hash;
+
+
+                                //    policyex.PurchaseToken = policyex.PurchaseToken + "&&&&"+ purToken;
+                                //    string EPolicyToken = policyex.EncryptPolicyToken();
+                                //    availResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].CancellationToken = EPolicyToken;
+
+
+                                //}
                                 if (TechName.ToLower() == "etg")
                                 {
-                                    X_PolicyDetails policyex = new X_PolicyDetails();
-                                    policyex = selectedRoom.CancellationToken.DecryptPolicyTokenNew();
-                                    string purToken = "";
-                                    RecheckETG  recheckETG = await _etg.RateHawk_EssentialInfoNew(SearchPara, Provider, ItemCode, Username, password, roomex.SupplierCurrency, UserID, roomex.RoomTypeId, URL, SearchKey);
-                                    essential = recheckETG.EsentialInfo;
-                                    purToken = recheckETG.Book_Hash;
-
-
-                                    policyex.PurchaseToken = policyex.PurchaseToken + "&&&&"+ purToken;
-                                    string EPolicyToken = policyex.EncryptPolicyToken();
-                                    availResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].CancellationToken = EPolicyToken;
-
-
+                                    essential = await _etg.RateHawk_EssentialInfo(SearchPara, Provider, ItemCode, Username, password, roomex.SupplierCurrency, UserID, roomex.RoomTypeId, URL, SearchKey);
                                 }
                                 if (TechName.ToLower() == "juniper")
                                 {
@@ -47803,6 +47808,16 @@ new SqlParameter("@AgentId", AgentId),
                         System.Diagnostics.Stopwatch timerSupp = new System.Diagnostics.Stopwatch();
                         List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
                         timerSupp.Start();
+                        string DateSTR_IntRef = "";
+                        try
+                        {
+                            DateSTR_IntRef = Convert.ToString(DateTime.Now.Month) + Convert.ToString(DateTime.Now.Year).Substring(2, 2);
+                        }
+                        catch (Exception x)
+                        {
+                            _ = _exception.ErrorBooking(x, "");
+                        }
+
 
                         #region OLD CODE
                         //for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
@@ -50338,7 +50353,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             agentVouchers.Add(agentVoucher);
                                                             //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
-                                                            bookResponse_1.agentVouchers = agentVouchers;
+                                                            //bookResponse_1.agentVouchers = agentVouchers;
                                                             #endregion
                                                         }
                                                         else
@@ -50389,7 +50404,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                 agentVouchers.Add(agentVoucher);
                                                                 //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
-                                                                bookResponse_1.agentVouchers = agentVouchers;
+                                                               // bookResponse_1.agentVouchers = agentVouchers;
                                                                 #endregion
                                                                 //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(UserCartId1), Convert.ToString(UserCartDetailId), AgentVoucherNo, "Booking finish:" + EtgBookRequest + " Booking finish status: " + EtgBookingFSReqest, "Booking finish response:" + Responsebook + "Booking finish status response:" + EtgBookingFSResponse, Supplier, bookingStatus, voucherpackageid));
                                                             }
@@ -50460,6 +50475,7 @@ new SqlParameter("@AgentId", AgentId),
                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), EtgBookRequest, ex.ToString(), "Error Bolock", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Not Confirm", "-", "WithinEarth");
                                         }
                                     }
+                                    bookResponse_1.agentVouchers = agentVouchers;
                                     break;
                                 #endregion
                                 #region"IWTX"
@@ -50593,10 +50609,11 @@ new SqlParameter("@AgentId", AgentId),
                                                                         agentVouchers.Add(agentVoucher);
                                                                         //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
-                                                                        bookResponse_1.agentVouchers = agentVouchers;
+                                                                        //bookResponse_1.agentVouchers = agentVouchers;
                                                                         #endregion
                                                                         //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[m]["UserCartDetailId"]), AgentVoucherNo, IWTXBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid, SupplierResNo));
                                                                     }
+                                                                    bookResponse_1.agentVouchers = agentVouchers;
                                                                 }
 
                                                             else
@@ -50620,10 +50637,11 @@ new SqlParameter("@AgentId", AgentId),
                                                                         agentVouchers.Add(agentVoucher);
                                                                         //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
-                                                                        bookResponse_1.agentVouchers = agentVouchers;
+                                                                        //bookResponse_1.agentVouchers = agentVouchers;
                                                                         #endregion
                                                                         //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[m]["UserCartDetailId"]), AgentVoucherNo, IWTXBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                                     }
+                                                                    bookResponse_1.agentVouchers = agentVouchers;
                                                                 }
                                                         }
                                                         else
@@ -50647,10 +50665,11 @@ new SqlParameter("@AgentId", AgentId),
                                                                     agentVouchers.Add(agentVoucher);
                                                                     //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
-                                                                    bookResponse_1.agentVouchers = agentVouchers;
+                                                                    //bookResponse_1.agentVouchers = agentVouchers;
                                                                     #endregion
                                                                     //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[m]["UserCartDetailId"]), AgentVoucherNo, IWTXBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                                 }
+                                                                bookResponse_1.agentVouchers = agentVouchers;
                                                             }
                                                     }
                                                     else
@@ -50674,10 +50693,11 @@ new SqlParameter("@AgentId", AgentId),
                                                                 agentVouchers.Add(agentVoucher);
                                                                 //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
-                                                                bookResponse_1.agentVouchers = agentVouchers;
+                                                                //bookResponse_1.agentVouchers = agentVouchers;
                                                                 #endregion
                                                                 //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[m]["UserCartDetailId"]), AgentVoucherNo, IWTXBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
-                                                            }
+                                                        }
+                                                            bookResponse_1.agentVouchers = agentVouchers;
                                                         }
                                                 }
                                                 else
@@ -50701,10 +50721,11 @@ new SqlParameter("@AgentId", AgentId),
                                                             agentVouchers.Add(agentVoucher);
                                                             //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
-                                                            bookResponse_1.agentVouchers = agentVouchers;
+                                                            //bookResponse_1.agentVouchers = agentVouchers;
                                                             #endregion
                                                             //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[m]["UserCartDetailId"]), AgentVoucherNo, IWTXBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                         }
+                                                        bookResponse_1.agentVouchers = agentVouchers;
                                                     }
                                             }
                                             else
@@ -50729,13 +50750,15 @@ new SqlParameter("@AgentId", AgentId),
                                                         agentVouchers.Add(agentVoucher);
                                                         //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
-                                                        bookResponse_1.agentVouchers = agentVouchers;
+                                                        //bookResponse_1.agentVouchers = agentVouchers;
                                                         #endregion
                                                         // dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[m]["UserCartDetailId"]), AgentVoucherNo, IWTXBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                     }
+                                                    bookResponse_1.agentVouchers = agentVouchers;
+
                                                 }
-                                            #region SupplierPR Booking
-                                            if (bookingStatus == 6)
+                                                #region SupplierPR Booking
+                                                if (bookingStatus == 6)
                                             {
                                                 responsetype = "Success";
                                             }
@@ -51042,6 +51065,237 @@ new SqlParameter("@AgentId", AgentId),
 
                                     break;
                                 #endregion
+                                #region "HotelBedsV1"
+                                case "hotelbeds":
+                                    try
+                                    {
+                                        for (int j = 0; j <bookRequest.userCart.UserCartDetails.Count; j++)
+                                        {
+                                            Error = "";
+                                            bookingStatus = 6;
+                                            AgentVoucherNo = "";
+                                            string[] Array = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                            string BookingCodeHotel = Array[1];
+                                            //double CompanyBuyPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["Rate"]);
+                                            double CompanyBuyPrice = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].BaseServiceBuyingAmount);
+                                            UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                            bool IsErrors = false;
+                                            double itemprice = 0;
+                                            bool IsPriceUpdates = false;
+                                            string HBV1BookingReq = _hotelbeds.HotelBedsdV1BookindgRequest_newversion(dtPassengers, bookRequest, IsPriceUpdates, IsErrors, j, DateSTR_IntRef);
+                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), HBV1BookingReq, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "API Out");
+                                            string ResponseDataHotelBedsV1 = "";
+                                            
+                                            {
+                                                System.Diagnostics.Stopwatch timerbookprocess = new System.Diagnostics.Stopwatch();
+                                                timerbookprocess.Start();
+
+                                                ResponseDto responseDto = await _hotelbeds.GetHotelBedsSupplierResponse(Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings, Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), 180000, HBV1BookingReq, "POST", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, bookRequest.SearchKey);
+
+                                                ResponseDataHotelBedsV1 = responseDto.Response;
+                                                Error = responseDto.Error;
+
+                                                RequestSPR = HBV1BookingReq;
+                                                ReponseSPR = ResponseDataHotelBedsV1;
+                                                timerbookprocess.Stop();
+                                                time = timerbookprocess.Elapsed.ToString();
+                                            }
+
+                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), HBV1BookingReq, ResponseDataHotelBedsV1, "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "API Out");
+                                            if (ResponseDataHotelBedsV1 == null || HBV1BookingReq == "" || ResponseDataHotelBedsV1.Trim() == string.Empty)
+                                            {
+                                                bookingStatus = 2;
+                                                //if (ResponseDataHotelBedsV1.ToLower().Contains("error") == true)
+                                                //    bookingStatus = 2;
+                                                if (isNonRefundable)
+                                                    bookingStatus = 1;
+                                                #region SupplierPR Booking
+                                                if (bookingStatus == 6)
+                                                    responsetype = "Success";
+                                                else
+                                                    responsetype = "GeneralError";
+
+                                                try
+                                                {
+                                                    //responsetype = "GeneralError";
+                                                    // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
+                                                    //string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, HBV1BookingReq, ResponseDataHotelBedsV1, Error);
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                }
+                                                #endregion
+                                                //DataRow newRowHotelsBedsV1 = dtAgentVoucher.NewRow();
+                                                //newRowHotelsBedsV1["UserCartId"] = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]);
+                                                //newRowHotelsBedsV1["UserCartDetailId"] = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
+                                                //newRowHotelsBedsV1["AgentVoucherNo"] = " ";
+                                                //newRowHotelsBedsV1["XMLRequest"] = HBV1BookingReq;
+                                                //if (Error != "")
+                                                //    newRowHotelsBedsV1["XMLResponse"] = Error;
+                                                //else
+                                                //    newRowHotelsBedsV1["XMLResponse"] = ResponseDataHotelBedsV1;
+                                                //newRowHotelsBedsV1["SupplierName"] = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName);
+                                                //newRowHotelsBedsV1["RoomStatus"] = bookingStatus;
+                                                //newRowHotelsBedsV1["PackageId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["PackageId"]);
+                                                //dtAgentVoucher.Rows.Add(newRowHotelsBedsV1);
+
+                                                #region BookingData
+                                                AgentVoucher agentVoucher = new AgentVoucher();
+                                                agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                agentVoucher.XMLRequest = HBV1BookingReq;
+                                                if (Error != "")
+                                                    agentVoucher.XMLResponse = Error;
+                                                else
+                                                    agentVoucher.XMLResponse = ResponseDataHotelBedsV1;
+
+                                                agentVoucher.RoomStatus = Convert.ToString(2);
+                                                agentVoucher.SupplierName = suppliername;
+                                                agentVouchers.Add(agentVoucher);
+                                                //bookResponse_1.agentVouchers = agentVouchers;
+                                                #endregion
+                                            }
+                                            else
+                                            {
+
+                                                try
+                                                {
+                                                    DataSet dsHotelBeds = new DataSet();
+                                                    try
+                                                    {
+                                                        string ConvertXml = JsonConvert.DeserializeXmlNode("{\"Row\":" + ResponseDataHotelBedsV1 + "}", "root").InnerXml;
+                                                        dsHotelBeds = _commonMethod.GetDataSetFromXMLString(ConvertXml);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                        bookingStatus = 1;
+
+                                                    }
+
+                                                    string Providerextra = "";
+                                                    if (dsHotelBeds.Tables.Contains("booking") == true)
+                                                    {
+                                                        string APIbookingStatus = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["status"]);
+                                                        //if (dsHotelBeds.Tables["booking"].Rows.Count > 0 && APIbookingStatus == "CONFIRMED")
+                                                        if (dsHotelBeds.Tables["booking"].Rows.Count > 0 && (APIbookingStatus.ToLower() == "confirmed" || APIbookingStatus.ToLower() == "preconfirmed"))
+                                                        {
+                                                            AgentVoucherNo = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["reference"]);
+                                                        }
+                                                        
+                                                        try
+                                                        {
+                                                            if (dsHotelBeds.Tables["supplier"] != null && dsHotelBeds.Tables["supplier"].Rows.Count > 0)
+                                                            {
+                                                                if (dsHotelBeds.Tables["supplier"].Columns.Contains("name"))
+                                                                {
+                                                                    Providerextra = "Payable through " + Convert.ToString(dsHotelBeds.Tables["supplier"].Rows[0]["name"])
+                                                                                    + ", acting as agent for the service operating company, details of which can be provided upon request  VAT: " +
+                                                                                    Convert.ToString(dsHotelBeds.Tables["supplier"].Rows[0]["vatNumber"]) + " Reference: " + AgentVoucherNo;
+                                                                }
+
+                                                            }
+                                                            if (dsHotelBeds.Tables["rates"] != null && dsHotelBeds.Tables["rates"].Rows.Count > 0)
+                                                            {
+                                                                if (dsHotelBeds.Tables["rates"].Columns.Contains("rateComments"))
+                                                                    Providerextra += "  Note:" + Convert.ToString(dsHotelBeds.Tables["rates"].Rows[0]["rateComments"]);
+                                                            }
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString());
+                                                        }
+                                                    }
+                                                    #region SupplierPR Booking
+                                                    if (bookingStatus == 6)
+                                                        responsetype = "Success";
+                                                    else
+                                                        responsetype = "GeneralError";
+
+                                                    try
+                                                    {
+                                                        
+                                                        //string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", tokenData.AgentId, time, responsetype, HBV1BookingReq, ResponseDataHotelBedsV1, Error);
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                    }
+                                                    #endregion
+                                                    #region BookingData
+                                                    AgentVoucher agentVoucher = new AgentVoucher();
+                                                    agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                    agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                    agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                    agentVoucher.XMLRequest = HBV1BookingReq;
+                                                    if (Error != "")
+                                                        agentVoucher.XMLResponse = Error;
+                                                    else
+                                                        agentVoucher.XMLResponse = ResponseDataHotelBedsV1;
+
+                                                    agentVoucher.RoomStatus = Convert.ToString(2);
+                                                    agentVoucher.SupplierName = suppliername;
+                                                    agentVouchers.Add(agentVoucher);
+                                                    //bookResponse_1.agentVouchers = agentVouchers;
+                                                    #endregion
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    #region SupplierPerformanceReport Catch
+                                                    try
+                                                    {
+                                                        Error = ex.Message + ex.StackTrace.ToString();
+                                                        responsetype = "GeneralError";
+                                                       // string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                    }
+                                                    #endregion
+                                                    _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                }
+                                            }
+                                        }
+                                        bookResponse_1.agentVouchers = agentVouchers;
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        try
+                                        {
+                                            Error = ex.Message;
+                                            responsetype = "GeneralError";
+                                            time = "00:00:00.000000";
+                                            //string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                        }
+                                        _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                    }
+                                    break;
+                                #endregion
+                                #region "TBO & TBO_API"
+                                case "tbo":
+                                    //case "tbo_api_xml":
+                                    #region Booking Block For TBO                                   
+                                    //TBO_BookingProcess tBO_BookingProcess = await _tbo.Get_TBO_BookingProcess_json_newversion(dtAgentVoucher, bookRequest, dtCheckPriceReqStructure, dtPassengers, dtCAncellationPolicy, XPDetails, AgentVoucherNo, bookingStatus, UniqueNo, AgentUniqueNo, isNonRefundable, 0, 0, ReferenceNo, tokenData, tokenData.AgentId, bookRequest.SearchKey);
+                                    //AgentVoucherNo = tBO_BookingProcess.AgentVoucherNo;
+                                    //UniqueNo = tBO_BookingProcess.UniqueNo;
+                                    //AgentUniqueNo = tBO_BookingProcess.AgentUniqueNo;
+                                    //bookingStatus = tBO_BookingProcess.bookingStatus;
+                                    //isNonRefundable = tBO_BookingProcess.isNonRefundable;
+                                    //dtPassengers = tBO_BookingProcess.dtPassengers;
+                                    //dtAgentVoucher = tBO_BookingProcess.dtAgentVoucher;
+                                    //dsCartDetails = tBO_BookingProcess.dsCartDetails;
+                                    //dtCAncellationPolicy = tBO_BookingProcess.dtCAncellationPolicy;
+                                    break;
+                                #endregion
+                                #endregion
 
                                 default:
                                     break;
@@ -51075,357 +51329,71 @@ new SqlParameter("@AgentId", AgentId),
             return bookResponse_1;
         }
 
-        public async Task<CancelBookingResponse_newversion> Cancel_newversion(CancelBookingRequest_new CancelPayload, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName)
+        
+        public async Task<CancelBookingResponse_newversion1> Cancel_newversion(CancelBookingRequest_new CancelPayload, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName)
         {
+            CancelBookingResponse_newversion1 cancelBookingResponse_newversion = new CancelBookingResponse_newversion1();
+
             try
             {
-                CancelBookingResponse_newversion cancelBookingResponse_newversion = new CancelBookingResponse_newversion();
-                CancelBookingResponse cancelBookingResponse = new CancelBookingResponse();
-                CancelRS response = new CancelRS();
-                List<HotelRoom_Cancel> hotelRoom = new List<HotelRoom_Cancel>();
-                HotelOption_Cancel hotel = new HotelOption_Cancel();
-                CancelRQ request = CancelPayload.CancelRQ;
-                string PNRNo = ""; //new
 
-                string CancelReson = Convert.ToString(request.Reason).Trim();
-                Int64 BookingIdSearch = Convert.ToInt64(request.BookingId);
-                string SearchBy = "bookingid";
                 int AgentId = 0;
 
                 string AgentType = Convert.ToString(tokenData.Type).ToLower();
-                //string AgentVoucherNo = "";
                 if (Convert.ToString(tokenData.Type) == null)
                     AgentId = tokenData.AgentId;
                 else
                     AgentId = Convert.ToString(tokenData.Type).ToLower() == "subagent" ? Convert.ToInt32(tokenData.ParentId) : Convert.ToInt32(tokenData.AgentId);
 
-                bool NotAllow = false;
-
                 #region SubAgentSP
+
+                if (Convert.ToString(tokenData.Type) == null)
+                    AgentId = tokenData.AgentId;
+                else
+                    AgentId = Convert.ToString(tokenData.Type).ToLower() == "subagent" ? Convert.ToInt32(tokenData.ParentId) : Convert.ToInt32(tokenData.AgentId);
                 DataSet dsAgentDetails = new DataSet();
                 int IsShowSupplier = 0;
-                int CityId = CancelPayload.userCart.CityId;
-                string Nationality = CancelPayload.userCart.Nationality;
-                int CountryID = CancelPayload.userCart.CountryId;
+                dsAgentDetails = await IsSubAgent(AgentId, 1, 0, "", 0, tokenData.Type, tokenData.SubUserId, IsShowSupplier);
 
-                int IsSubAgentCacheActive = Convert.ToInt32(_keySettings.IsSubAgentCacheActive);
-
-                if (IsSubAgentCacheActive == 1)
-                {
-                    dsAgentDetails = await IsSubAgent(tokenData.AgentId, 0, CityId, Nationality, 0, tokenData.Type, tokenData.SubUserId, IsShowSupplier, CountryID, tokenData.RateCategoryId, 1, false, 1, false, false, 20, false, "", 20, 1, tokenData.TanentId);
-                }
-                else
-                {
-                    dsAgentDetails = await IsSubAgent(tokenData.AgentId, 0, CityId, Nationality, 0, tokenData.Type, tokenData.SubUserId, IsShowSupplier, CountryID, tokenData.RateCategoryId, 1, false, 0, false, false, 20, false, "", 20, 1, tokenData.TanentId);
-                }
                 #endregion
-                try
+
+                DataTable DtCancellation = new DataTable();
+                DtCancellation.Columns.Add("Provider", typeof(int));
+                DtCancellation.Columns.Add("AgentVoucherNo", typeof(string));
+                DtCancellation.Columns.Add("PNRNo", typeof(decimal));
+                DtCancellation.Columns.Add("RoomTypeId", typeof(decimal));
+
+                DataRow row = DtCancellation.NewRow();
+
+                row["Provider"] = CancelPayload.CancelRQ.Provider;
+                row["AgentVoucherNo"] = CancelPayload.CancelRQ.AgentVoucherno;
+                row["PNRNo"] = CancelPayload.CancelRQ.ReferenceNo;
+                row["RoomTypeId"] = CancelPayload.CancelRQ.RoomtypId;
+                DtCancellation.Rows.Add(row);
+
+
+                string Status = await SaveHotelCancellationData_newversion(DtCancellation, 0, dsAgentDetails, Convert.ToInt32(CancelPayload.CancelRQ.BookingDetailId), AgentId, CancelPayload.CancelRQ.Reason, AgentType, advancedOptions, userAgent, IP, HostName, tokenData);
+
+                HotelRoom_Cancel1 room = new HotelRoom_Cancel1();
+                room.Message = "Error";
+                room.CancelStatus = 0;
+
+                if (Status != "")
                 {
-                    PNRNo = Convert.ToString(CancelPayload.RefNo);//needcheck
-                    cancelBookingResponse_newversion.PNRNo = PNRNo;
-                    //cancelBookingResponse_newapi.PNRNo = PNRNo;
-                }
-                catch (Exception ex)
-                {
-                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                    room.Message = Status;
+                    room.CancelStatus = 1;
+
                 }
 
-                //if (NotAllow == false)
-                {
-                    // for (int p = 0; p < DtCancellationError.Rows.Count; p++)
-                    {
-                        //Int64 DetailId = Convert.ToInt64(DtCancellationError.Rows[p]["BookingDetailsId"]);
-                        Int64 DetailId = Convert.ToInt64(CancelPayload.OnlineHotelBookingDetailId);
-                        //string status = Convert.ToString(DtCancellationError.Rows[p]["BookingStatus"]);
-                        //if (status == "" || status == "2" || status == "3" || status == "1")
-                        //    continue;
-                        //if (DetailId == request.BookingDetailId || (request.CancelAll == 1 && request.BookingDetailId == 0))
-                        {
-                            HotelRoom_Cancel room = new HotelRoom_Cancel();
-                            //room.RoomTypeName = Convert.ToString(DtCancellationError.Rows[p]["RoomType"]);
-                            room.RoomTypeName = Convert.ToString("");
-                            room.Message = "Error";
-                            room.CancelStatus = 0;
-                            //added by trupti
-                            bool cancelsuccess = false;
-                            try
-                            {
-
-                                int IsBothB2BB2C = 0;
-                                bool IsAmend = false;
-                                bool IsPackage = false;
-
-                                string UserNameType = "";
-                                //decimal CancellationAmounts = Convert.ToDecimal(DtCancellation.Rows[p]["CancellationCharge"]);
-                                //decimal AgentCancellationAmount = Convert.ToDecimal(DtCancellation.Rows[p]["AgentChargeAmount"]);
-
-                                DataSet ds = new DataSet();
-                                string ThirdPartyCountryId = "";
-                                string Supplier = Convert.ToString(CancelPayload.Provider).ToLower();
-
-                                string CancellationXML = "";
-                                string ResponseData = "";
-                                string Error = "";
-
-                                #region "Get Search Config"
-                                UserNameType = Convert.ToString(dsAgentDetails.Tables[0].Rows[0]["AgentCode"]);
-                                DataRow[] SupplierDetailsCommon = null;
-                                string AgentVoucherNo_Cancle = Convert.ToString(CancelPayload.AgentVoucherNo);
-                                string PNRNO_Cancel = Convert.ToString(CancelPayload.RefNo);
-                                if (dsAgentDetails != null && dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
-                                {
-                                    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + (Supplier == "oth" ? Convert.ToString(_keySettings.IsWithinearth) == "1" ? "withinearth" : "oth" : Supplier.ToLower().IndexOf("_xtg") >= 0 ? "xtg" : Supplier) + "'");// for expedia
-                                }
-                                #endregion
-
-                                string SupplierTocheck = Supplier;
-                                if (Supplier.ToString().ToLower().IndexOf("xpedia") >= 0)
-                                    SupplierTocheck = "xpedia";
-                                if (Supplier.ToString().ToLower().IndexOf("_xtg") >= 0)
-                                    SupplierTocheck = "XTG";
-
-                                string TechName = await GetTechNameBySupplierName(Supplier);
-                                #region"All suppliersCode"
-                                try
-                                {
-                                    switch (TechName.ToUpper())
-                                    {
-                                        case "OTH":
-                                        case "WITHINEARTH":
-                                            break;
-                                        case "EXPEDIA":
-                                            #region "EAN_B2B and EAN_PKG"
-                                            //if (Supplier.ToString().ToUpper() == "EAN_B2B" || Supplier.ToString().ToUpper() == "EAN_B2BV3" || Supplier.ToString().ToUpper() == "EAN_PKG" || Supplier.ToString().ToUpper() == "EAN_PKGV3")
-                                            {
-
-                                                string CancelToken = "";
-                                                string EAN_RefNo = AgentVoucherNo_Cancle;// Convert.ToString(DtCancellationError.Rows[0]["AgentVoucherNo"]);
-                                                PNRNo = Convert.ToString(PNRNO_Cancel);// Convert.ToString(DtCancellationError.Rows[0]["PNRNo"]);
-                                                string XMLProvider = Supplier.ToString();
-
-                                                //if (dtItinerary.Rows.Count > 0)
-                                                {
-
-                                                    string URLRetrive = Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]);
-                                                    string Sign = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
-                                                    string ApiKey = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
-                                                    string Version = Convert.ToString(SupplierDetailsCommon[0]["version"]);
-                                                    string platform = userAgent;
-                                                    string echoToken = "";// Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["EachoToken"]); //Convert.ToString(HttpContext.Current.Session["EchoToken"]);
-
-                                                    EAN_RefNo = EAN_RefNo.Replace("$$$", "-");
-
-                                                    string[] spitid = EAN_RefNo.Split(new String[] { "-" }, StringSplitOptions.None);
-                                                    string ItineraryID = spitid[0].ToString();
-                                                    string RetriveBookRes = "";
-
-                                                    if (true)// (Supplier.ToString().ToUpper() == "EAN_B2BV3" || Supplier.ToString().ToUpper() == "EAN_PKGV3")
-                                                    {
-                                                        ResponseDto responseDto = await _expedia.GetEANResponse(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
-                                                        RetriveBookRes = responseDto.Response;
-                                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia), Convert.ToString(RetriveBookRes), "After Request hit Retrive Booking", Supplier.ToString(), "Request Confirm", PNRNo, "WithinEarth");
-                                                    }
-
-
-                                                    if (RetriveBookRes != "")
-                                                    {
-                                                        RootObjectBook_EAN RootBook = JsonConvert.DeserializeObject<RootObjectBook_EAN>(RetriveBookRes);
-                                                        if (RootBook != null)
-                                                        {
-                                                            string LinkDelete = "";
-                                                            string LinkMethod = "";
-
-                                                            for (int a = 0; a < RootBook.rooms.Count; a++)
-                                                            {
-                                                                if (RootBook.rooms[a].links.cancel.href != null)
-                                                                    LinkDelete = RootBook.rooms[a].links.cancel.href;
-                                                                if (RootBook.rooms[a].links.cancel.method != null)
-                                                                    LinkMethod = RootBook.rooms[a].links.cancel.method;
-
-                                                                if (LinkMethod != "" && LinkDelete != "")
-                                                                {
-                                                                    ResponseDto responseDto2 = await _expedia.GetEANResponse(URLRetrive + LinkDelete, 120000, Supplier, Sign, ApiKey, echoToken, platform, LinkMethod, "", "", IP);
-                                                                    string BookCancelRes = responseDto2.Response;
-                                                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + LinkDelete), Convert.ToString(BookCancelRes), "After Request hit Cancel Booking after Cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNo), "WithinEarth");
-
-                                                                    if (BookCancelRes == "")
-                                                                    {
-                                                                        string RetriveBookResCancel = "";
-                                                                        if (true)//(Supplier.ToString().ToUpper() == "EAN_B2BV3" || Supplier.ToString().ToUpper() == "EAN_PKGV3")
-                                                                        {
-                                                                            ResponseDto responseDto3 = await _expedia.GetEANResponse(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
-                                                                            RetriveBookResCancel = responseDto3.Response;
-                                                                            _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia), Convert.ToString(RetriveBookResCancel), "Retrive Booking request hit cancellation time after cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
-                                                                        }
-
-
-                                                                        if (RetriveBookResCancel != "" || RetriveBookResCancel != null)
-                                                                        {
-                                                                            RootObjectBook_EAN Root = JsonConvert.DeserializeObject<RootObjectBook_EAN>(RetriveBookResCancel);
-                                                                            if (Root != null)
-                                                                            {
-                                                                                string BookStatus = "";
-                                                                                if (Root.rooms[a].status != null)
-                                                                                    BookStatus = Root.rooms[a].status;
-                                                                                if (BookStatus.ToLower() != "canceled")
-                                                                                {
-                                                                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookResCancel), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                                                    cancelsuccess = false;
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    cancelsuccess = true;
-                                                                                }
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookResCancel), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                                                cancelsuccess = false;
-                                                                            }
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookResCancel), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                                            cancelsuccess = false;
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(BookCancelRes), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                                        cancelsuccess = false;
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookRes), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                                    cancelsuccess = false;
-                                                                }
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookRes), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                            cancelsuccess = false;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookRes), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                        cancelsuccess = false;
-                                                    }
-                                                }
-
-                                            }
-                                            #endregion
-                                            break;
-                                        case "DIDA":
-                                            #region "Dida"
-                                            {
-                                                string CancelConfirmRequest = "";
-                                                try
-                                                {
-                                                    string RefNO = Convert.ToString(AgentVoucherNo_Cancle);
-                                                    string ID = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
-                                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
-                                                    string PreCancelltion_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.Dida.Dida_PreCancel_Action);
-                                                    string CancelConfirm_URl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.Dida.Dida_CancelConfirm_Action);
-                                                    //Hit PreCancelltion Req before cancellation
-                                                    string ErrorLog = "";
-                                                    string Req = "";
-
-                                                    string PreCancelltionReq = _dida.DidaPreCancelltionReq(RefNO, ID, Password, PreCancelltion_URL);
-                                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), PreCancelltionReq, "", "Before Hit Dida PreCancelltion", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
-
-                                                    ResponseDto responseDto = await _dida.GetDidaResponse(PreCancelltionReq, PreCancelltion_URL, RefNO);
-                                                    string ResponseDataDida = responseDto.Response;
-                                                    ErrorLog = responseDto.Error;
-                                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Req, ResponseDataDida + ErrorLog, "After Hit Dida PreCancelltion", Convert.ToString(Supplier), "Response Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
-
-
-                                                    ResponseDataDida = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(ResponseDataDida, "root").InnerXml; //#04-NOV-2024 K2
-                                                    DataSet DidaResponse = _commonMethod.GetDataSetFromXMLString(ResponseDataDida);
-                                                    string ConfirmID = Convert.ToString(DidaResponse.Tables["Success"].Rows[0]["ConfirmID"]);
-
-
-
-                                                    CancelConfirmRequest = _dida.DidaCancelConfirmReq(RefNO, ConfirmID, ID, Password);
-
-                                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancelConfirmRequest), "-", "Before Request hit Cancel", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
-
-                                                    ResponseDto responseDto1 = await _dida.GetDidaResponse(CancelConfirmRequest, CancelConfirm_URl, RefNO);
-
-                                                    string ResponseDida = responseDto1.Response;
-                                                    Error = responseDto1.Error;
-
-                                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancelConfirmRequest), Convert.ToString(ResponseDida) + Error, "After Request hit Cancel", Convert.ToString(Supplier), "Response Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
-
-                                                    if (ResponseDida == string.Empty || !ResponseDida.Contains("Success"))
-                                                    {
-                                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancelConfirmRequest), Convert.ToString(ResponseDida), "After Request hit Cancel", Convert.ToString(Supplier), "Hotel", Convert.ToString(PNRNO_Cancel), "WithinEarth");
-                                                        cancelsuccess = false;
-                                                    }
-                                                    else
-                                                        cancelsuccess = true;
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
-                                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancelConfirmRequest), ex.Message.ToString(), "From cancellation Exception", Convert.ToString(Supplier), "Hotel", Convert.ToString(PNRNO_Cancel), "WithinEarth");
-                                                    return null;
-                                                }
-                                            }
-                                            #endregion
-                                            break;
-
-
-                                        default:
-                                            break;
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    _ = _exception.ErrorBooking(ex, AgentId.ToString());
-                                    return null;
-                                }
-                                #endregion
-
-                            }
-                            catch (Exception ex)
-                            {
-                                _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
-                                return null;
-                            }
-
-                            //end
-                            //bool Status = await SaveHotelCancellationData_newversion(CancelPayload, 0, dsAgentDetails, Convert.ToInt32(DetailId), AgentId, request.Reason, AgentType, advancedOptions, request.CancelOldBooking, userAgent, IP, HostName, tokenData);
-                            if (cancelsuccess != false)
-                            {
-                                room.Message = "Room  Cancelled Successfully!!!";//need check
-                                room.CancelStatus = 1;
-
-
-                            }
-                            else
-                            {
-
-                            }
-                            hotelRoom.Add(room);
-                        }
-                    }
-                }
-                hotel.BookingId = BookingIdSearch;
-                hotel.HotelRooms = hotelRoom;
-                response.HotelOption = hotel;
-
-                cancelBookingResponse.CancelRS = response;
-                cancelBookingResponse_newversion.CancelBookingResponse = cancelBookingResponse;
+                cancelBookingResponse_newversion.hotelRoom_Cancel = room;
                 return cancelBookingResponse_newversion;
 
             }
             catch (Exception ex)
             {
                 _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
-                return null;
+                cancelBookingResponse_newversion.Error.Add(GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError + "IP:" + IP));
+                return cancelBookingResponse_newversion;
             }
         }
         public async Task<CancelBookingResponse_newapi> CancelBooking(CancelBookingRequest RQ, TokenData tokenData, AdvancedOptions advancedOptions, string userAgent, string IP, string HostName)
@@ -53761,7 +53729,8 @@ new SqlParameter("@AgentId", AgentId),
                                     string ClientReferancreNo = Convert.ToString(strAgentVoucherNo[0]);
                                     string TBOBookingCancelRQ = _tbo.Get_TBO_BookingCancelRQ_json(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), SupplierDetailsCommon, CancelReson);
                                     _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(TBOBookingCancelRQ), "-", "Before Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
-                                    string TBO_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(TboInfo.Tbo_V1Cancel);
+                                    //string TBO_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(TboInfo.Tbo_V1Cancel);
+                                    string TBO_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.TBO.V1Cancel);
                                     #endregion
 
                                     #region Booking Cancel RS
@@ -53789,7 +53758,8 @@ new SqlParameter("@AgentId", AgentId),
                                         _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(BookingDetailsRequest), "-", "Before Request hit bookingDetail", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
 
                                         string ResponseDetailsBooking = "";
-                                        string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(TboInfo.Tbo_V1BookingDetail);
+                                        //string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(TboInfo.Tbo_V1BookingDetail);
+                                        string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.TBO.V1BookingDetail);
                                         ResponseDto responseDto1 = await _tbo.GetTrvcoResponseTBOJson(Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), BookingDetailsRequest, Url, 120000, Supplier);
                                         ResponseDetailsBooking = responseDto1.Response;
                                         Error = responseDto1.Error;
@@ -53867,7 +53837,8 @@ new SqlParameter("@AgentId", AgentId),
                                             _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(BookingDetailsRequest), "-", "Before Request hit bookingDetail", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
 
                                             string ResponseDetailsBooking = "";
-                                            string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(TboInfo.Tbo_V1BookingDetail);
+                                           // string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(TboInfo.Tbo_V1BookingDetail);
+                                            string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.TBO.V1BookingDetail);
                                             ResponseDto responseDto2 = await _tbo.GetTrvcoResponseTBOJson(Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), BookingDetailsRequest, Url, 120000, Supplier);
                                             ResponseDetailsBooking = responseDto2.Response;
                                             Error = responseDto2.Error;
@@ -56715,45 +56686,31 @@ new SqlParameter("@AgentId", AgentId),
             }
         }
 
-        public async Task<bool> SaveHotelCancellationData_newversion(CancelBookingRequest_new CancelPayload, int p, DataSet dsAgentDetails, int DetailId, int AgentId, string CancelReson, string AgentType, AdvancedOptions AdvancedOptions, int CancelOldBooking, string userAgent, string IP, string HostName, TokenData tokenData)
+        public async Task<string> SaveHotelCancellationData_newversion(DataTable DtCancellation, int p, DataSet dsAgentDetails, int DetailId, int AgentId, string CancelReson, string AgentType, AdvancedOptions AdvancedOptions, string userAgent, string IP, string HostName, TokenData tokenData)
         {
-            bool cancelsuccess = false;
             try
             {
 
-                int IsBothB2BB2C = 0;
-                bool IsAmend = false;
-                bool IsPackage = false;
+                string Supplier = Convert.ToString(DtCancellation.Rows[p]["Provider"]).ToLower();
 
-                string UserNameType = "";
-                //decimal CancellationAmounts = Convert.ToDecimal(DtCancellation.Rows[p]["CancellationCharge"]);
-                //decimal AgentCancellationAmount = Convert.ToDecimal(DtCancellation.Rows[p]["AgentChargeAmount"]);
-
-                DataSet ds = new DataSet();
-                string ThirdPartyCountryId = "";
-                string Supplier = Convert.ToString(CancelPayload.Provider).ToLower();
 
                 string CancellationXML = "";
                 string ResponseData = "";
                 string Error = "";
-
                 #region "Get Search Config"
-                UserNameType = Convert.ToString(dsAgentDetails.Tables[0].Rows[0]["AgentCode"]);
+
+
+                string UserNameType = Convert.ToString(dsAgentDetails.Tables[0].Rows[0]["AgentCode"]);
                 DataRow[] SupplierDetailsCommon = null;
-                string AgentVoucherNo_Cancle = Convert.ToString(CancelPayload.AgentVoucherNo);
-                string PNRNO_Cancel = Convert.ToString(CancelPayload.RefNo);
+
+                string AgentVoucherNo_Cancle = Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]);
+                string PNRNO_Cancel = Convert.ToString(DtCancellation.Rows[p]["PNRNo"]);
                 if (dsAgentDetails != null && dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
                 {
                     SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + (Supplier == "oth" ? Convert.ToString(_keySettings.IsWithinearth) == "1" ? "withinearth" : "oth" : Supplier.ToLower().IndexOf("_xtg") >= 0 ? "xtg" : Supplier) + "'");// for expedia
                 }
+
                 #endregion
-
-                string SupplierTocheck = Supplier;
-                if (Supplier.ToString().ToLower().IndexOf("xpedia") >= 0)
-                    SupplierTocheck = "xpedia";
-                if (Supplier.ToString().ToLower().IndexOf("_xtg") >= 0)
-                    SupplierTocheck = "XTG";
-
                 string TechName = await GetTechNameBySupplierName(Supplier);
                 #region"All suppliersCode"
                 try
@@ -56763,20 +56720,1367 @@ new SqlParameter("@AgentId", AgentId),
                         case "OTH":
                         case "WITHINEARTH":
                             break;
+                        #region"THird Party"
+                        case "WEBBEDS":
+                            #region "DOTW"
+                            //if (Supplier.ToString().ToUpper() == "DOTW")
+                            {
+                                if (AgentVoucherNo_Cancle.ToLower() != "test")
+                                {
+                                    //AgentVoucherNo.Substring( AgentVoucherNo.LastIndexOf("-")+1)
+                                    CancellationXML = _webbeds.GetDotwCancelRequest(AgentVoucherNo_Cancle, SupplierDetailsCommon, "0", false);
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit can", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                    if (CancellationXML == "")
+                                        return "";
+                                    ResponseDto responseDto = await _commonMethod.GetSupplierResponse("", CancellationXML, Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]), 100000, Supplier);
+                                    ResponseData = responseDto.Response;
+                                    Error = responseDto.Error;
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancellationXML), ResponseData, "aftere Request hit can", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                    if (Supplier.ToString().ToUpper() != "OTH" && ResponseData.ToLower().Contains("error"))
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(ResponseData), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
+                                        return "";
+                                    }
+
+                                    DataSet ResponseDataBooking = new DataSet();
+                                    System.IO.StringReader sr1 = new System.IO.StringReader(ResponseData);
+                                    ResponseDataBooking.ReadXml(sr1);
+                                    string CancellationAmount = "0";
+                                    if (ResponseDataBooking.Tables["charge"] != null && ResponseDataBooking.Tables["charge"].Columns["formatted"] != null)
+                                        CancellationAmount = ResponseData.Substring(ResponseData.IndexOf("<charge>") + 8, ResponseData.IndexOf("<formatted>") - (ResponseData.IndexOf("<charge>") + 8));//Convert.ToString(ResponseDataBooking.Tables["charge"].Rows[0]["formatted"]);
+
+                                    string referencenumberdata = Guid.NewGuid().ToString().Substring(0, 7);
+                                    CancellationXML = _webbeds.GetDotwCancelRequest(AgentVoucherNo_Cancle, SupplierDetailsCommon, CancellationAmount, true);
+
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                    ResponseDto responseDto1 = await _commonMethod.GetSupplierResponse("", CancellationXML, Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]), 100000, Supplier);
+                                    ResponseData = responseDto1.Response;
+                                    Error = responseDto1.Error;
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancellationXML), ResponseData, "Before Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                    if (Supplier.ToString().ToUpper() != "OTH" && ResponseData.ToLower().Contains("error"))
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(ResponseData), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
+                                        return "";
+                                    }
+
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "DARINA":
+                            #region "Darina"
+                            //if (Supplier.ToString().ToUpper() == "DARINA")
+                            {
+                                //DataRow[] SupplierDetailsCommon = null;
+                                //XMLHotelBookingCommon objxml = new XMLHotelBookingCommon();
+                                //DataSet dsAgentDetails = dsAgentDetails = objxml.IsSubAgent(Convert.ToInt32(Common.getSession("UserId")));
+
+                                //if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                //{
+                                //	SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='Darina'");// for expedia
+                                //}
+
+                                string Darina_OtherUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]); //Added on 18-Dec-2025
+
+                                #region "GetBooking Details"
+                                string GetFileRequest = "<soap:Envelope xmlns:xsi =\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+                                                        "<soap:Body>" +
+                                                             "<GetFileDetails xmlns=\"http://travelcontrol.softexsw.us/\">" +
+                                                              _darina.GetDarinaSecurityData(SupplierDetailsCommon) +
+                                                               "<FileID>" + AgentVoucherNo_Cancle + "</FileID>" +
+                                                               "</GetFileDetails>" +
+                                                          "</soap:Body>" +
+                                                       "</soap:Envelope>";
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(GetFileRequest), "-", "Before Request hit booking detail", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                ResponseDto responseDto = await _commonMethod.GetSupplierResponse("", GetFileRequest, Darina_OtherUrl, 60000, Supplier);
+                                string GetFileResponse = responseDto.Response;
+                                Error = responseDto.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(GetFileRequest), GetFileResponse, "after Request hit booking detail", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                DataSet dsFileResponse = new DataSet();
+                                if (GetFileResponse != string.Empty)
+                                    dsFileResponse = _commonMethod.GetDataSetFromXMLString(GetFileResponse);
+
+                                if (Supplier.ToString().ToUpper() != "OTH" && dsFileResponse.Tables["ServiceInfo"] == null)
+                                {
+
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(GetFileResponse), Convert.ToString(GetFileResponse), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
+                                    return "";
+
+
+                                }
+                                string ServiceID = Convert.ToString(dsFileResponse.Tables["ServiceInfo"].Rows[0]["Serial"]);
+                                #endregion
+
+                                #region "Check Cancel charges"
+                                string CheckChargesRequest = "<soap:Envelope xmlns:xsi =\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+                                                            "<soap:Body>" +
+                                                              "<CheckHotelCancellationCharges xmlns=\"http://travelcontrol.softexsw.us/\">" +
+                                                                 _darina.GetDarinaSecurityData(SupplierDetailsCommon) +
+                                                               "<FileID>" + AgentVoucherNo_Cancle + "</FileID>" +
+                                                          "<ServiceID>" + ServiceID + "</ServiceID>" +
+                                                     "</CheckHotelCancellationCharges>" +
+                                                    "</soap:Body>" +
+                                                   "</soap:Envelope>";
+
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CheckChargesRequest), "-", "Before Request hit check", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                ResponseDto responseDto1 = await _commonMethod.GetSupplierResponse("", CheckChargesRequest, Darina_OtherUrl, 60000, Supplier);
+                                string CheckChargesResponse = responseDto1.Response;
+                                Error = responseDto1.Error;
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CheckChargesRequest), CheckChargesResponse, "after Request hit check", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                DataSet dsCheckResponse = new DataSet();
+                                if (CheckChargesResponse != string.Empty)
+                                    dsCheckResponse = _commonMethod.GetDataSetFromXMLString(CheckChargesResponse);
+
+                                if (Supplier.ToString().ToUpper() != "OTH" && (dsCheckResponse.Tables["CheckHotelCancellationChargesResult"] == null))
+                                {
+
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CheckChargesRequest), Convert.ToString(CheckChargesResponse), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
+                                    return "";
+
+
+                                }
+                                string CancelCode = Convert.ToString(dsCheckResponse.Tables["CheckHotelCancellationChargesResult"].Rows[0]["CancelCode"]);
+
+                                #endregion
+
+                                #region "Final Cancel Process "
+                                string CancelRequest = "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+                                                          "<soap:Body>" +
+                                                              " <CancelHotelReservation xmlns=\"http://travelcontrol.softexsw.us/\">" +
+                                                                 _darina.GetDarinaSecurityData(SupplierDetailsCommon) +
+                                                               "<FileID>" + AgentVoucherNo_Cancle + "</FileID>" +
+                                                                 "<ServiceID>" + ServiceID + "</ServiceID>" +
+                                                                 "<CancelCode>" + CancelCode + "</CancelCode>" +
+                                                                 "</CancelHotelReservation>" +
+                                                             "</soap:Body>" +
+                                                            "</soap:Envelope>";
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancelRequest), "-", "before Request hit cancel", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                ResponseDto responseDto2 = await _commonMethod.GetSupplierResponse("", CancelRequest, Darina_OtherUrl, 60000, Supplier);
+                                string CancelResponse = responseDto2.Response;
+                                Error = responseDto2.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancelRequest), CancelResponse, "after Request hit cancel", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+
+                                DataSet dsCancel = new DataSet();
+                                if (CancelResponse != string.Empty)
+                                    dsCancel = _commonMethod.GetDataSetFromXMLString(CancelResponse);
+
+                                if (Supplier.ToString().ToUpper() != "OTH" && (dsCancel.Tables["CancelHotelReservationResponse"] == null))
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancelRequest), Convert.ToString(CancelResponse), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
+                                    return "";
+                                }
+                                string msg = Convert.ToString(dsCancel.Tables["CancelHotelReservationResponse"].Rows[0]["CancelHotelReservationResult"]);
+                                //string GetFileRequest_Confirm = "<soap:Envelope xmlns:xsi =\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+                                //                       "<soap:Body>" +
+                                //                            "<GetFileDetails xmlns=\"http://travelcontrol.softexsw.us/\">" +
+                                //                             Common.GetDarinaSecurityData(SupplierDetailsCommon) +
+                                //                              "<FileID>" + AgentVoucherNo_Cancle + "</FileID>" +
+                                //                              "</GetFileDetails>" +
+                                //                         "</soap:Body>" +
+                                //                      "</soap:Envelope>";
+                                //calls.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(GetFileRequest_Confirm), "-", "Before Request hit booking detail to get confirmation", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                //string GetFileResponse_Confirm = XMLHotelBookingCommon.GetSupplierResponse("", GetFileRequest, XMLHotelBookingCommon.Darina_OtherUrl, 20000);
+
+                                //calls.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(GetFileRequest), GetFileResponse_Confirm, "after Request hit booking detail to get confirmation", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                //DataSet dsFileResponse_Confirm = new DataSet();
+                                //if (GetFileResponse_Confirm != string.Empty)
+                                //    dsFileResponse_Confirm = Common.GetDataSetFromXMLString(GetFileResponse_Confirm);
+                                //string Confirmation = Convert.ToString(dsFileResponse_Confirm.Tables["GetFileDetailsResult"].Rows[0]["ResultTxt"]);
+                                if (msg.ToLower().Trim() != "success")// && Confirmation.ToLower().Replace(" ", "") != "reservationnotfound")
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancelRequest), Convert.ToString(CancelResponse), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
+                                    return "";
+                                }
+                                #endregion
+
+                            }
+                            #endregion
+                            break;
+                        case "JUNIPER":
+                            #region "JuniperAll"
+                            {
+                                #region Booking Cancel RQ, URL
+
+                                if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+
+                                string FastPayHotelsBookingCancelRQ = _juniper.Get_JuniperNew_BookingCancelRQ(AgentVoucherNo_Cancle, SupplierDetailsCommon, Supplier);
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(FastPayHotelsBookingCancelRQ), "-", "Before Request hit booking[" + Supplier + "]", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                string FastPayHotels_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + JuniperInfo.Booking;
+                                #endregion
+
+                                #region Booking Cancel RS
+                                ResponseDto responseDto = await _commonMethod.GetSupplierResponse("", FastPayHotelsBookingCancelRQ, FastPayHotels_Url, 120000, Supplier);
+                                string FastPayHotelsBookingCancelRS = responseDto.Response;
+                                Error = responseDto.Error;
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(FastPayHotelsBookingCancelRQ), Convert.ToString(FastPayHotelsBookingCancelRS), "After Request hit booking[" + Supplier + "]", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                DataSet dsFastPayHotels_RS = _commonMethod.GetDataSetFromXMLString(FastPayHotelsBookingCancelRS);
+                                #endregion
+
+                                #region Response Error Block 
+                                if (Supplier.ToString().ToUpper() != "OTH" && FastPayHotelsBookingCancelRS == "")
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(FastPayHotelsBookingCancelRQ), Convert.ToString(FastPayHotelsBookingCancelRS), "From Cancellation Page[" + Supplier + "]", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
+                                    return "";
+                                }
+
+                                if (dsFastPayHotels_RS.Tables.Contains("CancelInfo") == true && dsFastPayHotels_RS.Tables["CancelInfo"] != null)
+                                {
+                                    string StatusCancelled = Convert.ToString(dsFastPayHotels_RS.Tables["CancelInfo"].Rows[0]["BookingCodeState"]);
+
+                                    if (StatusCancelled.ToLower() != "cac" && StatusCancelled.ToLower() != "can")
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(FastPayHotelsBookingCancelRQ), Convert.ToString(FastPayHotelsBookingCancelRS), "From Cancellation Page[" + Supplier + "]", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
+                                        return "";
+                                    }
+                                }
+                                else if (dsFastPayHotels_RS.Tables.Contains("Reservation"))
+                                {
+                                    try
+                                    {
+                                        if (dsFastPayHotels_RS.Tables.Contains("Reservation"))
+                                        {
+                                            if (dsFastPayHotels_RS.Tables["Reservation"].Rows.Count > 0)
+                                            {
+
+                                                string StatusCancelled = Convert.ToString(dsFastPayHotels_RS.Tables["Reservation"].Rows[0]["Status"]);
+
+                                                if (StatusCancelled.ToLower() != "cac" && StatusCancelled.ToLower() != "can")
+                                                {
+                                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(FastPayHotelsBookingCancelRQ), Convert.ToString(FastPayHotelsBookingCancelRS), "From Cancellation Page[" + Supplier + "]", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
+                                                    return "";
+                                                }
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    }
+                                }
+                                else
+                                    return "";
+
+
+
+                                #endregion
+                            }
+                            #endregion
+                            break;
+                        case "HOTELSPRO":
+                            #region "HotelsPro"
+                            // if (Supplier.ToString().ToUpper() == "HOTELSPRO")
+                            {
+
+                                string[] arrBookRef = Convert.ToString(AgentVoucherNo_Cancle).Split('|');
+                                string BookRef = "";
+                                if (arrBookRef.Length > 0)
+                                    BookRef = arrBookRef[0];
+                                string Errorresponse = "";
+                                string VoucherNumber = "cancel/" + BookRef;
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(VoucherNumber), "-", "Before Request hit booking", Supplier, "Request Confirm", PNRNO_Cancel, "Withinearh APIOUT");
+                                ResponseDto responseDto = await _hotelspro.ProResponse(VoucherNumber, Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), 60000);
+                                string HotelsProResponse = responseDto.Response;
+                                Errorresponse = responseDto.Error;
+                                if (HotelsProResponse.ToLower().Contains("error") == true || HotelsProResponse.Trim() == string.Empty)
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(VoucherNumber), Convert.ToString(Errorresponse), "From Cancellation Page", Supplier, "Hotel", PNRNO_Cancel, "Withinearh APIOUT");
+                                    return "";
+                                }
+                                else
+                                {
+                                    dynamic response = JObject.Parse(HotelsProResponse);
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(VoucherNumber), Convert.ToString(HotelsProResponse), "After Request hit booking", Supplier, "Request Confirm", PNRNO_Cancel, "Withinearh APIOUT");
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "HOTELBEDS":
+                            #region "HotelBedsV1"
+                            //  if (Supplier.ToString().ToUpper() == "HOTELBEDSV1")
+                            {
+                                try
+                                {
+                                    //string VoucherNumber = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/1.0/bookings/" + AgentVoucherNo_Cancle;
+                                    string VoucherNumber = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings2 + AgentVoucherNo_Cancle;
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), VoucherNumber, "-", "Before Request hit cancelbooking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                    ResponseDto responseDto = await _hotelbeds.GetHotelBedsSupplierResponse(VoucherNumber, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), 60000, "", "DELETE", Convert.ToString(Supplier), null, false, "", true);
+                                    string HotelsBedsV1Response = responseDto.Response;
+
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), VoucherNumber, HotelsBedsV1Response, "After cancelbooking Response", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                    if (HotelsBedsV1Response.ToLower().Contains("error") == true || HotelsBedsV1Response.Trim() == string.Empty)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(VoucherNumber), Convert.ToString(HotelsBedsV1Response), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
+                                        return "";
+                                    }
+                                    else
+                                    {
+                                        try
+                                        {
+                                            XmlDocument xd = new XmlDocument();
+                                            HotelsBedsV1Response = "{ \"rootNode\": {" + HotelsBedsV1Response.Trim().TrimStart('{').TrimEnd('}') + "} }";
+                                            xd = (XmlDocument)JsonConvert.DeserializeXmlNode(HotelsBedsV1Response);
+                                            DataSet dsHotelBeds = new DataSet();
+                                            dsHotelBeds.ReadXml(new XmlNodeReader(xd));
+                                            string BookingStatus = "";
+                                            if (dsHotelBeds.Tables.Contains("booking") == true)
+                                            {
+                                                if (dsHotelBeds.Tables["booking"].Rows.Count > 0 && dsHotelBeds.Tables["booking"].Columns.Contains("status") == true)
+                                                    BookingStatus = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["status"]);
+                                            }
+                                            if (BookingStatus.ToUpper() == "CANCELLED")
+                                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(VoucherNumber), Convert.ToString(HotelsBedsV1Response), "After Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                            _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), VoucherNumber, ex.Message, "Error block 1", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                            return "";
+                                        }
+                                    }
+                                }
+                                catch (Exception EX)
+                                {
+                                    _ = _exception.ErrorNew(EX, _LogAPI.CancelBooking);
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/1.0/bookings/" + AgentVoucherNo_Cancle, EX.Message, "Error block 2", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                    return "";
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "TRAVELLANDA":
+                            #region "TravelLanda"
+                            string CancellationTravelLanda = "";
+                            Error = "";
+                            //if (Supplier.ToString().ToUpper() == "TRAVELLANDA")
+                            {
+                                CancellationTravelLanda = _travellanda.GetTravelLandaCancellationRequest(AgentVoucherNo_Cancle, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]));
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(CancellationTravelLanda), "-", "Before Request hit booking", Supplier, "Request Confirm", PNRNO_Cancel, "Withinearth APIOUT");
+                                string sentData = "xml=" + CancellationTravelLanda;
+                                ResponseDto responseDto = await _commonMethod.Response_Supplier(sentData, Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]), 60000, "TravelLanda");
+                                string ResponseTL = responseDto.Response;
+                                Error = responseDto.Error;
+                                if (ResponseTL.ToLower().Contains("error") || ResponseTL == null || ResponseTL == string.Empty)
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(CancellationTravelLanda), Convert.ToString(ResponseTL), "From Cancellation Page", Supplier, "Hotel", PNRNO_Cancel, "Withinearth APIOUT");
+                                    return "";
+                                }
+                                else
+                                {
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(CancellationTravelLanda), Convert.ToString(ResponseTL), "After Request hit booking", Supplier, "Request Confirm", PNRNO_Cancel, "Withinearth APIOUT");
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "XTG":
+                            #region "XTG"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToLower().IndexOf("_xtg") >= 0)
+                            {
+                                try
+                                {
+                                    XMLTravelGate.XTG_CancelRQ xTG_CancelRQ = new XMLTravelGate.XTG_CancelRQ();
+                                    XMLTravelGate.CancelInput cancelInput = new XMLTravelGate.CancelInput();
+                                    XMLTravelGate.Reference reference = new XMLTravelGate.Reference();
+                                    string RoomTypeId = Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]);
+                                    string[] spitid = RoomTypeId.Split(new String[] { "$$" }, StringSplitOptions.None);
+                                    string context = spitid[1].ToString();
+                                    string accessCode = spitid[2].ToString();
+                                    string hotelCode = spitid[3].ToString();
+                                    string Currency = spitid[4].ToString();
+
+                                    string XTGSiteID = Convert.ToString(SupplierDetailsCommon[0]["UserID"]);
+                                    string XTGApiKey = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    string XTGWebUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+                                    XMLTravelGate.Settings settings = new XMLTravelGate.Settings();
+                                    settings.client = XTGSiteID;
+                                    if (context.ToLower() == "tthot")
+                                        context = "LOGI";
+                                    settings.context = context;
+                                    settings.auditTransactions = true;
+                                    settings.timeout = 120000;
+                                    settings.testMode = false;
+                                    if (context.ToLower() == "wtetest")
+                                        settings.testMode = true;
+                                    xTG_CancelRQ.settings = settings;
+
+
+
+                                    cancelInput.accessCode = accessCode;
+                                    cancelInput.hotelCode = hotelCode;
+                                    cancelInput.language = "en";
+                                    //Added Meituan_xtg on 22-JAN-26
+                                    if (DtCancellation.Rows[0]["Provider"].ToString().ToLower() == "meituan_xtg" || DtCancellation.Rows[0]["Provider"].ToString().ToLower() == "amerilink_xtg" || DtCancellation.Rows[0]["Provider"].ToString().ToLower() == "easemytrip_xtg" || DtCancellation.Rows[0]["Provider"].ToString().ToLower() == "pkfare_xtg" || DtCancellation.Rows[0]["Provider"].ToString().ToLower() == "ostrovok_xtg")
+                                    {
+                                        reference.client = Convert.ToString(DtCancellation.Rows[0]["usercartdetailid"]);
+                                    }
+                                    else
+                                    {
+                                        reference.client = "";
+                                    }
+                                    reference.supplier = DtCancellation.Rows[0]["Provider"].ToString().ToLower() == "veturistravel_xtg" ? Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]).Split('~')[0] : Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+                                    cancelInput.reference = reference;
+
+                                    xTG_CancelRQ.CancelInput = cancelInput;
+                                    string RequestString = JsonConvert.SerializeObject(xTG_CancelRQ);
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), AgentId.ToString(), Convert.ToString(RequestString), "-", "Before Request hit ConfirmCancellation", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Withinearth APIOUT");
+
+
+                                    var client = new XMLTravelGate.GraphQLClient(XTGWebUrl);
+                                    XMLTravelGate.GraphQLQuery_Response objResponse = new XMLTravelGate.GraphQLQuery_Response();
+                                    //if (RequestString != string.Empty && CancelReson.ToLower() != "7777777test77")
+
+                                    objResponse = client.GetXTGResponse(ref Error, XMLTravelGate.GraphQLClient.XTG_CancelQuery, Newtonsoft.Json.Linq.JObject.Parse(RequestString), XTGApiKey, 120000);
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), AgentId.ToString(), Convert.ToString(RequestString), objResponse.IsError + " Response =" + objResponse.Response, "after Request hit ConfirmCancellation", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Withinearth APIOUT");
+
+                                    bool IsHitBookigDetail = false;
+                                    if (objResponse.IsError == true)
+                                    {
+                                        IsHitBookigDetail = true;
+                                    }
+                                    else
+                                    {
+                                        DataSet ResponseDataBooking = null;
+                                        try
+                                        {
+                                            string ResponseString = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(objResponse.Response).InnerXml;
+                                            ResponseDataBooking = _commonMethod.GetDataSetFromXMLString(ResponseString);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            // return "";
+                                            IsHitBookigDetail = true;
+                                        }
+                                        if (ResponseDataBooking != null && ResponseDataBooking.Tables["reference"] != null)
+                                        {
+                                            string status = Convert.ToString(ResponseDataBooking.Tables["cancellation"].Rows[0]["status"]);
+                                            ///double Price = Convert.ToDouble(ResponseDataBooking.Tables["price"].Rows[0]["net"]);
+                                            if (status.ToUpper() != "CANCELLED")
+                                                IsHitBookigDetail = true;
+                                        }
+                                        else
+                                            IsHitBookigDetail = true;
+
+                                        if (IsHitBookigDetail)
+                                        {
+                                            string newref = "";
+                                            int Status = 0;
+                                            string SupplierRef = Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+                                            string Provider = Convert.ToString(DtCancellation.Rows[0]["Provider"]);
+                                            string PNRNO = Convert.ToString(DtCancellation.Rows[0]["PNRNo"]);
+                                            _xtg.GetXTGBookingByReference(ref newref, ref Status, SupplierRef, Provider, PNRNO, false, SupplierRef, XTGSiteID, XTGWebUrl, XTGApiKey, context, accessCode, hotelCode, Currency, AgentId);
+                                            if (Status != 3)
+                                                return "";
+                                        }
+
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+
+
+                            }
+                            #endregion
+                            break;
+                        case "FITRUUMS":
+                            #region "fitruums"
+                            //  if (Supplier.ToString().ToUpper() == "FITRUUMS")
+                            {
+                                #region Booking Cancel RQ, URL
+
+                                if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    //  SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='fitruums'");
+                                    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier.ToLower() + "'");
+
+                                string fitruumsBookingCancelRQ = _fitruums.Get_fitruums_BookingCancelRQ(AgentVoucherNo_Cancle, SupplierDetailsCommon);
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(fitruumsBookingCancelRQ), "-", "Before Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "Within Earth");
+
+                                string fitruums_Url = FitruumsInfo.FitruumsCancelBooking;
+                                #endregion
+
+                                #region Booking Cancel RS
+                                Error = "";
+                                ResponseDto responseDto = await _fitruums.GetSupplierResponseFitruums("", fitruumsBookingCancelRQ, fitruums_Url, 120000, Convert.ToString(Supplier));
+                                string fitruumsBookingCancelRS = responseDto.Response;
+                                Error = responseDto.Error;
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(fitruumsBookingCancelRQ), Convert.ToString(fitruumsBookingCancelRS), "After Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "Within Earth");
+
+                                if (fitruumsBookingCancelRS != "")
+                                {
+                                    DataSet dsfitruums_RS = _commonMethod.GetDataSetFromXMLString(fitruumsBookingCancelRS);
+                                    #endregion
+                                    if (dsfitruums_RS != null)
+                                    {
+                                        #region Response Error Block 
+                                        if (Supplier.ToString().ToUpper() != "OTH" && fitruumsBookingCancelRS == "")
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(fitruumsBookingCancelRQ), Convert.ToString(fitruumsBookingCancelRS), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Within Earth");
+                                            return "";
+                                        }
+                                        if (dsfitruums_RS.Tables.Contains("Cancellationfee") == true && dsfitruums_RS.Tables["Cancellationfee"] != null)
+                                        {
+                                        }
+                                        else
+                                            return "";
+                                        #endregion
+                                    }
+                                    else
+                                        return "";
+                                }
+                                else
+                                    return "";
+                            }
+                            #endregion
+                            break;
+                        case "UK_TRAVCO":
+                            #region "uk_travco"
+                            //if (Supplier.ToString().ToLower() == "uk_travco")
+                            {
+                                string RefNO = AgentVoucherNo_Cancle;
+                                //string uk_travco_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "BookEnquiryV7Service?wsdl";
+                                string uk_travco_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "BookEnquiryV7Service";//correct on 19-3-2024
+
+
+                                //Hit BookingDetails Req for getting data for cancellation
+                                string BookingDetails = _ukTravco.BookingDetailsRQ(RefNO, SupplierDetailsCommon);
+                                ResponseDto responseDto = await _ukTravco.Getuk_travco_Response_report(uk_travco_URL, "urn:getBookEnquiry", BookingDetails, 120000);
+                                string Res = responseDto.Response;
+                                Error = responseDto.Error;
+
+                                DataSet dsResponse = _commonMethod.GetDataSetFromXMLString(Res);
+                                DataRow[] drHotel = dsResponse.Tables["Hotel"].Select();
+                                string PassengerName = Convert.ToString(drHotel[0]["LeadPassengerName"]);
+                                string AgentRefNo = Convert.ToString(drHotel[0]["AgentRefNo"]);
+                                int NoOfAdults = Convert.ToInt32(drHotel[0]["NoOfAdults"]);
+                                int NoOfChildren = 0; int Infants = 0;
+                                if (dsResponse.Tables["Hotel"].Columns.Contains("NoOfChildren"))
+                                    NoOfChildren = Convert.ToInt32(drHotel[0]["NoOfChildren"]);
+                                if (dsResponse.Tables["Hotel"].Columns.Contains("Infants"))
+                                    Infants = Convert.ToInt32(drHotel[0]["Infants"]);
+                                int Duration = Convert.ToInt32(drHotel[0]["Duration"]);
+                                string ArrivalDate = Convert.ToString(drHotel[0]["ArrivalDate"]);//2018-01-01Z
+                                ArrivalDate = ArrivalDate.Substring(0, 10);// + "T03:00:00+03:00";
+                                string HotelCode = Convert.ToString(drHotel[0]["HotelCode"]);
+                                string RoomCode = Convert.ToString(drHotel[0]["RoomCode"]);
+                                string PriceCode = ""; // Convert.ToString(drHotel[0]["PriceCode"]);
+                                                       //---
+                                CancellationXML = _ukTravco.Getuk_travcoCancelationRQ(RefNO, SupplierDetailsCommon, NoOfAdults, NoOfChildren, Duration, ArrivalDate, HotelCode, RoomCode, PriceCode, PassengerName, AgentRefNo, Infants);
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                string Action = "urn:cancelHotelBooking";
+                                //string URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "HotelBookingV7RequestService?wsdl";
+                                string URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "HotelBookingV7RequestService";
+
+                                ResponseDto responseDto1 = await _ukTravco.Getuk_travco_Response_report(URL, Action, CancellationXML, 120000);
+                                ResponseData = responseDto1.Response;
+                                Error = responseDto1.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(ResponseData + Error), "After Request hit Cancel", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                if (ResponseData == "")
+                                {
+                                    return "";
+                                }
+                                else
+                                {
+                                    DataSet dsuk_travco = _commonMethod.GetDataSetFromXMLString(ResponseData);
+                                    if (dsuk_travco.Tables.Contains("Booking"))
+                                    {
+                                        if (Convert.ToString(dsuk_travco.Tables["Booking"].Rows[0]["BookingStatus"]) != "C")
+                                        {
+                                            return "";
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "QTECH":
+                            #region "MerCan, WorldAvenues, AsianOverLand"
+                            //if (Supplier.ToString().ToLower() == "mercan" || Supplier.ToString().ToLower() == "nirvana" || Supplier.ToString().ToLower() == "worldavenues" || Supplier.ToString().ToLower() == "asianoverland")
+                            {
+                                try
+                                {
+                                    string RefNO = Convert.ToString(AgentVoucherNo_Cancle).Split('|')[1];
+                                    string Provider = Supplier.ToLower();
+                                    string username = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    string url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+                                    //cancellation charges request
+                                    string ChargesRequestRes = "";
+                                    QtechCancelCharge qtechCancelCharge = await _qtech.QTechGet_cancellation_charges(username, password, RefNO, ChargesRequestRes, url);
+                                    string MSG = qtechCancelCharge.AllowCancel;
+                                    ChargesRequestRes = qtechCancelCharge.ChargesRequest;
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(ChargesRequestRes), "-", "Before Request hit Cancel[ChargesRequestRes:Msg:" + MSG + "]", Supplier, "Request Confirm", PNRNO_Cancel, "WithinEarth");
+                                    string CancellationRequest = _qtech.QTechCancellationRQ(username, password, RefNO, url);
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancellationRequest), "-", "Before Request hit Cancel", Supplier, "Request Confirm", PNRNO_Cancel, "WithinEarth");
+                                    ResponseDto responseDto = await _qtech.GetQTechResponse(CancellationRequest);
+                                    string Res = responseDto.Response;
+                                    Error = responseDto.Error;
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancellationRequest), Convert.ToString(Res), "After Request hit Cancel", Supplier, "Response Confirm", PNRNO_Cancel, "WithinEarth");
+                                    Res = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(Res, "root").InnerXml;
+                                    if (Res == "")
+                                        return "";
+                                    DataSet dsResponse = _commonMethod.GetDataSetFromXMLString(Res);
+                                    if (dsResponse.Tables.Contains("root"))
+                                    {
+                                        DataRow[] drHotel = dsResponse.Tables["root"].Select();
+                                        string Message = Convert.ToString(drHotel[0]["message"]);
+                                        if (!(Convert.ToString(drHotel[0]["MessageInfo"]).Contains("Booking cancelled successfully.")))
+                                            return "";
+                                    }
+                                    else
+                                        return "";
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorBooking(ex, AgentId.ToString());
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+
+                                    return "";
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "IBOOSY":
+                            #region "MethaBook"
+                            //if (Supplier.ToUpper() == "METHABOOK")
+                            {
+                                string BookRefNumber = AgentVoucherNo_Cancle;
+                                string CancelUrl = "/Bookings/v1.0/Cancel/" + BookRefNumber;
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(CancelUrl), "-", "Before Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "WithinEarth APIOUT");
+
+                                ResponseDto responseDto = await _iboosy.MethaBookResponseNew(CancelUrl, Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), 120000, "PUT", "");
+                                string MethaBookResponse = responseDto.Response;
+                                Error = responseDto.Error;
+
+
+                                if (MethaBookResponse.ToLower().Contains("exceptions") == true || MethaBookResponse.Trim() == string.Empty)
+                                {
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(CancelUrl), Convert.ToString(MethaBookResponse), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "WithinEarth APIOUT");
+                                    return "";
+                                }
+                                else
+                                {
+                                    string CancelStatus = "";
+                                    MethaBook.RootObject MethaBookResponse1 = JsonConvert.DeserializeObject<MethaBook.RootObject>(MethaBookResponse);
+                                    if (MethaBookResponse1 == null)
+                                        return "";
+                                    for (int b = 0; b < MethaBookResponse1.bookingRs.bookings.Count; b++)
+                                    {
+                                        MethaBook.Booking drBooking = MethaBookResponse1.bookingRs.bookings[b];
+                                        CancelStatus = Convert.ToString(drBooking.status);
+                                        if (CancelStatus.ToLower() == "cancelledbycustomer")
+                                        {
+                                            _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(CancelUrl), Convert.ToString(MethaBookResponse), "After Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "WithinEarth APIOUT");
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "PARSEC":
+                            #region "AbreuOnline Olympia IntraTour"
+                            string ParsecCancellation = "";
+                            //if (Supplier.ToString().ToUpper() == "ABREUONLINE" || Supplier.ToString().ToUpper() == "OLYMPIA" || Supplier.ToString().ToUpper() == "INTRATOUR")
+                            {
+                                ParsecCancellation = _parsec.ParsecCancellationRequest(AgentVoucherNo_Cancle, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), Convert.ToString(SupplierDetailsCommon[0]["UserId"]));
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(ParsecCancellation), "-", "Before Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "Withinearth APIOUT");
+                                string URLContent = "/NewAvailabilityServlet/hotelcancel/OTA2014Compact";
+                                if (Supplier.ToLower() == "olympia")
+                                {
+                                    URLContent = "/ReservationServlet/hotelcancel/OTA2014Compact";
+                                }
+                                ResponseDto responseDto = await _commonMethod.AbreuOnlineResponse_Supplier(ParsecCancellation, Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + URLContent, 60000);
+                                string ResponseParsec = responseDto.Response;
+                                Error = responseDto.Error;
+                                if (ResponseParsec.ToLower().Contains("error") || ResponseParsec == null || ResponseParsec == string.Empty)
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(ParsecCancellation), Convert.ToString(ResponseParsec), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Withinearth APIOUT");
+                                    return "";
+                                }
+                                else
+                                {
+                                    DataSet AOData = _commonMethod.GetDataSetFromXMLString(ResponseParsec);
+                                    if (ResponseParsec.Contains("HotelResList") == true)
+                                    {
+                                        int OTA_BoookingInfoRs_Id = Convert.ToInt32(AOData.Tables["OTA_BookingInfoRs"].Rows[0]["OTA_BookingInfoRS_Id"]);
+                                        DataRow[] HotelResList = AOData.Tables["HotelResList"].Select("OTA_BookingInfoRs_Id=" + OTA_BoookingInfoRs_Id + "");
+                                        int HotelResList_Id = Convert.ToInt32(HotelResList[0]["HotelResList_Id"]);
+                                        DataRow[] HotelRes = AOData.Tables["HotelRes"].Select("HotelResList_Id=" + HotelResList_Id + "");
+                                        if (HotelRes.Length >= 1)
+                                        {
+                                            string ResStatus = Convert.ToString(HotelRes[0]["ResStatus"]);
+                                            if (ResStatus.ToLower() == "ca")
+                                            {
+                                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(ParsecCancellation), Convert.ToString(ResponseParsec), "After Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "Withinearth APIOUT");
+                                            }
+                                            else
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(ParsecCancellation), Convert.ToString(ResponseParsec), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Withinearth APIOUT");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "HOTELDO":
+                            #region "HotelDo"
+                            //if (Supplier.ToString().ToUpper() == "HOTELDO")
+                            {
+                                string BookRefNumber = Convert.ToString(AgentVoucherNo_Cancle);
+                                //string[] Array = BookRefNumber.Split(new String[] { "-" }, StringSplitOptions.None);
+                                //string BookingId1 = Array[0];
+                                //for (int j = 1; j < Array.Length; j++)
+                                {
+                                    string ConsecutiveId = "";// Array[j];
+                                    string CancellationRequest = _hoteldo.HotelDoBookingCancelRequest(Convert.ToString(SupplierDetailsCommon[0]["PassWord"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), BookRefNumber, ConsecutiveId);
+                                    //System.IO.File.WriteAllText(@"D:\HotelDo\[ HotelCancellationRequest ].txt", CancellationRequest);
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), CancellationRequest, "-", "Before Request hit booking", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+                                    ResponseDto responseDto = await _hoteldo.HotelDoResponseAsync(CancellationRequest, Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/CancelItineraryHotel", Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["PassWord"]), 600000, "GET");
+                                    string HotelDoResponse = responseDto.Response;
+                                    Error = responseDto.Error;
+
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), CancellationRequest, Convert.ToString(HotelDoResponse), "After Request hit booking", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+
+                                    //System.IO.File.WriteAllText(@"D:\HotelDo\[ HotelCancellationResponse ].txt", HotelDoResponse);
+                                    if (HotelDoResponse.ToLower().Contains("error") == true || HotelDoResponse.Trim() == string.Empty)
+                                    {
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), CancellationRequest, Convert.ToString(HotelDoResponse), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+                                        return "";
+                                    }
+                                    else
+                                    {
+                                        string CancelStatus = "";
+                                        DataSet dsHotelDoResponse = _commonMethod.GetDataSetFromXMLString(HotelDoResponse);
+                                        if (dsHotelDoResponse == null)
+                                            return "";
+                                        if (dsHotelDoResponse.Tables.Contains("Book") == true)
+                                        {
+                                            for (int i = 0; i < dsHotelDoResponse.Tables["Book"].Rows.Count; i++)
+                                            {
+                                                CancelStatus = Convert.ToString(dsHotelDoResponse.Tables["Book"].Rows[i]["Status"]);
+                                                if (CancelStatus.ToLower() == "ca")
+                                                {
+                                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(CancellationRequest), Convert.ToString(HotelDoResponse), "After Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "Withinearth APIOUT");
+                                                }
+                                                else
+                                                {
+                                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(CancellationRequest), Convert.ToString(HotelDoResponse), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Withinearth APIOUT");
+                                                    return "";
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, AgentId.ToString(), Convert.ToString(CancellationRequest), Convert.ToString(HotelDoResponse), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Withinearth APIOUT");
+                                            return "";
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "TBO":
+                            #region "TBO_V1"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "TBO_API")
+                            {
+                                try
+                                {
+
+                                    #region Booking Cancel RQ, URL
+                                    XMLHotelBookingCommon objxml = new XMLHotelBookingCommon();
+
+
+                                    string Agentvouchreno = Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+                                    string[] strAgentVoucherNo = Agentvouchreno.Split('|');
+                                    string ClientReferancreNo = Convert.ToString(strAgentVoucherNo[0]);
+                                    string TBOBookingCancelRQ = _tbo.Get_TBO_BookingCancelRQ_json(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), SupplierDetailsCommon, CancelReson);
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(TBOBookingCancelRQ), "-", "Before Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                    //string TBO_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(TboInfo.Tbo_V1Cancel);
+                                    string TBO_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.TBO.V1Cancel);
+                                    #endregion
+
+                                    #region Booking Cancel RS
+                                    ResponseDto responseDto = await _tbo.GetTrvcoResponseTBOJson(Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), TBOBookingCancelRQ, TBO_Url, 120000, Supplier);
+                                    string TBOBookingCancelRS = responseDto.Response;
+                                    Error = responseDto.Error;
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(TBOBookingCancelRQ), Convert.ToString(TBOBookingCancelRS) + Error, "After Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+
+                                    #endregion
+
+
+                                    bool IsTrue = false;
+                                    #region Response Error Block 
+                                    if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() != "OTH" && TBOBookingCancelRS == "")
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(TBOBookingCancelRQ), Convert.ToString(TBOBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                        return "";
+                                    }
+                                    if (TBOBookingCancelRS == "" || TBOBookingCancelRS == null)
+                                    {
+                                        string BookingDetailsRequest = "";
+
+                                        BookingDetailsRequest = _tbo.Get_TBO_BookingDeatilsjson(SupplierDetailsCommon, ClientReferancreNo);
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(BookingDetailsRequest), "-", "Before Request hit bookingDetail", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+
+                                        string ResponseDetailsBooking = "";
+                                       // string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(TboInfo.Tbo_V1BookingDetail);
+                                        string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.TBO.V1BookingDetail);
+                                        ResponseDto responseDto1 = await _tbo.GetTrvcoResponseTBOJson(Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), BookingDetailsRequest, Url, 120000, Supplier);
+                                        ResponseDetailsBooking = responseDto1.Response;
+                                        Error = responseDto1.Error;
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(BookingDetailsRequest), Convert.ToString(ResponseDetailsBooking), "after Request hit bookingDetail", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+
+                                        BookingDetailTbores.Root DS1 = null;
+                                        try
+                                        {
+
+                                            DS1 = Newtonsoft.Json.JsonConvert.DeserializeObject<BookingDetailTbores.Root>(ResponseDetailsBooking);
+
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                        }
+                                        if (DS1.Status.Code == 200)
+                                        {
+                                            if (DS1.BookingDetail != null)
+                                            {
+                                                //DataRow[] status = WHLBookDetails_Response.Tables["status"].Select("response_Id=" + BookingId + "");
+                                                var BookStatus = Convert.ToString(DS1.BookingDetail.BookingStatus);
+                                                if (BookStatus.ToLower() == "cancelled")
+                                                {
+                                                    IsTrue = true;
+                                                }
+                                                else
+                                                {
+                                                    return "";
+                                                }
+                                            }
+                                            else
+                                            {
+                                                return "";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return "";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        BookingCancelTbores.Root DS = null;
+                                        try
+                                        {
+
+                                            DS = Newtonsoft.Json.JsonConvert.DeserializeObject<BookingCancelTbores.Root>(TBOBookingCancelRS);
+
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                        }
+                                        if (DS != null)
+                                        {
+                                            string StatusCancelled = Convert.ToString(DS.Status.Description);
+                                            if (StatusCancelled.ToLower() == "cancelled")
+                                            {
+                                                IsTrue = true;
+                                            }
+                                            else
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(TBOBookingCancelRQ), Convert.ToString(TBOBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                                return "";
+                                            }
+
+                                        }
+                                        else
+                                        {
+
+                                            string BookingDetailsRequest = "";
+
+                                            BookingDetailsRequest = _tbo.Get_TBO_BookingDeatilsjson(SupplierDetailsCommon, ClientReferancreNo);
+                                            _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(BookingDetailsRequest), "-", "Before Request hit bookingDetail", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+
+                                            string ResponseDetailsBooking = "";
+                                           // string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(TboInfo.Tbo_V1BookingDetail);
+                                            string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.TBO.V1BookingDetail);
+                                            ResponseDto responseDto2 = await _tbo.GetTrvcoResponseTBOJson(Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), BookingDetailsRequest, Url, 120000, Supplier);
+                                            ResponseDetailsBooking = responseDto2.Response;
+                                            Error = responseDto2.Error;
+
+                                            _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(BookingDetailsRequest), Convert.ToString(ResponseDetailsBooking), "after Request hit bookingDetail", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+
+                                            BookingDetailTbores.Root DS1 = null;
+                                            try
+                                            {
+
+                                                DS1 = Newtonsoft.Json.JsonConvert.DeserializeObject<BookingDetailTbores.Root>(ResponseDetailsBooking);
+
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                            }
+                                            if (DS1.Status.Code == 200)
+                                            {
+                                                if (DS1.BookingDetail != null)
+                                                {
+                                                    //DataRow[] status = WHLBookDetails_Response.Tables["status"].Select("response_Id=" + BookingId + "");
+                                                    var BookStatus = Convert.ToString(DS1.BookingDetail.BookingStatus);
+                                                    if (BookStatus.ToLower() == "cancelled")
+                                                    {
+                                                        IsTrue = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        return "";
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    return "";
+                                                }
+                                            }
+                                            else
+                                            {
+                                                return "";
+                                            }
+                                        }
+                                    }
+                                    #endregion
+                                    if (IsTrue == false)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(TBOBookingCancelRQ), Convert.ToString(TBOBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                        return "";
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "DIDA":
+                            #region "Dida"
+                            //if (Supplier.ToLower() == "dida")
+                            {
+                                string CancelConfirmRequest = "";
+                                try
+                                {
+                                    string RefNO = Convert.ToString(AgentVoucherNo_Cancle);
+                                    string ID = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                   // string PreCancelltion_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(DidaInfo.Dida_PreCancel_Action);
+                                    string PreCancelltion_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.Dida.Dida_PreCancel_Action);
+                                   // string CancelConfirm_URl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(DidaInfo.Dida_CancelConfirm_Action);
+                                    string CancelConfirm_URl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.Dida.Dida_CancelConfirm_Action);
+                                    //Hit PreCancelltion Req before cancellation
+                                    string ErrorLog = "";
+                                    string Req = "";
+
+                                    string PreCancelltionReq = _dida.DidaPreCancelltionReq(RefNO, ID, Password, PreCancelltion_URL);
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), PreCancelltionReq, "", "Before Hit Dida PreCancelltion", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+
+                                    ResponseDto responseDto = await _dida.GetDidaResponse(PreCancelltionReq, PreCancelltion_URL, RefNO);
+                                    string ResponseDataDida = responseDto.Response;
+                                    ErrorLog = responseDto.Error;
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Req, ResponseDataDida + ErrorLog, "After Hit Dida PreCancelltion", Convert.ToString(Supplier), "Response Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+
+
+                                    ResponseDataDida = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(ResponseDataDida, "root").InnerXml; //#04-NOV-2024 K2
+                                    DataSet DidaResponse = _commonMethod.GetDataSetFromXMLString(ResponseDataDida);
+                                    string ConfirmID = Convert.ToString(DidaResponse.Tables["Success"].Rows[0]["ConfirmID"]);
+
+
+
+                                    CancelConfirmRequest = _dida.DidaCancelConfirmReq(RefNO, ConfirmID, ID, Password);
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancelConfirmRequest), "-", "Before Request hit Cancel", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+
+                                    ResponseDto responseDto1 = await _dida.GetDidaResponse(CancelConfirmRequest, CancelConfirm_URl, RefNO);
+
+                                    string ResponseDida = responseDto1.Response;
+                                    Error = responseDto1.Error;
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancelConfirmRequest), Convert.ToString(ResponseDida) + Error, "After Request hit Cancel", Convert.ToString(Supplier), "Response Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+
+                                    if (ResponseDida == string.Empty || !ResponseDida.Contains("Success"))
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancelConfirmRequest), Convert.ToString(ResponseDida), "After Request hit Cancel", Convert.ToString(Supplier), "Hotel", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+                                        return "";
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancelConfirmRequest), ex.Message.ToString(), "From cancellation Exception", Convert.ToString(Supplier), "Hotel", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+                                    return "";
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "AGODA":
+                            #region "Agoda_New"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "AGODA_V1" || DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "AGODA3P")
+                            {
+
+                                #region "GetBooking Details"
+                                string VoucherNo = Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+                                string AgodaBookingId = VoucherNo;
+                                if (VoucherNo.Split('-').Length > 1)
+                                    AgodaBookingId = VoucherNo.Split('-')[1];
+
+                                if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+
+                                string AgodaWebUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+                                string AgodaSiteID = Convert.ToString(SupplierDetailsCommon[0]["UserID"]);
+                                string AgodaApiKey = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                //string AgodaCurrencyAgodaCurrency = "AED";
+
+                                string Agoda_newCancellationUrl = AgodaInfo.AgodaNewCancellationUrl;
+                                string Agoda_newBookingCancelRQ = _agoda.GetAgoda_newBookingCancelRQ(AgodaBookingId);
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(Agoda_newBookingCancelRQ), "-", "Before Request hit CancellationRequest", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth APIOUT");
+
+                                Error = "";
+                                ResponseDto responseDto = await _agoda.GetSupplierResponseAgoda_new(AgodaSiteID + ":" + AgodaApiKey, Agoda_newBookingCancelRQ, Agoda_newCancellationUrl, 60000, true, Supplier);
+                                string Response_Cancellation = responseDto.Response;
+                                Error = responseDto.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(Agoda_newBookingCancelRQ), Response_Cancellation, "after Request hit CancellationRequest", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth APIOUT");
+
+                                if (Response_Cancellation.ToLower() == "" || Response_Cancellation.ToLower().Contains("errormessage"))
+                                    return "";
+
+                                Agoda_newCancelRS.Root DS = new Agoda_newCancelRS.Root();
+                                try
+                                {
+                                    DS = JsonConvert.DeserializeObject<Agoda_newCancelRS.Root>(Response_Cancellation);
+                                }
+                                catch (Exception x)
+                                {
+                                    _ = _exception.ErrorBooking(x, AgentId.ToString());
+                                    return "";
+                                }
+
+                                string Currency = "";
+                                double inclusive = 0;
+                                int Reference = DS.cancellationSummary.reference;
+                                if (DS.cancellationSummary.paymentRate.Count > 0)
+                                {
+                                    Currency = DS.cancellationSummary.paymentRate[0].currency;
+                                    inclusive = DS.cancellationSummary.paymentRate[0].inclusive;
+                                }
+
+                                #endregion
+
+                                #region "Cancel Confirm"
+
+                                string AgodaCancleConfirmUrl = AgodaInfo.AgodaNewCancleConfirmUrl;
+
+                                string Agoda_newConfirmBookingCancelRQ = _agoda.ConfirmCancellation(AgodaBookingId, Reference, Currency, inclusive);
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(Agoda_newConfirmBookingCancelRQ), "-", "Before Request hit ConfirmCancellation", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth APIOUT");
+
+                                ResponseDto responseDto1 = await _agoda.GetSupplierResponseAgoda_new(AgodaSiteID + ":" + AgodaApiKey, Agoda_newConfirmBookingCancelRQ, AgodaCancleConfirmUrl, 60000, true, Supplier);
+                                string Response_Confirm = responseDto1.Response;
+                                Error = responseDto1.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(Agoda_newConfirmBookingCancelRQ), Response_Confirm, "after Request hit ConfirmCancellation", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth APIOUT");
+                                if (Response_Confirm.ToLower() == "" || Response_Confirm.ToLower().Contains("errormessage"))
+                                    return "";
+
+                                //DataSet dsCheckResponse = new DataSet();
+                                //if (Response_Confirm != string.Empty)
+                                //    dsCheckResponse = Common.GetDataSetFromXMLString(Response_Confirm);
+                                //string CancelCode = Convert.ToString(dsCheckResponse.Tables["ConfirmCancellationResponseV2"].Rows[0]["status"]);
+
+                                #endregion
+                            }
+                            #endregion
+                            break;
+                        case "TECHNO":
+                            #region "_techno"
+                            //if (Convert.ToString(Supplier).ToLower() == "bedlinker_techno")
+                            {
+                                string CheckHotelCancellationCharges = "";
+                                int BookingDetail_Id = 0;
+                                try
+                                {
+                                    string RefNO = "";
+                                    int CanRoomNo = 0;
+                                    string Currency = Convert.ToString(SupplierDetailsCommon[0]["CurrencyShortName"]);
+                                    if (Convert.ToString(AgentVoucherNo_Cancle).Contains("|"))
+                                    {
+                                        RefNO = Convert.ToString(AgentVoucherNo_Cancle).Split('|')[0];
+                                        CanRoomNo = Convert.ToString(AgentVoucherNo_Cancle).Split('|')[1] == "" ? 0 : Convert.ToInt32(Convert.ToString(AgentVoucherNo_Cancle).Split('|')[1]);
+
+                                        BookingDetail_Id = Convert.ToString(AgentVoucherNo_Cancle).Split('|')[2] == "" ? 0 : Convert.ToInt32(Convert.ToString(AgentVoucherNo_Cancle).Split('|')[2]);
+                                    }
+                                    else
+                                    {
+                                        RefNO = Convert.ToString(AgentVoucherNo_Cancle);
+                                        CanRoomNo = 0;
+                                    }
+                                    string Withinearth_DMC_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + TechnoInfo.WE_DMCCancelChargeURL;
+                                    //Cancelltion Charges Request
+                                    CheckHotelCancellationCharges = _techno.CheckHotelCancellationChargesRequest(SupplierDetailsCommon, RefNO, Currency, IP);
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CheckHotelCancellationCharges), "-", "Before Request hit CancelCharges", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WE_xmlout");
+                                    ResponseDto responseDto = await _techno.GetSupplierResponseWE_DMC(CheckHotelCancellationCharges, Withinearth_DMC_URL, 200000, Convert.ToString(Supplier), null, false, RefNO, PNRNO_Cancel);
+                                    string CheckHotelCancellationChargesResponse = responseDto.Response;
+                                    Error = responseDto.Error;
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CheckHotelCancellationCharges), CheckHotelCancellationChargesResponse + Error, "After Request hit CancelCharges", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WE_xmlout");
+
+                                    CheckChargesResponse WE_DMCChargesResponse = JsonConvert.DeserializeObject<CheckChargesResponse>(CheckHotelCancellationChargesResponse);
+                                    Int64 BookingIdWE = WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.BookingId;
+                                    string CancelCode = WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.CancelCode;
+                                    double TotalCharge = Convert.ToDouble(WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.TotalCharge);
+                                    double TotalPriceWE = Convert.ToDouble(WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.TotalPrice);
+                                    double TotalRefund = Convert.ToDouble(WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.TotalRefund);
+                                    bool found = false;
+
+                                    for (int c = 0; c < WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.HotelRooms.Count(); c++)
+                                    {
+                                        if (BookingDetail_Id == (WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.HotelRooms[c].BookingDetailId))
+                                        {
+                                            found = true;
+                                        }
+                                    }
+                                    if (found)
+                                    {
+                                        for (int c = 0; c < WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.HotelRooms.Count(); c++)
+                                        {
+                                            if (BookingDetail_Id == (WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.HotelRooms[c].BookingDetailId))
+                                            {
+                                                string BookingDetailId = Convert.ToString(WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.HotelRooms[c].BookingDetailId);
+                                                string RoomTypeName = WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.HotelRooms[c].RoomTypeName;
+                                                string RoomTypeNameWE = Convert.ToString(WE_DMCChargesResponse.CheckHotelCancellationChargesRS.HotelOption.HotelRooms[c].RoomTypeName);
+                                                // Cancelltion Request
+                                                CancellationXML = _techno.Withinearth_DMCCancelBookingRequest(SupplierDetailsCommon, RefNO, CancelReson, BookingIdWE, BookingDetailId, CancelCode, Currency, IP);
+                                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WE_xmlout");
+
+                                                string CancellationURL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + TechnoInfo.WE_DMCCancelBookingURL;
+                                                ResponseDto responseDto1 = await _techno.GetSupplierResponseWE_DMC(CancellationXML, CancellationURL, 200000, Convert.ToString(Supplier), null, false, RefNO, PNRNO_Cancel);
+
+                                                ResponseData = responseDto1.Response;
+                                                Error = responseDto1.Error;
+                                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancellationXML), Convert.ToString(ResponseData + Error), "After Request hit Cancel", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WE_xmlout");
+
+                                                CancelBookingResponse CancelBookingResponseWE = JsonConvert.DeserializeObject<CancelBookingResponse>(ResponseData);
+                                                Int64 ResBookingId = CancelBookingResponseWE.CancelRS.HotelOption.BookingId;
+                                                if (CancelBookingResponseWE.CancelRS.HotelOption.HotelRooms.Count() == 0)
+                                                    return "";
+                                                for (int d = 0; d < CancelBookingResponseWE.CancelRS.HotelOption.HotelRooms.Count(); d++)
+                                                {
+                                                    string ResRoomTypeName = CancelBookingResponseWE.CancelRS.HotelOption.HotelRooms[d].RoomTypeName;
+                                                    int ResCancelStatus = CancelBookingResponseWE.CancelRS.HotelOption.HotelRooms[d].CancelStatus;
+                                                    string ResMessage = CancelBookingResponseWE.CancelRS.HotelOption.HotelRooms[d].Message;
+                                                    if (ResCancelStatus != 1)
+                                                        return "";
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                        return "";
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CheckHotelCancellationCharges + " , " + CancellationXML), Convert.ToString(ex.ToString()), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", Convert.ToString(PNRNO_Cancel), "Travab");
+                                    return "";
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "INFINITEHOTELSFRANCE":
+                            #region"InfiniteHotelsFrance"
+                            //if (DtCancellationError.Rows[0]["Provider"].ToString().ToUpper() == "INFINITEHOTELSFRANCE")
+                            CancellationXML = "";
+                            try
+                            {
+                                string RefNO = Convert.ToString(AgentVoucherNo_Cancle);
+                                string InfiniteHotelsFrance_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "BookEnquiryV7Service?wsdl";
+                                //---
+                                CancellationXML = _infinitehotelsfrance.Get_InfiniteHotelsFrance_CancelationRQ(RefNO, SupplierDetailsCommon);
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", DtCancellation.Rows[p]["Provider"].ToString(), "Request Confirm", PNRNO_Cancel, "WithinEarthXout");
+
+                                string URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+                                ResponseDto responseDto = await _commonMethod.GetSupplierResponse("", CancellationXML, URL, 120000, Supplier);
+                                ResponseData = responseDto.Response;
+                                Error = responseDto.Error;
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(ResponseData), "After Request hit Cancel", DtCancellation.Rows[p]["Provider"].ToString(), "Request Confirm", PNRNO_Cancel, "WithinEarthXout");
+
+                                if (ResponseData == "" || ResponseData == "faultstring")
+                                {
+                                    return "";
+                                }
+                                else
+                                {
+                                    DataSet dsInfiniteHotelsFrance = _commonMethod.GetDataSetFromXMLString(ResponseData);
+                                    if (dsInfiniteHotelsFrance.Tables.Contains("cancelBookingSegmentResponse"))
+                                    {
+                                        if (Convert.ToString(dsInfiniteHotelsFrance.Tables["cancelBookingSegmentResponse"].Rows[0]["operationStatus"]) != "SUCCESS")
+                                        {
+                                            return "";
+                                        }
+                                    }
+                                    else
+                                        return "";
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking, PNRNO_Cancel);
+                                _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(CancellationXML), ex.Message.ToString(), "From cancellation Exception", DtCancellation.Rows[p]["Provider"].ToString(), "Hotel", PNRNO_Cancel, "WithinEarthXout");
+                                return "";
+                            }
+                            #endregion
+                            break;
+                        case "NUITEE":
+                            #region "Nuitee"
+
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "NUITEE")
+                            {
+                                #region Booking Cancel RQ, URL
+                                HotelSearchParameter objsearchpara = new HotelSearchParameter();
+                                if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                {
+                                    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+                                }
+                                string NuiteeBookingCancelRQ = _nuitee.Get_NuiteeBookingCancelRQ(AgentVoucherNo_Cancle, Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]), SupplierDetailsCommon, CancelReson, IP);
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(NuiteeBookingCancelRQ), "-", "Before Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", PNRNO_Cancel, "WithinEarth");
+                                string TBO_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+                                #endregion
+
+                                #region Booking Cancel RS
+                                // string TBOBookingCancelRS = XMLHotelBookingCommon.GetTrvcoResponse(NuiteeBookingCancelRQ, TBO_Url, 180000, "nuitee");
+                                ResponseDto responseDto = await _commonMethod.GetSupplierResponse("", NuiteeBookingCancelRQ, TBO_Url, 120000, Supplier, objsearchpara);
+                                string BookingCancelRS = responseDto.Response;
+                                Error = responseDto.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(NuiteeBookingCancelRQ), Convert.ToString(BookingCancelRS), "After Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", PNRNO_Cancel, "WithinEarth");
+
+                                #endregion
+
+                                BookingCancelRS = XElement.Parse(BookingCancelRS).ToString(SaveOptions.DisableFormatting);
+                                DataSet DsResponse = _commonMethod.GetDataSetFromXMLString(BookingCancelRS);
+
+                                string responsestatus = Convert.ToString(DsResponse.Tables["cancelBookingRes"].Rows[0]["cancellationStatus"]);
+
+
+                                if (BookingCancelRS == string.Empty)
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(NuiteeBookingCancelRQ), Convert.ToString(BookingCancelRS), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", PNRNO_Cancel, "WithinEarth");
+                                    return "";
+                                }
+
+                            }
+                            #endregion
+                            break;
+                        case "GRNC":
+                            #region "GRNC"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "GRNC")
+                            {
+                                try
+                                {
+                                    string bref = Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+                                    string[] Arr = bref.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                    string ReferenceNo = Arr[0];
+                                    string Booking_Id = Arr[1];
+                                    if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    {
+                                        SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");// for expedia
+                                    }
+                                    string CancellationGRNC = ""; // Common.GRNCBookingCancelationRequest(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), SupplierDetailsCommon);
+                                    //string GRNCUrl = Convert.ToString(GRNCDetails[0]["WebSiteURL"]) + "/api/v3/hotels/bookings/" + Arr[0];
+                                    string GRNCUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/api/v3/hotels/bookings/" + ReferenceNo;
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), GRNCUrl, "-", "Before Request hit cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", PNRNO_Cancel, "WithinEarth");
+
+                                    string ResponseCancellation = _grnc.GRNCCancellationResponse("", CancellationGRNC, GRNCUrl, Supplier);
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), GRNCUrl, ResponseCancellation, "After Request hit cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", PNRNO_Cancel, "WithinEarth");
+                                    DataSet GRNCResponse = _commonMethod.ReadDataFromJson(ResponseCancellation.ToString());
+
+                                    //if (DtCancellationError.Rows[0]["Provider"].ToString().ToUpper() != "OTH" && ResponseData.ToLower().Contains("error"))
+                                    //==============================================================
+                                    if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() != "GRNC" && ResponseData.ToLower().Contains("error"))
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(GRNCUrl), Convert.ToString(ResponseCancellation), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", PNRNO_Cancel, "WithinEarth");
+                                        return "";
+                                    }
+
+                                    string StatusCancelled = Convert.ToString(GRNCResponse.Tables["rootNode"].Rows[0]["status"]);
+
+                                    if (StatusCancelled.ToLower() != "confirmed")
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(GRNCUrl), Convert.ToString(ResponseCancellation), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", PNRNO_Cancel, "WithinEarth");
+                                        return "";
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+                            }
+                            //}
+                            #endregion
+                            break;
                         case "EXPEDIA":
                             #region "EAN_B2B and EAN_PKG"
                             //if (Supplier.ToString().ToUpper() == "EAN_B2B" || Supplier.ToString().ToUpper() == "EAN_B2BV3" || Supplier.ToString().ToUpper() == "EAN_PKG" || Supplier.ToString().ToUpper() == "EAN_PKGV3")
                             {
+                                //if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                //   SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='EAN_B2B'");
 
                                 string CancelToken = "";
                                 string EAN_RefNo = AgentVoucherNo_Cancle;// Convert.ToString(DtCancellationError.Rows[0]["AgentVoucherNo"]);
                                 string PNRNo = Convert.ToString(PNRNO_Cancel);// Convert.ToString(DtCancellationError.Rows[0]["PNRNo"]);
                                 string XMLProvider = Supplier.ToString();
 
+
+                                //DataTable dtItinerary = HotelXML_Suppliers.Get_EAN_ItineraryLink(PNRNo, EAN_RefNo, XMLProvider);
+
                                 //if (dtItinerary.Rows.Count > 0)
                                 {
+                                    //string ItineraryLink = Convert.ToString(dtItinerary.Rows[0]["CreateBookLink"]);
 
                                     string URLRetrive = Convert.ToString(SupplierDetailsCommon[0]["WebsiteURL"]);
+                                    //URLRetrive = URLRetrive.Replace("https://test.ean.com/2.2/properties/", "https://test.ean.com/2.2/itineraries/");
                                     string Sign = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
                                     string ApiKey = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
                                     string Version = Convert.ToString(SupplierDetailsCommon[0]["version"]);
@@ -56787,15 +58091,24 @@ new SqlParameter("@AgentId", AgentId),
 
                                     string[] spitid = EAN_RefNo.Split(new String[] { "-" }, StringSplitOptions.None);
                                     string ItineraryID = spitid[0].ToString();
+                                    //string ConfirmationID = spitid[1].ToString();
+
+                                    //string RetriveBookRes = Common.GetEANResponse(URLRetrive + "/2.2/itineraries/" + ItineraryID + "?" + XMLHotelBookingCommon.email_Xpedia, 120000, "EAN_B2B", Sign, ApiKey, echoToken, platform, "GET", "");
+                                    //string RetriveBookRes = HotelXML_Suppliers.GetEANResponse(URLRetrive + ItineraryLink, 120000, SupplierTocheck, Sign, ApiKey, echoToken, platform, "GET", "");
                                     string RetriveBookRes = "";
 
                                     if (true)// (Supplier.ToString().ToUpper() == "EAN_B2BV3" || Supplier.ToString().ToUpper() == "EAN_PKGV3")
                                     {
-                                        ResponseDto responseDto = await _expedia.GetEANResponse(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
+                                        ResponseDto responseDto = await _expedia.GetEANResponse(URLRetrive + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
                                         RetriveBookRes = responseDto.Response;
-                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia), Convert.ToString(RetriveBookRes), "After Request hit Retrive Booking", Supplier.ToString(), "Request Confirm", PNRNo, "WithinEarth");
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(URLRetrive + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia), Convert.ToString(RetriveBookRes), "After Request hit Retrive Booking", Supplier.ToString(), "Request Confirm", PNRNo, "WithinEarth");
                                     }
-
+                                    else
+                                    {
+                                        ResponseDto responseDto1 = await _expedia.GetEANResponse(URLRetrive + ExpediaInfo.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
+                                        RetriveBookRes = responseDto1.Response;
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(URLRetrive + ExpediaInfo.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia), Convert.ToString(RetriveBookRes), "After Request hit Retrive Booking", Supplier.ToString(), "Request Confirm", PNRNo, "WithinEarth");
+                                    }
 
                                     if (RetriveBookRes != "")
                                     {
@@ -56820,14 +58133,28 @@ new SqlParameter("@AgentId", AgentId),
 
                                                     if (BookCancelRes == "")
                                                     {
+                                                        //try
+                                                        //{
+                                                        //    Common.delayManual(20000);
+                                                        //}
+                                                        //catch (Exception)
+                                                        //{
+                                                        //}
+                                                        //string RetriveBookResCancel = HotelXML_Suppliers.GetEANResponse(URLRetrive + ItineraryLink, 120000,Supplier, Sign, ApiKey, echoToken, platform, "GET", "");
+                                                        //calls.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle),"", Convert.ToString(URLRetrive + ItineraryLink), Convert.ToString(RetriveBookResCancel), "After Request hit Retrive Booking after Cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNo), "WithinEarth");
                                                         string RetriveBookResCancel = "";
                                                         if (true)//(Supplier.ToString().ToUpper() == "EAN_B2BV3" || Supplier.ToString().ToUpper() == "EAN_PKGV3")
                                                         {
-                                                            ResponseDto responseDto3 = await _expedia.GetEANResponse(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
+                                                            ResponseDto responseDto3 = await _expedia.GetEANResponse(URLRetrive + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
                                                             RetriveBookResCancel = responseDto3.Response;
-                                                            _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia), Convert.ToString(RetriveBookResCancel), "Retrive Booking request hit cancellation time after cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+                                                            _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ExpediaInfo.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia), Convert.ToString(RetriveBookResCancel), "Retrive Booking request hit cancellation time after cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
                                                         }
-
+                                                        else
+                                                        {
+                                                            ResponseDto responseDto4 = await _expedia.GetEANResponse(URLRetrive + ExpediaInfo.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
+                                                            RetriveBookResCancel = responseDto4.Response;
+                                                            _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ExpediaInfo.EAN_VersionOnly + "/itineraries/" + ItineraryID + "?email=" + ExpediaInfo.email_Xpedia), Convert.ToString(RetriveBookResCancel), "Retrive Booking request hit cancellation time after cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+                                                        }
 
                                                         if (RetriveBookResCancel != "" || RetriveBookResCancel != null)
                                                         {
@@ -56840,51 +58167,51 @@ new SqlParameter("@AgentId", AgentId),
                                                                 if (BookStatus.ToLower() != "canceled")
                                                                 {
                                                                     _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookResCancel), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                                    return cancelsuccess;
-                                                                }
-                                                                else
-                                                                {
-                                                                    cancelsuccess = true;
+                                                                    return "";
                                                                 }
                                                             }
                                                             else
                                                             {
                                                                 _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookResCancel), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                                return cancelsuccess;
+                                                                return "";
                                                             }
                                                         }
                                                         else
                                                         {
                                                             _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookResCancel), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                            return cancelsuccess;
+                                                            return "";
                                                         }
                                                     }
                                                     else
                                                     {
                                                         _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(BookCancelRes), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                        return cancelsuccess;
+                                                        return "";
                                                     }
                                                 }
                                                 else
                                                 {
                                                     _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookRes), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                                    return cancelsuccess;
+                                                    return "";
                                                 }
                                             }
                                         }
                                         else
                                         {
                                             _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookRes), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                            return cancelsuccess;
+                                            return "";
                                         }
                                     }
                                     else
                                     {
                                         _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + ItineraryID), Convert.ToString(RetriveBookRes), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
-                                        return cancelsuccess;
+                                        return "";
                                     }
                                 }
-
+                                //else
+                                //{
+                                //    calls.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(""), Convert.ToString(""), "From Cancellation Page", Convert.ToString(XMLProvider), "Hotel", Convert.ToString(PNRNo), "WITHINEARTH");
+                                //    return "";
+                                //}
                             }
                             #endregion
                             break;
@@ -56893,15 +58220,19 @@ new SqlParameter("@AgentId", AgentId),
                             //if (Supplier.ToString().ToUpper() == "RESTEL")
                             {
                                 #region Booking Cancel RQ, URL
+                                //XMLHotelBookingCommon objxml = new XMLHotelBookingCommon();
+
+                                //if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                //SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='Restel'");
 
                                 double CancellationCost = 0;
                                 string CancellationToken = "";
 
                                 string Nationality = "";
-                                // string RoomTypeId = Convert.ToString(DtCancellation.Rows[p]["RoomTypeId"]);
+                                string RoomTypeId = Convert.ToString(DtCancellation.Rows[p]["RoomTypeId"]);
                                 //RoomTypeId = Common.Get_JacTravel_RoomTypeID(RoomTypeId, ref Nationality);
 
-                                //string CountryID = Convert.ToString(DtCancellation.Rows[p]["NationalityName"]); ;// Convert.ToString(Common.GetThirdPartyStaticData_Xml("Nationality", "Desc", Nationality, "SystemMasterId", "agoda"));
+                                string CountryID = Convert.ToString(DtCancellation.Rows[p]["NationalityName"]); ;// Convert.ToString(Common.GetThirdPartyStaticData_Xml("Nationality", "Desc", Nationality, "SystemMasterId", "agoda"));
                                 string UserName = "";
                                 string Password = "";
                                 //bool flag = Common.Get_JacTravel_AuthFlag(CountryID, ref UserName, ref Password);
@@ -56909,7 +58240,7 @@ new SqlParameter("@AgentId", AgentId),
                                 string RestelBookingCancelRQ = "";
 
 
-                                RestelBookingCancelRQ = _restel.Get_Restel_PreCancelRQRS_newversion(AgentVoucherNo_Cancle, SupplierDetailsCommon, UserName, Password, ref CancellationCost, ref CancellationToken);
+                                RestelBookingCancelRQ = _restel.Get_Restel_PreCancelRQRS(AgentVoucherNo_Cancle, SupplierDetailsCommon, UserName, Password, DtCancellation, ref CancellationCost, ref CancellationToken);
 
                                 //RestelBookingCancelRQ = Common.Get_JacTravel_BookingCancelRQ(AgentVoucherNo_Cancle, SupplierDetailsCommon, UserName, Password, CancellationCost, CancellationToken);
                                 CancellationXML = RestelBookingCancelRQ;
@@ -56937,14 +58268,14 @@ new SqlParameter("@AgentId", AgentId),
                                 if (Supplier.ToUpper() != "OTH" && RestelBookingCancelRS.ToLower().Contains("error"))
                                 {
                                     _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), AgentId.ToString(), Convert.ToString(RestelBookingCancelRQ), Convert.ToString(RestelBookingCancelRS), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Withinearth APIOUT");
-                                    return cancelsuccess;
+                                    return "";
                                 }
                                 bool IsTrue = Convert.ToBoolean(Restel_RS.Tables["parametros"].Rows.Count > 0);
 
                                 if (IsTrue == false)
                                 {
                                     _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), AgentId.ToString(), Convert.ToString(RestelBookingCancelRQ), Convert.ToString(RestelBookingCancelRS), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Withinearth APIOUT");
-                                    return cancelsuccess;
+                                    return "";
                                 }
                                 else
                                 {
@@ -56952,11 +58283,7 @@ new SqlParameter("@AgentId", AgentId),
                                     if (estado != "00")
                                     {
                                         _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), AgentId.ToString(), Convert.ToString(RestelBookingCancelRQ), Convert.ToString(RestelBookingCancelRS), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Withinearth APIOUT");
-                                        return cancelsuccess;
-                                    }
-                                    else
-                                    {
-                                        cancelsuccess = true;
+                                        return "";
                                     }
                                     _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), AgentId.ToString(), Convert.ToString(RestelBookingCancelRQ), Convert.ToString(RestelBookingCancelRS), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Withinearth APIOUT");
                                 }
@@ -56964,32 +58291,2102 @@ new SqlParameter("@AgentId", AgentId),
                             }
                             #endregion
                             break;
+                        case "GOGLOBAL":
+                            #region "GoGlobal"
+                            string CancellationGOGloabl = "";
+                            //if (DtCancellation.Rows[p]["Provider"].ToString().ToUpper() == "GOGLOBAL")
+                            {
+                                string[] arrBookRef = Convert.ToString(AgentVoucherNo_Cancle).Split('|');
+                                string AgentVoucherNo = arrBookRef[0];
+                                CancellationGOGloabl = _goglobal.GOGlobalCancellationRequest(Convert.ToString(AgentVoucherNo), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), Convert.ToString(SupplierDetailsCommon[0]["UserId"]));
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(CancellationGOGloabl), "-", "Before Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "Withinearth APIOUT");
+                                //string Response = XMLHotelBookingCommon.AbreuOnlineResponse_Supplier(CancellationGOGloabl, Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]), 60000);
+                                ResponseDto responseDto = await _commonMethod.AbreuOnlineResponse_Supplier(CancellationGOGloabl, Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]), 60000, "", "goglobal", Convert.ToString(SupplierDetailsCommon[0]["UserId"]), "cancel");
+                                string Response = responseDto.Response;
+                                Error = responseDto.Error;
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(CancellationGOGloabl), Convert.ToString(Response), "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "Withinearth APIOUT");
+                                if (Response.ToLower().Contains("error") || Response == null || Response == string.Empty)
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(CancellationGOGloabl), Convert.ToString(Response + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "Withinearth APIOUT");
+                                    return "";
+                                }
+                                else
+                                {
+                                    if (Response != null)
+                                    {
+                                        string decodedXml = Response.Replace("&amp;", "&").Replace("&lt;", "<").Replace("&gt;", ">").Replace("&quot;", "\"").Replace("&apos;", " ").Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
+                                        Response = decodedXml;
+                                    }
+                                    DataSet GGResponse = _commonMethod.GetDataSetFromXMLString(Response);
+                                    if (GGResponse.Tables.Contains("Main") == true)
+                                    {
+                                        if (GGResponse.Tables["Main"].Rows.Count > 0)
+                                        {
+                                            string BStatus = Convert.ToString(GGResponse.Tables["Main"].Rows[0]["BookingStatus"]);
+                                            if (BStatus.ToLower() == "x")
+                                            {
+                                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(CancellationGOGloabl), Convert.ToString(Response), "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "Withinearth APIOUT");
+                                            }
+                                            else
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(CancellationGOGloabl), Convert.ToString(Response), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "Withinearth APIOUT");
+                                                return "";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "YALAGO":
+                            #region"yalago"
+                            //if (DtCancellation.Rows[p]["Provider"].ToString().ToUpper() == "YALAGO")
+                            {
+                                string AgentRef = Convert.ToString(AgentVoucherNo_Cancle);
+                                string password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                string YalagoGetCancellation_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "hotels/bookings/getcancellationcharges";
 
-                        default:
-                            return cancelsuccess;
+                                //getcharge request
+                                string CancellationXMLcharge = _yalago.Get_Yalago_GetCancellationChargesRQ(AgentRef);
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                string yalagoURL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "hotels/bookings/getcancellationcharges";
+                                ResponseDto responseDto = await _yalago.YalagoResponseNew(CancellationXMLcharge, yalagoURL, 120000, password);
+                                ResponseData = responseDto.Response;
+                                Error = responseDto.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                var result = JsonConvert.DeserializeObject<GetCancellationChargesYalago.RootObject>(ResponseData);
+                                string currency = result.CancellationPolicyStatic[0].CancellationCharges[0].Charge.Currency;
+                                double Amount = result.CancellationPolicyStatic[0].CancellationCharges[0].Charge.Amount;
+
+                                //cancel request 
+
+                                string YalagoCancelBooking_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "hotels/bookings/cancel";
+
+                                CancellationXML = _yalago.Get_Yalago_CancelBooking(Amount, currency, AgentRef);
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                string cancelyalagourl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "hotels/bookings/cancel";
+                                //string Error = "";
+                                ResponseDto responseDto1 = await _yalago.YalagoResponseNew(CancellationXML, cancelyalagourl, 120000, password);
+                                string CancelResponseData = responseDto1.Response;
+                                Error = responseDto1.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(CancelResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                if (CancelResponseData == "")
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(cancelyalagourl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "RaynaB2B");
+                                    return "";
+                                }
+                                else
+                                {
+                                    var Result = JsonConvert.DeserializeObject<BookingcancelRSYalago.GetCancelRS>(CancelResponseData);
+                                    string BookingRef = Result.BookingRef;
+                                    string Messages = Convert.ToString(Result.Messages);
+                                    int status = Result.Status;
+                                    if (status == 1)
+                                    {
+
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelyalagourl), Convert.ToString(CancelResponseData), "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelyalagourl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "RaynaB2B");
+                                        return "";
+                                    }
+
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "TRAVELOKA":
+                            #region "Traveloka"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "TRAVELOKA") 
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+                                    if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                        SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+
+                                    string Request = _traveloka.Get_Traveloka_BookingCancelRQ(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), CancelReson);
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(Request), "--", "Before Request hit booking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WE");
+                                    #endregion
+
+                                    #region Booking Cancel RS
+                                    ResponseDto responseDto = await _traveloka.GetSupplierResponseTraveloka(Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]), Request, "cancel");
+                                    string ResponseDatatest = responseDto.Response;
+                                    Error = responseDto.Error;
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(Request), Convert.ToString(ResponseDatatest), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WE");
+                                    try
+                                    {
+                                        _ = _exception.getException_v1(ResponseDatatest + Error, "TRAVELOKA", "Cancel Error Log", "TRAVELOKA", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]));
+                                    }
+                                    catch (Exception)
+                                    {
+
+                                    }
+
+                                    string ReferenceNo = Convert.ToString(DtCancellation.Rows[0]["PNRNo"]) + "-" + Convert.ToString(DtCancellation.Rows[0]["usercartdetailid"]);
+                                    string ViewItinerary = _traveloka.Get_Traveloka_ViewItinerary(ReferenceNo, "", userAgent, Convert.ToString(SupplierDetailsCommon[0]["CurrencyShortName"]));
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(ViewItinerary), "--", "Before Request hit view itin", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WE");
+                                    //string Error = "";
+                                    ResponseDto responseDto1 = await _traveloka.GetSupplierResponseTraveloka(Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]), ViewItinerary, "itin");
+                                    string Re = responseDto1.Response;
+                                    Error = responseDto1.Error;
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(ViewItinerary), Convert.ToString(Re), "After Request hit view itin", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WE");
+
+                                    if (ResponseDatatest == null || Re == null || ResponseDatatest.ToLower().Contains("error") || Re.ToLower().Contains("error") || Re.ToLower().Contains("failed"))
+                                    {
+                                        TravelokaBookingCancelRS.RootObject T = JsonConvert.DeserializeObject<TravelokaBookingCancelRS.RootObject>(ResponseDatatest);
+                                        TravelokaViewItinenaryRS.RootObject Res = JsonConvert.DeserializeObject<TravelokaViewItinenaryRS.RootObject>(Re);
+                                        if (T.cancelBookingStatus.ToLower() == "ok")
+                                        { }
+                                        if (Res.itineraries[0].rooms[0].roomStatus.ToLower() == "cancelled")
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(Request), Convert.ToString(ResponseDatatest), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WE");
+                                            return "";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        TravelokaBookingCancelRS.RootObject T = JsonConvert.DeserializeObject<TravelokaBookingCancelRS.RootObject>(ResponseDatatest);
+                                        TravelokaViewItinenaryRS.RootObject Res = JsonConvert.DeserializeObject<TravelokaViewItinenaryRS.RootObject>(Re);
+
+                                        if (T.cancelBookingStatus.ToLower() == "ok" || Res.itineraries[0].status.ToLower() == "ok" || Res.itineraries[0].status.ToLower() == "already_cancelled" || Res.itineraries[0].rooms[0].roomStatus.ToLower() == "cancelled")
+                                        { }//   calls.ThirdPartyCancellationHistory(Convert.ToString(DtCancellationError.Rows[0]["AgentVoucherNo"]), Convert.ToString(TravelokaDetails[0]["UserName"]), Convert.ToString(Request), Convert.ToString(ResponseDatatest), "After Request hit Cancel", Convert.ToString(DtCancellationError.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellationError.Rows[0]["PNRNo"]), "WE");
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(Request), Convert.ToString(ResponseDatatest), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WE");
+                                            return "";
+                                        }
+                                    }
+                                    #endregion
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorBooking(ex, "", "from cancel Booking");
+                                    return "";
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "RAKUTEN":
+                            #region "Rakuten"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "RAKUTEN")
+                            {
+                                #region Booking Cancel RQ, URL
+
+                                if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+
+                                // string AgentVoucherNo = Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+                                //string[] spitid = AgentVoucherNo.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                //  string bookingId = spitid[0].ToString();
+
+                                string bookingId = Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+
+                                RakutenCancelRequest.Root cancelRequest = new RakutenCancelRequest.Root();
+                                cancelRequest.booking_id = Convert.ToString(bookingId);
+
+                                string RakutenBookingCancelRQ = JsonConvert.SerializeObject(cancelRequest);
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(RakutenBookingCancelRQ), "-", "Before Request hit booking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Withinearth");
+
+                                string Rakuten_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(RakutenInfo.Rakuten_Cancel);
+                                string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                #endregion
+
+                                #region Booking Cancel RS
+                                ResponseDto responseDto = await _rakuten.Get_Rakuten_Response(Rakuten_Url, Password, RakutenBookingCancelRQ, Supplier);
+                                string RakutenBookingCancelRS = responseDto.Response;
+                                Error = responseDto.Error;
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(RakutenBookingCancelRQ), Convert.ToString(RakutenBookingCancelRS + Error), "After Request hit booking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+
+                                #endregion
+
+                                #region Response Error Block 
+                                if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() != "OTH" && RakutenBookingCancelRS.ToLower().Contains("error"))
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(RakutenBookingCancelRQ), Convert.ToString(RakutenBookingCancelRS + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                    return "";
+                                }
+                                if (RakutenBookingCancelRS != null)
+                                {
+                                    RakutenCancelResponse.Root rakutenCancelResponse = JsonConvert.DeserializeObject<RakutenCancelResponse.Root>(RakutenBookingCancelRS);
+
+                                    if (rakutenCancelResponse != null)
+                                    {
+                                        string BookingDetailsRQ = "";
+                                        BookingDetailsRQ = SupplierDetailsCommon[0]["WebSiteURL"] + "/book/" + bookingId + Convert.ToString(RakutenInfo.Rakuten_BookingStatus);
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(BookingDetailsRQ), "-", "Before Request hit booking details", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Withinearth");
+
+                                        string BookingDetailsRS = "";
+                                        ResponseDto responseDto1 = await _rakuten.Response_RakutenSupplier(BookingDetailsRQ, Password, "GET", "details");
+                                        BookingDetailsRS = responseDto1.Response;
+                                        Error = responseDto1.Error;
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(BookingDetailsRQ), Convert.ToString(BookingDetailsRS + Error), "After Request hit booking details", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+
+                                        if (BookingDetailsRS != null)
+                                        {
+                                            RakutenBookingStatusResponse.Root DSBookingDetailsResponse = JsonConvert.DeserializeObject<RakutenBookingStatusResponse.Root>(BookingDetailsRS);
+                                            string status = DSBookingDetailsResponse.status;
+                                            if (status.ToLower() != "bkg-cx")
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(BookingDetailsRQ), Convert.ToString(BookingDetailsRS + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                                return "";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(BookingDetailsRQ), Convert.ToString(BookingDetailsRS + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                            return "";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(RakutenBookingCancelRQ), Convert.ToString(RakutenBookingCancelRS + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                        return "";
+                                    }
+                                }
+                                else
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(RakutenBookingCancelRQ), Convert.ToString(RakutenBookingCancelRS + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                    return "";
+                                }
+                                #endregion
+
+                            }
+                            #endregion
+                            break;
+                        case "HOTELTRADER":
+                            #region "HotelTrader"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "HOTELTRADER")
+                            {
+                                if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+
+                                string AgentVoucherNo = AgentVoucherNo_Cancle;
+                                string[] spitid = AgentVoucherNo.Split(new String[] { "|" }, StringSplitOptions.None);//neeed to change it.
+                                string bookingId = spitid[0].ToString();//neeed to change it.
+                                string roomId = spitid[1].ToString();//neeed to change it.
+
+                                string HotelTraderBookingCancelRQ = _hoteltrader.GetHotelTrader_BookingCancelRQ(bookingId);
+
+                                var fulQuery = new HotelTraderGraphqlClient.GraphQLQuery()
+                                {
+                                    query = HotelTraderGraphqlClient.queryBkgCancellaion,
+                                    variables = Newtonsoft.Json.Linq.JObject.Parse(HotelTraderBookingCancelRQ),
+                                };
+                                HotelTraderBookingCancelRQ = JsonConvert.SerializeObject(fulQuery);
+
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(HotelTraderBookingCancelRQ), "-", "Before Request hit booking for Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Withinearth");
+
+                                //string Hoteltrader_Url = "https://reservation-sandbox.hoteltrader.com/graphql";
+                                string Hoteltrader_Url = "https://reservation.hoteltrader.com/graphql";
+                                string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+
+
+                                ResponseDto responseDto = await _hoteltrader.GetHotelTraderResponse(HotelTraderBookingCancelRQ, Hoteltrader_Url, Password);
+                                string Responsedata = responseDto.Response;
+                                Error = responseDto.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(HotelTraderBookingCancelRQ), Convert.ToString(Responsedata + Error), "After Request hit booking for Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+
+                                if (Responsedata != null)
+                                {
+                                    HotelTraderCancelResponse.BookingCancellation_Response.Root htbkgCancelResponse = JsonConvert.DeserializeObject<HotelTraderCancelResponse.BookingCancellation_Response.Root>(Responsedata);
+
+                                    if (htbkgCancelResponse.data != null)
+                                    {
+                                        if (htbkgCancelResponse.data.cancel.htConfirmationCode != null)
+                                        {
+                                            if (htbkgCancelResponse.data.cancel.rooms.Count > 0)
+                                            {
+                                                for (int r = 0; r < htbkgCancelResponse.data.cancel.rooms.Count; r++)
+                                                {
+                                                    if (roomId == htbkgCancelResponse.data.cancel.rooms[r].clientRoomConfirmationCode)
+                                                    {
+                                                        string Status = Convert.ToString(htbkgCancelResponse.data.cancel.rooms[r].cancelled);
+
+                                                        if (Status.ToLower() != "true")
+                                                        {
+                                                            _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(HotelTraderBookingCancelRQ), Convert.ToString(Responsedata + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                                            return "";
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(HotelTraderBookingCancelRQ), Convert.ToString(Responsedata + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                                return "";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(HotelTraderBookingCancelRQ), Convert.ToString(Responsedata + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                            return "";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(HotelTraderBookingCancelRQ), Convert.ToString(Responsedata + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                        return "";
+                                    }
+                                }
+                                else
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(HotelTraderBookingCancelRQ), Convert.ToString(Responsedata + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                    return "";
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "ADONIS":
+                            {
+                                #region Booking Cancel RQ, URL
+
+                                if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+
+                                string AdonisBookingCancelRQ = _adonis.Get_Adonis_BookingCancelRQ(Convert.ToString(AgentVoucherNo_Cancle), SupplierDetailsCommon);
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(AdonisBookingCancelRQ), "-", "Before Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "Withinearth");
+
+                                string Adonis_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "CancelHotels";
+                                #endregion
+
+                                #region Booking Cancel RS
+                                ResponseDto responseDto = await _adonis.Get_Adonis_Response("prm_CurrentData=" + AdonisBookingCancelRQ, Adonis_Url, 120000, Supplier);
+                                string AdonisBookingCancelRS = responseDto.Response;
+                                Error = responseDto.Error;
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(AdonisBookingCancelRQ), Convert.ToString(AdonisBookingCancelRS), "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "withinearth");
+
+                                #endregion
+
+                                #region Response Error Block 
+                                if (DtCancellation.Rows[p]["Provider"].ToString().ToUpper() != "OTH" && AdonisBookingCancelRS == "")
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(AdonisBookingCancelRQ), Convert.ToString(AdonisBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "withinearth");
+                                    return "";
+                                }
+                                if (AdonisBookingCancelRS != null)
+                                {
+                                    DataSet dsAdonis_RS = _commonMethod.GetDataSetFromXMLString(AdonisBookingCancelRS);
+
+                                    if (dsAdonis_RS.Tables.Contains("DetailHotelDTO"))
+                                    {
+
+                                        if (dsAdonis_RS.Tables["DetailHotelDTO"] != null)
+                                        {
+                                            string StatusCancelled = Convert.ToString(dsAdonis_RS.Tables["DetailHotelDTO"].Rows[0]["Status"]);
+
+                                            if (StatusCancelled.ToLower() != "cancel")
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(AdonisBookingCancelRQ), Convert.ToString(AdonisBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "withinearth");
+                                                return "";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(AdonisBookingCancelRQ), Convert.ToString(AdonisBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "withinearth");
+                                            return "";
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(AdonisBookingCancelRQ), Convert.ToString(AdonisBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "withinearth");
+                                        return "";
+                                    }
+                                }
+                                else
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(AdonisBookingCancelRQ), Convert.ToString(AdonisBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "withinearth");
+                                    return "";
+                                }
+                                #endregion
+
+                            }
+                            break;
+                        #region"SiteMinder"
+                        case "SITEMINDER":
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+                                    //if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    //    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='SiteMinder'");
+
+                                    string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    string suppliername = Convert.ToString(SupplierDetailsCommon[0]["SupplierName"]);
+                                    string RoomTypeId = Convert.ToString(DtCancellation.Rows[p]["RoomTypeId"]);
+                                    string SiteMinderBookingCancelRS = "";
+                                    string SiteMinderBookingCancelRQ = "";
+                                    if (true)
+                                    {
+                                        // Int32 OnlineBookingMasterId = Convert.ToInt32(DtCancellationError.Rows[0]["OnlineBookingMasterId"]);
+                                        DataTable DtPassengerDetails = await _commonMethod.GetPassengerDetail(DetailId);
+                                        SiteMinderBookingCancelRQ = _siteMinder.Get_SiteMinder_BookingCancelRQ(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Password, suppliername, RoomTypeId, DtCancellation, DtPassengerDetails, tokenData);
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(SiteMinderBookingCancelRQ), "-", "After Request hit bookingcancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(PNRNO_Cancel), "SiteMinder");
+                                        // string Url = Convert.ToString(SiteMinderDetails[0]["WebSiteURL"]);
+                                        #endregion
+                                        string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                        string Roomid = spitid[0].ToString();
+                                        string RatePlanCode = spitid[1].ToString();
+                                        string currencycode = spitid[2].ToString();
+                                        string ExtrabedPrice = spitid[3].ToString();
+                                        string ExtrabedQuantity = spitid[4].ToString();
+                                        string CountryId = spitid[5].ToString();
+                                        string Url = "";
+                                        string SM_HotelCode = Convert.ToString(DtPassengerDetails.Rows[0]["ProductId"]);//added on 20-FEB-2022
+
+                                        Url = _siteMinder.Get_SiteMinder_BookURL(CountryId, SM_HotelCode);
+                                        // string Url = Convert.ToString(SiteMinderDetails[0]["WebSiteURL"]);
+
+                                        #region Booking Cancel RS
+                                        SiteMinderBookingCancelRS = _siteMinder.GetSiteminder_SupplierResponse(ref Error, Url, SiteMinderBookingCancelRQ);
+                                    }
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(SiteMinderBookingCancelRQ), Convert.ToString(SiteMinderBookingCancelRS), "After Response hit bookingcancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "SiteMinder");
+                                    DataSet dsSiteMinder_RS = new DataSet();
+                                    bool IsTrue = false;
+                                    if (SiteMinderBookingCancelRS != string.Empty && SiteMinderBookingCancelRS != "" && SiteMinderBookingCancelRS != null && !SiteMinderBookingCancelRS.Contains("error"))
+                                    {
+                                        dsSiteMinder_RS = _commonMethod.GetDataSetFromXMLString(SiteMinderBookingCancelRS);
+
+                                        if (dsSiteMinder_RS.Tables["OTA_HotelResNotifRS"].Columns.Contains("Success"))
+                                            IsTrue = true;
+
+                                    }
+
+
+                                    #endregion
+
+                                    #region Response Error Block 
+                                    if (DtCancellation.Rows[p]["Provider"].ToString().ToUpper() != "SITEMINDER" && SiteMinderBookingCancelRS.ToLower().Contains("error"))
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(SiteMinderBookingCancelRQ), Convert.ToString(SiteMinderBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(PNRNO_Cancel), "SiteMinder");
+                                        return "";
+                                    }
+
+                                    if (IsTrue == false)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(SiteMinderBookingCancelRQ), Convert.ToString(SiteMinderBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(PNRNO_Cancel), "SiteMinder");
+                                        return "";
+                                    }
+                                    #endregion
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+                            }
+                            break;
+                        #endregion
+                        #region"Hotelrunner"
+                        case "HOTELRUNNER":
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+                                    //if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    //    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='SiteMinder'");
+
+                                    string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    string suppliername = Convert.ToString(SupplierDetailsCommon[0]["SupplierName"]);
+                                    string RoomTypeId = Convert.ToString(DtCancellation.Rows[p]["RoomTypeId"]);
+                                    string SiteMinderBookingCancelRS = "";
+                                    string SiteMinderBookingCancelRQ = "";
+                                    if (true)
+                                    {
+                                        // Int32 OnlineBookingMasterId = Convert.ToInt32(DtCancellationError.Rows[0]["OnlineBookingMasterId"]);
+                                        //  DataTable DtPassengerDetails = ThirdPartyXML.GetPassengerDetail(DetailId);
+                                        DataTable DtPassengerDetails = await _commonMethod.GetPassengerDetail_HotelRunner(DetailId);
+                                        string HotelCode = string.Empty;
+                                        HotelCode = Convert.ToString(DtPassengerDetails.Rows[0]["ProductId"]);
+                                        SiteMinderBookingCancelRQ = _hotelRunner.Get_HotelRunner_BookingCancelRQ(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Password, suppliername, RoomTypeId, DtCancellation, DtPassengerDetails);
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(SiteMinderBookingCancelRQ), "-", "After Request hit bookingcancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(PNRNO_Cancel), "HotelRunner");
+                                        // string Url = Convert.ToString(SiteMinderDetails[0]["WebSiteURL"]);
+                                        #endregion
+                                        string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                        string Roomid = spitid[0].ToString();
+                                        string RatePlanCode = spitid[1].ToString();
+                                        string currencycode = spitid[2].ToString();
+                                        string ExtrabedPrice = spitid[3].ToString();
+                                        string ExtrabedQuantity = spitid[4].ToString();
+                                        string CountryId = spitid[5].ToString();
+                                        string Url = "";
+                                        //  Url = ThirdPartyXML.Get_SiteMinder_BookURL(CountryId);
+                                        string BookUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + HotelCode;  //@krnv
+                                                                                                                                // string Url = Convert.ToString(SiteMinderDetails[0]["WebSiteURL"]);
+
+                                        #region Booking Cancel RS
+                                        ResponseDto responseDto = await _hotelRunner.GetHotelRunner_SupplierResponse(SiteMinderBookingCancelRQ, BookUrl, 180000, Supplier);
+                                        SiteMinderBookingCancelRS = responseDto.Response;
+                                        Error = responseDto.Error;
+                                        // SiteMinderBookingCancelRS = ThirdPartyXML.GetHotelRunner_SupplierResponse(ref Error, Url, SiteMinderBookingCancelRQ);
+                                    }
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(SiteMinderBookingCancelRQ), Convert.ToString(SiteMinderBookingCancelRS), "After Response hit bookingcancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "HotelRunner");
+                                    DataSet dsSiteMinder_RS = new DataSet();
+                                    bool IsTrue = false;
+                                    //if (SiteMinderBookingCancelRS != string.Empty && SiteMinderBookingCancelRS != "" && SiteMinderBookingCancelRS != null && !SiteMinderBookingCancelRS.Contains("error"))
+                                    //{
+                                    //    dsSiteMinder_RS = Common.GetDataSetFromXMLString(SiteMinderBookingCancelRS);
+
+                                    //    if (dsSiteMinder_RS.Tables["OTA_HotelResNotifRS"].Columns.Contains("Success"))
+                                    //        IsTrue = true;
+
+                                    //}
+
+                                    //
+                                    //calls.ThirdPartyCancellationHistory(Convert.ToString(DtCancellationError.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(HotelRunnerBookingCancelRQ), Convert.ToString(HotelRunnerBookingCancelRS), "After Response hit bookingcancel", Convert.ToString(DtCancellationError.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellationError.Rows[0]["PNRNo"]), "HotelRunner");
+                                    //DataSet dsHotelRunner_RS = new DataSet();
+                                    //bool IsTrue = false; //@krnv
+                                    if (SiteMinderBookingCancelRS != string.Empty && SiteMinderBookingCancelRS != "" && SiteMinderBookingCancelRS != null)
+                                    {
+                                        dsSiteMinder_RS = _commonMethod.GetDataSetFromXMLString(SiteMinderBookingCancelRS);
+
+                                        if (dsSiteMinder_RS.Tables["response"].Columns.Contains("message"))
+                                        {
+                                            if (dsSiteMinder_RS.Tables["response"].Rows[0]["message"].ToString().ToLower() == "success")
+                                            {
+                                                IsTrue = true;
+                                            }
+                                        }
+
+
+
+                                    }
+                                    //
+
+
+                                    #endregion
+
+                                    #region Response Error Block 
+                                    if (DtCancellation.Rows[p]["Provider"].ToString().ToUpper() != "HOTELRUNNER")
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(SiteMinderBookingCancelRQ), Convert.ToString(SiteMinderBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(PNRNO_Cancel), "HotelRunner");
+                                        return "";
+                                    }
+
+                                    if (IsTrue == false)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(SiteMinderBookingCancelRQ), Convert.ToString(SiteMinderBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(PNRNO_Cancel), "HotelRunner");
+                                        return "";
+                                    }
+                                    #endregion
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+                            }
                             break;
 
+                        #endregion
+                        #region RateTiger
+                        case "RATETIGER":
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+                                    string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    string suppliername = Convert.ToString(SupplierDetailsCommon[0]["SupplierName"]);
+                                    string RoomTypeId = Convert.ToString(DtCancellation.Rows[p]["RoomTypeId"]);
+                                    string RateTigerBookingCancelRS = "";
+                                    string RateTigerBookingCancelRQ = "";
+                                    if (true)
+                                    {
+
+                                        // Int32 OnlineBookingMasterId = Convert.ToInt32(DtCancellationError.Rows[0]["OnlineBookingMasterId"]);
+                                        DataTable DtPassengerDetails = await _commonMethod.GetPassengerDetail_RateTiger(DetailId);
+                                        RateTigerBookingCancelRQ = _rateTiger.Get_RateTiger_BookingCancelRQ(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Password, suppliername, RoomTypeId, DtCancellation, DtPassengerDetails, tokenData);
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(RateTigerBookingCancelRQ), "-", "After Request hit bookingcancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(PNRNO_Cancel), "RateTiger");
+                                        string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+                                        #endregion
+
+                                        //string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                        //string Roomid = spitid[0].ToString();
+                                        //string RatePlanCode = spitid[1].ToString();
+                                        //string currencycode = spitid[2].ToString();
+                                        //string ExtrabedPrice = spitid[3].ToString();
+                                        //string ExtrabedQuantity = spitid[4].ToString();
+                                        //string CountryId = spitid[5].ToString();
+                                        //string Url = "";
+                                        // Url = Common.Get_SiteMinder_BookURL(CountryId);
+                                        // string Url = Convert.ToString(SiteMinderDetails[0]["WebSiteURL"]);
+
+                                        #region Booking Cancel RS                                     
+                                        RateTigerBookingCancelRS = _rateTiger.GetRateTiger_Response(ref Error, Url, RateTigerBookingCancelRQ);
+
+                                    }
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(RateTigerBookingCancelRQ), Convert.ToString(RateTigerBookingCancelRS + Error), "After Response hit bookingcancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "RateTiger");
+                                    DataSet dsRateTiger_RS = new DataSet();
+                                    bool IsTrue = false;
+
+                                    if (RateTigerBookingCancelRS != string.Empty && RateTigerBookingCancelRS != "" && RateTigerBookingCancelRS != null)
+                                    {
+                                        dsRateTiger_RS = _commonMethod.GetDataSetFromXMLString(RateTigerBookingCancelRS);
+
+                                        if (dsRateTiger_RS.Tables["OTA_HotelResNotifRS"].Columns.Contains("Success"))
+                                            IsTrue = true;
+
+                                    }
+
+                                    #endregion
+
+                                    #region Response Error Block 
+                                    if (DtCancellation.Rows[p]["Provider"].ToString().ToUpper() != "RATETIGER")
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(RateTigerBookingCancelRQ), Convert.ToString(RateTigerBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(PNRNO_Cancel), "RateTiger");
+                                        return "";
+                                    }
+
+                                    if (IsTrue == false)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(UserNameType), Convert.ToString(RateTigerBookingCancelRQ), Convert.ToString(RateTigerBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(PNRNO_Cancel), "RateTiger");
+                                        return "";
+                                    }
+                                    #endregion
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+                            }
+                            break;
+                        #endregion
+                        #region"TravelClick"
+                        case "TRAVELCLICK":
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+                                    string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    string suppliername = Convert.ToString(SupplierDetailsCommon[0]["SupplierName"]);
+                                    string RoomTypeId = Convert.ToString(DtCancellation.Rows[p]["RoomTypeId"]);
+                                    string BookUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+                                    string TravelClickBookingCancelRS = "";
+                                    string TravelClickBookingCancelRQ = "";
+                                    string referenceNumber = "";
+                                    if (true)
+                                    {
+                                        DataTable DtPassengerDetails = await _commonMethod.GetPassengerDetail_Travelclick(DetailId);
+                                        TravelClickBookingCancelRQ = _travelclick.Get_TravelClick_BookingCancelRQ(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Password, suppliername, RoomTypeId, DtCancellation, DtPassengerDetails, referenceNumber, tokenData);
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(TravelClickBookingCancelRQ), "-", "After Request hit bookingcancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "TravelClick");
+                                        #endregion
+                                        string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                        string Roomid = spitid[0].ToString();
+                                        string RatePlanCode = spitid[1].ToString();
+                                        string currencycode = spitid[2].ToString();
+                                        string ExtrabedPrice = spitid[3].ToString();
+                                        string ExtrabedQuantity = spitid[4].ToString();
+                                        string CountryId = spitid[5].ToString();
+
+                                        #region Booking Cancel RS
+                                        // string Error = "";
+                                        TravelClickBookingCancelRS = _travelclick.GetTravelClick_SupplierResponse(ref Error, BookUrl, TravelClickBookingCancelRQ);
+                                    }
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(TravelClickBookingCancelRQ), Convert.ToString(TravelClickBookingCancelRS), "After Response hit bookingcancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "TravelClick");
+                                    DataSet dsTravelClick_RS = new DataSet();
+                                    bool IsTrue = false;
+                                    if (TravelClickBookingCancelRS != string.Empty && TravelClickBookingCancelRS != "" && TravelClickBookingCancelRS != null && !TravelClickBookingCancelRS.Contains("error"))
+                                    {
+                                        dsTravelClick_RS = _commonMethod.GetDataSetFromXMLString(TravelClickBookingCancelRS);
+                                        string statuscancel = Convert.ToString(dsTravelClick_RS.Tables["HotelReservation"].Rows[0]["ResStatus"]);
+                                        if (statuscancel.ToLower() == "canceled")
+                                        {
+                                            IsTrue = true;
+
+                                        }
+                                    }
+
+                                    #endregion
+
+                                    #region Response Error Block 
+                                    if (DtCancellation.Rows[p]["Provider"].ToString().ToUpper() != "TRAVELCLICK" && TravelClickBookingCancelRS.ToLower().Contains("error"))
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(TravelClickBookingCancelRQ), Convert.ToString(TravelClickBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "TravelClick");
+                                        return "";
+                                    }
+
+                                    if (IsTrue == false)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(TravelClickBookingCancelRQ), Convert.ToString(TravelClickBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "TravelClick");
+                                        return "";
+                                    }
+                                    #endregion
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+                            }
+                            break;
+
+                        #endregion
+                        #region RateGain
+                        case "RATEGAIN":
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+                                    string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    string suppliername = Convert.ToString(SupplierDetailsCommon[0]["SupplierName"]);
+                                    string RoomTypeId = Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]);
+                                    string RoomTypeName = Convert.ToString(DtCancellation.Rows[0]["RoomType"]);
+                                    string rategainBookingCancelRS = "";
+                                    string rategainBookingCancelRQ = "";
+                                    Error = "";
+                                    if (true)
+                                    {
+                                        // Int32 OnlineBookingMasterId = Convert.ToInt32(DtCancellationError.Rows[0]["OnlineBookingMasterId"]);
+                                        DataTable DtPassengerDetails = await _commonMethod.GetPassengerDetail_Rategain(DetailId);
+                                        string HotelCode = string.Empty;
+                                        HotelCode = Convert.ToString(DtPassengerDetails.Rows[0]["ProductId"]);
+                                        rategainBookingCancelRQ = _rateGain.Get_Rategain_BookingCancelRQ(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Password, suppliername, RoomTypeId, RoomTypeName, DtCancellation, DtPassengerDetails, tokenData);
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Convert.ToString(rategainBookingCancelRQ), "-", "After Request hit bookingcancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "RateGain");
+                                        // string Url = Convert.ToString(HotelRunnerDetails[0]["WebSiteURL"]);
+                                        #endregion
+                                        string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                        string Roomid = spitid[0].ToString();
+                                        string RatePlanCode = spitid[1].ToString();
+                                        string currencycode = spitid[2].ToString();
+                                        string ExtrabedPrice = spitid[3].ToString();
+                                        string ExtrabedQuantity = spitid[4].ToString();
+                                        string CountryId = spitid[5].ToString();
+                                        string Url = "";
+                                        //Url = Common.Get_HotelRunner_BookURL(CountryId);
+                                        // string BookUrl = Convert.ToString(rategainDetails[0]["WebSiteURL"]); //"https://rzhospicert.rategain.com/otaresvpushapi/reservation/receive/WEEH"; 
+                                        string BookUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+
+                                        #region Booking Cancel RS
+
+                                        ResponseDto responseDto = await _rateGain.GetRateGain_SupplierResponse(rategainBookingCancelRQ, BookUrl, 180000, "RateGain");
+                                        rategainBookingCancelRS = responseDto.Response;
+                                        Error = responseDto.Error;
+                                    }
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Convert.ToString(rategainBookingCancelRQ), Convert.ToString(rategainBookingCancelRS) + Error, "After Response hit bookingcancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "RateGain");
+                                    DataSet dsrategain_RS = new DataSet();
+                                    bool IsTrue = false;
+                                    if (rategainBookingCancelRS != string.Empty && rategainBookingCancelRS != "" && rategainBookingCancelRS != null && !rategainBookingCancelRS.Contains("error"))
+                                    {
+                                        dsrategain_RS = _commonMethod.GetDataSetFromXMLString(rategainBookingCancelRS);
+
+                                        string ResId_Value = "";
+                                        if (dsrategain_RS.Tables["OTA_HotelResNotifRS"].Columns.Contains("Success"))
+                                        {
+                                            IsTrue = true;
+                                        }
 
 
+                                    }
+                                    #endregion
+                                    #region Response Error Block 
+                                    if (DtCancellation.Rows[p]["Provider"].ToString().ToUpper() != "RateGain" && rategainBookingCancelRS.ToLower().Contains("error"))
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Convert.ToString(rategainBookingCancelRQ), Convert.ToString(rategainBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "RateGain");
+                                        return "";
+                                    }
+
+                                    if (IsTrue == false)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Convert.ToString(rategainBookingCancelRQ), Convert.ToString(rategainBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "RateGain");
+                                        return "";
+                                    }
+                                    #endregion
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+                            }
+                            break;
+                        #endregion
+                        #region "DerbySoft"
+                        case "DERBYSOFT":
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+                                    //XMLHotelBookingCommon objxml = new XMLHotelBookingCommon();
+
+                                    //if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    //    DerbySoftDetails = dsAgentDetails.Tables[1].Select("SupplierName='DerbySoft'");
+
+                                    string DerbySoftBookingCancelRQ = _derbySoft.Get_DerbySoft_BookingCancelRQ(AgentVoucherNo_Cancle, SupplierDetailsCommon, Convert.ToString(DtCancellation.Rows[p]["RoomTypeId"]));
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(DerbySoftBookingCancelRQ), "-", "Before Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WE");
+                                    string DerbySoft_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(DerbySoftInfo.DerbySoftBookingCancel);
+                                    #endregion
+
+                                    #region Booking Cancel RS
+                                    string DSPassword = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    ResponseDto responseDto = await _derbySoft.GetDerbySoftResponse(Error, DerbySoftBookingCancelRQ, DerbySoft_Url, 180000, "DerbySoft", DSPassword);
+                                    string DerbySoftBookingCancelRS = responseDto.Response;
+                                    Error = responseDto.Error;
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(DerbySoftBookingCancelRQ), Convert.ToString(DerbySoftBookingCancelRS), "After Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WE");
+
+                                    DerbySoft.DSBookingCancel DSBookingCancelResponse = JsonConvert.DeserializeObject<DerbySoft.DSBookingCancel>(DerbySoftBookingCancelRS);
+
+
+                                    string BookingDetailsRQ = _derbySoft.Get_DerbySoft_BookingDetailsRQ_AFTC(AgentVoucherNo_Cancle, SupplierDetailsCommon, Convert.ToString(DtCancellation.Rows[p]["RoomTypeId"]));
+
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(BookingDetailsRQ), "-", "Before Request hit Booking Details", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(PNRNO_Cancel), "TravelBullz");
+                                    string BookingDetailsUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"] + Convert.ToString(DerbySoftInfo.DerbySoftBookingDetails));
+                                    ResponseDto responseDto1 = await _derbySoft.GetDerbySoftResponse(Error, BookingDetailsRQ, BookingDetailsUrl, 180000, "DerbySoft", DSPassword);
+
+                                    string BookingDetailsRS = responseDto1.Response;
+                                    Error = responseDto1.Error;
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(BookingDetailsRQ), Convert.ToString(BookingDetailsRS), "After Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WE");
+
+                                    DerbySoft.DSBookingDetails DSBookingDetailsResponse = JsonConvert.DeserializeObject<DerbySoft.DSBookingDetails>(BookingDetailsRS);
+                                    #endregion
+
+                                    #region Response Error Block 
+                                    if (DtCancellation.Rows[p]["Provider"].ToString().ToUpper() != "OTH" && DerbySoftBookingCancelRS == "")
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(DerbySoftBookingCancelRQ), Convert.ToString(DerbySoftBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(PNRNO_Cancel), "WE");
+                                        return "";
+                                    }
+                                    if (DSBookingCancelResponse.cancellationId != null || DSBookingCancelResponse.cancellationId.ToLower() == "")
+                                    {
+                                        string StatusCancelled = Convert.ToString(DSBookingCancelResponse.cancellationId);
+                                        if (StatusCancelled.ToLower() == null || StatusCancelled.ToLower() == "")
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(DerbySoftBookingCancelRQ), Convert.ToString(DerbySoftBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(PNRNO_Cancel), "WE");
+                                            return "";
+                                        }
+                                    }
+                                    else if (DSBookingDetailsResponse.reservations[0].status != null || DSBookingDetailsResponse.reservations[0].status != "")
+                                    {
+                                        string status = DSBookingDetailsResponse.reservations[0].status;
+                                        if (status.ToLower() != "cancelled")
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(DerbySoftBookingCancelRQ), Convert.ToString(DerbySoftBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(PNRNO_Cancel), "WE");
+                                            return "";
+                                        }
+                                    }
+                                    else
+                                        return "";
+                                    #endregion
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+                            }
+                            break;
+
+                        #endregion
+                        case "IWTX":
+                            #region"IWTX"   
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "IWTX")
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+                                    //if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0) //cmt on 28-AUG-2025
+                                    //    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='iwtx'");
+
+                                    string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    //string Url = "http://www.v3.staging.illusionswebservices.iwtx.com/illusionsHotelSearch.ashx";                              
+                                    //string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(IWTXInfo.IWTX_BookingCancel);
+                                    string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.IWTX.IWTX_BookingCancel);
+                                    string suppliername = Convert.ToString(SupplierDetailsCommon[0]["SupplierName"]);
+                                    string RoomTypeId = Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]);
+                                    string[] Roomids = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                    string HotelCode = Roomids[4].ToString();
+                                    string Uniqueid = Roomids[9].ToString();
+
+                                    string IWTXBookingCancelRQ = "";
+                                    string IWTXBookingCancelRS = "";
+                                    string IWTXRetrieveHotelBookingRQ = "";
+                                    string IWTXRetrieveHotelBookingRS = "";
+
+
+                                    string AgentVoucherNo = AgentVoucherNo_Cancle;// Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+
+                                    if (true)
+                                    {
+                                        IWTXBookingCancelRQ = _iwtx.CancelationRequest_IWTX(SupplierDetailsCommon, AgentVoucherNo, Uniqueid);
+                                        _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), Convert.ToString(IWTXBookingCancelRQ), "-", "Before Request hit bookingcancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), suppliername);
+                                        ResponseDto responseDto = await _iwtx.IWTXResponse(Url, IWTXBookingCancelRQ, suppliername, AgentVoucherNo);
+                                        IWTXBookingCancelRS = responseDto.Response;
+                                        Error = responseDto.Error;
+                                    }
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), Convert.ToString(IWTXBookingCancelRQ), Convert.ToString(IWTXBookingCancelRS + Error), "After Response hit bookingcancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), suppliername);
+
+                                    #region "Remove Node"
+                                    string I = IWTXBookingCancelRS;
+                                    var doc0 = XDocument.Parse(I);
+                                    var nodeToRemove0 = doc0.Descendants("Success");
+                                    nodeToRemove0.Remove();
+                                    IWTXBookingCancelRS = doc0.ToString();
+
+                                    string W = IWTXBookingCancelRS;
+                                    var doc1 = XDocument.Parse(W);
+                                    var nodeToRemove1 = doc1.Descendants("Profile");
+                                    nodeToRemove1.Remove();
+                                    IWTXBookingCancelRS = doc1.ToString();
+
+                                    string T = IWTXBookingCancelRS;
+                                    var doc2 = XDocument.Parse(T);
+                                    var nodeToRemove2 = doc2.Descendants("Currency");
+                                    nodeToRemove2.Remove();
+                                    IWTXBookingCancelRS = doc2.ToString();
+
+                                    string X = IWTXBookingCancelRS;
+                                    var doc3 = XDocument.Parse(X);
+                                    var nodeToRemove3 = doc3.Descendants("PassengerDetails");
+                                    nodeToRemove3.Remove();
+                                    IWTXBookingCancelRS = doc3.ToString();
+
+                                    #endregion
+
+                                    DataSet dsIWTX_RS = new DataSet();
+
+                                    bool IsTrue = false;
+                                    if (IWTXBookingCancelRS != string.Empty && IWTXBookingCancelRS != "" && IWTXBookingCancelRS != null && !IWTXBookingCancelRS.Contains("error"))
+                                    {
+                                        dsIWTX_RS = _commonMethod.GetDataSetFromXMLString(IWTXBookingCancelRS);
+                                        if (dsIWTX_RS.Tables["BookingDetails"].Columns.Contains("CancelHotelBookingResponse_Id"))
+                                        {
+                                            string BookingNumber = Convert.ToString(dsIWTX_RS.Tables["BookingDetails"].Rows[0]["BookingNumber"]);
+                                        }
+                                    }
+                                    if (true)
+                                    //Common.delayManual(50000);
+                                    {
+                                        IWTXRetrieveHotelBookingRQ = _iwtx.RetrieveHotelBookingCancelationRequest_IWTX(SupplierDetailsCommon, AgentVoucherNo, Uniqueid);
+                                        _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), Convert.ToString(IWTXRetrieveHotelBookingRQ), "-", "before Request hit bookingcancel RetrieveBooking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), suppliername);
+                                        ResponseDto responseDto1 = await _iwtx.IWTXResponse(Url, IWTXRetrieveHotelBookingRQ, suppliername, AgentVoucherNo);
+                                        IWTXRetrieveHotelBookingRS = responseDto1.Response;
+                                        Error = responseDto1.Error;
+                                    }
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), Convert.ToString(IWTXRetrieveHotelBookingRQ), Convert.ToString(IWTXRetrieveHotelBookingRS + Error), "After Response hit bookingcancel RetrieveBooking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), suppliername);
+
+                                    #region "Remove Node"
+
+                                    string P = IWTXRetrieveHotelBookingRS;
+                                    var doc01 = XDocument.Parse(P);
+                                    var nodeToRemove01 = doc01.Descendants("TotalRate");
+                                    nodeToRemove01.Remove();
+                                    IWTXRetrieveHotelBookingRS = doc01.ToString();
+
+                                    string Q = IWTXRetrieveHotelBookingRS;
+                                    var doc02 = XDocument.Parse(Q);
+                                    var nodeToRemove02 = doc02.Descendants("RoomConfigurationId");
+                                    nodeToRemove02.Remove();
+                                    IWTXRetrieveHotelBookingRS = doc02.ToString();
+
+                                    string R = IWTXRetrieveHotelBookingRS;
+                                    var doc03 = XDocument.Parse(R);
+                                    var nodeToRemove03 = doc03.Descendants("RoomNumber");
+                                    nodeToRemove03.Remove();
+                                    IWTXRetrieveHotelBookingRS = doc03.ToString();
+
+                                    string M = IWTXRetrieveHotelBookingRS;
+                                    var doc04 = XDocument.Parse(M);
+                                    var nodeToRemove04 = doc04.Descendants("BuyRate");
+                                    nodeToRemove04.Remove();
+                                    IWTXRetrieveHotelBookingRS = doc04.ToString();
+
+                                    string U = IWTXRetrieveHotelBookingRS;
+                                    var doc05 = XDocument.Parse(U);
+                                    var nodeToRemove05 = doc05.Descendants("CommissionSellCharges");
+                                    nodeToRemove05.Remove();
+                                    IWTXRetrieveHotelBookingRS = doc05.ToString();
+
+                                    string V = IWTXRetrieveHotelBookingRS;
+                                    var doc06 = XDocument.Parse(V);
+                                    var nodeToRemove06 = doc06.Descendants("TaxSellCharges");
+                                    nodeToRemove06.Remove();
+                                    IWTXRetrieveHotelBookingRS = doc06.ToString();
+
+                                    #endregion
+
+                                    DataSet dsIWTXR_RS = new DataSet();
+
+                                    IsTrue = false;
+                                    if (IWTXRetrieveHotelBookingRS != string.Empty && IWTXRetrieveHotelBookingRS != "" && IWTXRetrieveHotelBookingRS != null && !IWTXRetrieveHotelBookingRS.Contains("error"))
+                                    {
+                                        dsIWTXR_RS = _commonMethod.GetDataSetFromXMLString(IWTXRetrieveHotelBookingRS);
+
+                                        if (dsIWTXR_RS.Tables["BookingDetails"].Columns.Contains("BookingDetails_Id"))
+                                        {
+                                            //string Status = Convert.ToString(dsIWTXR_RS.Tables["BookingDetails"].Rows[0]["BookingStatus"]);
+                                            //if (Status.ToLower() == "cancelled")
+                                            //    IsTrue = true;
+                                            //string Status = Convert.ToString(dsIWTXR_RS.Tables["Room"].Rows[0]["RoomStatus"]);// Need to fix only check 1st room status (23-feb-2024)
+                                            //if (Status.ToLower() == "cx")
+                                            //    IsTrue = true;
+
+                                            string[] spitid = AgentVoucherNo.Split(new String[] { "|" }, StringSplitOptions.None);
+                                            string sourceid = spitid[0].ToString();
+                                            string bookingnumber = spitid[1].ToString();
+                                            string subresno = spitid[2].ToString();
+
+                                            DataRow[] IWTX_Status = dsIWTXR_RS.Tables["Room"].Select("SubResNo='" + subresno + "'");
+                                            //string UserName = Convert.ToString(IWTXDetails[0]["UserName"]);
+                                            string Status = Convert.ToString(IWTX_Status[0]["RoomStatus"]);
+                                            if (Status.ToLower() == "cx")
+                                                IsTrue = true;
+                                        }
+
+                                    }
+
+                                    #region Response Error Block 
+                                    //if (IWTXBookingCancelRS.ToLower().Contains("error")) //cmt on 28-AUG-2025
+                                    //{
+                                    //    calls.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(IWTXBookingCancelRQ), Convert.ToString(IWTXBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "iwtx");
+                                    //    return "";
+                                    //}
+
+                                    if (IsTrue == false)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), Convert.ToString(IWTXBookingCancelRQ), Convert.ToString(IWTXBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), Supplier);
+                                        return "";
+                                    }
+                                    #endregion
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking, PNRNO_Cancel);
+                                    return "";
+                                }
+                            }
+                            #endregion
+
+                            #endregion
+                            break;
+                        case "OMNIBEES":
+                            #region "Omnibees"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "OMNIBEES")
+                            {
+                                #region Booking Cancel RQ, URL
+
+                                if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+
+                                string CheckIn = Convert.ToString(DtCancellation.Rows[0]["BookingDate"]);
+                                //CheckIn = CheckIn.Substring(4, 2) + "/" + CheckIn.Substring(6, 2) + "/" + CheckIn.Substring(0, 4);
+                                string CheckOut = Convert.ToString(DtCancellation.Rows[0]["BookingToDate"]);
+
+                                string OmnibeesBookingCancelRQ = _omnibees.Get_Omnibees_BookingCancelRQ(AgentVoucherNo_Cancle, SupplierDetailsCommon, Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]), CheckIn, CheckOut);
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(OmnibeesBookingCancelRQ), "-", "Before Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "TechnoHub");
+                                string Omnibees_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(OmnibeesStaticInfo.OmnibeesCancel);
+                                #endregion
+
+                                #region Booking Cancel RS
+                                //string DerbySoftBookingCancelRS = Common.GetDerbySoftResponse(DerbySoftBookingCancelRQ, DerbySoft_Url, 180000, "Omnibees");
+                                string OmnibeesUserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                string OmnibeesPassword = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                string OmnibeesBookingCancelRS = _omnibees.GetOmnibeesResponse(ref Error, OmnibeesBookingCancelRQ, Omnibees_Url, 120000, OmnibeesUserName, OmnibeesPassword, "Omnibees"); ;
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(OmnibeesBookingCancelRQ), Convert.ToString(OmnibeesBookingCancelRS), "After Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "TechnoHub");
+
+                                if (OmnibeesBookingCancelRS == "" || OmnibeesBookingCancelRS == null)
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(OmnibeesBookingCancelRQ), Convert.ToString(OmnibeesBookingCancelRS + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                    return "";
+                                }
+                                OmnibeesBookingCancelResponse.CancelRS DSBookingCancelResponse = JsonConvert.DeserializeObject<OmnibeesBookingCancelResponse.CancelRS>(OmnibeesBookingCancelRS);
+
+                                if (DSBookingCancelResponse == null)
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(OmnibeesBookingCancelRQ), Convert.ToString(OmnibeesBookingCancelRS + Error), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                    return "";
+                                }
+                                #endregion
+
+                                #region Response Error Block 
+                                if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() != "OTH" && OmnibeesBookingCancelRS == "")
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(OmnibeesBookingCancelRQ), Convert.ToString(OmnibeesBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "TechnoHub");
+                                    return "";
+                                }
+                                else if (DSBookingCancelResponse.WarningsType == null)
+                                {
+
+                                }
+                                else
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(OmnibeesBookingCancelRQ), Convert.ToString(OmnibeesBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "TechnoHub");
+                                    return "";
+                                }
+                                #endregion
+                            }
+                            #endregion
+                            break;
+                        case "HYPERGUEST":
+                            #region "HyperGuest"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "HYPERGUEST")
+                            try
+                            {
+                                if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+                                DataRow[] hyperguestDetails = SupplierDetailsCommon;
+                                //string AgentVoucherNo = Convert.ToString(SupplierDetailsCommon[0]["AgentVoucherNo"]);
+                                //string[] spitid = AgentVoucherNo.Split(new String[] { "|" }, StringSplitOptions.None);
+                                //string bookingId = Convert.ToString(SupplierDetailsCommon[0]["BookingDetailsId"]);
+                                //string roomId = Convert.ToString(SupplierDetailsCommon[0]["RoomTypeId"]);
+
+
+                                string hyperguestBookingCancelRQ = _hyperguest.Gethyperguest_BookingCancelRQ(AgentVoucherNo_Cancle, SupplierDetailsCommon);
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(hyperguestBookingCancelRQ), "-", "Before Request hit booking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Withinearth");
+
+                                string hyperguestUrl = Convert.ToString(HyperguestInfo.BookingURL);
+                                string hyperguest_Url = hyperguestUrl + "booking/cancel";
+
+                                string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                Error = "";
+
+                                ResponseDto responseDto = await _hyperguest.GethyperguestResponse(hyperguestBookingCancelRQ, hyperguest_Url, Password, 300000);
+                                string Responsedata = responseDto.Response;
+                                Error = responseDto.Error;
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(hyperguestBookingCancelRQ), Convert.ToString(Responsedata), "After Request hit booking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+
+                                if (Responsedata != null || Responsedata != "")
+                                {
+                                    hyperguest.HyperguestBookingResp.Root htbkgCancelResponse = JsonConvert.DeserializeObject<hyperguest.HyperguestBookingResp.Root>(Responsedata);
+
+                                    if (htbkgCancelResponse.content != null)
+
+                                    {
+                                        if (htbkgCancelResponse.content.status != null)
+
+                                        {
+                                            if (htbkgCancelResponse.content.bookingId != null)
+
+                                            {
+                                                string Status = Convert.ToString(htbkgCancelResponse.content.status);
+
+                                                if (Status.ToLower() != "cancelled")
+                                                {
+                                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(hyperguestBookingCancelRQ), Convert.ToString(Responsedata), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                                    return "";
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(hyperguestBookingCancelRQ), Convert.ToString(Responsedata), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                                return "";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(hyperguestBookingCancelRQ), Convert.ToString(Responsedata), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                            return "";
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(hyperguestBookingCancelRQ), Convert.ToString(Responsedata), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                        return "";
+                                    }
+                                }
+                                else
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(hyperguestBookingCancelRQ), Convert.ToString(Responsedata), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                    return "";
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = _exception.ErrorBooking(ex, AgentId.ToString());
+                                _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+
+                                return "";
+                            }
+                            #endregion
+                            break;
+                        case "DEDGE":
+                            #region Dedge
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "DEDGE")
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+
+                                    if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                        SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+
+                                    string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    string suppliername = Convert.ToString(SupplierDetailsCommon[0]["SupplierName"]);
+                                    string RoomTypeId = Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]);
+                                    string DedgeBookingCancelRS = "";
+                                    string DedgeBookingCancelRQ = "";
+                                    if (true)
+                                    {
+                                        // Int32 OnlineBookingMasterId = Convert.ToInt32(DtCancellationError.Rows[0]["OnlineBookingMasterId"]);
+                                        DataTable DtPassengerDetails = await _commonMethod.GetPassengerDetail_Dedge(DetailId);
+
+                                        // DataSet dsratebreakup = data.GetRateBreakup_dedge(bookingDetailId);
+                                        string HotelCode = string.Empty;
+                                        HotelCode = Convert.ToString(DtPassengerDetails.Rows[0]["ProductId"]);
+
+                                        DataSet dsratebreakup = await _commonMethod.GetRatebreakup_Dedge(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]));
+
+                                        DedgeBookingCancelRQ = _dedge.Get_Dedge_BookingCancelRequest(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), UserName, Password, suppliername, RoomTypeId, DtCancellation, DtPassengerDetails, dsratebreakup);
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(DedgeBookingCancelRQ), "-", "After Request hit bookingcancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Dedge");
+                                        // string Url = Convert.ToString(HotelRunnerDetails[0]["WebSiteURL"]);
+                                        #endregion
+                                        string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                        string Roomid = spitid[0].ToString();
+                                        string RatePlanCode = spitid[1].ToString();
+                                        string currencycode = spitid[2].ToString();
+                                        string ExtrabedPrice = spitid[3].ToString();
+                                        string ExtrabedQuantity = spitid[4].ToString();
+                                        string CountryId = spitid[5].ToString();
+                                        string Url = "";
+                                        //Url = Common.Get_HotelRunner_BookURL(CountryId);
+                                        string BookUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+
+                                        #region Booking Cancel RS
+
+                                        ResponseDto responseDto = await _dedge.GetDedge_SupplierResponse(UserName, Password, DedgeBookingCancelRQ, BookUrl, 60000, "Dedge");
+                                        DedgeBookingCancelRS = responseDto.Response;
+                                        Error = responseDto.Error;
+                                    }
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(DedgeBookingCancelRQ), Convert.ToString(DedgeBookingCancelRS), "After Response hit bookingcancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Dedge");
+                                    DataSet dsDedge_RS = new DataSet();
+                                    bool IsTrue = false;
+                                    if (DedgeBookingCancelRS != string.Empty && DedgeBookingCancelRS != "" && DedgeBookingCancelRS != null && !DedgeBookingCancelRS.Contains("error"))
+                                    {
+                                        dsDedge_RS = _commonMethod.GetDataSetFromXMLString(DedgeBookingCancelRS);
+
+                                        if (dsDedge_RS.Tables["message"].Columns.Contains("success"))
+                                        {
+
+
+                                            IsTrue = true;
+
+                                        }
+                                        // if (dsHotelRunner_RS.Tables["OTA_HotelResNotifRS"].Columns.Contains("Success"))
+
+
+                                    }
+                                    #endregion
+                                    #region Response Error Block 
+                                    if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() != "Dedge" && DedgeBookingCancelRS.ToLower().Contains("error"))
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(DedgeBookingCancelRQ), Convert.ToString(DedgeBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Dedge");
+                                        return "";
+                                    }
+
+                                    if (IsTrue == false)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(DedgeBookingCancelRQ), Convert.ToString(DedgeBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Dedge");
+                                        return "";
+                                    }
+                                    #endregion
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+                            }
+
+                            #endregion
+                            break;
+                        case "STAAH":
+                            #region Staah
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "STAAH")
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+
+                                    if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                        SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+                                    string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    string version = Convert.ToString(SupplierDetailsCommon[0]["Version"]);
+                                    string suppliername = Convert.ToString(SupplierDetailsCommon[0]["SupplierName"]);
+                                    string RoomTypeId = Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]);
+                                    string StaahBookingCancelRS = "";
+                                    string StaahBookingCancelRQ = "";
+                                    Error = "";
+                                    if (true)
+                                    {
+
+                                        // Int32 OnlineBookingMasterId = Convert.ToInt32(DtCancellationError.Rows[0]["OnlineBookingMasterId"]);
+                                        DataTable DtPassengerDetails = await _commonMethod.GetPassengerDetail_Staah(DetailId);
+
+                                        DataSet dsratebreakup = await _commonMethod.GetRatebreakup_Stahh(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]));
+
+                                        StaahBookingCancelRQ = _staah.Get_Staah_BookingCancelRQ(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Password, version, suppliername, RoomTypeId, DtCancellation, DtPassengerDetails, Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), dsratebreakup, tokenData);
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(StaahBookingCancelRQ), "-", "After Request hit bookingcancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Staah");
+                                        string CancelUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);// + Convert.ToString(ConfigurationManager.AppSettings["StaahBooking"]);
+                                        #endregion
+
+                                        #region Booking Cancel RS
+                                        ResponseDto responseDto = await _staah.GetStaahResponse(Error, StaahBookingCancelRQ, CancelUrl, 180000, Supplier);
+                                        StaahBookingCancelRS = responseDto.Response;
+                                        Error = responseDto.Error;
+                                    }
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(StaahBookingCancelRQ), Convert.ToString(StaahBookingCancelRS), "After Response hit bookingcancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Staah");
+                                    DataSet dsRateTiger_RS = new DataSet();
+                                    bool IsTrue = false;
+                                    if (StaahBookingCancelRS != string.Empty && StaahBookingCancelRS != "" && StaahBookingCancelRS != null)
+                                    {
+                                        List<Staah.StaahBookingResponse> StaahBookingResponse = JsonConvert.DeserializeObject<List<Staah.StaahBookingResponse>>(StaahBookingCancelRS);
+                                        string BookibgId = StaahBookingResponse[0].bookingId;
+                                        string Status = StaahBookingResponse[0].status;
+
+                                        if (Status == "success")
+                                            IsTrue = true;
+
+                                    }
+
+
+                                    #endregion
+
+                                    #region Response Error Block 
+                                    if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() != "STAAH")
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(StaahBookingCancelRQ), Convert.ToString(StaahBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Staah");
+                                        return "";
+                                    }
+
+                                    if (IsTrue == false)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(StaahBookingCancelRQ), Convert.ToString(StaahBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Staah");
+                                        return "";
+                                    }
+                                    #endregion
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "PRICETRAVEL":
+                            #region "PriceTravel"
+
+                            if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "PRICETRAVEL")
+
+                            {
+
+                                //   if (Convert.ToString(DtCancellationError.Rows[0]["AgentVoucherNo"]).ToLower() != "2ppp24")
+                                //  {
+
+                                try
+                                {
+                                    string CancellBookingId = Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+
+                                    if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                        SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+
+
+                                    string PriceTravel_BaseUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+                                    string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+
+                                    // Common.priceTravelToken priceTravelToken = JsonConvert.DeserializeObject<Common.priceTravelToken>(XMLHotelBookingCommon.PriceTravelTokenGenerationForCancellation(PriceTravel_BaseUrl, UserName, Password));
+
+                                    PriceTravel_BaseUrl = PriceTravel_BaseUrl + "bookings/" + CancellBookingId;
+
+                                    string[] DsCartDetailsArray = Convert.ToString(DtCancellation.Rows[0]["RoomTypeID"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                    List<SupplierDetails> Price_TravelDetails = new List<SupplierDetails>();
+                                    Price_TravelDetails = HtmlExtensions.ToList<SupplierDetails>(SupplierDetailsCommon.CopyToDataTable());
+                                    priceTravelToken priceTravelToken = JsonConvert.DeserializeObject<priceTravelToken>(_pricetravel.PriceTravelTokenGeneration(Price_TravelDetails[0]));
+
+                                    string PriceTravelToken = Convert.ToString(priceTravelToken.access_token);
+
+                                    ResponseDto responseDto = await _pricetravel.GetPriceTravelSupplierResponse(Error, PriceTravelToken, PriceTravel_BaseUrl, "", "", 60000, "", "Delete", "");
+                                    string CancellatonResponse = responseDto.Response;
+                                    Error = responseDto.Error;
+                                    // string CancellatonResponse =  XMLHotelBookingCommon.GetPriceTravelSupplierResponseForTestBookingCancel();
+                                    //calls.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), /*Convert.ToString(W2MBookingCancelRQ)*/ PriceTravel_BaseUrl, Convert.ToString(CancellatonResponse), "After Request hit booking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RaynaB2B");
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), UserName, PriceTravel_BaseUrl + " ### Header=" + PriceTravelToken + "", Convert.ToString(CancellatonResponse + Error), "After Request hit booking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RaynaB2B");
+
+                                    //root = @"D:\PricetravelJson\bookingCancel";
+                                    //if (!Directory.Exists(root))
+                                    //{
+                                    //    Directory.CreateDirectory(root);
+                                    //}
+                                    //File.WriteAllText(root + "bookingCancelRequest.txt", PriceTravel_BaseUrl);
+                                    //File.WriteAllText(root + "bookingCancelResponse.txt", CancellatonResponse);
+
+
+                                    string detailResponse1 = JsonConvert.DeserializeXmlNode("{\"Row\":" + CancellatonResponse + "}", "root").InnerXml;
+
+                                    DataSet dsResponsebookancel = _commonMethod.GetDataSetFromXMLString(detailResponse1);
+
+                                    if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() != "OTH" && CancellatonResponse == "")
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(UserName), Convert.ToString(CancellBookingId), Convert.ToString(CancellatonResponse), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RaynaB2B");
+                                        return "";
+                                    }
+
+
+                                    if (dsResponsebookancel.Tables.Contains("Row") && dsResponsebookancel.Tables["Row"].Rows.Count > 0)
+                                    {
+
+                                        string PriceTravelStatus = Convert.ToString(dsResponsebookancel.Tables["Row"].Rows[0]["status"]);
+
+                                        if (PriceTravelStatus.ToLower() != "cancelled")
+                                        {
+                                            //calls.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(CancellBookingId), Convert.ToString(CancellatonResponse), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RaynaB2B");
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), UserName, Convert.ToString(CancellBookingId), Convert.ToString(CancellatonResponse), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RaynaB2B");
+                                            return "";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), UserName, Convert.ToString(CancellBookingId), Convert.ToString(CancellatonResponse), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RaynaB2B");
+                                        return "";
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorBooking(ex, "");
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    return "";
+                                }
+
+                                //}
+
+                            }
+                            #endregion
+                            break;
+                        case "PAXIMUM":
+                            #region "Paximum"
+                            try
+                            {
+
+
+                                DataRow[] PaximumDetails = null;
+                                PaximumDetails = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+                                //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "PAXIMUM")
+                                {
+                                    if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                        PaximumDetails = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+                                    string AgentVoucherNo = Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+                                    string[] spitid = AgentVoucherNo.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                    //string bookingId = Convert.ToString(DtCancellationError.Rows[0]["BookingDetailsId"]);
+                                    string PaximumBookingCancelRQ = _paximum.Getpaximum_BookingCancelRQ(spitid[0], PaximumDetails);
+
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(PaximumBookingCancelRQ), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Withinearth");
+
+
+                                    string BookUrl = Convert.ToString(PaximumDetails[0]["WebSiteURL"]);
+                                    string URL = BookUrl + "booking/cancel";
+
+                                    string Password = Convert.ToString(PaximumDetails[0]["Password"]);
+                                    Error = "";
+
+                                    ResponseDto responseDto = await _paximum.GetpaximumbookingResponse(PaximumBookingCancelRQ, URL, 120000, TechName, Password);
+
+                                    string Responsedata = responseDto.Response;
+                                    Error = responseDto.Error;
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(PaximumBookingCancelRQ), Convert.ToString(Responsedata), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+
+                                    if (Responsedata != null)
+                                    {
+                                        //Common.hyperguest.HyperguestBookingResp.Root htbkgCancelResponse = JsonConvert.DeserializeObject<Common.hyperguest.HyperguestBookingResp.Root>(Responsedata);
+
+                                        Paximum_CancelResponse.Root paximumCancelResponse = JsonConvert.DeserializeObject<Paximum_CancelResponse.Root>(Responsedata);
+
+                                        if (paximumCancelResponse != null)
+                                        {
+                                            if (paximumCancelResponse.cancellation.status != null && paximumCancelResponse.cancellation.bookingId != null)
+
+                                            {
+                                                string Status = Convert.ToString(paximumCancelResponse.cancellation.status);
+
+                                                if (Status.ToLower() != "cancelled")
+                                                {
+                                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(PaximumBookingCancelRQ), Convert.ToString(Responsedata), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                                    return "";
+
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(PaximumBookingCancelRQ), Convert.ToString(Responsedata), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                                return "";
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(PaximumBookingCancelRQ), Convert.ToString(Responsedata), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                            return "";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(PaximumBookingCancelRQ), Convert.ToString(Responsedata), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                        return "";
+                                    }
+                                }
+
+                            }
+                            catch (Exception x)
+                            {
+                                _ = _exception.ErrorBooking(x, AgentId.ToString());
+                                _ = _exception.ErrorNew(x, _LogAPI.CancelBooking);
+                                return "";
+                            }
+                            #endregion
+                            break;
+                        case "WEBHOTELIER":
+                            #region "Webhotelier"
+                            //if (Supplier.ToString().ToUpper() == "WEBHOTELIER")
+                            {
+                                try
+                                {
+                                    string AgentVoucherNo = AgentVoucherNo_Cancle;
+                                    //string[] Arr = AgentVoucherNo.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                    //string ReferenceNo = Arr[0];
+                                    //string Booking_Id = Arr[1];
+                                    if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    {
+                                        SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+                                    }
+                                    string WebhotelierurlReq = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/reservation/cancel/" + AgentVoucherNo;
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(WebhotelierurlReq), "-", "Before Request hit Cancel", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "Viva Booking");
+
+                                    Error = "";
+                                    string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    ResponseDto responseDto = await _Webhoteliter.WebhotelierBookingRS(WebhotelierurlReq, WebhotelierurlReq, UserName, Password, 60000);
+                                    string WebHotelierCancelResponse = responseDto.Response;
+                                    Error = responseDto.Error;
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(WebhotelierurlReq), Convert.ToString(WebHotelierCancelResponse + Error), "After Request hit Cancel", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "Viva Booking");
+                                    //DataSet GRNCResponse = Common.ReadDataFromJson(ResponseCancellation.ToString());
+                                    try
+                                    {
+                                        WebHotellier.WebhotelierCancelResponse.Root WebCancelRes = new WebHotellier.WebhotelierCancelResponse.Root();
+                                        WebCancelRes = JsonConvert.DeserializeObject<WebHotellier.WebhotelierCancelResponse.Root>(WebHotelierCancelResponse);
+                                        bool IsTrue = false;
+                                        if (WebCancelRes.error_msg == "")
+                                        {
+                                            if (WebCancelRes.data.result.ToLower() == "ok")
+                                            {
+                                                IsTrue = true;
+                                            }
+                                            else
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(WebhotelierurlReq), Convert.ToString(WebHotelierCancelResponse), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Viva Booking");
+                                                return "";
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(WebhotelierurlReq), Convert.ToString(WebHotelierCancelResponse), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Viva Booking");
+                                            return "";
+                                        }
+                                    }
+                                    catch (Exception)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(WebhotelierurlReq), Convert.ToString(WebHotelierCancelResponse), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "Viva Booking");
+                                        return "";
+
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+
+                                    throw;
+                                }
+                            }
+                            //}
+                            #endregion
+                            break;
+                        case "SALTOURS":
+                            #region "Saltours"
+                            DataRow[] SaltoursDetails = null;
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "SALTOURS")
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+                                    Error = "";
+                                    if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                        SaltoursDetails = dsAgentDetails.Tables[1].Select("SupplierName='" + Supplier + "'");
+
+                                    string ISOCountry = Convert.ToString(DtCancellation.Rows[0]["NationalityName"]);
+
+                                    string AgentVoucherNo = AgentVoucherNo_Cancle;
+                                    string[] arr = AgentVoucherNo.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                    string Uniqu_Id = arr[0];
+                                    string Type = arr[1];
+                                    //string ISOCountry = arr[2];
+                                    string SaltoursBookingCancelRQ = _saltours.Get_Saltours_BookingCancelRQ(AgentVoucherNo_Cancle, SaltoursDetails, ISOCountry, Uniqu_Id, Type);
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(SaltoursBookingCancelRQ), "-", "Before Request hit booking[saltours]", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+
+                                    if (SaltoursBookingCancelRQ == "")
+                                    {
+                                        return "";
+                                    }
+
+                                    string Saltours_Url = SalyoursInfo.SaltoursCancelBookingURL;
+                                    #endregion
+
+                                    #region Booking Cancel RS
+                                    string SaltoursBookingCancelRS = "";
+                                    ResponseDto responseDto = await _saltours.GetsaltoursResponse(SaltoursBookingCancelRQ, Saltours_Url, 120000, TechName);
+                                    string SaltoursBookingCancelrs = responseDto.Response;
+                                    Error = responseDto.Error;
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(SaltoursBookingCancelRQ), Convert.ToString(SaltoursBookingCancelrs), "After Request hit booking[saltours]", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                    SaltoursBookingCancelRS = SaltoursBookingCancelrs.Replace("utf-16", "utf-8");
+
+                                    #endregion
+
+                                    #region Response Error Block 
+                                    if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() != "OTH" && SaltoursBookingCancelRS == "")
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(SaltoursBookingCancelRQ), Convert.ToString(SaltoursBookingCancelRS), "From Cancellation Page[saltours]", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                        return "";
+                                    }
+                                    if (SaltoursBookingCancelRS != null)
+                                    {
+                                        DataSet dsSaltours_RS = _commonMethod.GetDataSetFromXMLString(SaltoursBookingCancelRS);
+
+                                        if (dsSaltours_RS.Tables.Contains("OTA_CancelRS"))
+                                        {
+
+                                            if (dsSaltours_RS.Tables["OTA_CancelRS"] != null)
+                                            {
+                                                string StatusCancelled = Convert.ToString(dsSaltours_RS.Tables["OTA_CancelRS"].Rows[0]["Status"]);
+
+                                                if (StatusCancelled.ToLower() != "cancelled")
+                                                {
+                                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(SaltoursBookingCancelRQ), Convert.ToString(SaltoursBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                                    return "";
+                                                }
+                                            }
+                                            else
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(SaltoursBookingCancelRQ), Convert.ToString(SaltoursBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                                return "";
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(SaltoursBookingCancelRQ), Convert.ToString(SaltoursBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                            return "";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(SaltoursBookingCancelRQ), Convert.ToString(SaltoursBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                        return "";
+                                    }
+                                }
+                                #endregion
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorBooking(ex, AgentId.ToString());
+                                    return "";
+                                }
+                                //}
+                            }
+                            #endregion
+                            break;
+                        case "BOOKING.COM_V3":
+                            #region "Booking.com_v3"
+                            if (true)//(DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "BOOKING.COM_V3"|| DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "BOOKING.COMG_V3")
+                            {
+                                #region Booking Cancel RQ, URL
+                                //if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                // SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='booking.com_v3'");
+                                bool IsTrue = false;
+                                string BookingCancelRQ = _booking.Get_BookingDotCom_BookingCancelRQ_v3(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), CancelReson);
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(BookingCancelRQ), "-", "Before Request hit booking cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "WithinEarth");
+
+                                string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/orders/cancel";
+                                #endregion
+
+                                #region Booking Cancel RS
+                                Error = "";
+                                ResponseDto responseDto = await _booking.BookingDotComv3Response(BookingCancelRQ, Url, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), 10000);
+                                string BookingCancelRS = responseDto.Response;
+                                Error = responseDto.Error;
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(BookingCancelRQ), Convert.ToString(BookingCancelRS), "After Request hit booking cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Response Confirm", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "WithinEarth");
+                                if (BookingCancelRS == "")
+                                {
+                                    return "";
+                                }
+                                cancelrs.Root ds_RS = JsonConvert.DeserializeObject<cancelrs.Root>(BookingCancelRS);
+                                #endregion
+
+                                #region Response Error Block 
+                                if (ds_RS != null)
+                                {
+                                    string id = Convert.ToString(ds_RS.data.status);
+                                    if (id.ToLower() == "successful")
+                                    {
+                                        IsTrue = true;
+                                    }
+                                    else
+                                    {
+                                        return "";
+                                    }
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(BookingCancelRQ), Convert.ToString(BookingCancelRS), "From Cancellation Page[booking.com]", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[p]["PNRNo"]), "WithinEarth");
+                                        return "";
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    }
+                                }
+                                #endregion
+                            }
+                            #endregion
+                            break;
+                        case "ETG":
+                            #region "RateHawk"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "RATEHAWK")
+                            {
+                                #region Booking Cancel RQ, URL
+                                try
+                                {
+                                    // if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    //SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='RateHawk'");
+                                    //string Error = "";
+                                    string ID = Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+                                    string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+
+                                    string[] OrderIId = ID.Split(new String[] { "##" }, StringSplitOptions.None);
+                                    string Order_Id = OrderIId[0].ToString();
+
+                                    string BookingCancelRQ = _etg.EtgBookingCancelRQ(Order_Id);
+
+                                    //System.IO.File.WriteAllText(@"D:\BlueGlobz\ReqRes\BookingCancleReq_BeforeHit.txt", Convert.ToString(BookingCancelRQ));
+                                    _commonMethod.ThirdPartyCancellationHistory(Order_Id, UserName, Convert.ToString(BookingCancelRQ), "-", "Before Request hit cancel booking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Withinearth");
+
+                                   // string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/hotel/order/cancel/";// + "/" + ID;
+                                    string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + _supplierConfig.ETG.order_cancel;// + "/" + ID;
+                                    string key = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserName + ":" + Password));
+                                    #endregion
+
+                                    #region Booking Cancel RS
+                                    ResponseDto responseDto = await _etg.GetETGRoomResponse(BookingCancelRQ, Url, key, Order_Id);
+                                    string BookingCancelRS = responseDto.Response;
+                                    Error = responseDto.Error;
+                                    //System.IO.File.WriteAllText(@"D:\BlueGlobz\ReqRes\BookingCancleURL_AfterHit.txt", Convert.ToString(Url));
+                                    //System.IO.File.WriteAllText(@"D:\BlueGlobz\ReqRes\BookingCancleReq_AfterHit.txt", Convert.ToString(BookingCancelRQ));
+                                    //System.IO.File.WriteAllText(@"D:\BlueGlobz\ReqRes\BookingCancleRes_AfterHit.txt", Convert.ToString(BookingCancelRS));
+
+                                    _commonMethod.ThirdPartyCancellationHistory(Order_Id, UserName, Convert.ToString(BookingCancelRQ) + Error, Convert.ToString(BookingCancelRS), "After Request hit Booking Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Response Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Withinearth");
+
+                                    if (BookingCancelRS == "")// && (BookingDetailResponce.ToLower().Contains("save") || BookingDetailResponce.ToLower().Contains("confirm booking")))
+                                    {
+                                        return "";
+                                    }
+                                    else
+                                    {
+                                        string bookingStatus = "";
+                                        DataSet dsCancelDetailRS = new DataSet();
+                                        XmlDocument doc = JsonConvert.DeserializeXmlNode("{\"Row\":" + BookingCancelRS + "}", "root");
+                                        XmlReader xmlReader = new XmlNodeReader(doc);
+                                        dsCancelDetailRS.ReadXml(xmlReader);
+                                        bookingStatus = Convert.ToString(dsCancelDetailRS.Tables[0].Rows[0]["status"]);
+
+                                        #endregion
+
+                                        #region Response Error Block 
+                                        if (bookingStatus != null && bookingStatus != "")// || BookingDetailResponce != "")
+                                        {
+                                            //string id = Convert.ToString(ds_RS.result.reservation_id);
+
+                                            if (bookingStatus.ToLower() != "ok")// && bookingStatus.ToLower() != "void booking")// && BookingDetailResponce == "")
+                                            {
+                                                return "";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            try
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(BookingCancelRQ), Convert.ToString(BookingCancelRS), "From Cancellation Page[oyoroom.com]", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "Withinearth");
+                                                return "";
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                return "";
+                                                _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                            }
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    return "";
+                                }
+                                #endregion
+                            }
+                            #endregion
+                            break;
+                        case "PKFARE":
+                            #region "Pkfare"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "PKFARE")
+                            {
+                                string AgentVoucherNo = Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+                                string UserID = Convert.ToString(SupplierDetailsCommon[0]["UserID"]);
+                                string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                string CancelConfirm_URl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString("1.0/bookings/") + AgentVoucherNo + "?language=null&cancellationFlag=SIMULATION";
+
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), CancelConfirm_URl, "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+
+                                Error = "";
+
+                                ResponseDto responseDto = await _pkfare.GetPkFareResponse(Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString("1.0/bookings/"), UserID, UserName, Password, CancelConfirm_URl, Error, "DELETE", "");
+                                string ResponsePkFare = responseDto.Response;
+                                Error = responseDto.Error;
+                                if (!string.IsNullOrEmpty(Error))
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), CancelConfirm_URl, Error, "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                    return "";
+                                }
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), CancelConfirm_URl, ResponsePkFare, "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Response Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+
+                                if (!string.IsNullOrEmpty(ResponsePkFare))
+                                {
+                                    PkfCancelRS.Root PkFareCancelResponse = JsonConvert.DeserializeObject<PkfCancelRS.Root>(ResponsePkFare);
+                                    if (PkFareCancelResponse != null)
+                                    {
+
+                                        double cancelationamount = Convert.ToDouble(PkFareCancelResponse.booking.hotel.cancellationAmount);
+                                        //string Msg = PkFareCancelResponse.msg;
+                                        string CancelConfirm = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString("1.0/bookings/") + AgentVoucherNo + "?language=null&CANCELLATION&oriFine=" + cancelationamount + "";
+                                        ResponseDto responseDto1 = await _pkfare.GetPkFareResponse(Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString("1.0/bookings/"), UserID, UserName, Password, CancelConfirm, Error, "DELETE", "");
+                                        string ResponseFinalPkFare = responseDto1.Response;
+                                        Error = responseDto1.Error;
+
+                                        _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), CancelConfirm, ResponseFinalPkFare + Error, "after Request hit final Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+
+
+                                        PkfCancelRS.Root PkFareCancelFinalResponse = JsonConvert.DeserializeObject<PkfCancelRS.Root>(ResponseFinalPkFare);
+                                        string Status = PkFareCancelFinalResponse.booking.status;
+                                        if (Status.ToLower() != "canceled")
+                                        {
+                                            //if (Msg != "cancel success")
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), CancelConfirm, ResponseFinalPkFare, "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                                return "";
+                                            }
+                                        }
+
+                                        //else
+                                        //{
+                                        //    calls.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(HttpContext.Current.Session["UserName"]), CancelConfirm, ResponseFinalPkFare, "From Cancellation Page", Convert.ToString(DtCancellationError.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellationError.Rows[0]["PNRNo"]), "withinearth");
+                                        //    return "";
+                                        //}
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), CancelConfirm_URl, ResponsePkFare, "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                        return "";
+                                    }
+                                }
+                                else
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), CancelConfirm_URl, "No response", "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                    return "";
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "LETSFLY":
+                            #region "Letsfly"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "LETSFLY")
+                            {
+                                string AgentVoucherNo = Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]);
+                                string UserID = Convert.ToString(SupplierDetailsCommon[0]["UserID"]);
+                                string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                string CancelConfirm_URl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(LetsflyInfo.LetsFly_BookingCancelURL);
+                                string BookingCancelRequest = _letsfly.LetsflyBookingCancelReq(AgentVoucherNo);
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), BookingCancelRequest, "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+
+                                Error = "";
+                                ResponseDto responseDto = await _letsfly.GetletsflyResponse(CancelConfirm_URl, UserID, UserName, Password, BookingCancelRequest, Error, AgentVoucherNo);
+                                string ResponseLetsfly = responseDto.Response;
+                                Error = responseDto.Error;
+                                if (!string.IsNullOrEmpty(Error))
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), BookingCancelRequest, Error, "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                    return "";
+                                }
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), BookingCancelRequest, ResponseLetsfly, "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Response Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+
+                                if (!string.IsNullOrEmpty(ResponseLetsfly))
+                                {
+                                    LetsflyCancelBooking.Root letsflyCancelResponse = JsonConvert.DeserializeObject<LetsflyCancelBooking.Root>(ResponseLetsfly);
+                                    if (letsflyCancelResponse != null)
+                                    {
+                                        int Status = letsflyCancelResponse.status;
+                                        string Msg = letsflyCancelResponse.msg;
+
+                                        if (Status == 0 && !string.IsNullOrEmpty(letsflyCancelResponse.orderinfo.orderno) && !string.IsNullOrEmpty(letsflyCancelResponse.orderinfo.lforderno))
+                                        {
+                                            if (Msg != "cancel success")
+                                            {
+                                                _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), BookingCancelRequest, ResponseLetsfly, "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                                return "";
+                                            }
+                                        }
+                                        //else
+                                        //{
+                                        //    calls.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(HttpContext.Current.Session["UserName"]), BookingCancelRequest, ResponseLetsfly, "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                        //    return "";
+                                        //}
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), BookingCancelRequest, ResponseLetsfly, "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                        return "";
+                                    }
+                                }
+                                else
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(AgentId), BookingCancelRequest, "No response", "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "withinearth");
+                                    return "";
+                                }
+                            }
+                            #endregion
+                            break;
+                        case "REZLIVE":
+                            #region "Rezlive"
+                            //if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() == "REZLIVE")
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+                                    string RezliveBookingCancelRQ = "";
+                                    string RealiveBookingCancelRS = "";
+                                    if (true)
+                                    {
+
+                                        RezliveBookingCancelRQ = _rezlive.Get_Rezlive_BookingCancelRQ(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), SupplierDetailsCommon);
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(RezliveBookingCancelRQ), "-", "Before Request hit booking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+
+                                        string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + RezliveStaticInfo.hotelcancel;
+                                        #endregion
+
+                                        #region Booking Cancel RS
+                                        Error = "";
+                                        ResponseDto responseDto = await _rezlive.Rezlive_Response_Supplier_new(RezliveBookingCancelRQ, Url, 120000, Convert.ToString(DtCancellation.Rows[0]["Provider"]), "");
+                                        RealiveBookingCancelRS = responseDto.Response;
+                                        Error = responseDto.Error;
+                                    }
+                                    _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(RezliveBookingCancelRQ), Convert.ToString(RealiveBookingCancelRS), "After Request hit booking", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                    DataSet dsRezlive_RS = new DataSet();
+                                    bool IsTrue = false;
+                                    if (RealiveBookingCancelRS != string.Empty || RealiveBookingCancelRS != "" || RealiveBookingCancelRS != null || !RealiveBookingCancelRS.Contains("error"))
+                                    {
+                                        dsRezlive_RS = _commonMethod.GetDataSetFromXMLString(RealiveBookingCancelRS);
+                                        IsTrue = Convert.ToBoolean(dsRezlive_RS.Tables["CancellationResponse"].Rows[0]["Status"]);
+                                    }
+
+
+                                    #endregion
+
+                                    #region Response Error Block 
+                                    if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() != "OTH" && RealiveBookingCancelRS.ToLower().Contains("error"))
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(RezliveBookingCancelRQ), Convert.ToString(RealiveBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                        return "";
+                                    }
+
+                                    if (IsTrue == false)
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(AgentId), Convert.ToString(RezliveBookingCancelRQ), Convert.ToString(RealiveBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "WithinEarth");
+                                        return "";
+                                    }
+                                    #endregion
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking, Convert.ToString(DtCancellation.Rows[0]["PNRNo"]));
+                                    return "";
+                                }
+                            }
+
+                            #endregion
+                            break;
+
+                        default:
+                            return "";
+                            break;
+                            #endregion
                     }
-                    return cancelsuccess;
-
-
-
-
                 }
                 catch (Exception ex)
                 {
                     _ = _exception.ErrorBooking(ex, AgentId.ToString());
-                    return cancelsuccess;
+                    return "";
                 }
                 #endregion
+
+                return "Room  Cancelled Successfully!!!";
+
+
 
             }
             catch (Exception ex)
             {
                 _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
-                return cancelsuccess;
+                return "";
             }
         }
 

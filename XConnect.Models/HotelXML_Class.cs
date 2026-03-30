@@ -1850,7 +1850,7 @@ namespace XConnect.Models
         public int HotelId { get; set; }
         public string Nationality { get; set; }
         public string XMLHotelId { get; set; }
-        public int NoOfNight { get; set; }   //added by trupti
+        public int NoOfNight { get; set; }  
 
         public List<UserCartDetails> UserCartDetails { get; set; }
     }
@@ -2057,28 +2057,45 @@ namespace XConnect.Models
         public int CancelOldBooking { get; set; }//@#Pruvo
     }
 
+    public class CancelReuest
+    {
+        public Int64 BookingId { get; set; }
+        public Int64 BookingDetailId { get; set; }
+        public string Reason { get; set; }
+        public string Techname { get; set; }
+        public string Provider { get; set; }
+        public string AgentVoucherno { get; set; }
+
+        public string ReferenceNo { get; set; }
+        public string RoomtypId { get; set; }
+
+
+
+        //public string AgentVoucherno { get; set; }
+        //public string InternalReference { get; set; }
+        //public string CancelCode { get; set; }
+        //public int CancelAll { get; set; }
+        //public int CancelOldBooking { get; set; }//@#Pruvo
+    }
+
     public class CancelBookingRequest
     {
         public CancelRQ CancelRQ { get; set; }
     }
     public class CancelBookingRequest_new
     {
-        public string SearchKey { get; set; }
-        public CancelRQ CancelRQ { get; set; }
-
-        public UserCart userCart { get; set; }
-        public string Techname {  get; set; }   
-        public string Provider {  get; set; }   
-        public string AgentVoucherNo {  get; set; }   
-        public string OnlineHotelBookingDetailId {  get; set; }   
-        public string RefNo {  get; set; }   
-
-
-
-        
+        public string Token { get; set; }
+       
+        public CancelReuest CancelRQ { get; set; }
     }
     #endregion
     #region "Response"
+    public class HotelRoom_Cancel1
+    {
+        public string Message { get; set; }
+        public int CancelStatus { get; set; }
+
+    }
     public class HotelRoom_Cancel
     {
         public string RoomTypeName { get; set; }
@@ -2127,6 +2144,12 @@ namespace XConnect.Models
 
     }
 
+    public class CancelBookingResponse_newversion1
+    {
+        public HotelRoom_Cancel1 hotelRoom_Cancel { get; set; }
+        public List<_Error> Error = new List<_Error>();
+
+    }
 
     #endregion
     #endregion

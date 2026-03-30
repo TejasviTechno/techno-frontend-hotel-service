@@ -33,6 +33,7 @@ namespace Xconnect.Hotelbeds.Interface
 
         //book 210825
         string HotelBedsdV1BookindgRequest(DataTable dtPassengers, DataSet dsCartDetails, bool IsPRiceUpdate, bool IsError, int j, string AgentCode);
+        string HotelBedsdV1BookindgRequest_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, bool IsPRiceUpdate, bool IsError, int j, string AgentCode);
 
         Task<ResponseDto> GetHotelBedsSupplierResponse(string strHost, string Username, string Password, Int32 TimeOut, string strxmlRQRS, string methodtype, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "", bool fromCancel = false);
     }

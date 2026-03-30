@@ -30,13 +30,15 @@ namespace Xconnect.Hotelbeds
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
-        public HotelbedsRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings)
+        private readonly SupplierConfiguration _supplierConfig;
+        public HotelbedsRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _exception = exception;
             _keySettings = keySettings.Value;
+            _supplierConfig = supplierConfig.Value;
         }
         public void GetHotelbedsRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, DataTable dtPreferredDataHotel, HotelSearchParameter SearchPara, List<SupplierSearchConfig> HBV1SearchConfig, List<SupplierDetails> HBV1Details, bool IsHotelWiseSearch, ref ConcurrentBag<HotelX> AllTask, string xmlNationality, int Hit, string supplierName, DataTable dtROE, TokenData tokenData)
         {
@@ -2195,7 +2197,7 @@ namespace Xconnect.Hotelbeds
                 timerroomprocess.Start();
 
                 //ResponseData = GetHotelBedsSupplierResponseOlny(Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + "/1.0/checkrates", Convert.ToString(drSuplierMarkup[0]["UserName"]), Convert.ToString(drSuplierMarkup[0]["Password"]), 5000, Request, "", ref Error);
-                ResponseDto responseDto = await GetHotelBedsSupplierResponseOlny(Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + "/1.0/checkrates", Convert.ToString(drSuplierMarkup[0]["UserName"]), Convert.ToString(drSuplierMarkup[0]["Password"]), 5000, Request, "");
+                ResponseDto responseDto = await GetHotelBedsSupplierResponseOlny(Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.checkrates, Convert.ToString(drSuplierMarkup[0]["UserName"]), Convert.ToString(drSuplierMarkup[0]["Password"]), 5000, Request, "");
                 //Common.ThirdPartyGetPolicyHistory(Convert.ToString(roomtypeid), Convert.ToString(ownsystemid), Request, Convert.ToString(ResponseData), "After Get Policy", provider, "Response", "-", "");
 
                 ResponseData = responseDto.Response;
@@ -2789,7 +2791,7 @@ namespace Xconnect.Hotelbeds
                 System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                 timerroomprocess.Start();
 
-                ResponseDto responseDto = await GetHotelBedsSupplierResponse(Convert.ToString(HotelBedsV1Details[0]["WebSiteURL"]) + "/1.0/checkrates", Convert.ToString(HotelBedsV1Details[0]["UserName"]), Convert.ToString(HotelBedsV1Details[0]["Password"]), 60000, Request, "", SupplierName, null, false, Searchkey);
+                ResponseDto responseDto = await GetHotelBedsSupplierResponse(Convert.ToString(HotelBedsV1Details[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.checkrates, Convert.ToString(HotelBedsV1Details[0]["UserName"]), Convert.ToString(HotelBedsV1Details[0]["Password"]), 60000, Request, "", SupplierName, null, false, Searchkey);
                 ResponseData = responseDto.Response;
                 Error = responseDto.Error;
 
@@ -2961,6 +2963,69 @@ namespace Xconnect.Hotelbeds
             catch (Exception ex)
             {
                 _ = _exception.ErrorNew(ex,_LogAPI.Book);
+                return "";
+            }
+        }
+        public string HotelBedsdV1BookindgRequest_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, bool IsPRiceUpdate, bool IsError, int j, string AgentCode)
+        {
+            try
+            {
+                StringBuilder HBV1 = new StringBuilder();
+                if (IsPRiceUpdate == false && IsError == false)
+                {
+                    string[] Array = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                    string BookingCodeHotel = Array[1];
+                    string InternalReference = Convert.ToString(AgentCode) + "_" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartID='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartId) + "' and RoomNo='" + Convert.ToInt32(j + 1) + "'";
+                    DataTable dtnewpassanger = dtPassengers.DefaultView.ToTable();
+                    HBV1.Append("{");
+                    HBV1.Append("\"holder\":");
+                    HBV1.Append("{");
+                    if (Convert.ToString(dtnewpassanger.Rows[0]["IsLead"]) == "1")
+                    {
+                        HBV1.Append("\"name\":\"" + Convert.ToString(dtnewpassanger.Rows[0]["FirstName"]) + "\",");
+                        HBV1.Append("\"surname\":\"" + Convert.ToString(dtnewpassanger.Rows[0]["LastName"]) + "\"");
+                    }
+                    else
+                    {
+                        HBV1.Append("\"name\":\"" + Convert.ToString(dtnewpassanger.Rows[0]["FirstName"]) + "\",");
+                        HBV1.Append("\"surname\":\"" + Convert.ToString(dtnewpassanger.Rows[0]["LastName"]) + "\"");
+                    }
+                    HBV1.Append("},");
+                    HBV1.Append("\"rooms\": [{");
+                    HBV1.Append("\"rateKey\":\"" + BookingCodeHotel + "\",");
+                    HBV1.Append("\"paxes\": [{");
+                    for (int b = 0; b < dtnewpassanger.Rows.Count; b++)
+                    {
+                        if (b >= 1)
+                            HBV1.Append("},{");
+                        HBV1.Append("\"roomId\":\"1\",");
+                        string PaxTypeHB = "";
+                        if (Convert.ToString(dtnewpassanger.Rows[b]["PaxType"]) == "Adult")
+                            PaxTypeHB = "AD";
+                        else
+                            PaxTypeHB = "CH";
+
+                        HBV1.Append("\"type\": \"" + PaxTypeHB + "\",");
+                        HBV1.Append("\"name\": \"" + Convert.ToString(dtnewpassanger.Rows[b]["FirstName"]) + "\",");
+                        HBV1.Append("\"surname\": \"" + Convert.ToString(dtnewpassanger.Rows[b]["LastName"]) + "\"");
+                    }
+                    HBV1.Append("}]");
+                    HBV1.Append("}],");
+                    HBV1.Append("\"clientReference\":\"" + InternalReference + "\",");
+                    //HBV1.Append("\"tolerance\":\"" + 2 + "\""); //CRM Ticket #12954
+                    HBV1.Append("\"tolerance\":\"" + 0 + "\""); //Added on 19-SEP-2024 as per mustafa sir/K2
+                    HBV1.Append("}");
+
+                    string HBV1REQ = HBV1.ToString();
+                    return HBV1REQ;
+                }
+                else
+                    return "";
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorNew(ex, _LogAPI.Book);
                 return "";
             }
         }
