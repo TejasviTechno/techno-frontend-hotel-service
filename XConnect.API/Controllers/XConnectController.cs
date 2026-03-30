@@ -2823,8 +2823,8 @@ namespace XConnect.API.Controllers
         }
 
         [HttpPost]
-        [Route("Cancel_newversion")]
-        public async Task<IActionResult> Cancel_newversion(CommonRequest data)
+        [Route("CancelBooking_newversion")]
+        public async Task<IActionResult> CancelBooking_newversion(CommonRequest data)
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
@@ -2855,49 +2855,45 @@ namespace XConnect.API.Controllers
                     Int32 HotelId = 0;
 
                     //PreBookResponse RS = _xconnect.PreBook(payload, TokenData, data.AdvancedOptions, ref log, JsonRQ);//#MongoDB
-                    CancelBookingResponse_newversion RS = await _hotelXML.Cancel_newversion(payload, authData.tokenData, data.AdvancedOptions, JsonRQ,userAgent, IP, MainURL);
+                    CancelBookingResponse_newversion1 RS = await _hotelXML.Cancel_newversion(payload, authData.tokenData, data.AdvancedOptions, JsonRQ, userAgent, IP, MainURL);
                     //BookResponse RS = response.BookResponse;
                     //log = response.DataforLog;
 
-                    string Ref = "";
+                    string Ref = payload.CancelRQ.ReferenceNo;
                     string IntRef = "";
-                    //try
-                    //{
-                    //    data.AdvancedOptions.SearchByOneID = true;
-                    //    data.AdvancedOptions.Provider = log.provider;
-                    //    data.AdvancedOptions.hotelid = log.hotelid;
-                    //    data.AdvancedOptions.HotelName = log.hotelname;
-                    //    Ref = RS.BookRS.ReferenceNo;
-                    //    IntRef = RS.BookRS.InternalReference;
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    _ = _exception.Error(ex);
-                    //}
+                    try
+                    {
+                        data.AdvancedOptions.SearchByOneID = true;
+                        data.AdvancedOptions.Provider = payload.CancelRQ.Provider;
+                    }
+                    catch (Exception ex)
+                    {
+                        _ = _exception.Error(ex);
+                    }
 
 
                     if (RS != null)
                     {
-                        if (RS.CancelBookingResponse.Error.Count > 0)
+                        if (RS.Error.Count > 0)
                         {
                             string Error_Code = ErrorCode.SomeError;
                             try
                             {
-                                Error_Code = RS.CancelBookingResponse.Error[0].code;
+                                Error_Code = RS.Error[0].code;
                             }
                             catch (Exception x)
                             {
                                 _ = _exception.Error(x);
                             }
                             timer.Stop();
-                            return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, payload.SearchKey, EntryTime, Ref, IntRef, "", 200);
+                            return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "CancelBooking_newversion", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, "", EntryTime, Ref, IntRef, "", 200);
 
                         }
                         else
                         {
                             //RS.BookRS.Currency = authData.tokenData.CreditLimitCurrencyName;
                             timer.Stop();
-                            return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), ErrorCode.NoError, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, payload.SearchKey, EntryTime, Ref, IntRef, "", 200);
+                            return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "CancelBooking_newversion", true, timer.Elapsed.ToString(), ErrorCode.NoError, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, "", EntryTime, Ref, IntRef, "", 200);
 
                         }
                     }
@@ -2905,14 +2901,14 @@ namespace XConnect.API.Controllers
                     {
                         error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError + ".");
                         timer.Stop();
-                        RS.CancelBookingResponse.Error.Add(error);
-                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, RS, "application/json", data, RS, authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, payload.SearchKey, EntryTime, Ref, IntRef, "", 500);
+                        RS.Error.Add(error);
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, RS, "application/json", data, RS, authData.tokenData, "CancelBooking_newversion", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, "", EntryTime, Ref, IntRef, "", 500);
                     }
                 }
                 else
                 {
                     timer.Stop();
-                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, "401", "application/json", data, "401", authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "0", IP, "", "", "", 0, 0, 0, "", EntryTime, "", "", "", 401);
+                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, "401", "application/json", data, "401", authData.tokenData, "CancelBooking_newversion", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "0", IP, "", "", "", 0, 0, 0, "", EntryTime, "", "", "", 401);
                 }
             }
             catch (Exception ex)
@@ -2922,7 +2918,7 @@ namespace XConnect.API.Controllers
                 BookResponse RS = new BookResponse();
                 error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError + "_");
                 RS.Error.Add(error);
-                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, RS, "application/json", data, RS, TokenData, "Book_newversion", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "0", IP, "", "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 500);
+                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, RS, "application/json", data, RS, TokenData, "CancelBooking_newversion", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "0", IP, "", "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 500);
             }
 
         }

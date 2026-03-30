@@ -16,6 +16,7 @@ namespace XConnect.Models
         public TechnoConfig Techno { get; set; }
         public LetsFlyConfig LetsFly { get; set; }
         public IWTXConfig IWTX { get; set; }
+        public TboConfig TBO { get; set; }
     }
 
     public class ExpediaConfig
@@ -79,11 +80,16 @@ namespace XConnect.Models
         public string booking_form { get; set; }
         public string booking_finish { get; set; }
         public string booking_finish_status { get; set; }
-        public string search_serp_hp { get; set; }//added by trupti 
+        public string search_serp_hp { get; set; }
+        public string order_cancel { get; set; }
     }
     public class HotelbedsConfig
     {
-        // Currently empty, add properties as needed
+        public string hotels { get; set; }
+        public string  checkrates { get; set; }
+      public string bookings { get; set; }
+      public string bookings2 { get; set; }
+      
     }
     public class DidaConfig
     {
@@ -133,5 +139,15 @@ namespace XConnect.Models
         public string IWTX_PriceCheck { get; set; }
         public string IWTX_Booking { get; set; }
         public string IWTX_BookingCancel { get; set; }
+    }
+    public class TboConfig
+    {
+        public string V1Search { get; set; }
+        public string HotelSearchRoomsAction { get; set; }
+        public string AvailabilityAndPricingAction { get; set; }
+        public string V1PreBook { get; set; }
+        public string V1BookUrl { get; set; }
+        public string V1BookingDetail { get; set; }
+        public string V1Cancel { get; set; }
     }
 }

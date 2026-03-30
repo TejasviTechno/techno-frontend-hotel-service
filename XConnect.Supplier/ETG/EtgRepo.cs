@@ -985,7 +985,7 @@ namespace XConnect.Supplier.ETG
                                                     break;
                                                 }
                                                 string Etg_MatchHas = Convert.ToString(ETGResponse.data.hotels[i].rates[room].match_hash);
-                                               // string search_hash = Convert.ToString(ETGResponse.data.hotels[i].rates[room].search_hash);
+                                                string search_hash = Convert.ToString(ETGResponse.data.hotels[i].rates[room].search_hash);
 
 
                                                 string TaxEssential = "";
@@ -2216,10 +2216,16 @@ namespace XConnect.Supplier.ETG
                 double CurrencyFactor = 1;
                 DataSet dsTemp = new DataSet();
                 //adde by trupti
-                #region New BookHas  
-                string[] BookingPolicy = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["purchaseToken"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
-                string booking_policy_id = BookingPolicy[0];
-                string Etg_UniqueId = booking_policy_id;
+               // #region New BookHas  
+                //string[] BookingPolicy = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["purchaseToken"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                //string booking_policy_id = BookingPolicy[0];
+                //string Etg_UniqueId = booking_policy_id;
+
+               // #endregion
+                #region New BookHash               
+                string[] array = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["RoomTypeId"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                //string Currency = array[3];
+                string Etg_UniqueId = array[6];
 
                 #endregion
                 PrebookRQ = Convert.ToString(OstrovokPrBookRequest(Etg_UniqueId));
@@ -2338,7 +2344,7 @@ namespace XConnect.Supplier.ETG
                                 DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, formats, CultureInfo.InvariantCulture);
                                 
                                 DateTime CancelDate = DateTime.Now.Date;// DateTime.ParseExact(currentdate, "MM/dd/yyyy", null);
-                                if (free_cancellation_before != "")
+                                if (free_cancellation_before != "") 
                                 {
                                     DateTime dateString11 = DateTime.Parse(free_cancellation_before, CultureInfo.InvariantCulture).Date;
                                     //string formattedDate = dateString11.ToString("dd/MM/yyyy");

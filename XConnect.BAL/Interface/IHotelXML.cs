@@ -95,6 +95,8 @@ namespace XConnect.BAL.Interface
         #endregion MobileTeamVersion 
 
         Task<BookResponse_newversion> Book_newversion(BookRequest_newversion bookRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);
-        Task<CancelBookingResponse_newversion> Cancel_newversion(CancelBookingRequest_new cancelRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);
+        //Task<CancelBookingResponse_newversion> Cancel_newversion_old(CancelBookingRequest_new cancelRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);
+        Task<CancelBookingResponse_newversion1> Cancel_newversion(CancelBookingRequest_new cancelRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);
+
     }
 }
