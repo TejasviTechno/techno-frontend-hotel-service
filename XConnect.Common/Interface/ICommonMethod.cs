@@ -302,6 +302,12 @@ namespace XConnect.CommonUtilities.Interface
         Task<DataSet> GetRatebreakup_Stahh(string AgentVoucherNo);
 
         Task<bool> GetbookingkeyUpdateStaus(string pricecheck_BookingKey, int USercartID);
+
+        // Task<bool> CheckVervopatchBookingTime(string AgentCode);//added300326
+        // Task<DataTable> GetVervoTechCredentailAtRoomRequest();//added300326
+        bool CheckVervopatchBookingTime(string AgentCode); //added300326
+        DataTable GetVervoTechCredentailAtRoomRequest(); //added300326
+
     }
 
 }

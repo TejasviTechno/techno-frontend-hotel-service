@@ -10213,5 +10213,45 @@ new SqlParameter("@timeoutMs", timeoutMs)
         }
         #endregion
 
+       // public async Task<bool> CheckVervopatchBookingTime(string AgentCode)
+       public bool CheckVervopatchBookingTime(string AgentCode)
+        {
+            switch (AgentCode.ToLower())
+            {
+                case "tb01":
+                case "aura":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        public  DataTable GetVervoTechCredentailAtRoomRequest()
+        {
+
+            try
+
+            {
+
+                //DLConnection db = new DLConnection();
+
+                //SqlParameter[] para1 = new SqlParameter[]{
+
+                //      };
+
+                //DataTable dtXmlMapping = db.GetDataTable("GetVervoTechCredentail_API", para1);
+
+                return null;
+
+            }
+
+            catch (Exception ex)
+
+            {
+                return null;
+
+            }
+
+        }
+
     }
 }
