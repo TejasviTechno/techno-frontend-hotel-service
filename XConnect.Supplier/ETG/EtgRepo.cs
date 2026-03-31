@@ -2655,7 +2655,7 @@ namespace XConnect.Supplier.ETG
                 {
                     BookingReq.Append("{");
                     BookingReq.Append("\"guests\": [");
-                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartID=" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartId + " and RoomNo='" + Convert.ToInt32(r + 1) + "'");
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[r].RoomTypeId) + "' and UserCartID=" + Convert.ToString(bookRequest.userCart.UserCartDetails[r].UserCartId + " and RoomNo='" + Convert.ToInt32(r + 1) + "'");
 
                     for (int k = 0; k < dtPassengers.DefaultView.Count; k++)
                     {

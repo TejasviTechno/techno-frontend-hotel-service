@@ -3786,7 +3786,7 @@ namespace XConnect.Supplier.IWTX
 
                     if (dtPassengers.Rows.Count > 0)
                     {
-                        dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId) + "' and RoomNo='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomNo) + "'";
+                        dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[k].RoomTypeId) + "' and RoomNo='" + Convert.ToString(bookRequest.userCart.UserCartDetails[k].RoomNo) + "'";
                         dtPassengers.DefaultView.Sort = "IsLead desc";
                         if (dtPassengers.DefaultView.Count > 0)
                         {
@@ -3796,7 +3796,7 @@ namespace XConnect.Supplier.IWTX
                                 BookRQ.Append("<Passenger>");
                                 BookRQ.Append("<PaxNumber>" + noofpacks.ToString() + "</PaxNumber>");
                                 //BookRQ.Append("<RoomNo>" + RoomConfigurationId + "</RoomNo>");
-                                BookRQ.Append("<RoomNo>" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomNo) + "</RoomNo>");
+                                BookRQ.Append("<RoomNo>" + Convert.ToString(bookRequest.userCart.UserCartDetails[k].RoomNo) + "</RoomNo>");
                                 //BookRQ.Append("<RoomNo>1</RoomNo>");
                                 BookRQ.Append("<Title>" + Convert.ToString(dtPassengers.DefaultView[n]["Prefix"]).Replace(".", "") + "</Title>");
                                 BookRQ.Append("<PassengerType>" + (Convert.ToString(dtPassengers.DefaultView[n]["PaxType"]).ToLower() == "adult" ? "ADT" : "CHD") + "</PassengerType>");
@@ -3830,7 +3830,7 @@ namespace XConnect.Supplier.IWTX
                 for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
                 //for (int j = 0; j < 1; j++)
                 {
-                    Roomidsplit = Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId);
+                    Roomidsplit = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
                     Roomids = Roomidsplit.Split(new String[] { "$$$" }, StringSplitOptions.None);
                     RoomTypeCode = Roomids[0].ToString();
                     MealPlanCodes = Roomids[1].ToString();

@@ -1859,7 +1859,7 @@ namespace Xconnect.Expedia
                 StringBuilder SBContect = new StringBuilder();
                 for (int r = 0; r < Rooms; r++)//no of room loop
                 {
-                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and (RoomNo=" + (r + 1) + ")";
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[r].RoomTypeId) + "' and (RoomNo=" + (r + 1) + ")";
                     dtPassengers.DefaultView.Sort = "IsLead DESC";
                     string SpecialRequest = Convert.ToString(dtPassengers.DefaultView[0]["Message"]).Trim();
                     SBPassanger.Append("{\"RoomNum\": " + (r + 1) + ",");

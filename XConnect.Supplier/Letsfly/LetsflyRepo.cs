@@ -1516,20 +1516,20 @@ namespace XConnect.Supplier.Letsfly
                 List<int> Child = new List<int>();
                 for (int k = 0; k < NoOfRooms; k++)
                 {
-                    NoOfAdults += Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].NoofAdult);
-                    NoOfChild += Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].NoofChild);
+                    NoOfAdults += Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofAdult);
+                    NoOfChild += Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild);
 
                     if (NoOfChild > 0)
                     {
-                        if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].NoofChild) == 1)
+                        if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild) == 1)
                         {
-                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge));
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
 
                         }
-                        else if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].NoofChild) == 2)
+                        else if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild) == 2)
                         {
-                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge));
-                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].ChildAge));
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
                         }
                     }
                 }
@@ -1568,7 +1568,7 @@ namespace XConnect.Supplier.Letsfly
                 {
                     if (dtPassengers.Rows.Count > 0)
                     {
-                        dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId) + "' and UserCartID=" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].UserCartId + " and RoomNo='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomNo) + "'");
+                        dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[r].RoomTypeId) + "' and UserCartID=" + Convert.ToString(bookRequest.userCart.UserCartDetails[r].UserCartId + " and RoomNo='" + Convert.ToString(bookRequest.userCart.UserCartDetails[r].RoomNo) + "'");
 
                         dtPassengers.DefaultView.Sort = "IsLead DESC";
                         int Islead = Convert.ToInt32(dtPassengers.DefaultView[0]["islead"]);
