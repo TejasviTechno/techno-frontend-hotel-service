@@ -1077,7 +1077,7 @@ namespace XConnect.Supplier.Letsfly
 
                                         string CurrencyCode = Convert.ToString(letsflyprebookresponse.rooms[r].currency);
 
-                                        objdata.ShoppingCartDetails[0].PurchaseToken = roomtypeid;
+                                        objdata.ShoppingCartDetails[r].PurchaseToken = roomtypeid;
                                         // bool IsSuccess = await _commonMethod.GetRoomNameUpdate(roomtypeid, UserCartId);
 
                                         double CurrencyFactor = 1;
