@@ -26390,13 +26390,14 @@ new SqlParameter("@AgentId", AgentId),
                                         //    _ = _exception.Error(ex, Searchkey);
                                         //}
 
-                                        if (  _commonMethod.CheckVervopatchBookingTime(AgentCode))
-                                            IsVervoActive = false;
+                                        //if (  _commonMethod.CheckVervopatchBookingTime(AgentCode))
+                                        //    IsVervoActive = false;
 
-                                        DataTable VervoTechCredentail =  _commonMethod.GetVervoTechCredentailAtRoomRequest();
-                                        if (Convert.ToInt32(VervoTechCredentail.Rows[0]["statusflag"]) == 1)
-                                            IsVervoActive = false;
+                                        //DataTable VervoTechCredentail =  _commonMethod.GetVervoTechCredentailAtRoomRequest();
+                                        //if (Convert.ToInt32(VervoTechCredentail.Rows[0]["statusflag"]) == 1)
+                                        //    IsVervoActive = false;
                                         #endregion
+                                        #region vervo
                                         //if (IsVervoActive && !Common.ExcludeSupplierFromVervoMappingCheck(Supplier))
                                         //{
                                         //    try
@@ -26501,6 +26502,7 @@ new SqlParameter("@AgentId", AgentId),
                                         //        Common.Error(ex, Searchkey);
                                         //    }
                                         //}
+                                        #endregion
                                         #endregion
 
                                         #region Added New on 26-05-25
@@ -34619,7 +34621,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 }
                                                 break;
                                             #endregion
-                                            #region Letsflay
+                                            #region letsfly
                                             case "letsfly":
                                                 try
                                                 {
@@ -50600,8 +50602,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                         //List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
                                                                         AgentVoucher agentVoucher = new AgentVoucher();
 
-                                                                        agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                                        agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                                        agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartId);
+                                                                        agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartDetailId);
                                                                         agentVoucher.AgentVoucherNo = AgentVoucherNo;
                                                                         agentVoucher.XMLRequest = IWTXBookRequest;
                                                                         agentVoucher.XMLResponse = Responsebook;
@@ -50628,8 +50630,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                         //List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
                                                                         AgentVoucher agentVoucher = new AgentVoucher();
 
-                                                                        agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                                        agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                                        agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartId);
+                                                                        agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartDetailId);
                                                                         agentVoucher.AgentVoucherNo = AgentVoucherNo;
                                                                         agentVoucher.XMLRequest = IWTXBookRequest;
                                                                         agentVoucher.XMLResponse = Responsebook;
@@ -50656,8 +50658,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                     //List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
                                                                     AgentVoucher agentVoucher = new AgentVoucher();
 
-                                                                    agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                                    agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                                    agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartId);
+                                                                    agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartDetailId);
                                                                     agentVoucher.AgentVoucherNo = AgentVoucherNo;
                                                                     agentVoucher.XMLRequest = IWTXBookRequest;
                                                                     agentVoucher.XMLResponse = Responsebook;
@@ -50684,8 +50686,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                 //List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
                                                                 AgentVoucher agentVoucher = new AgentVoucher();
 
-                                                                agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                                agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                                agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartId);
+                                                                agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartDetailId);
                                                                 agentVoucher.AgentVoucherNo = AgentVoucherNo;
                                                                 agentVoucher.XMLRequest = IWTXBookRequest;
                                                                 agentVoucher.XMLResponse = Responsebook;
@@ -50712,8 +50714,8 @@ new SqlParameter("@AgentId", AgentId),
                                                             //List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
                                                             AgentVoucher agentVoucher = new AgentVoucher();
 
-                                                            agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                            agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                            agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartId);
+                                                            agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartDetailId);
                                                             agentVoucher.AgentVoucherNo = AgentVoucherNo;
                                                             agentVoucher.XMLRequest = IWTXBookRequest;
                                                             agentVoucher.XMLResponse = Responsebook;
@@ -50741,8 +50743,8 @@ new SqlParameter("@AgentId", AgentId),
                                                         //List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
                                                         AgentVoucher agentVoucher = new AgentVoucher();
 
-                                                        agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                        agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                        agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartId);
+                                                        agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[m].UserCartDetailId);
                                                         agentVoucher.AgentVoucherNo = AgentVoucherNo;
                                                         agentVoucher.XMLRequest = IWTXBookRequest;
                                                         agentVoucher.XMLResponse = Responsebook;
