@@ -2453,5 +2453,90 @@ namespace XConnect.Models
 
     }
 
+    #region vervo
+    public class HotelProviderMappingV3
+
+    {
+
+        public int VervotechId
+
+        {
+
+            get; set;
+
+        }
+
+        public int Count
+
+        {
+
+            get; set;
+
+        }
+
+        public List<ProviderHotelV3> ProviderHotels
+
+        {
+
+            get; set;
+
+        }
+
+        public bool Status
+
+        {
+
+            get; set;
+
+        }
+
+        public string Message
+
+        {
+
+            get; set;
+
+        }
+
+        public int StatusCode
+
+        {
+
+            get; set;
+
+        }
+
+    }
+    public class ProviderHotelV3
+
+    {
+
+        public string ProviderHotelId
+
+        {
+
+            get; set;
+
+        }
+
+        public string ProviderFamily
+
+        {
+
+            get; set;
+
+        }
+
+        public List<string> ChannelIds
+
+        {
+
+            get; set;
+
+        }
+
+    }
+    #endregion
+
 }
 

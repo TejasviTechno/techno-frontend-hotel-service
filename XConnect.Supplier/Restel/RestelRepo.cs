@@ -1634,26 +1634,10 @@ namespace XConnect.Supplier.Restel
                 resreq.Append("<marca></marca>");
                 resreq.Append("<afiliacion>RS</afiliacion>");
                 resreq.Append("<usuario>" + UserID + "</usuario>");
-                //resreq.Append("<numhab1>1</numhab1>");
-                //resreq.Append("<paxes1>2-0</paxes1>");
-                //for (int s = 0; s < SearchParam.Rooms.Count; s++)
+
                 for (int s = 0; s < NoOfRooms; s++)
                 {
-                    //int TotalAdult = SearchParam.Rooms[s].NoofAdults;
-                    //int TotalChild = SearchParam.Rooms[s].NoofChild;
-                    //string childage = "";
 
-                    //if (s == 0)
-                    //{
-                    //    resreq.Append("<numhab" + (s + 1) + ">" + SearchParam.Rooms.Count + "</numhab" + (s + 1) + ">");
-                    //    for (int k = 0; k < SearchParam.Rooms.Count; k++)
-                    //    {
-                    //        if (k == SearchParam.Rooms.Count - 1)
-                    //            childage += SearchParam.Rooms[s].Child1Age;
-                    //        else
-                    //            childage += SearchParam.Rooms[s].Child1Age + ",";
-                    //    }
-                    //}
                     int TotalAdult = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[s]["NoOfAdults"]); //SearchParam.Rooms[s].NoofAdults;
                     int TotalChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[s]["NoOfChild"]); //SearchParam.Rooms[s].NoofChild;
                     string childage = "";
@@ -1674,14 +1658,6 @@ namespace XConnect.Supplier.Restel
                         resreq.Append("<numhab" + (s + 1) + ">0</numhab" + (s + 1) + ">");
                     }
                     resreq.Append("<paxes" + (s + 1) + ">" + TotalAdult + "-" + TotalChild + "</paxes" + (s + 1) + ">");
-
-                    //for (int ch = 0; ch < TotalChild; ch++)
-                    //{
-                    //    if (ch == 0)
-                    //        resreq.Append("<edades" + (s + 1) + ">" + SearchParam.Rooms[i].Child1Age + "</edades" + (s + 1) + ">");
-                    //    if (ch == 1)
-                    //        resreq.Append("<edades" + (s + 1) + ">" + SearchParam.Rooms[i].Child2Age + "</edades" + (s + 1) + ">");
-                    //}
                     if (s == 0)
                     {
                         resreq.Append("<edades" + (s + 1) + ">" + childage + "</edades" + (s + 1) + ">");
@@ -1691,6 +1667,39 @@ namespace XConnect.Supplier.Restel
                         resreq.Append("<edades" + (s + 1) + ">" + Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[s]["ChildAge2"]) + "</edades" + (s + 1) + ">");
                     }
                 }
+
+                //for (int s = 0; s < NoOfRooms; s++)
+                //{
+                //    int TotalAdult = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[s]["NoOfAdults"]);
+                //    int TotalChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[s]["NoOfChild"]);
+
+                //    string childAgeData = Convert.ToString(dsCartDetails.Tables[1].DefaultView[s]["ChildAge"]);
+                //    string childage = "";
+
+                //    // Build child age string dynamically
+                //    if (!string.IsNullOrEmpty(childAgeData))
+                //    {
+                //        var childAges = childAgeData
+                //            .Split(',')
+                //            .Where(x => !string.IsNullOrWhiteSpace(x))
+                //            .Select(x => x.Trim());
+
+                //        childage = string.Join(",", childAges);
+                //    }
+
+                //    // numhab
+                //    if (s == 0)
+                //        resreq.Append("<numhab" + (s + 1) + ">" + NoOfRooms + "</numhab" + (s + 1) + ">");
+                //    else
+                //        resreq.Append("<numhab" + (s + 1) + ">0</numhab" + (s + 1) + ">");
+
+                //    // paxes
+                //    resreq.Append("<paxes" + (s + 1) + ">" + TotalAdult + "-" + TotalChild + "</paxes" + (s + 1) + ">");
+
+                //    // edades
+                //    resreq.Append("<edades" + (s + 1) + ">" + childage + "</edades" + (s + 1) + ">");
+                //}
+
                 resreq.Append("<idioma>2</idioma>");
                 resreq.Append("<duplicidad>1</duplicidad>");
                 resreq.Append("<comprimido>2</comprimido>");

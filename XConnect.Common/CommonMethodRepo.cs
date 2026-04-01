@@ -36,6 +36,7 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using XConnect.Analytics;
 using XConnect.Analytics.Interface;
+using System.Diagnostics;
 
 
 
@@ -10225,33 +10226,203 @@ new SqlParameter("@timeoutMs", timeoutMs)
                     return false;
             }
         }
-        public  DataTable GetVervoTechCredentailAtRoomRequest()
+        public async Task<DataTable> GetVervoTechCredentailAtRoomRequest(int CacheMinutes = 5)
         {
+            DataTable dt = new DataTable();
 
             try
-
             {
+                string key = "VervoTechCredential"; // ✅ correct key name
 
-                //DLConnection db = new DLConnection();
+                // Try get from cache
+                if (_cache.TryGetValue(key, out DataTable cachedDt))
+                    return cachedDt;
 
-                //SqlParameter[] para1 = new SqlParameter[]{
+                SqlParameter[] para = new SqlParameter[] { };
 
-                //      };
+                dt = await _dlConnection.GetDataTableAsync("GetVervoTechCredentail_API", para);
 
-                //DataTable dtXmlMapping = db.GetDataTable("GetVervoTechCredentail_API", para1);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    _cache.Set(key, dt, TimeSpan.FromMinutes(CacheMinutes));
+                }
 
-                return null;
-
+                return dt;
             }
-
             catch (Exception ex)
-
             {
-                return null;
-
+                _ = _exception.Error(ex, "GetVervoTechCredentailAtRoomRequest");
             }
 
+            return dt;
+        }
+        public  bool ExcludeSupplierFromVervoMappingCheck(string SupplierName)
+        {
+            switch (SupplierName.ToLower())
+            {
+                case "oth":
+                case "siteminder":
+                case "derbysoft":
+                case "reseliva":
+                case "hotelrunner":
+                case "ratetiger":
+                case "dedge":
+                case "rategain":
+                case "travelclick":
+                case "staah":
+                case "staah_oth":
+                case "derbysoft_push":
+                case "hoteliersguru":
+                case "hoteliersguru_oth":
+                case "siteminder_oth":
+                case "axisrooms":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        public async Task<string> GetHotelSupplierCodeVervo(string supplierName, int Timeout = 5, int CacheMinutes = 60)
+        {
+            string supplierCode = "";
+            try
+            {
+                string keydata_Common = "SupplierCode_vervo";
+
+                // Try get from cache
+                if (!_cache.TryGetValue(keydata_Common, out DataTable dtSupplierCode))
+                {
+                    SqlParameter[] para = new SqlParameter[] { };
+
+                    dtSupplierCode = await _dlConnection.GetDataTable_Replica(
+                        "getHotelSupplierCode_vervo",
+                        para,
+                        Timeout
+                    );
+
+                    if (dtSupplierCode != null && dtSupplierCode.Rows.Count > 0)
+                    {
+                        _cache.Set(
+                            keydata_Common,
+                            dtSupplierCode,
+                            new MemoryCacheEntryOptions()
+                                .SetAbsoluteExpiration(TimeSpan.FromMinutes(CacheMinutes))
+                        );
+                    }
+                }
+
+                // Lookup supplier code
+                if (dtSupplierCode != null && dtSupplierCode.Rows.Count > 0)
+                {
+                    DataRow[] rows = dtSupplierCode.Select("SupplierName='" + supplierName + "'");
+                    if (rows.Length > 0)
+                    {
+                        supplierCode = Convert.ToString(rows[0]["SupplierCode"]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, "GetHotelSupplierCodeVervo");
+            }
+
+            return supplierCode;
+        }
+        public  string GetProvidersdataversion3(string Url, string UserName, string Password, List<int> HotelId, string SupplierName, int GiataId, string Searchkey, int AgentId, string MethodName, ref string VervoRequest)
+        {
+
+            string Response = "";
+            try
+            {
+                VervoRequest = Url;
+                Stopwatch timer = new Stopwatch();
+                timer.Start();
+                Response = GetsupplierResponseversion3("", Url, Password, UserName);
+                timer.Stop();
+                try
+                {
+                    Task.Run(() => InsertVervoTechLogs(AgentId, GiataId, Url, Response, Searchkey, MethodName, timer.Elapsed.ToString()));
+                }
+                catch (Exception ex)
+                {
+                   // Common.ErrorBooking(ex, AgentId.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                //Common.ErrorBooking(ex, "GetProvidersdataversion3");
+                _ = _exception.Error(ex, "GetProvidersdataversion3");
+            }
+            return Response;
         }
 
+        public  string GetsupplierResponseversion3(string strxmlRQRS, string strHost, string password, string UserName)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.Expect100Continue = false;
+
+            string strOutput = "";
+            try
+            {
+                HttpWebRequest Request;
+                Request = (HttpWebRequest)HttpWebRequest.Create(strHost);
+                Request.Headers.Add("Accept-Encoding", "gzip");
+                Request.ContentType = "application/json;charset=utf-8";
+                Request.Method = "GET";
+                //Request.Accept = "johndoe";
+                Request.Headers.Add("accountId", UserName);
+                Request.Headers.Add("apikey", password);
+                Request.KeepAlive = true;
+                //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                //ServicePointManager.Expect100Continue = false;
+                Request.Timeout = 10000;
+                Request.UseDefaultCredentials = true;
+                Stream newStream = null;
+                byte[] data = Encoding.ASCII.GetBytes(strxmlRQRS);
+                Request.ContentLength = data.Length;
+                HttpWebResponse Response = (HttpWebResponse)Request.GetResponse();
+                Stream responseStream = Response.GetResponseStream();
+                //responseStream = new GZipStream(responseStream, CompressionMode.Decompress);
+                responseStream = new System.IO.Compression.GZipStream(responseStream, System.IO.Compression.CompressionMode.Decompress);
+                StreamReader Reader = new StreamReader(responseStream, Encoding.Default);
+                strOutput = Reader.ReadToEnd();
+                responseStream.Close();
+                Reader.Close();
+                Response.Close();
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, "GetVervoTechCredentailAtRoomRequest");
+            }
+
+            return strOutput;
+        }
+
+        public async Task InsertVervoTechLogs(int AgentId, int GiataId, string Req, string Response, string Searchkey, string Status, string timer)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]
+                {
+            new SqlParameter("@AgentId", AgentId),
+            new SqlParameter("@GiataId", GiataId),
+            new SqlParameter("@UnicaId", 0),
+            new SqlParameter("@Our_xmlhotelid", "-"),
+            new SqlParameter("@Vervo_xmlhotelid", "-"),
+            new SqlParameter("@Our_SupplierName", "-"),
+            new SqlParameter("@Vervo_SupplierName", "-"),
+            new SqlParameter("@Vervo_Res", $"###Request = {Req} ###Response = {Response}"),
+            new SqlParameter("@SearchKey", Searchkey),
+            new SqlParameter("@LogType", Status),
+            new SqlParameter("@ElapsedTime", timer),
+                };
+
+                // ✅ Use injected dependency
+                await _dlConnection.GetDataTable_Replica("SaveVervoValidationLogs_Xconnect", para,5);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, "InsertVervoTechLogs");
+            }
+        }
     }
 }

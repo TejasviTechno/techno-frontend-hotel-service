@@ -3512,6 +3512,41 @@ namespace XConnect.Supplier.IWTX
                             objRequest.Append("<Age>" + Child2Age + "</Age>");
                             objRequest.Append("</Child>");
                         }
+
+                        //NoofChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoofChild"]);
+                        //string childAgeData = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["ChildAge"]);
+
+                        //objRequest.Append("<Room>");
+                        //objRequest.Append("<RoomTypeCode>" + RoomTypeCode + "</RoomTypeCode>");
+                        //objRequest.Append("<ContractTokenId>" + ContractTokenId + "</ContractTokenId>");
+                        //objRequest.Append("<RoomConfigurationId>" + RoomConfigurationId + "</RoomConfigurationId>");
+                        //objRequest.Append("<MealPlanCode>" + MealPlanCode + "</MealPlanCode>");
+
+                        //// Adults
+                        //for (int i = 0; i < NoOfAdults; i++)
+                        //{
+                        //    objRequest.Append("<Adult>");
+                        //    objRequest.Append("<Age>30</Age>");
+                        //    objRequest.Append("</Adult>");
+                        //}
+
+                        //// Children (Dynamic)
+                        //if (!string.IsNullOrEmpty(childAgeData))
+                        //{
+                        //    var childAges = childAgeData
+                        //        .Split(',')
+                        //        .Where(x => int.TryParse(x.Trim(), out _))
+                        //        .Select(x => x.Trim());
+
+                        //    foreach (var age in childAges)
+                        //    {
+                        //        objRequest.Append("<Child>");
+                        //        objRequest.Append("<Age>" + age + "</Age>");
+                        //        objRequest.Append("</Child>");
+                        //    }
+                        //}
+
+                       
                         objRequest.Append("</Room>");
                     }
                     objRequest.Append("</RoomConfiguration>");
