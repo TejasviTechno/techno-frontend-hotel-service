@@ -306,8 +306,10 @@ namespace XConnect.CommonUtilities.Interface
         // Task<bool> CheckVervopatchBookingTime(string AgentCode);//added300326
         // Task<DataTable> GetVervoTechCredentailAtRoomRequest();//added300326
         bool CheckVervopatchBookingTime(string AgentCode); //added300326
-        DataTable GetVervoTechCredentailAtRoomRequest(); //added300326
-
+        Task<DataTable> GetVervoTechCredentailAtRoomRequest(int CacheMinutes = 5);//added300326
+        bool ExcludeSupplierFromVervoMappingCheck(string SupplierName);//added300326
+        Task<string> GetHotelSupplierCodeVervo(string supplierName, int Timeout = 5, int CacheMinutes = 60);
+       string GetProvidersdataversion3(string Url, string UserName, string Password, List<int> HotelId, string SupplierName, int GiataId, string Searchkey, int AgentId, string MethodName, ref string VervoRequest);
     }
 
 }

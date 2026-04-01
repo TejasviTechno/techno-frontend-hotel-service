@@ -1273,6 +1273,22 @@ namespace XConnect.Supplier.Letsfly
 
                         }
                     }
+                    //NoOfChild1 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfChild"]);
+                    //string childAgeData = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["ChildAge"]);
+
+                    //List<int> Child = new List<int>();
+
+                    //if (NoOfChild1 > 0 && !string.IsNullOrEmpty(childAgeData))
+                    //{
+                    //    var childAges = childAgeData
+                    //        .Split(',')
+                    //        .Where(x => int.TryParse(x.Trim(), out _))
+                    //        .Select(x => Convert.ToInt32(x.Trim()))
+                    //        .ToList();
+
+                    //    Child.AddRange(childAges);
+                    //    AllChild.AddRange(childAges);
+                    //}
                     Roomlist.childrenages = Child;
                     Roomlists.Add(Roomlist);
                 }

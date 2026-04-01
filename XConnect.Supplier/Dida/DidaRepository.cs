@@ -1533,6 +1533,16 @@ namespace Xconnect.Expedia
             string Error = "";
             string Req = "";
             string ResponseData = "";
+   //         string NoOfChilds = Convert.ToString(NoOfChild);
+
+   //         List<int> childAges = NoOfChilds
+   //.Split(',')
+   //.Where(x => !string.IsNullOrWhiteSpace(x))
+   //.Select(x => Convert.ToInt32(x.Trim()))
+   //.ToList();
+
+            
+
 
             int flag = 1;
             try
@@ -1557,10 +1567,15 @@ namespace Xconnect.Expedia
                 {
                     PreBookRQ.Append("{\"ChildCount\": " + NoOfChild + ",");
                     PreBookRQ.Append("\"AdultCount\": " + NoOfAdults + ",");
+
                     if (NoOfChild == 1)
                         PreBookRQ.Append("\"ChildAgeDetails\": [" + ChildAge1 + "],");
                     if (NoOfChild == 2)
                         PreBookRQ.Append("\"ChildAgeDetails\": [" + ChildAge1 + "," + ChildAge2 + " ],");
+                    //if (childAges.Count > 0)
+                    //{
+                    //    PreBookRQ.Append("\"ChildAgeDetails\": [" + string.Join(",", childAges) + "],");
+                    //}
                     PreBookRQ.Append("\"RoomNum\": " + (i + 1) + "}");
                     if ((i + 1) != NoOfRoom)
                         PreBookRQ.Append(",");
