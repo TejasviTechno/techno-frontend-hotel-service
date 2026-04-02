@@ -496,7 +496,8 @@ namespace XConnect.DAL
 
         public async Task<object> GetExecuteScalarSP(String SPName, SqlParameter[] para)
         {
-            using (SqlConnection con = new SqlConnection(_connectionStrings.ConnectionString))
+            //using (SqlConnection con = new SqlConnection(_connectionStrings.ConnectionString))
+            using (SqlConnection con = new SqlConnection(_connectionStrings.ConnectionStringforlogtrack_APILogVM))//020426
             {
                 SqlCommand cmd = new SqlCommand();
                 cmd.CommandType = CommandType.StoredProcedure;

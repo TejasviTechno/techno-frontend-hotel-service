@@ -266,7 +266,7 @@ namespace XConnect.Supplier.IWTX
                                             _commonMethod.GetPrefferedHotelCodes(ref Ids, ref xmlbase, ref IWTXSearchConfig, Supplier, dtPreferredDataHotel, SearchPara.IsSearchFor);
 
                                             List<HotelCodeByCity> filter = new List<HotelCodeByCity>();
-                                            filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
+                                            filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, IWTXChild.TechName);
 
 
                                             string Iwtx_currency = Convert.ToString(IWTXChild.CurrencyShortName);

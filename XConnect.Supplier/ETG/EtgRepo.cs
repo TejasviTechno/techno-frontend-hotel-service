@@ -91,7 +91,8 @@ namespace XConnect.Supplier.ETG
                                         _commonMethod.GetPrefferedHotelCodes(ref Ids, ref xmlbase, ref OstrovokSearchConfig, Supplier, dtPreferredDataHotel, SearchPara.IsSearchFor);
 
                                         List<HotelCodeByCity> filter = new List<HotelCodeByCity>();
-                                        filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
+                                      //  filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
+                                        filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Ostrovok_Details.TechName);
 
 
                                         #region "HotelDo"

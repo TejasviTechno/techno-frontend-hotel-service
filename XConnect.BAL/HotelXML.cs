@@ -26392,6 +26392,39 @@ new SqlParameter("@AgentId", AgentId),
                                         #endregion
                                         #region vervo
                                         string GetSingleProvidersversion3 = "";
+
+                                        #region Call API for Agentpermissionforvervo
+                                        //string keydataRoE = "Vervo";
+                                        //ApiResponseNew<DtRoeNew> dtRoeNew;
+                                        //if (!_cache.TryGetValue(keydataRoE, out dtRoeNew))
+                                        //{
+                                        //    dtRoeNew = await _commonMethod.SendRequestAsync<ApiResponseNew<DtRoeNew>>(_remoteServices.CommonServices.BaseUrl + "/api", "Currency/ROE", HttpMethod.Get);
+
+                                        //    if (dtRoeNew != null && dtRoeNew.result != null && dtRoeNew.statusCode == 200)
+                                        //    {
+                                        //        var cacheEntryOptions = new MemoryCacheEntryOptions()
+                                        //            .SetAbsoluteExpiration(DateTime.Now.AddHours(1));  // Set cache to expire in 12 hours
+
+                                        //        _cache.Set(keydataRoE, dtRoeNew, cacheEntryOptions);
+                                        //    }
+                                        //    else
+                                        //    {
+                                        //        // Create an exception for the invalid API response
+                                        //        var ex = new Exception(
+                                        //            $"Vervo API call failed. StatusCode: {dtRoeNew?.statusCode}, Result is null: {dtRoeNew?.result == null}"
+                                        //        );
+
+                                        //        _ = _exception.Error(ex);
+                                        //    }
+
+                                        //}
+                                        //if (dtRoeNew?.result != null)
+                                        //{
+                                        //    // Deserialize into your strong type
+                                        //    mainconfig.dtROENew = dtRoeNew?.result;
+                                        //}
+
+                                        #endregion
                                         //if (_commonMethod.CheckVervopatchBookingTime(AgentCode))
                                         //    IsVervoActive = false;
 
