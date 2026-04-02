@@ -1522,7 +1522,7 @@ namespace XConnect.Supplier.Letsfly
                 string checkin = checkInDate.ToString("yyyy-MM-dd");
                 string checkout = checkOutDate.ToString("yyyy-MM-dd");
 
-                int NoOfRooms = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].RoomNo);
+                int NoOfRooms = Convert.ToInt32(bookRequest.userCart.UserCartDetails.Count);
                 //string XmlNationality = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["XmlNationality"]);
 
                 int NoOfAdults = 0;

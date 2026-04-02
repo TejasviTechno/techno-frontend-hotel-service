@@ -333,6 +333,11 @@ namespace XConnect.Markup
                         Supplier = "agoda";
                     if (Supplier.ToLower() == "getaroom_api")
                         Supplier = "getaroom";
+                    if (Supplier.ToLower() == "IOL_B2C" || Supplier.ToLower() == "IOLX3_B2B" || Supplier.ToLower() == "IOL_CUG" || Supplier.ToLower() == "IOL_B2B")
+                        Supplier = "IWTX";
+                    if (Supplier.ToLower() == "ETG_B2B_TP" || Supplier.ToLower() == "ETG-B2B-DC")
+                        Supplier = "ETG";
+                    //need 
                     double AgentMarkupAmount = 0.0;
                     Boolean isPerce = true;
                     string XMLCityCode = Convert.ToString(dr["XmlCity"]);
