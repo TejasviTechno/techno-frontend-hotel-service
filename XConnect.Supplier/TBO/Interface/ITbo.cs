@@ -30,12 +30,13 @@ namespace XConnect.Supplier.TBO.Interface
         Task<PriceCheckTboDto> TBO_PriceCheckRQRSJson(DataSet dsAgentDetails, DataSet dsCartDetails, DataRow[] TBODetails, string UserId, string Password, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string PreBookingToken, string xmlhotelid, bool IsPolicyChangeTBO, TokenData tokenData, int AgentId);
 
         Task<TBO_BookingProcess> Get_TBO_BookingProcess_json(DataTable dtAgentVoucher, DataSet dsCartDetails, DataTable dtCheckPriceReqStructure, DataTable dtPassengers, DataTable dtCAncellationPolicy, DataRow[] TBODetails, string AgentVoucherNo, int bookingStatus, string UniqueNo, string AgentUniqueNo, bool isNonRefundable, int i, int j, string referenceNumber, TokenData tokenData, int AgentId = 0,string SearchKey="");
-        Task<TBO_BookingProcess> Get_TBO_BookingProcess_json_newversion(DataTable dtAgentVoucher, BookRequest_newversion bookRequest, DataTable dtCheckPriceReqStructure, DataTable dtPassengers, DataTable dtCAncellationPolicy, DataRow[] TBODetails, string AgentVoucherNo, int bookingStatus, string UniqueNo, string AgentUniqueNo, bool isNonRefundable, int i, int j, string referenceNumber, TokenData tokenData, int AgentId = 0,string SearchKey="");
+        //Task<TBO_BookingProcess> Get_TBO_BookingProcess_json_newversion(DataTable dtAgentVoucher, BookRequest_newversion bookRequest, DataTable dtCheckPriceReqStructure, DataTable dtPassengers, DataTable dtCAncellationPolicy, DataRow[] TBODetails, string AgentVoucherNo, int bookingStatus, string UniqueNo, string AgentUniqueNo, bool isNonRefundable, int i, int j, string referenceNumber, TokenData tokenData, int AgentId = 0,string SearchKey="");
 
         string Get_TBO_BookingCancelRQ_json(string AgentVoucherNo, DataRow[] TBODetails, string cancelreason);
 
         string Get_TBO_BookingDeatilsjson(DataRow[] TBODetails, string ClientReferancreNo);
 
         Task<ResponseDto> GetTrvcoResponseTBOJson(string UsernameTbo, string PasswordTbo, string Request, string TravcoURL, Int32 TimeOut, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false);
+         string Get_TBO_BookingRequest_json_newversion(string Url, BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] TBODetails, string UniqueNo, bool IsPriceUpdate, int i, int j, string PreBookingToken, string UserID, string Password, string ClientReferancreNo, bool IsNrf, TokenData tokenData);
     }
 }

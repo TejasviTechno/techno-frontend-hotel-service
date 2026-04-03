@@ -2756,19 +2756,19 @@ namespace XConnect.API.Controllers
 
                     string Ref = "";
                     string IntRef = "";
-                    //try
-                    //{
-                    //    data.AdvancedOptions.SearchByOneID = true;
-                    //    data.AdvancedOptions.Provider = log.provider;
-                    //    data.AdvancedOptions.hotelid = log.hotelid;
-                    //    data.AdvancedOptions.HotelName = log.hotelname;
-                    //    Ref = RS.BookRS.ReferenceNo;
-                    //    IntRef = RS.BookRS.InternalReference;
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    _ = _exception.Error(ex);
-                    //}
+                    try
+                    {
+                        data.AdvancedOptions.SearchByOneID = true;
+                        data.AdvancedOptions.Provider = payload.userCart.UserCartDetails[0].SupplierName;
+                        data.AdvancedOptions.hotelid = payload.userCart.ServiceId;
+                        data.AdvancedOptions.HotelName = payload.userCart.ServiceName;
+                        Ref = payload.BookRQ.InternalReference;
+                        IntRef = payload.BookRQ.InternalReference;
+                    }
+                    catch (Exception ex)
+                    {
+                        _ = _exception.Error(ex);
+                    }
 
 
                     if (RS != null)

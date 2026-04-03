@@ -23,6 +23,7 @@ namespace XConnect.Supplier.Techno.Interface
         Task<PriceCheckDidaDto> Get_Withinearth_DMC_PreBookingReqRes(string Provider, bool IsCombine, DataSet dsCartDetails, string ReferenceNo, string ID, string Password, int HotelCode, string RoomToken, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int RoomNo, string SearchKey, string HotelOptionId, string Currency, double CurrencyFactorWithinearth_DMC, string Searchkey, int AgentId = 0,string IP="");
 
         string Withinearth_DMCBookingRequest(DataRow[] Withinearth_DMCDetails, string SearchKey, string BToken, double TotalPrice, string InternalReference, string RoomNo, DataSet dsCartDetails, DataTable dtPassengers, string UniqueNo, string AgentUniqueNo, string WE_DMCCurrency,string IP);
+        string Withinearth_DMCBookingRequest_newversion(DataRow[] Withinearth_DMCDetails, string SearchKey, string BToken, double TotalPrice, string InternalReference, string RoomNo, BookRequest_newversion bookRequest, DataTable dtPassengers, string UniqueNo, string AgentUniqueNo, string WE_DMCCurrency,string IP);
 
         Task<WE_BookingDetail> GetBookingDetailWE(string AGTRef, string UserID, string BookingId, string URL, string UniqueNo, string AgentUniqueNo, string Currency, string Request, string Search_Key, string IP, string Supplier);
 

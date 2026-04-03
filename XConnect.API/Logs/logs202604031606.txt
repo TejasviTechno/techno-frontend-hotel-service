@@ -1,0 +1,16 @@
+[2026-04-03 16:06:35.727 +05:30] [ERR] Errorlog_RE | Provider:XMLOUT | API:2 | Website:XConnect.API AppPool | Host:Trupti | SearchKey: | File:Page:C:\Users\Techno\techno-frontend-hotel-service\XConnect.Supplier\Restel\RestelRepo.cs Method:MoveNext Line No:1507 | Info:0 { SourceContext: "XConnect.ErrorLogHandler.ExceptionLog", ActionId: "9f3719a2-a6f0-4f93-a8f2-957ca08ccd05", ActionName: "XConnect.API.Controllers.XConnectController.ReCheck (XConnect.API)", RequestId: "80000003-0006-fd00-b63f-84710c7967bb", RequestPath: "/api/xconnect/Recheck", SpanId: "", ClientType: "Agent", ClientId: 3, Host: "localhost:44372", Endpoint: "/api/xconnect/Recheck", ClientIp: "::1", SiteType: "", CorrelationId: "", TraceId: "", Environment: "Development", ServiceName: "HotelServices", Application: "XConnect.API" }
+System.ArgumentOutOfRangeException: value ('00:00:00') must be greater than '00:00:00'. (Parameter 'value')
+Actual value was 00:00:00.
+   at System.Net.HttpWebRequest.EndGetResponse(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at System.Net.WebRequest.GetResponseAsync()
+   at XConnect.Supplier.Restel.RestelRepo.GetRestelResponse(String request, String TravcoURL, Int32 TimeOut, String Provider, HotelSearchParameter para, Boolean DebugMode, String Searchkey, String TechName) in C:\Users\Techno\techno-frontend-hotel-service\XConnect.Supplier\Restel\RestelRepo.cs:line 1507
+[2026-04-03 16:06:40.409 +05:30] [ERR] Errorlog_RE | Provider:XMLOUT | API:2 | Website:XConnect.API AppPool | Host:Trupti | SearchKey: | File:Page:C:\Users\Techno\techno-frontend-hotel-service\XConnect.Supplier\Restel\RestelRepo.cs Method:MoveNext Line No:1507 | Info:0 { SourceContext: "XConnect.ErrorLogHandler.ExceptionLog", ActionId: "9f3719a2-a6f0-4f93-a8f2-957ca08ccd05", ActionName: "XConnect.API.Controllers.XConnectController.ReCheck (XConnect.API)", RequestId: "80000003-0006-fd00-b63f-84710c7967bb", RequestPath: "/api/xconnect/Recheck", SpanId: "", ClientType: "Agent", ClientId: 3, Host: "localhost:44372", Endpoint: "/api/xconnect/Recheck", ClientIp: "::1", SiteType: "", CorrelationId: "", TraceId: "", Environment: "Development", ServiceName: "HotelServices", Application: "XConnect.API" }
+System.ArgumentOutOfRangeException: value ('00:00:00') must be greater than '00:00:00'. (Parameter 'value')
+Actual value was 00:00:00.
+   at System.Net.HttpWebRequest.EndGetResponse(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at System.Net.WebRequest.GetResponseAsync()
+   at XConnect.Supplier.Restel.RestelRepo.GetRestelResponse(String request, String TravcoURL, Int32 TimeOut, String Provider, HotelSearchParameter para, Boolean DebugMode, String Searchkey, String TechName) in C:\Users\Techno\techno-frontend-hotel-service\XConnect.Supplier\Restel\RestelRepo.cs:line 1507
