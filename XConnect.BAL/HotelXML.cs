@@ -52226,10 +52226,10 @@ new SqlParameter("@AgentId", AgentId),
                 #endregion
 
                 DataTable DtCancellation = new DataTable();
-                DtCancellation.Columns.Add("Provider", typeof(int));
+                DtCancellation.Columns.Add("Provider", typeof(string));
                 DtCancellation.Columns.Add("AgentVoucherNo", typeof(string));
-                DtCancellation.Columns.Add("PNRNo", typeof(decimal));
-                DtCancellation.Columns.Add("RoomTypeId", typeof(decimal));
+                DtCancellation.Columns.Add("PNRNo", typeof(string));
+                DtCancellation.Columns.Add("RoomTypeId", typeof(string));
 
                 DataRow row = DtCancellation.NewRow();
 
