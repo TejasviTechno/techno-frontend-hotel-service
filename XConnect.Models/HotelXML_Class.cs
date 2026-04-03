@@ -2094,6 +2094,10 @@ namespace XConnect.Models
     {
         public string Message { get; set; }
         public int CancelStatus { get; set; }
+        public string xmlrequest { get; set; } = "";
+        public string xmlresponse { get; set; } = "";
+
+
 
     }
     public class HotelRoom_Cancel

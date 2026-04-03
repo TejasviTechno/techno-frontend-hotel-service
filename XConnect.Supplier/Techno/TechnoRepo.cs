@@ -1381,7 +1381,89 @@ namespace XConnect.Supplier.Techno
                 return "";
             }
         }
+        public string Withinearth_DMCBookingRequest_newversion(DataRow[] Withinearth_DMCDetails, string SearchKey, string BToken, double TotalPrice, string InternalReference, string RoomNo, BookRequest_newversion bookRequest, DataTable dtPassengers, string UniqueNo, string AgentUniqueNo, string WE_DMCCurrency, string IP)
+        {
+            try
+            {
+                string[] strBookingTokenMain = BToken.Split(new String[] { "§§§" }, StringSplitOptions.None);
+                BToken = strBookingTokenMain[0];
+                TotalPrice = Convert.ToDouble(strBookingTokenMain[1]);
+                #region Booking RQ
+                string Token = Convert.ToString(Withinearth_DMCDetails[0]["UserID"]);
+                string PaxType = "";
+                string Request = "";
+                string[] strBookingToken = BToken.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string BookingToken = strBookingToken[0];
+                string[] strUniqueId = strBookingToken[1].Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string[] strUniqueIdSplit = strUniqueId[0].Split(new String[] { "@@@" }, StringSplitOptions.None);
+                StringBuilder SB_RoomDetails = new StringBuilder();
 
+                for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
+                {
+                    string UniqueId = strUniqueIdSplit[j].Split(new String[] { "|||" }, StringSplitOptions.None)[0];
+                    RoomNo = strUniqueIdSplit[j].Split(new String[] { "|||" }, StringSplitOptions.None)[1];
+                    int noofchild = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofChild);
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartID='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartId) + "' and RoomNo='" + Convert.ToInt32(j + 1) + "'";
+                    DataTable dtnewpassanger1 = dtPassengers.DefaultView.ToTable();
+                    if (j >= 1)
+                    {
+                        SB_RoomDetails.Append("},{");
+                    }
+                    for (int R = 0; R < dtnewpassanger1.DefaultView.Count; R++)
+                    {
+                        if (R >= 1)
+                        {
+                            SB_RoomDetails.Append("},{");
+                        }
+                        SB_RoomDetails.Append("\"UniqueId\":\"" + UniqueId + "\",");
+                        SB_RoomDetails.Append("\"RoomNo\":\"" + RoomNo + "\",");
+                        if (Convert.ToString(dtnewpassanger1.Rows[R]["IsLead"]) == "1")
+                            SB_RoomDetails.Append("\"IsLead\":\"" + 1 + "\",");
+                        else
+                            SB_RoomDetails.Append("\"IsLead\":\"" + 0 + "\",");
+                        PaxType = Convert.ToString(dtnewpassanger1.Rows[R]["PaxType"]);
+                        if (PaxType.ToLower() == "adult")
+                            SB_RoomDetails.Append("\"PaxType\":\"Adult\",");
+                        else
+                            SB_RoomDetails.Append("\"PaxType\":\"Child\",");
+                        SB_RoomDetails.Append("\"Prefix\":\"" + Convert.ToString(dtnewpassanger1.Rows[R]["Prefix"]) + "\",");
+                        SB_RoomDetails.Append("\"FirstName\":\"" + Convert.ToString(dtnewpassanger1.Rows[R]["FirstName"]) + "\",");
+                        SB_RoomDetails.Append("\"LastName\":\"" + Convert.ToString(dtnewpassanger1.Rows[R]["LastName"]) + "\",");
+                        SB_RoomDetails.Append("\"ChildAge\":\"" + Convert.ToString(dtnewpassanger1.Rows[R]["ChildAge"]) + "\"");
+                    }
+                }
+
+                StringBuilder SBreq = new StringBuilder();
+                SBreq.Append("{");
+                SBreq.Append("\"Token\":\"" + Token + "\",");
+                SBreq.Append("\"Request\":{");
+                SBreq.Append("\"SearchKey\":\"" + SearchKey + "\",");
+                SBreq.Append("\"BookRQ\":{");
+                SBreq.Append("\"BookingToken\":\"" + BookingToken + "\",");
+                SBreq.Append("\"TotalPrice\":" + TotalPrice + ",");
+                SBreq.Append("\"InternalReference\":\"" + InternalReference + "\",");
+                SBreq.Append("\"HotelRooms\":[{");
+                SBreq.Append(SB_RoomDetails.ToString());
+                SBreq.Append("}]");
+                SBreq.Append("}");
+                SBreq.Append("},");
+                SBreq.Append("\"AdvancedOptions\":{");
+                SBreq.Append("\"Currency\":\"" + WE_DMCCurrency + "\",");
+                SBreq.Append("\"CustomerIpAddress\":\"" + IP + "\"");
+                SBreq.Append("}");
+                SBreq.Append("}");
+                Request = SBreq.ToString();
+                return Request;
+
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ex.ToString(), "-", "ErrorLog from Booking Request", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Request Confirm j=" + 0 + "", "-", "WithinEarth");
+                return "";
+            }
+        }
         public async Task<WE_BookingDetail> GetBookingDetailWE(string AGTRef, string UserID, string BookingId, string URL, string UniqueNo, string AgentUniqueNo, string Currency, string Request, string Search_Key,string IP,string Supplier)
         {
             WE_BookingDetail wE_BookingDetail = new WE_BookingDetail();
