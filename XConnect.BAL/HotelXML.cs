@@ -57579,7 +57579,7 @@ new SqlParameter("@AgentId", AgentId),
                 }
 
                 #endregion
-                string TechName = await GetTechNameBySupplierName(Supplier);
+                string TechName = await GetTechNameBySupplierName(Supplier,tokenData.TanentId);
                 #region"All suppliersCode"
                 try
                 {
