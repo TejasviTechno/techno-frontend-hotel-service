@@ -37,6 +37,6 @@ namespace XConnect.Supplier.TBO.Interface
         string Get_TBO_BookingDeatilsjson(DataRow[] TBODetails, string ClientReferancreNo);
 
         Task<ResponseDto> GetTrvcoResponseTBOJson(string UsernameTbo, string PasswordTbo, string Request, string TravcoURL, Int32 TimeOut, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false);
-         string Get_TBO_BookingRequest_json_newversion(string Url, BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] TBODetails, string UniqueNo, bool IsPriceUpdate, int i, int j, string PreBookingToken, string UserID, string Password, string ClientReferancreNo, bool IsNrf, TokenData tokenData);
+         string Get_TBO_BookingRequest_json_newversion(string Url, BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] TBODetails, string UniqueNo, bool IsPriceUpdate, int i, int j, string PreBookingToken, string UserID, string Password, string ClientReferancreNo, TokenData tokenData);
     }
 }
