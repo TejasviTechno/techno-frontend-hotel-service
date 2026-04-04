@@ -785,7 +785,7 @@ namespace Xconnect.Expedia
                 catch (Exception ex)
                 {
 
-                    _= _exception.Error(ex);
+                    _ = _exception.Error(ex);
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -1098,38 +1098,114 @@ namespace Xconnect.Expedia
                                     #region Vat
                                     double VatOnPolicy = 0;
                                     double ChargeAmount = 0;
-                                    DateTime DeadLineDate = DateTime.Now;
+                                    // DateTime DeadLineDate = DateTime.Now;
+                                    #endregion
 
                                     if (Dida_Response.Success.PriceDetails.HotelList[ii].RatePlanList[i].RatePlanCancellationPolicyList != null)
                                     {
-                                        for (int c = 0; c < Dida_Response.Success.PriceDetails.HotelList[ii].RatePlanList[i].RatePlanCancellationPolicyList.Count; c++)
+                                        var list = Dida_Response.Success.PriceDetails.HotelList[ii]
+    .RatePlanList[i].RatePlanCancellationPolicyList;
+
+                                        DateTime checkInDate = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
+                                        DateTime today = curDate.Date;
+
+                                        for (int c = 0; c < list.Count; c++)
                                         {
-                                            ChargeAmount = (Convert.ToDouble(Dida_Response.Success.PriceDetails.HotelList[ii].RatePlanList[i].RatePlanCancellationPolicyList[c].Amount) * CurrencyFactorDida) * Rooms;
-                                            DeadLineDate = Convert.ToDateTime(Dida_Response.Success.PriceDetails.HotelList[ii].RatePlanList[i].RatePlanCancellationPolicyList[c].FromDate);
-                                            double cancellationAmountMain = ChargeAmount;
-                                            ChargeAmount = _markup.ProcessHotelCancelationPrice_WithMarkup(ref cancellationAmountMain, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), ChargeAmount, isPerce, B2CMarkup, AgentPercentage, AgentMarkupAmount, IsParentId, SubAgentMarkup, ref VatOnPolicy);
-                                            #endregion
-                                            if (DeadLineDate.AddDays(CutOffDays).Date > DateTime.Now.Date)
-                                                DeadLineDate = DeadLineDate.AddDays(CutOffDays).Date;
-                                            else
-                                                DeadLineDate = DateTime.Now.Date;
-                                            if (curDate.Date < DeadLineDate.Date)
+                                            // ✅ Amount calculation
+                                            double baseAmount = Convert.ToDouble(list[c].Amount);
+                                            double cancellationAmountMain = (baseAmount * CurrencyFactorDida) * Rooms;
+
+                                            ChargeAmount = _markup.ProcessHotelCancelationPrice_WithMarkup(
+                                                ref cancellationAmountMain,
+                                                SearchParam.NoofNights,
+                                                SearchParam.CityID,
+                                                Convert.ToString(SearchParam.CountryID),
+                                                cancellationAmountMain,
+                                                isPerce,
+                                                B2CMarkup,
+                                                AgentPercentage,
+                                                AgentMarkupAmount,
+                                                IsParentId,
+                                                SubAgentMarkup,
+                                                ref VatOnPolicy
+                                            );
+
+                                            // ✅ FIX: Correct timezone-safe date
+                                            DateTime DeadLineDate = DateTimeOffset.Parse(list[c].FromDate).Date.AddDays(CutOffDays);
+
+                                            if (DeadLineDate < today)
+                                                DeadLineDate = today;
+
+                                            // ✅ FREE CANCELLATION SLAB
+                                            if (c == 0 && today < DeadLineDate)
                                             {
-                                                if (c == 0)
-                                                {
-                                                    double Zero = 0;
-                                                    dtDidaCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref Zero, dtDidaCancellation.NewRow(), CurrencyFactorDida, Currency, SupplierName, Convert.ToString(ownsystemhotelId), Convert.ToString(1), Convert.ToString(RoomTypeId), RoomTypeName, Convert.ToString(BreakfastType), curDate, DeadLineDate.AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59), 0, 0, "", 0, "", "NO"));
-                                                    dtDidaCancellation.AcceptChanges();
-                                                }
-                                                dtDidaCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref cancellationAmountMain, dtDidaCancellation.NewRow(), CurrencyFactorDida, Currency, SupplierName, Convert.ToString(ownsystemhotelId), Convert.ToString(1), Convert.ToString(RoomTypeId), RoomTypeName, Convert.ToString(BreakfastType), DeadLineDate, DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), ChargeAmount, ChargeAmount, "", 0, "", "Yes"));
-                                                dtDidaCancellation.AcceptChanges();
+                                                double Zero = 0;
+
+                                                dtDidaCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref Zero, dtDidaCancellation.NewRow(), CurrencyFactorDida, Currency, SupplierName, ownsystemhotelId.ToString(), "1", RoomTypeId.ToString(), RoomTypeName, BreakfastType.ToString(), today, DeadLineDate.AddDays(-1), 0, 0, "", 0, "", "NO"));
+                                            }
+
+                                            // ✅ ToDate calculation
+                                            DateTime toDate;
+
+                                            if (c < list.Count - 1)
+                                            {
+                                                DateTime nextDate = DateTimeOffset.Parse(list[c + 1].FromDate).Date.AddDays(CutOffDays);
+
+                                                if (nextDate < today)
+                                                    nextDate = today;
+
+                                                toDate = nextDate.AddDays(-1);
                                             }
                                             else
                                             {
-                                                dtDidaCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref cancellationAmountMain, dtDidaCancellation.NewRow(), CurrencyFactorDida, Currency, SupplierName, Convert.ToString(ownsystemhotelId), Convert.ToString(1), Convert.ToString(RoomTypeId), RoomTypeName, Convert.ToString(BreakfastType), curDate, DeadLineDate, TotalPrice, TotalPrice, "", 0, "", "Yes"));
-                                                dtDidaCancellation.AcceptChanges();
+                                                toDate = checkInDate;
                                             }
+
+                                            // ✅ EDGE CASE FIX (very important)
+                                            if (toDate < DeadLineDate)
+                                                continue;
+
+                                            // ✅ ADD MAIN SLAB
+                                            dtDidaCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref cancellationAmountMain, dtDidaCancellation.NewRow(), CurrencyFactorDida, Currency, SupplierName, ownsystemhotelId.ToString(), "1", RoomTypeId.ToString(), RoomTypeName, BreakfastType.ToString(), DeadLineDate, toDate, ChargeAmount, ChargeAmount, "", 0, "", "Yes"));
+
+                                            dtDidaCancellation.AcceptChanges();
                                         }
+
+
+                                        //for (int c = 0; c < Dida_Response.Success.PriceDetails.HotelList[ii].RatePlanList[i].RatePlanCancellationPolicyList.Count; c++)
+                                        //{
+                                        //    ChargeAmount = (Convert.ToDouble(Dida_Response.Success.PriceDetails.HotelList[ii].RatePlanList[i].RatePlanCancellationPolicyList[c].Amount) * CurrencyFactorDida) * Rooms;
+                                        //    DeadLineDate = Convert.ToDateTime(Dida_Response.Success.PriceDetails.HotelList[ii].RatePlanList[i].RatePlanCancellationPolicyList[c].FromDate);
+                                        //    double cancellationAmountMain = ChargeAmount;
+                                        //    ChargeAmount = _markup.ProcessHotelCancelationPrice_WithMarkup(ref cancellationAmountMain, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), ChargeAmount, isPerce, B2CMarkup, AgentPercentage, AgentMarkupAmount, IsParentId, SubAgentMarkup, ref VatOnPolicy);
+
+                                        //    if (DeadLineDate.AddDays(CutOffDays).Date > DateTime.Now.Date)
+                                        //        DeadLineDate = DeadLineDate.AddDays(CutOffDays).Date;
+                                        //    else
+                                        //        DeadLineDate = DateTime.Now.Date;
+                                        //    if (curDate.Date < DeadLineDate.Date)
+                                        //    {
+                                        //        if (c == 0)
+                                        //        {
+                                        //            double Zero = 0;
+                                        //            dtDidaCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref Zero, dtDidaCancellation.NewRow(), CurrencyFactorDida, Currency, SupplierName, Convert.ToString(ownsystemhotelId), Convert.ToString(1), Convert.ToString(RoomTypeId), RoomTypeName, Convert.ToString(BreakfastType), curDate, DeadLineDate.AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59), 0, 0, "", 0, "", "NO"));
+                                        //            dtDidaCancellation.AcceptChanges();
+                                        //        }
+
+
+                                        //        dtDidaCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref cancellationAmountMain, dtDidaCancellation.NewRow(), CurrencyFactorDida, Currency, SupplierName, Convert.ToString(ownsystemhotelId), Convert.ToString(1), Convert.ToString(RoomTypeId), RoomTypeName, Convert.ToString(BreakfastType), DeadLineDate, toDate, ChargeAmount, ChargeAmount, "", 0, "", "Yes"));
+                                        //        dtDidaCancellation.AcceptChanges();
+                                        //    }
+                                        //    else
+                                        //    {
+                                        //        dtDidaCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref cancellationAmountMain, dtDidaCancellation.NewRow(), CurrencyFactorDida, Currency, SupplierName, Convert.ToString(ownsystemhotelId), Convert.ToString(1), Convert.ToString(RoomTypeId), RoomTypeName, Convert.ToString(BreakfastType), curDate, DeadLineDate, TotalPrice, TotalPrice, "", 0, "", "Yes"));
+                                        //        dtDidaCancellation.AcceptChanges();
+                                        //    }
+                                        //}
+
+
+
+
                                     }
 
                                     #endregion
@@ -1148,7 +1224,7 @@ namespace Xconnect.Expedia
             }
             catch (Exception ex)
             {
-                _= _exception.Error(ex);
+                _ = _exception.Error(ex);
                 return options;
             }
             finally
@@ -1218,8 +1294,8 @@ namespace Xconnect.Expedia
         }
 
         #region Recheck - 270525
-        public  async Task<int> CheckDidaPrebookOnRecheck(string hotelcode, string ownsystemid, DataTable dtCheckPriceReqStructure, string roomtypeid, HotelSearchParameter SearchPara, string DidaPassword, string DidaURL, string Username, string SearchKey, string Provider,  string checkindate,  string checkoutdate,  int Adults,
- int Childs,  int Rooms,  string AgodaSearchUrl,  string AgodaApiKey,  string ChildAge, bool isForBooking, double Rate, string AgentUniqueNo, string ISBooking, DataTable dtROE, bool IsPriceChange, double FinalPrice = 0, string SupplierCurrency="USD")////new added on 03-May-2025
+        public async Task<int> CheckDidaPrebookOnRecheck(string hotelcode, string ownsystemid, DataTable dtCheckPriceReqStructure, string roomtypeid, HotelSearchParameter SearchPara, string DidaPassword, string DidaURL, string Username, string SearchKey, string Provider, string checkindate, string checkoutdate, int Adults,
+ int Childs, int Rooms, string AgodaSearchUrl, string AgodaApiKey, string ChildAge, bool isForBooking, double Rate, string AgentUniqueNo, string ISBooking, DataTable dtROE, bool IsPriceChange, double FinalPrice = 0, string SupplierCurrency = "USD")////new added on 03-May-2025
 
         {
 
@@ -1298,7 +1374,7 @@ namespace Xconnect.Expedia
                             System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                             timerroomprocess.Start();
 
-                           // ResponseData = GetDidaResponse( Req, Action, "", SearchKey, 5000);
+                            // ResponseData = GetDidaResponse( Req, Action, "", SearchKey, 5000);
 
                             ResponseDto responseDto = await GetDidaResponse(Req, Action, "", SearchKey, 5000);
                             ResponseData = responseDto.Response;
@@ -1317,7 +1393,7 @@ namespace Xconnect.Expedia
                                 }
                                 catch (Exception e)
                                 {
-                                    _ = _exception.ErrorNew(e, _LogAPI.Recheck,SearchKey);
+                                    _ = _exception.ErrorNew(e, _LogAPI.Recheck, SearchKey);
                                 }
                                 if (ResponseData.Contains("No available room"))
                                 {
@@ -1390,7 +1466,7 @@ namespace Xconnect.Expedia
                                             }
                                             catch (Exception e)
                                             {
-                                                _ = _exception.ErrorNew(e, _LogAPI.Recheck,SearchKey);
+                                                _ = _exception.ErrorNew(e, _LogAPI.Recheck, SearchKey);
                                             }
                                             ISBooking = "NotAvailable";
                                             return 4;
@@ -1517,7 +1593,7 @@ namespace Xconnect.Expedia
 
         #endregion
 
-        public async Task<PriceCheckDidaDto> DidaPreBookingReq(string ReferenceNo, string ID, string Password, string HotelCode, string RCode, int NoOfAdults, int NoOfChild, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int ChildAge1, int ChildAge2, int NoOfRoom, string Nationality, string CDate, string Searchkey = "", int AgentId = 0, string DidaCurrency="USD", double CurrencyFactorDida=1)
+        public async Task<PriceCheckDidaDto> DidaPreBookingReq(string ReferenceNo, string ID, string Password, string HotelCode, string RCode, int NoOfAdults, int NoOfChild, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int ChildAge1, int ChildAge2, int NoOfRoom, string Nationality, string CDate, string Searchkey = "", int AgentId = 0, string DidaCurrency = "USD", double CurrencyFactorDida = 1)
         {
             PriceCheckDidaDto priceCheckDidaDto = new PriceCheckDidaDto();
             // flag:0= priceCheck Success
@@ -1533,23 +1609,23 @@ namespace Xconnect.Expedia
             string Error = "";
             string Req = "";
             string ResponseData = "";
-   //         string NoOfChilds = Convert.ToString(NoOfChild);
+            //         string NoOfChilds = Convert.ToString(NoOfChild);
 
-   //         List<int> childAges = NoOfChilds
-   //.Split(',')
-   //.Where(x => !string.IsNullOrWhiteSpace(x))
-   //.Select(x => Convert.ToInt32(x.Trim()))
-   //.ToList();
+            //         List<int> childAges = NoOfChilds
+            //.Split(',')
+            //.Where(x => !string.IsNullOrWhiteSpace(x))
+            //.Select(x => Convert.ToInt32(x.Trim()))
+            //.ToList();
 
-            
+
 
 
             int flag = 1;
             try
             {
-                
-               // DataTable dtInrCurrency = _commonMethod.GetCountryCurrency(DidaCurrency);
-               // double CurrencyFactorDida = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
+
+                // DataTable dtInrCurrency = _commonMethod.GetCountryCurrency(DidaCurrency);
+                // double CurrencyFactorDida = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
                 CheckInDate = CheckInDate.Substring(0, 4) + "-" + CheckInDate.Substring(4, 2) + "-" + CheckInDate.Substring(6, 2);
                 CheckOutDate = CheckOutDate.Substring(0, 4) + "-" + CheckOutDate.Substring(4, 2) + "-" + CheckOutDate.Substring(6, 2);
                 StringBuilder PreBookRQ = new StringBuilder();
@@ -1716,7 +1792,7 @@ namespace Xconnect.Expedia
                 {
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc =  await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error);
                 }
                 catch (Exception e)
                 {
@@ -1840,11 +1916,11 @@ namespace Xconnect.Expedia
             }
             catch (Exception ex)
             {
-                _= _exception.Error(ex);
+                _ = _exception.Error(ex);
                 return "";
             }
         }
-        public string DidaBookingRequest_newversion(BookRequest_newversion bookRequest ,DataTable dtPassengers, int i, int j, string ClientID, string UserName, string Password, int UniqueNo, string PreBookRef, int NoOfRoom, string AgentCode)
+        public string DidaBookingRequest_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, int j, string ClientID, string UserName, string Password, int UniqueNo, string PreBookRef, int NoOfRoom, string AgentCode)
         {
             try
             {
@@ -1915,7 +1991,7 @@ namespace Xconnect.Expedia
                         SBPassanger.Append("}");
                         if (Convert.ToString(dtPassengers.DefaultView[k]["PaxType"]).Trim().ToLower() != "adult")
                         {
-                           // int ChildAge1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge1);
+                            // int ChildAge1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge1);
                             //int ChildAge2 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge2);
                             if (NoOfChild == 1)
                                 SBPassanger.Append(",\"Age\":" + ChildAge);
