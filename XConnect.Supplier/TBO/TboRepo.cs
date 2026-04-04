@@ -1737,7 +1737,7 @@ namespace XConnect.Supplier.TBO
                             {
 
                                 dt_TBO_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref ItemPrice, dt_TBO_Cancellation.NewRow(), CurrencyFactorTBO, Currency, Provider, Convert.ToString(ownsystemid), Convert.ToString("1"),
-                                Convert.ToString(RoomTypeId_Own), RoomName, Board_Text, DateTime.Now.Date, Convert.ToDateTime(CheckIn), ItemPrice, ItemPrice, "0", 0, uniqid, "Yes", Convert.ToString(TboPrice), Type, "", ""));
+                                Convert.ToString(RoomTypeId_Own), RoomName, Board_Text, DateTime.Now.Date, Convert.ToDateTime(CheckIn), ItemPrice, ItemPrice, "0", 0, uniqid, "Yes", Convert.ToString(""), Type, "", ""));
                                 dt_TBO_Cancellation.AcceptChanges();
 
                             }
@@ -1835,12 +1835,12 @@ namespace XConnect.Supplier.TBO
                                         {
                                             double zero = 0;
                                             dt_TBO_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref zero, dt_TBO_Cancellation.NewRow(), CurrencyFactorTBO, Currency, Provider, Convert.ToString(ownsystemid), Convert.ToString("1"),
-                                                   Convert.ToString(RoomTypeId_Own), RoomName, Board_Text, NowDate, CancelDate.AddDays(-1), 0, 0, "0", VatOnPolicy, uniqid, "NO", Convert.ToString(TboPrice), Type, "", ""));
+                                                   Convert.ToString(RoomTypeId_Own), RoomName, Board_Text, NowDate, CancelDate.AddDays(-1), 0, 0, "0", VatOnPolicy, uniqid, "NO", Convert.ToString(LastCancellationDeadline), Type, "", ""));
                                             dt_TBO_Cancellation.AcceptChanges();
                                         }
 
                                         dt_TBO_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainAgentCharge, dt_TBO_Cancellation.NewRow(), CurrencyFactorTBO, Currency, Provider, Convert.ToString(ownsystemid), Convert.ToString("1"),
-                                               Convert.ToString(RoomTypeId_Own), RoomName, Board_Text, Convert.ToDateTime(CancelDate).Date, Convert.ToDateTime(CheckIn), CompanyChargeAmount, MainAgentCharge, "0", VatOnPolicy, uniqid, "NO", Convert.ToString(TboPrice), Type, "", ""));
+                                               Convert.ToString(RoomTypeId_Own), RoomName, Board_Text, Convert.ToDateTime(CancelDate).Date, Convert.ToDateTime(CheckIn), CompanyChargeAmount, MainAgentCharge, "0", VatOnPolicy, uniqid, "NO", Convert.ToString(LastCancellationDeadline), Type, "", ""));
                                         dt_TBO_Cancellation.AcceptChanges();
                                         //break;
 
@@ -1848,7 +1848,7 @@ namespace XConnect.Supplier.TBO
                                     else
                                     {
                                         dt_TBO_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainAgentCharge, dt_TBO_Cancellation.NewRow(), CurrencyFactorTBO, Currency, Provider, Convert.ToString(ownsystemid), Convert.ToString("1"),
-                                        Convert.ToString(RoomTypeId_Own), RoomName, Board_Text, DateTime.Now.Date, Convert.ToDateTime(CheckIn), CompanyChargeAmount, MainAgentCharge, "0", VatOnPolicy, uniqid, "Yes", Convert.ToString(TboPrice), Type, "", ""));
+                                        Convert.ToString(RoomTypeId_Own), RoomName, Board_Text, DateTime.Now.Date, Convert.ToDateTime(CheckIn), CompanyChargeAmount, MainAgentCharge, "0", VatOnPolicy, uniqid, "Yes", Convert.ToString(""), Type, "", ""));
                                         dt_TBO_Cancellation.AcceptChanges();
                                         //break;
                                     }
@@ -1857,7 +1857,7 @@ namespace XConnect.Supplier.TBO
                                 else
                                 {
                                     dt_TBO_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref ItemPrice, dt_TBO_Cancellation.NewRow(), CurrencyFactorTBO, Currency, Provider, Convert.ToString(ownsystemid), Convert.ToString("1"),
-                                        Convert.ToString(RoomTypeId_Own), RoomName, Board_Text, DateTime.Now.Date, Convert.ToDateTime(CheckIn), roomprice, roomprice, "0", 0, uniqid, "Yes", Convert.ToString(TboPrice), Type, "", ""));
+                                        Convert.ToString(RoomTypeId_Own), RoomName, Board_Text, DateTime.Now.Date, Convert.ToDateTime(CheckIn), roomprice, roomprice, "0", 0, uniqid, "Yes", Convert.ToString(""), Type, "", ""));
                                     dt_TBO_Cancellation.AcceptChanges();
                                 }
                             }
@@ -3354,7 +3354,7 @@ namespace XConnect.Supplier.TBO
             }
             return string.Empty;
         }
-        public string Get_TBO_BookingRequest_json_newversion(string Url, BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] TBODetails, string UniqueNo, bool IsPriceUpdate, int i, int j, string PreBookingToken, string UserID, string Password, string ClientReferancreNo, bool IsNrf, TokenData tokenData)
+        public string Get_TBO_BookingRequest_json_newversion(string Url, BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] TBODetails, string UniqueNo, bool IsPriceUpdate, int i, int j, string PreBookingToken, string UserID, string Password, string ClientReferancreNo, TokenData tokenData)
         {
             try
             {
