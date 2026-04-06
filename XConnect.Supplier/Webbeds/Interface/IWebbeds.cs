@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using XConnect.Models.Hotel;
 using XConnect.Models;
+using static XConnect.Supplier.GRNC.GRNCsearch;
+using static XConnect.Supplier.Yalago.Yalago;
 
 namespace XConnect.Supplier.Webbeds.Interface
 {
@@ -24,9 +26,13 @@ namespace XConnect.Supplier.Webbeds.Interface
 
         //book 13/08/25
         string GetDotwRoomBlockFor_SaveBooking(DataTable dtPassengers, DataSet dsCartDetails, int i, int j, string NewAllocationId, string ChangedOccupancy);
+        //string GetDotwRoomBlockFor_SaveBooking_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, int i, int j, string NewAllocationId, string ChangedOccupancy);
         string GetDOtwSaveBookingRequest(DataSet dsCartDetails, int i, String ClientID, string UserName, string Password, string BookingType, string RoomBlockFOrSaveBooking, string AgentCode);
+        //string GetDOtwSaveBookingRequest_newversion(BookRequest_newversion bookRequest, int i, String ClientID, string UserName, string Password, string BookingType, string RoomBlockFOrSaveBooking, string AgentCode);
 
-        void DotwRejectAll(ref string Error, int bookingstatus, int i, string DOTWRQ, string DOTWRS, ref DataTable dtAgentVoucher, int total, DataRow[] DOTWDetails, string returnedCode, string UniqueNo, string AgentUniqueNo, DataSet dsCartDetails);
+        void DotwRejectAll(ref string Error, int bookingstatus, int i, string DOTWRQ, string DOTWRS, ref DataTable dtAgentVoucher, int total, DataRow[] 
+DOTWDetails, string returnedCode, string UniqueNo, string AgentUniqueNo, DataSet dsCartDetails);
+        Task<string> DotwRejectAllAsync(string Error, int bookingstatus, int i, string DOTWRQ, string DOTWRS, List<AgentVoucherClass> lstAgentVoucher, int total, DataRow[] DOTWDetails, string returnedCode, string UniqueNo, string AgentUniqueNo, BookRequest_newversion bookRequest);
 
         void DeleteItineraryDOTW(DataRow[] DOTWDetails, string returnedCode, string Type, string Confirm, string UniqueNo, string AgentUniqueNo, string SupplierName, int BookingConfirmationTimeout, ref string Error);
         string GetDotwBookItineraryRequest(DataRow[] DOTWDetails, string Confirm, string bookingType, string bookingCode, string TestPriceAndAllocation);

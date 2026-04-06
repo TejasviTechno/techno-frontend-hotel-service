@@ -2352,6 +2352,57 @@ namespace XConnect.Supplier.Webbeds
             }
             return string.Empty;
         }
+        //public string GetDOtwSaveBookingRequest_newversion(DataSet dsCartDetails, int i, String ClientID, string UserName, string Password, string BookingType, string RoomBlockFOrSaveBooking, string AgentCode)
+        //{
+        //    try
+        //    {
+        //        StringBuilder sbDOTWBookingReq = new StringBuilder();
+        //        sbDOTWBookingReq.Append("<customer>");
+        //        sbDOTWBookingReq.Append(getDOTWProfileString(Convert.ToString(ClientID), Convert.ToString(UserName), Convert.ToString(Password)));
+        //        sbDOTWBookingReq.Append("<request command=\"" + BookingType + "\" debug=\"0\">");
+        //        sbDOTWBookingReq.Append("<bookingDetails>");
+        //        string checkindate = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]);
+        //        sbDOTWBookingReq.Append("<fromDate>" + checkindate.Substring(0, 4) + "-" + checkindate.Substring(4, 2) + "-" + checkindate.Substring(6, 2) + "</fromDate>");
+        //        string checkoutdate = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckOutDate"]);
+        //        sbDOTWBookingReq.Append("<toDate>" + checkoutdate.Substring(0, 4) + "-" + checkoutdate.Substring(4, 2) + "-" + checkoutdate.Substring(6, 2) + "</toDate>");
+        //        sbDOTWBookingReq.Append("<currency>" + WebBedsStaticInfo.DOTWCurrency + "</currency>");
+        //        sbDOTWBookingReq.Append("<productId>" + Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlHotelId"]) + "</productId>");
+        //        string CustRef = string.Empty;
+        //        for (int rm = 0; rm < dsCartDetails.Tables[1].DefaultView.Count; rm++)
+        //            CustRef = CustRef + "'" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[rm]["UserCartDetailId"]) + "',";
+        //        //Remove Last comma
+        //        CustRef = CustRef.Substring(0, CustRef.Length - 1);
+        //        CustRef = AgentCode + "-" + CustRef;
+        //        if (CustRef.Length > 50)
+        //            CustRef = CustRef.Substring(0, 49);
+
+        //        sbDOTWBookingReq.Append("<customerReference>" + CustRef + "</customerReference>");
+
+        //        sbDOTWBookingReq.Append("<rooms no=\"" + Convert.ToString(dsCartDetails.Tables[1].DefaultView.Count) + "\">");
+
+        //        sbDOTWBookingReq.Append(RoomBlockFOrSaveBooking);
+        //        sbDOTWBookingReq.Append("</rooms>");
+        //        sbDOTWBookingReq.Append("</bookingDetails>");
+        //        sbDOTWBookingReq.Append("</request>");
+        //        sbDOTWBookingReq.Append("</customer>");
+        //        return sbDOTWBookingReq.ToString();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //Common.LogException(Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlHotelId"]));
+        //        //Common.LogException(Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]));
+        //        //Common.LogException(Convert.ToString(dsCartDetails.Tables[1].DefaultView.Count));
+        //        //Common.LogException(Convert.ToString("ClientID=" + ClientID));
+        //        //Common.LogException(Convert.ToString("UserName=" + UserName));
+        //        //Common.LogException(Convert.ToString("Password=" + Password));
+        //        //Common.LogException(Convert.ToString("BookingType=" + BookingType));
+        //        //Common.LogException(Convert.ToString(RoomBlockFOrSaveBooking));
+        //        //Common.LogException(Convert.ToString("agentcodebooking=" + AgentCode));
+
+        //        _exception.ErrorNew(ex, _LogAPI.Book);
+        //    }
+        //    return string.Empty;
+        //}
 
         public string GetDotwDeleteItineraryRQ(DataRow[] DOTWDetails, string bookingCode, string Type, string Confirm)
         {
@@ -2399,6 +2450,51 @@ namespace XConnect.Supplier.Webbeds
                 _exception.ErrorNew(ex, _LogAPI.Book);
             }
         }
+        public async Task<string> DeleteItineraryDOTWAsync(
+     DataRow[] DOTWDetails,
+     string returnedCode,
+     string Type,
+     string Confirm,
+     string UniqueNo,
+     string AgentUniqueNo,
+     string SupplierName,
+     int BookingConfirmationTimeout,
+     string Error
+ )
+        {
+            string DeleteItineryRQ = "";
+            string Response_Itinery = "";
+
+            try
+            {
+                DeleteItineryRQ = GetDotwDeleteItineraryRQ(DOTWDetails, returnedCode, Type, Confirm);
+
+                _commonMethod.ThirdPartyBookingHistory(
+                    UniqueNo, AgentUniqueNo, DeleteItineryRQ, "",
+                    "before Booking Request deleteitinerary NO",
+                    SupplierName, "Response Confirm", "-", "API Out"
+                );
+
+                // 👉 Your actual async API call should be here
+                // Example:
+                // Response_Itinery = await SomeHttpCall(...);
+
+                Response_Itinery = "";
+
+                _commonMethod.ThirdPartyBookingHistory(
+                    UniqueNo, AgentUniqueNo, DeleteItineryRQ, Response_Itinery,
+                    "after Booking Request bookitinerary NO",
+                    SupplierName, "Response Confirm", "-", "API Out"
+                );
+            }
+            catch (Exception ex)
+            {
+                Error = Error + " #DeleteItineryRQ= " + DeleteItineryRQ + " #Ex= " + ex.Message;
+                _exception.ErrorNew(ex, _LogAPI.Book);
+            }
+
+            return Error;
+        }
         public void DotwRejectAll(ref string Error, int bookingstatus, int i, string DOTWRQ, string DOTWRS, ref DataTable dtAgentVoucher, int total, DataRow[] DOTWDetails, string returnedCode, string UniqueNo, string AgentUniqueNo, DataSet dsCartDetails)
         {
             try
@@ -2430,6 +2526,64 @@ namespace XConnect.Supplier.Webbeds
 
         }
 
+        public async Task<string> DotwRejectAllAsync(
+     string Error,
+     int bookingstatus,
+     int i,
+     string DOTWRQ,
+     string DOTWRS,
+     List<AgentVoucherClass> lstAgentVoucher,
+     int total,
+     DataRow[] DOTWDetails,
+     string returnedCode,
+     string UniqueNo,
+     string AgentUniqueNo,
+     BookRequest_newversion bookRequest
+ )
+        {
+            try
+            {
+                var cart = bookRequest.userCart.UserCartDetails;
+
+                for (int mm = 0; mm < total; mm++)
+                {
+                    if (!string.IsNullOrEmpty(returnedCode))
+                    {
+                        Error = await DeleteItineraryDOTWAsync(
+                            DOTWDetails,
+                            returnedCode,
+                            "2",
+                            "no",
+                            UniqueNo,
+                            AgentUniqueNo,
+                            "dotw",
+                            180000,
+                            Error
+                        );
+                    }
+
+                    var voucher = new AgentVoucherClass
+                    {
+                        UserCartId =Convert.ToString( cart[i].UserCartId),
+                        UserCartDetailId = Convert.ToString(cart[mm].UserCartDetailId),
+                        AgentVoucherNo = "",
+                        XMLRequest = DOTWRQ,
+                        XMLResponse = DOTWRS,
+                        RoomStatus = bookingstatus.ToString(),
+                        SupplierName = cart[mm].SupplierName
+                    };
+
+                    lstAgentVoucher.Add(voucher);
+                }
+            }
+            catch (Exception ex)
+            {
+                Error = Error + " #Ex= " + ex.Message;
+                _ = _exception.ErrorNew(ex, _LogAPI.Book);
+            }
+
+            return Error;
+        }
         public string GetDotwBookItineraryRequest(DataRow[] DOTWDetails, string Confirm, string bookingType, string bookingCode, string TestPriceAndAllocation)
         {
             try

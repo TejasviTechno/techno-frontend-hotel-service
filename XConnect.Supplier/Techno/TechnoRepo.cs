@@ -90,7 +90,7 @@ namespace XConnect.Supplier.Techno
                                     if (WE_DMCSearchConfig != null)
                                     {
                                         List<HotelCodeByCity> filter = new List<HotelCodeByCity>();
-                                        filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
+                                        filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, WE_DMCDetails.SupplierName);
                                         if (filter.Count > 0)
                                         {
                                             double CurrencyFactorWE_DMC = 1;
@@ -128,22 +128,25 @@ namespace XConnect.Supplier.Techno
 
                                                                 if (_keySettings.SupplierProxy == "0")
                                                                 {
-                                                                    if (Supplier.ToLower() == "travelbullz_techno")
-                                                                       // xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchWithCancellationURL);
-                                                                        xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
-                                                                    else
-                                                                       // xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchURL);
-                                                                        xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchURL);
+                                                                    xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
+
+                                                                    //if (Supplier.ToLower() == "travelbullz_techno")
+                                                                    //   // xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchWithCancellationURL);
+                                                                    //    xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
+                                                                    //else
+                                                                    //   // xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchURL);
+                                                                    //    xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchURL);
 
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (Supplier.ToLower() == "travelbullz_techno")
-                                                                        //xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchWithCancellationURL);
-                                                                        xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
-                                                                    else
-                                                                        //xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchURL);
-                                                                        xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchURL);
+                                                                    xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
+                                                                    //if (Supplier.ToLower() == "travelbullz_techno")
+                                                                    //    //xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchWithCancellationURL);
+                                                                    //    xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
+                                                                    //else
+                                                                    //    //xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchURL);
+                                                                    //    xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchURL);
 
                                                                 }
                                                                 xhotel.UserId = Convert.ToString(WE_DMCDetails.UserID);
@@ -196,22 +199,24 @@ namespace XConnect.Supplier.Techno
 
                                                         if (_keySettings.SupplierProxy == "0")
                                                         {
-                                                            if (Supplier.ToLower() == "travelbullz_techno")
-                                                                // xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchWithCancellationURL);
-                                                                xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
-                                                            else
-                                                                // xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchURL);
-                                                                xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchURL);
+                                                            xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
+                                                            //if (Supplier.ToLower() == "travelbullz_techno")
+                                                            //    // xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchWithCancellationURL);
+                                                            //    xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
+                                                            //else
+                                                            //    // xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchURL);
+                                                            //    xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURL) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchURL);
 
                                                         }
                                                         else
                                                         {
-                                                            if (Supplier.ToLower() == "travelbullz_techno")
-                                                                //xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchWithCancellationURL);
-                                                                xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
-                                                            else
-                                                                //xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchURL);
-                                                                xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchURL);
+                                                            xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
+                                                            //if (Supplier.ToLower() == "travelbullz_techno")
+                                                            //    //xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchWithCancellationURL);
+                                                            //    xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchWithCancellationURL);
+                                                            //else
+                                                            //    //xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(TechnoInfo.WE_DMCHotelSearchURL);
+                                                            //    xhotel.URL = Convert.ToString(WE_DMCDetails.WebSiteURLforAPI) + Convert.ToString(_supplierConfig.Techno.WE_DMCHotelSearchURL);
 
                                                         }
                                                         xhotel.UserId = Convert.ToString(WE_DMCDetails.UserID);
