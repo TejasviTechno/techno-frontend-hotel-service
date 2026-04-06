@@ -699,12 +699,14 @@ namespace XConnect.Supplier.MGBedBank
             {
                 if (ResponseData == string.Empty || ResponseData == "")
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
                 DataSet MgBedBankResponse = _commonMethod.GetDataSetFromXMLString(ResponseData);
                 if (MgBedBankResponse == null || MgBedBankResponse.Tables["Hotel"] == null)
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -1191,6 +1193,7 @@ namespace XConnect.Supplier.MGBedBank
             }
             catch (Exception e)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(e);
             }
             finally

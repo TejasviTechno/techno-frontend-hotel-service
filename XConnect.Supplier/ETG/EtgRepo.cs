@@ -796,6 +796,7 @@ namespace XConnect.Supplier.ETG
                 {
                     if (ResponseData == string.Empty)
                     {
+                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -804,6 +805,7 @@ namespace XConnect.Supplier.ETG
 
                     if (ETGResponse == null || ETGResponse.data == null || ETGResponse.data.hotels == null || ETGResponse.data.hotels.Count == 0)
                     {
+                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -1222,6 +1224,7 @@ namespace XConnect.Supplier.ETG
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 Item.ResponseType = "NoCount";
                 _ = _exception.Error(ex);
 
