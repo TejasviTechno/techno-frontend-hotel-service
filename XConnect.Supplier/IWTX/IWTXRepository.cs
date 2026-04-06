@@ -611,11 +611,13 @@ namespace XConnect.Supplier.IWTX
 
                     if (Iwtx_Response == null)
                     {
+                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
                     if (Iwtx_Response.Hotels.Hotel == null)
                     {
+                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -1253,6 +1255,7 @@ namespace XConnect.Supplier.IWTX
             }
             catch (Exception e)
             {
+                Item.ResponseStatus = 404;
                 Item.ResponseType = "NoCount";
                 await _exception.Error(e);
             }

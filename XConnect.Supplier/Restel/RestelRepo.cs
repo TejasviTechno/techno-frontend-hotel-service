@@ -324,6 +324,7 @@ namespace XConnect.Supplier.Restel
                     DataSet Restel_Response = _commonMethod.GetDataSetFromXMLString(ResponseData);
                     if (Restel_Response == null || Restel_Response.Tables["hot"] == null)
                     {
+                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -988,6 +989,7 @@ namespace XConnect.Supplier.Restel
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex, searchkey, ResponseData);
                 return options;
             }
