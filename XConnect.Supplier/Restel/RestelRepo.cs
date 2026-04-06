@@ -1012,10 +1012,12 @@ namespace XConnect.Supplier.Restel
             }
         }
 
-        public async Task<CancellationDto> Get_Restel_CancellationPolicy(string rating, string ContractID, string Type, DataSet dsHotel, string hotelcode, string ownsystemid, string RoomTypeId_Own, string MealID, string Board_Text, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string UserId, string Password, string roomno, string Provider, int AgentId, DataTable dtMarkupDetails,string SearchKey, string GiataId = "0", int hotelRating = 0, double FinalSellPrice = 0)
+        public async Task<CancellationDto> Get_Restel_CancellationPolicy(string rating, string ContractID, string Type, DataSet dsHotel, string hotelcode, string ownsystemid, string RoomTypeId_Own, string MealID, string Board_Text, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string UserId, string Password, string roomno, string Provider, int AgentId, DataTable dtMarkupDetails,string SearchKey, string GiataId = "0", int hotelRating = 0, double FinalSellPrice = 0, string TechName = "")
         {
             CancellationDto cancellationDto = new CancellationDto();
             string IsBooking = "Available";
+            string responsetype = "Success";
+            string time = "";
             try
             {
                 DataTable dtLOH_W2M_Cancellation = _commonMethod.GenerateCancellationDataTableNewV2();
@@ -1122,10 +1124,16 @@ namespace XConnect.Supplier.Restel
                 {
                     #region Cancellation Policy RS
                     string Error = "";
+                    System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+                    timerroomprocess.Start();
+
                     //string ResponseData = GetRestelResponse(ref Error, "xml=" + CancelPolicyRQ, RestelUrl, SearchTimeOut, "Restel");
                     ResponseDto responseDto = await GetRestelResponse("xml=" + CancelPolicyRQ, RestelUrl, SearchTimeOut, Provider);
                     string ResponseData = responseDto.Response;
                     Error = responseDto.Error;
+
+                    timerroomprocess.Stop();
+                    time = timerroomprocess.Elapsed.ToString();
 
                     ////ThirdPartyBookingHistory("testjac", "", CancelPolicyRQ, ResponseData, "testJac", "", "", "", "");
                     //ThirdPartyBookingHistory("restel", "", CancelPolicyRQ, ResponseData, "restel", "", "", "", "");
@@ -1134,6 +1142,16 @@ namespace XConnect.Supplier.Restel
 
                     if (ResponseData == string.Empty || ResponseData.Contains("Error"))
                     {
+                        try
+                        {
+                            responsetype = "GeneralError";
+                            string abcd = await _commonMethod.AnalyticsRecheckData(Provider, responsetype, time, SearchKey, TechName);
+                        }
+                        catch (Exception e)
+                        {
+                            _ = _exception.ErrorNew(e, _LogAPI.Recheck, SearchKey);
+                        }
+
                         cancellationDto.dsHotelData = dsHotel;
                         cancellationDto.ISBooking = "NotAvailable";
                         return cancellationDto;
@@ -1149,6 +1167,16 @@ namespace XConnect.Supplier.Restel
 
                     if (Convert.ToInt32(Restel_Response.Tables["politicaCanc"].Rows.Count) == 0)
                     {
+                        try
+                        {
+                            responsetype = "GeneralError";
+                            string abcd = await _commonMethod.AnalyticsRecheckData(Provider, responsetype, time, SearchKey, TechName);
+                        }
+                        catch (Exception e)
+                        {
+                            _ = _exception.ErrorNew(e, _LogAPI.Recheck, SearchKey);
+                        }
+
                         cancellationDto.dsHotelData = dsHotel;
                         cancellationDto.ISBooking = "NotAvailable";
                         return cancellationDto;
@@ -1349,7 +1377,17 @@ namespace XConnect.Supplier.Restel
                         #endregion
                     }
                 }
+
                 dsHotel.Tables[2].Merge(dtLOH_W2M_Cancellation);
+                try
+                {
+                    responsetype = "Success";
+                    string abcd = await _commonMethod.AnalyticsRecheckData(Provider, responsetype, time, SearchKey, TechName);
+                }
+                catch (Exception e)
+                {
+                    _ = _exception.ErrorNew(e, _LogAPI.Recheck, SearchKey);
+                }
 
                 cancellationDto.ISBooking = IsBooking;
                 cancellationDto.dsHotelData = dsHotel;

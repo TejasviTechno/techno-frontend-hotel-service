@@ -319,6 +319,146 @@ namespace XConnect.Analytics
             }
         }
 
+        public void PushHotelRecheckSupplierDataForAnalyticsAsyc(AnalyticsData analyticsData)
+        {
+            try
+            {
+
+
+                var supplierDataList = new List<SupplierData>();
+
+                //var allTasks = new List<HotelX>();
+
+                //if (analyticsData?.Result is ConcurrentBag<HotelX> bundles)
+                ////if (analyticsData?.Result is IEnumerable<HotelX> bundles)
+                //{
+                //    allTasks.AddRange(bundles);
+                //}
+
+                var mainSearchPayload = analyticsData.Payload as HotelSearchParameter; // request
+
+                //var resultData = analyticsData.Result as FinalRestProductDomainDtos;
+                //var mainSearchPayload = analyticsData.Payload as RestaurantSearchParaForList;
+
+                var isDebugMode = _configuration.GetValue<bool>("EnvironmentType:isDebug");
+                var clientsLocalTimeZone = _configuration.GetValue<string>("EnvironmentType:clientsLocalTimeZone") ?? "Arabian Standard Time";
+
+                //if (allTasks != null)
+                {
+                    //for (int i = 0; i < allTasks.Count; i++)
+                    {
+                        //under work
+                        var analyticsDataSupplier = new AnalyticsData
+                        {
+                            Action = analyticsData.Action,
+                            Version = analyticsData.Version,
+                            HttpStatusCode = analyticsData.HttpStatusCode,
+                            Stage = analyticsData.Stage,
+                            ElapsedTime = analyticsData.ElapsedTime,
+                            Description = analyticsData.Description,
+                            Errorcode = analyticsData.Errorcode,
+                            Search_Key = analyticsData?.Search_Key ?? "anonymous"
+
+                        };
+                        //var locationItem = allTasks[i].RestaurantList?.FirstOrDefault();
+                        //var locationItem = StaticDetails?.Data.Where(a => a.RestaurantId == allTasks[i]?.RateAgeCategory[0].RestaurantId).ToList();
+
+
+                        var locationInfo = new AnalyticsLocationInfo
+                        {
+                            City = mainSearchPayload?.CityName ?? "anonymous",
+                            Country = mainSearchPayload?.CountryCode ?? "anonymous",
+                            Lat = 0,
+                            Long = 0,
+                            IsoCountry = mainSearchPayload?.CountryCode ?? "anonymous",
+                            IsoNationality = mainSearchPayload?.Nationality ?? "anonymous",
+                            LocationType = mainSearchPayload?.CountryCode ?? "anonymous",
+                            Nationality = mainSearchPayload?.Nationality ?? "anonymous",
+
+                        };
+
+                        var productInfo = new AnalyticsProductInfo
+                        {
+
+                            //Id = mainSearchPayload?.Filters?.HotelIDs ??,// productDetail?.RestaurantId ?? 0,
+                            Name = mainSearchPayload?.CityName ?? "anonymous",
+                            City = mainSearchPayload?.CityName ?? "anonymous",
+                            Country = mainSearchPayload?.CountryCode ?? "anonymous",
+                            //Name = mainSearchPayload?.SearchKey ?? "anonymous",
+
+                        };
+                        //var productInfo = new AnalyticsProductInfo();
+                        var fareDetails = new AnalyticsFareInformation
+                        {
+
+                            TotalProducts = 1,
+                            Volume = 0
+                        };
+                        int NoofAdults = 0;
+                        int NoofChild = 0;
+
+                        for (int ii = 0; ii < mainSearchPayload?.Rooms?.Count; ii++)
+                        {
+                            NoofAdults = NoofAdults + mainSearchPayload.Rooms[ii]?.NoofAdults ?? 0;
+                            NoofChild = NoofChild + mainSearchPayload.Rooms[ii]?.NoofChild ?? 0;
+                        }
+
+
+                        var paxDetails = new AnalyticsPaxInformation
+                        {
+                            Adults = NoofAdults,
+                            Children = NoofChild,
+                            Nights = mainSearchPayload?.NoofNights ?? 0,
+                        };
+
+
+                        var service = new ClientSearchDataService(_userContextAccessor, mainSearchPayload, locationInfo, analyticsDataSupplier, productInfo, fareDetails, paxDetails);
+
+
+                        var browserInfo = service.GetBrowserInfo();
+                        var apiInfo = service.GetApiInfo();
+                        var userInfo = service.GetUserInfo();
+                        var paxInfo = service.GetPaxAndDurationInfo(NoofAdults, NoofChild);
+                        var requestInfo = service.GetRequestInfo(isDebugMode);
+                        var locationDetails = service.GetLocationDetails();
+
+                        var clientDetails = service.GetClientDetails();
+                        var search = service.GetSearchPayload();
+                        var productDetails = service.GetProductDetails();
+                        var fareInfo = service.GetFareInfo();
+
+
+
+                        var supplierData = new SupplierData
+                        {
+                            TechnologyPartner = analyticsData.TechName,
+                            SupplierName = analyticsData.SupplierName.ToUpper(),
+                            ServiceName = QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Supplier_HotelService,
+                            clientTimeZone = string.IsNullOrEmpty(_userContextAccessor.ClientStats.clientsLocalTimeZone) ? clientsLocalTimeZone : _userContextAccessor.ClientStats.clientsLocalTimeZone,
+                            Description = analyticsData.Description,
+                            ApiInfo = apiInfo,
+                            UserInfo = userInfo,
+                            PaxAndDuration = paxInfo,
+                            RqRsDetails = requestInfo,
+                            Location = locationDetails,
+                            Products = productDetails != null && productDetails.Any() ? productDetails : [new SearchProductDetails()],
+                            TransferLocationDetails = null,
+                            FareInfo = fareInfo,
+                            client = clientDetails,
+                            BrowserAgent = browserInfo,
+                            SiteType = _userContextAccessor.SiteType
+                        };
+                        supplierDataList.Add(supplierData);
+                    }
+                }
+
+                _pushSupplierAnalytics.PushSupplierDataForAnalyticsAsyc(supplierDataList);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error at PushHotelRecheckSupplierDataForAnalyticsAsyc");
+            }
+        }
         public string statuscodedescription(int statuscode)
         {
             string description = "";

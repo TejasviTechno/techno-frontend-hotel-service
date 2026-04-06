@@ -34,6 +34,6 @@ namespace XConnect.Supplier.ETG.Interface
         Task<ResponseDto> GetETGRoomResponse(string strxmlRQRS, string strHost, string Key, string UniqueNo = "");
 
         string EtgBookingCancelRQ(string Id);
-        Task<DataSet> Ratehawk_cancellation( string ISBooking, double CompanyBuy, string MealCode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData TokenData, string SearchKey = "", string GiataId = "0", int hotelRating = 0, string xmlcity = "");
+        Task<DataSet> Ratehawk_cancellation( string ISBooking, double CompanyBuy, string MealCode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData TokenData, string SearchKey = "", string GiataId = "0", int hotelRating = 0, string xmlcity = "", string TechName = "");
     }
 }

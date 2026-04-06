@@ -27,6 +27,7 @@ namespace XConnect.Analytics.Interface
     public interface IAnalyticsSupplier
     {
         void PushHotelSearchSupplierDataForAnalyticsAsyc(AnalyticsData analyticsData);
-        //void PushRestaurantDetailsSupplierDataForAnalyticsAsyc(AnalyticsData analyticsData);
+        
+        void PushHotelRecheckSupplierDataForAnalyticsAsyc(AnalyticsData analyticsData);
     }
 }
