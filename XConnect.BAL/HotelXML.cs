@@ -12981,7 +12981,7 @@ new SqlParameter("@AgentId", AgentId),
                     #endregion
                     #region"Restel"
                     case "restel":
-                        cancellationDto = await _restel.Get_Restel_CancellationPolicy(Convert.ToString(hotelRating), ContractId, type, dsHotelData, hotelcode, hotelid, roomtypeid, shortname, boardtype, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, "", "", Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, SearchKey, GiataId, hotelRating, roomprice);
+                        cancellationDto = await _restel.Get_Restel_CancellationPolicy(Convert.ToString(hotelRating), ContractId, type, dsHotelData, hotelcode, hotelid, roomtypeid, shortname, boardtype, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, "", "", Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, SearchKey, GiataId, hotelRating, roomprice,TechName);
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion
@@ -13080,7 +13080,7 @@ new SqlParameter("@AgentId", AgentId),
                     #region IWTX
                     case "iwtx":
 
-                        cancellationDto = await _iwtx.IWTX_cancellation(SearchKey, hotelid, roomtypecode, dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, ToeknData, GiataId, hotelRating, Companybuy, RoomNo, xmlcity, "", "", "", "");
+                        cancellationDto = await _iwtx.IWTX_cancellation(SearchKey, hotelid, roomtypecode, dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, ToeknData, GiataId, hotelRating, Companybuy, RoomNo, xmlcity, "", "", "", "", TechName);
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion
@@ -13104,7 +13104,7 @@ new SqlParameter("@AgentId", AgentId),
                     case "etg":
                         //case "ratehawk_b2c":
                         // case "ratehawk_api":
-                        dsHotelData = await _etg.Ratehawk_cancellation(ISBooking, Convert.ToDouble(Companybuy), Mealid, dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, ToeknData, SearchKey, GiataId, hotelRating, xmlcity);
+                        dsHotelData = await _etg.Ratehawk_cancellation(ISBooking, Convert.ToDouble(Companybuy), Mealid, dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, ToeknData, SearchKey, GiataId, hotelRating, xmlcity, TechName);
                         dtReturn = dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion

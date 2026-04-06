@@ -24,6 +24,8 @@ namespace XConnect.Analytics
         public string Errorcode { get; set; } = string.Empty; // new added
 
         public string Search_Key { get; set; } = string.Empty; // new added
+        public string SupplierName { get; set; } = string.Empty; // new added
+        public string TechName { get; set; } = string.Empty; // new added
         //public string ErrorCode { get; set; } = string.Empty;
         //public string CheckIn { get; set; } = string.Empty;
         //public string CheckOut { get; set; } = string.Empty;

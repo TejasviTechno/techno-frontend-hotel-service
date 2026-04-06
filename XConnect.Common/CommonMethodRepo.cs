@@ -3816,6 +3816,36 @@ namespace XConnect.CommonUtilities
             return "";
         }
 
+        public async Task<string> AnalyticsRecheckData(string SupplierName, string ResponseType, string ResponseTimeout, string SearchKey = "", string TechName = "")
+        {
+            #region Analytics
+            try
+            {
+                _analyticSupplier.PushHotelRecheckSupplierDataForAnalyticsAsyc(new AnalyticsData
+                {
+                    Result = null,
+                    Action = "SupplierReportRecheck",
+                    Version = "v1",
+                    HttpStatusCode = ResponseType.ToLower() == "success" ? 200 : 404,
+                    Stage = "Recheck",
+                    Payload = null,
+                    // ElapsedTime = (long)TimeSpan.Parse(ResponseTimeout).TotalMilliseconds,
+                    ElapsedTime = string.IsNullOrEmpty(ResponseTimeout) ? 0 : (long)TimeSpan.Parse(ResponseTimeout).TotalMilliseconds,
+                    Description = ResponseType,
+                    //StaticResult = null,
+                    Search_Key = SearchKey,
+                    SupplierName = SupplierName,
+                    TechName = TechName
+
+                });
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+            }
+            #endregion
+            return "";
+        }
         public double TruncateDecimalPlacesNew(double val)
         {
             try
