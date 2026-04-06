@@ -785,11 +785,11 @@ namespace Xconnect.Expedia
                 }
                 catch (Exception ex)
                 {
-<<<<<<< HEAD
 
-=======
+
+
                     Item.ResponseStatus = 404;
->>>>>>> feature-tinkal
+
                     _ = _exception.Error(ex);
                     Item.ResponseType = "NoCount";
                     return options;
@@ -1231,12 +1231,12 @@ namespace Xconnect.Expedia
             }
             catch (Exception ex)
             {
-<<<<<<< HEAD
-                _ = _exception.Error(ex);
-=======
+
+              
+
                 Item.ResponseStatus = 404;
                 _= _exception.Error(ex);
->>>>>>> feature-tinkal
+
                 return options;
             }
             finally
