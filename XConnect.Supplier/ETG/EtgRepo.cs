@@ -3050,7 +3050,7 @@ namespace XConnect.Supplier.ETG
             }
         }
 
-        public async Task<DataSet> Ratehawk_cancellation(string ISBooking, double CompanyBuy, string MealCode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData TokenData, string SearchKey = "", string GiataId = "0", int hotelRating = 0, string xmlcity = "")
+        public async Task<DataSet> Ratehawk_cancellation(string ISBooking, double CompanyBuy, string MealCode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData TokenData, string SearchKey = "", string GiataId = "0", int hotelRating = 0, string xmlcity = "", string TechName = "")
         {
             //DataTable dtEtgCancellation = GenerateCancellationDataTableNewV2();
             //DataTable dtEtgHotelRoom = Common.GenerateRoomtypeDataTableNewV2();
@@ -3059,6 +3059,8 @@ namespace XConnect.Supplier.ETG
             DataTable dtEtgCancellation = _commonMethod.GenerateCancellationDataTableNewV2();
             DataTable dtEtgHotelRoomRateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
            string Error = "";
+            string responsetype = "Success";
+            string time = "";
             try
             {
                 ISBooking = "NotAvailable";
@@ -3125,12 +3127,29 @@ namespace XConnect.Supplier.ETG
 
                // string Currency = Convert.ToString(ConfigurationManager.AppSettings["RatehawkCurrency"]);
                 string RoomRequest = ETGHotelRequest(SearchPara, XMLNationality, Hotel_Id, xmlcity, RETGCurrency);
+                System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+                timerroomprocess.Start();
+
                 string ETGURL = URL + _supplierConfig.ETG.search_serp_hp;
                 string RoomResponseData = ResponseETGSupplier(ref Error, RoomRequest, ETGURL, userName, password, "ratehawk");
 
-              
+                timerroomprocess.Stop();
+                time = timerroomprocess.Elapsed.ToString();
+
                 if (RoomResponseData == "")
+                {
+                    try
+                    {
+                        responsetype = "GeneralError";
+                        string abcd = await _commonMethod.AnalyticsRecheckData(provider, responsetype, time, SearchKey, TechName);
+                    }
+                    catch (Exception e)
+                    {
+                        _ = _exception.ErrorNew(e, _LogAPI.Recheck, SearchKey);
+                    }
                     return dsHotel;
+                }
+                   
 
 
                DataSet ratehawkResponse = null;
@@ -3147,7 +3166,19 @@ namespace XConnect.Supplier.ETG
                 }
 
                 if (ratehawkResponse == null)
+                {
+                    try
+                    {
+                        responsetype = "GeneralError";
+                        string abcd = await _commonMethod.AnalyticsRecheckData(provider, responsetype, time, SearchKey, TechName);
+                    }
+                    catch (Exception e)
+                    {
+                        _ = _exception.ErrorNew(e, _LogAPI.Recheck, SearchKey);
+                    }
                     return dsHotel;
+                }
+                    
 
                 _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(RoomCode), Convert.ToString(ownsystemid), Convert.ToString(RoomRequest), Convert.ToString(RoomResponseData + Error), "Room Request Response before Policy", provider, "Room Response", SearchKey, "FSTravel Booking");
 
@@ -3272,7 +3303,15 @@ namespace XConnect.Supplier.ETG
                 _exception.Error(exx);
                 return dsHotel;
             }
-
+            try
+            {
+                responsetype = "Success";
+                string abcd = await _commonMethod.AnalyticsRecheckData(provider, responsetype, time, SearchKey, TechName);
+            }
+            catch (Exception e)
+            {
+                _ = _exception.ErrorNew(e, _LogAPI.Recheck, SearchKey);
+            }
             return dsHotel;
         }
         public  string ETGHotelRequest(HotelSearchParameter SearchParam, string Nationality, string ETGHotelIds, string Citycode, string Currency)

@@ -2578,7 +2578,7 @@ namespace XConnect.Supplier.IWTX
             return Response;
         }
 
-        public async Task<CancellationDto> IWTX_cancellation(string SearchKey, string OwnsystemHotelId, string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData tokenData, string GiataId = "0", int hotelRating = 0, string CompanyBuyPrice = "", int RoomNo = 0, string XmlCity = "", string Uniqueid = "", string XmlNationality = "", string ContractTokenId = "", string MealPlanCode = "")
+        public async Task<CancellationDto> IWTX_cancellation(string SearchKey, string OwnsystemHotelId, string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData tokenData, string GiataId = "0", int hotelRating = 0, string CompanyBuyPrice = "", int RoomNo = 0, string XmlCity = "", string Uniqueid = "", string XmlNationality = "", string ContractTokenId = "", string MealPlanCode = "", string TechName = "")
         {
 
             CancellationDto cancellationDto = new CancellationDto();
@@ -2586,7 +2586,7 @@ namespace XConnect.Supplier.IWTX
             string time = "";
             string ResponseData = "";
             string Request = "";
-            string responsetype = "";
+            string responsetype = "Success";
             double CompanyBuy = Convert.ToDouble(CompanyBuyPrice);
             string ISBooking = "NotAvailable";
             try
@@ -2630,10 +2630,16 @@ namespace XConnect.Supplier.IWTX
 
                 int RoomConfigurationId = 0;
                 Request = PriceCheckRequest_ForCancellationPolicy_IWTX(SearchPara.CheckInDate, SearchPara.CheckOutDate, hotelcode, Username, Password, SearchPara.Rooms[RoomNo - 1].NoofAdults, SearchPara.Rooms[RoomNo - 1].NoofChild, SearchPara.Rooms[RoomNo - 1].Child1Age, SearchPara.Rooms[RoomNo - 1].Child2Age, ref RoomConfigurationId, XmlCity, Uniqueid, XmlNationality, roomtypeid, ContractTokenId, MealPlanCode);
+
+                System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+                timerroomprocess.Start();
                 //ResponseDto responseDto = await IWTXResponseNeAsync(IWTXURL, Request, "IWTX", SearchKey);
                 ResponseDto responseDto = await IWTXResponse(IWTXURL, Request, provider, SearchKey);
                 ResponseData = responseDto.Response;
                 Error = responseDto.Error;
+
+                timerroomprocess.Stop();
+                time = timerroomprocess.Elapsed.ToString();
 
                 _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(roomtypeid), Convert.ToString(ownsystemid), Request, Convert.ToString(ResponseData), "After Get Policy", provider, Error + "Response", SearchKey, "API");
 
@@ -2725,6 +2731,7 @@ namespace XConnect.Supplier.IWTX
                         {
                             ResponseData = "#Price Changed at Recheck " + "#Main Price = " + CompanyBuyPrice + " #New Price = " + FinalPriceTemp + " #Response= " + ResponseData;
                             responsetype = "GeneralError";
+                            string abcd = await _commonMethod.AnalyticsRecheckData(provider, responsetype, time, SearchKey, TechName);
                             string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(provider, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
                         }
                         catch (Exception e)
@@ -2894,6 +2901,7 @@ namespace XConnect.Supplier.IWTX
                 try
                 {
                     responsetype = "Success";
+                    string abcd = await _commonMethod.AnalyticsRecheckData(provider, responsetype, time, SearchKey, TechName);
                     string abc = await _commonMethod.SupplierPerformanceReportForRecheckOnly(provider, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
                 }
                 catch (Exception e)
@@ -2908,6 +2916,7 @@ namespace XConnect.Supplier.IWTX
                 {
                     ISBooking = "NotAvailable";
                     responsetype = "GeneralError";
+                    string abcd = await _commonMethod.AnalyticsRecheckData(provider, responsetype, time, SearchKey, TechName);
                     //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
                     string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(provider, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error + ex.Message);
                 }
