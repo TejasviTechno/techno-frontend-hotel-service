@@ -52176,7 +52176,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                 responsetype = "GeneralError";
                                                             }
                                                             #region "Save Booking room Block"
-                                                            //RoomForSaveBooking += _webbeds.GetDotwRoomBlockFor_SaveBooking_newversion(dtPassengers, bookRequest, 0, j, NewAllocationId, ChangedOccupancy);
+                                                            RoomForSaveBooking += _webbeds.GetDotwRoomBlockFor_SaveBooking_newversion(dtPassengers, bookRequest, 0, j, NewAllocationId, ChangedOccupancy);
 
 
                                                             #region BookingData
@@ -52200,7 +52200,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         }
                                                         if (IsAllocation)
                                                         {
-                                                            string DOTWRQ = "";//_webbeds.GetDOtwSaveBookingRequest_newversion(bookRequest, 0, Convert.ToString(XPDetails[0]["UserID"]), Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), "savebooking", RoomForSaveBooking, tokenData.AgentCode);
+                                                            string DOTWRQ = _webbeds.GetDOtwSaveBookingRequest_newversion(bookRequest, 0, Convert.ToString(XPDetails[0]["UserID"]), Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), "savebooking", RoomForSaveBooking, tokenData.AgentCode);
                                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), DOTWRQ, "-", "Before Booking Request hit save booking", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Request Confirm", referenceNumber, "RaynaB2B");
                                                             DotwRequest = DOTWRQ;
 
