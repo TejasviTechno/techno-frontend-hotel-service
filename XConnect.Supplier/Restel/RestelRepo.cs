@@ -2099,11 +2099,11 @@ namespace XConnect.Supplier.Restel
                 }
                 #region  IsLead Filter Logic
                 string isLead = string.Empty;
-                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and RoomNo='" + Convert.ToString(bookRequest.userCart.UserCartDetails.Count) + "' and IsLead=1";
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and RoomNo='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomNo) + "' and IsLead=1";
                 if (dtPassengers.DefaultView.Count == 0)
                     isLead = "true";
                 dtPassengers.DefaultView.RowFilter = "";
-                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and RoomNo='" + (bookRequest.userCart.UserCartDetails.Count) + "' and UserCartId='" + bookRequest.userCart.UserCartId + "'";
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and RoomNo='" + (bookRequest.userCart.UserCartDetails[j].RoomNo) + "' and UserCartId='" + bookRequest.userCart.UserCartId + "'";
                 dtPassengers.DefaultView.Sort = "IsLead desc";
                 #endregion
 
