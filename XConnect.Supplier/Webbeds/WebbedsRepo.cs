@@ -1205,7 +1205,7 @@ namespace XConnect.Supplier.Webbeds
                                                     if (minStay == "")
                                                         minStay = "0";
                                                     // string FinalDotwRoomTypeId = dotwroomtypecode + ":" + id + ":" + ChangedOccupancy + ":" + Guid.NewGuid().ToString().Substring(0, 5) + ":" + withCancellationDeadLine + ":" + apr;
-                                                    string FinalDotwRoomTypeId = dotwroomtypecode + ":" + id + ":" + ChangedOccupancy + ":" + Guid.NewGuid().ToString().Substring(0, 5) + ":" + withCancellationDeadLine + ":" + apr + ":" + allocationDetails + ":" + rateBasis_Id; //04-NOV-24
+                                                    string FinalDotwRoomTypeId = dotwroomtypecode + ":" + id + ":" + ChangedOccupancy + ":" + Guid.NewGuid().ToString().Substring(0, 5) + ":" + withCancellationDeadLine + ":" + apr + ":" + allocationDetails + ":" + rateBasis_Id + ":" + Item.XmlNationality; //04-NOV-24
 
                                                     ChangedOccupancy = "";
                                                     string uniqid = Guid.NewGuid().ToString();
@@ -2301,6 +2301,122 @@ namespace XConnect.Supplier.Webbeds
             return string.Empty;
         }
 
+        public string GetDotwRoomBlockFor_SaveBooking_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, int i, int j, string NewAllocationId, string ChangedOccupancy)
+        {
+            try
+            {
+
+                //Here get Confirmation request
+                StringBuilder sbDOTWBookingReq = new StringBuilder();
+
+                #region Room Block
+                int AdultsCapacity = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofAdult);
+                int ChildCapacity = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofChild);
+
+                string ChildAges = Convert.ToString(bookRequest.userCart.UserCartDetails[j].ChildAge + "_" + bookRequest.userCart.UserCartDetails[j].ChildAge);//need change060426
+
+                int MaxExtrabed = 0;
+
+                if (ChangedOccupancy != "")
+                {
+                    AdultsCapacity = Convert.ToInt32(ChangedOccupancy.Split(',')[0]);
+                    ChildCapacity = Convert.ToInt32(ChangedOccupancy.Split(',')[1]);
+                    ChildAges = Convert.ToString(ChangedOccupancy.Split(',')[2]);
+                    MaxExtrabed = Convert.ToInt32(ChangedOccupancy.Split(',')[3]);
+
+                }
+                sbDOTWBookingReq.Append("<room runno=\"" + j + "\">");
+                sbDOTWBookingReq.Append("<roomTypeCode>" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(':')[0] + "</roomTypeCode>");
+                sbDOTWBookingReq.Append("<selectedRateBasis>" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(':')[1] + "</selectedRateBasis>");
+                sbDOTWBookingReq.Append("<allocationDetails>" + NewAllocationId + "</allocationDetails>");
+                //sbDOTWBookingReq.Append(Common.getDOTWAdultChildNationalityString(dsCartDetails, i, j));
+                sbDOTWBookingReq.Append("<adultsCode>" + Convert.ToString(AdultsCapacity) + "</adultsCode>");
+                sbDOTWBookingReq.Append("<actualAdults>" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].NoofAdult) + " </actualAdults>");
+
+                sbDOTWBookingReq.Append("<children no=\"" + Convert.ToString(ChildCapacity) + "\">");
+
+                if ((ChildCapacity) > 0)
+                {
+                    if ((ChildCapacity) == 1)
+                        sbDOTWBookingReq.Append("<child runno=\"0\">" + Convert.ToString(ChildAges.Split('_')[0]) + "</child>");
+                    if (ChildCapacity == 2)
+                    {
+                        sbDOTWBookingReq.Append("<child runno=\"0\">" + Convert.ToString(ChildAges.Split('_')[0]) + "</child>");
+                        sbDOTWBookingReq.Append("<child runno=\"1\">" + Convert.ToString(ChildAges.Split('_')[1]) + "</child>");
+                    }
+                }
+                sbDOTWBookingReq.Append("</children>");
+                sbDOTWBookingReq.Append("<actualChildren no=\"" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].NoofChild) + "\">");
+
+                if (Convert.ToInt16(bookRequest.userCart.UserCartDetails[j].NoofChild) > 0)
+                {
+                    if (Convert.ToInt16(bookRequest.userCart.UserCartDetails[j].NoofChild) == 1)
+                        sbDOTWBookingReq.Append("<actualChild  runno=\"0\">" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].ChildAge) + "</actualChild>");
+                    if (Convert.ToInt16(bookRequest.userCart.UserCartDetails[j].NoofChild) == 2)
+                    {
+                        sbDOTWBookingReq.Append("<actualChild runno=\"0\">" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].ChildAge) + "</actualChild>");
+                        sbDOTWBookingReq.Append("<actualChild runno=\"1\">" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].ChildAge) + "</actualChild>");
+                    }
+                }
+                sbDOTWBookingReq.Append("</actualChildren>");
+                if (MaxExtrabed > 0)
+                    MaxExtrabed = 1;
+
+                sbDOTWBookingReq.Append("<extraBed>" + MaxExtrabed + "</extraBed>");
+
+                sbDOTWBookingReq.Append("<passengerNationality>" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(':')[8] + "</passengerNationality>");
+                sbDOTWBookingReq.Append("<passengerCountryOfResidence>" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(':')[8] + "</passengerCountryOfResidence>");
+                sbDOTWBookingReq.Append("<passengersDetails>");
+                //Passanger details loop
+                string isLead = string.Empty;
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId)) + "' and RoomNo='" + Convert.ToString(Convert.ToString(bookRequest.userCart.UserCartDetails.Count)) + "' and IsLead=1";
+                if (dtPassengers.DefaultView.Count == 0)
+                    isLead = "yes";
+                dtPassengers.DefaultView.RowFilter = "";
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and RoomNo='" + Convert.ToString(bookRequest.userCart.UserCartDetails.Count) + "' and UserCartId='" + bookRequest.userCart.UserCartDetails[j].UserCartId + "'";
+
+                dtPassengers.DefaultView.Sort = "IsLead ASC";
+                if (dtPassengers.DefaultView.Count > 0)
+                {
+                    for (int k = 0; k < dtPassengers.DefaultView.Count; k++)
+                    {
+                        //sbDOTWBookingReq.Append("<passenger leading=\"" + (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1 ? "yes" : "no") + "\">");
+                        sbDOTWBookingReq.Append("<passenger leading=\"" + (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1 ? "yes" : (isLead == "yes" && k == 0 ? isLead : "no")) + "\">");
+                        //isLead = (isLead != string.Empty ? isLead : (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1 ? "yes" : "no"));
+                        //sbDOTWBookingReq.Append("<passenger leading=\"" + (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1 ? "yes" : "no") + "\">");
+                        //sbDOTWBookingReq.Append("<passenger leading=\"" + isLead + "\">");
+
+                        string salution = string.Empty;
+                        if (bookRequest.userCart.UserCartDetails != null)
+                        {
+                            //dsCartDetails.Tables[2].DefaultView.RowFilter = "GroupValue='" + Convert.ToString(dtPassengers.DefaultView[k]["Prefix"]) + "'";
+                            //if (bookRequest.userCart.UserCartDetails.Count > 0)
+                            //    salution = Convert.ToString(dsCartDetails.Tables[2].DefaultView[0]["XMLID"]);
+                        }
+                        sbDOTWBookingReq.Append("<salutation>" + salution + "</salutation>");
+                        sbDOTWBookingReq.Append("<firstName>" + Convert.ToString(dtPassengers.DefaultView[k]["FirstName"]).Trim() + "</firstName>");
+                        sbDOTWBookingReq.Append("<lastName>" + Convert.ToString(dtPassengers.DefaultView[k]["LastName"]).Trim() + "</lastName>");
+                        sbDOTWBookingReq.Append("</passenger>");
+                    }
+                }
+                sbDOTWBookingReq.Append("</passengersDetails>");
+
+                //sbDOTWBookingReq.Append("<specialRequests count=\"1\">");
+                //sbDOTWBookingReq.Append("<req runno=\"0\">1718</req>");
+                //sbDOTWBookingReq.Append("</specialRequests>");
+
+                sbDOTWBookingReq.Append("</room>");
+                #endregion
+
+
+                return sbDOTWBookingReq.ToString();
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorNew(ex, _LogAPI.Book);
+            }
+            return string.Empty;
+        }
         public string GetDOtwSaveBookingRequest(DataSet dsCartDetails, int i, String ClientID, string UserName, string Password, string BookingType, string RoomBlockFOrSaveBooking, string AgentCode)
         {
             try
@@ -2352,57 +2468,49 @@ namespace XConnect.Supplier.Webbeds
             }
             return string.Empty;
         }
-        //public string GetDOtwSaveBookingRequest_newversion(DataSet dsCartDetails, int i, String ClientID, string UserName, string Password, string BookingType, string RoomBlockFOrSaveBooking, string AgentCode)
-        //{
-        //    try
-        //    {
-        //        StringBuilder sbDOTWBookingReq = new StringBuilder();
-        //        sbDOTWBookingReq.Append("<customer>");
-        //        sbDOTWBookingReq.Append(getDOTWProfileString(Convert.ToString(ClientID), Convert.ToString(UserName), Convert.ToString(Password)));
-        //        sbDOTWBookingReq.Append("<request command=\"" + BookingType + "\" debug=\"0\">");
-        //        sbDOTWBookingReq.Append("<bookingDetails>");
-        //        string checkindate = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]);
-        //        sbDOTWBookingReq.Append("<fromDate>" + checkindate.Substring(0, 4) + "-" + checkindate.Substring(4, 2) + "-" + checkindate.Substring(6, 2) + "</fromDate>");
-        //        string checkoutdate = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckOutDate"]);
-        //        sbDOTWBookingReq.Append("<toDate>" + checkoutdate.Substring(0, 4) + "-" + checkoutdate.Substring(4, 2) + "-" + checkoutdate.Substring(6, 2) + "</toDate>");
-        //        sbDOTWBookingReq.Append("<currency>" + WebBedsStaticInfo.DOTWCurrency + "</currency>");
-        //        sbDOTWBookingReq.Append("<productId>" + Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlHotelId"]) + "</productId>");
-        //        string CustRef = string.Empty;
-        //        for (int rm = 0; rm < dsCartDetails.Tables[1].DefaultView.Count; rm++)
-        //            CustRef = CustRef + "'" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[rm]["UserCartDetailId"]) + "',";
-        //        //Remove Last comma
-        //        CustRef = CustRef.Substring(0, CustRef.Length - 1);
-        //        CustRef = AgentCode + "-" + CustRef;
-        //        if (CustRef.Length > 50)
-        //            CustRef = CustRef.Substring(0, 49);
+        public string GetDOtwSaveBookingRequest_newversion(BookRequest_newversion bookRequest, int i, String ClientID, string UserName, string Password, string BookingType, string RoomBlockFOrSaveBooking, string AgentCode)
+        {
+            try
+            {
+                StringBuilder sbDOTWBookingReq = new StringBuilder();
+                sbDOTWBookingReq.Append("<customer>");
+                sbDOTWBookingReq.Append(getDOTWProfileString(Convert.ToString(ClientID), Convert.ToString(UserName), Convert.ToString(Password)));
+                sbDOTWBookingReq.Append("<request command=\"" + BookingType + "\" debug=\"0\">");
+                sbDOTWBookingReq.Append("<bookingDetails>");
+                string checkindate = Convert.ToString(bookRequest.userCart.UserCartDetails[i].CheckInDate);
+                sbDOTWBookingReq.Append("<fromDate>" + checkindate.Substring(0, 4) + "-" + checkindate.Substring(4, 2) + "-" + checkindate.Substring(6, 2) + "</fromDate>");
+                string checkoutdate = Convert.ToString(bookRequest.userCart.UserCartDetails[i].CheckOutDate);
+                sbDOTWBookingReq.Append("<toDate>" + checkoutdate.Substring(0, 4) + "-" + checkoutdate.Substring(4, 2) + "-" + checkoutdate.Substring(6, 2) + "</toDate>");
+                sbDOTWBookingReq.Append("<currency>" + WebBedsStaticInfo.DOTWCurrency + "</currency>");
+                //sbDOTWBookingReq.Append("<productId>" + Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlHotelId"]) + "</productId>");
+                sbDOTWBookingReq.Append("<productId>" + Convert.ToString("") + "</productId>");
+                string CustRef = string.Empty;
+                for (int rm = 0; rm < bookRequest.userCart.UserCartDetails.Count; rm++)
+                    CustRef = CustRef + "'" + Convert.ToString(bookRequest.userCart.UserCartDetails[i].UserCartDetailId) + "',";
+                //Remove Last comma
+                CustRef = CustRef.Substring(0, CustRef.Length - 1);
+                CustRef = AgentCode + "-" + CustRef;
+                if (CustRef.Length > 50)
+                    CustRef = CustRef.Substring(0, 49);
 
-        //        sbDOTWBookingReq.Append("<customerReference>" + CustRef + "</customerReference>");
+                sbDOTWBookingReq.Append("<customerReference>" + CustRef + "</customerReference>");
 
-        //        sbDOTWBookingReq.Append("<rooms no=\"" + Convert.ToString(dsCartDetails.Tables[1].DefaultView.Count) + "\">");
+                sbDOTWBookingReq.Append("<rooms no=\"" + Convert.ToString(bookRequest.userCart.UserCartDetails.Count) + "\">");
 
-        //        sbDOTWBookingReq.Append(RoomBlockFOrSaveBooking);
-        //        sbDOTWBookingReq.Append("</rooms>");
-        //        sbDOTWBookingReq.Append("</bookingDetails>");
-        //        sbDOTWBookingReq.Append("</request>");
-        //        sbDOTWBookingReq.Append("</customer>");
-        //        return sbDOTWBookingReq.ToString();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //Common.LogException(Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlHotelId"]));
-        //        //Common.LogException(Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]));
-        //        //Common.LogException(Convert.ToString(dsCartDetails.Tables[1].DefaultView.Count));
-        //        //Common.LogException(Convert.ToString("ClientID=" + ClientID));
-        //        //Common.LogException(Convert.ToString("UserName=" + UserName));
-        //        //Common.LogException(Convert.ToString("Password=" + Password));
-        //        //Common.LogException(Convert.ToString("BookingType=" + BookingType));
-        //        //Common.LogException(Convert.ToString(RoomBlockFOrSaveBooking));
-        //        //Common.LogException(Convert.ToString("agentcodebooking=" + AgentCode));
-
-        //        _exception.ErrorNew(ex, _LogAPI.Book);
-        //    }
-        //    return string.Empty;
-        //}
+                sbDOTWBookingReq.Append(RoomBlockFOrSaveBooking);
+                sbDOTWBookingReq.Append("</rooms>");
+                sbDOTWBookingReq.Append("</bookingDetails>");
+                sbDOTWBookingReq.Append("</request>");
+                sbDOTWBookingReq.Append("</customer>");
+                return sbDOTWBookingReq.ToString();
+            }
+            catch (Exception ex)
+            {
+                
+                _exception.ErrorNew(ex, _LogAPI.Book);
+            }
+            return string.Empty;
+        }
 
         public string GetDotwDeleteItineraryRQ(DataRow[] DOTWDetails, string bookingCode, string Type, string Confirm)
         {

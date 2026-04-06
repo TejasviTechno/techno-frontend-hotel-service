@@ -26,9 +26,9 @@ namespace XConnect.Supplier.Webbeds.Interface
 
         //book 13/08/25
         string GetDotwRoomBlockFor_SaveBooking(DataTable dtPassengers, DataSet dsCartDetails, int i, int j, string NewAllocationId, string ChangedOccupancy);
-        //string GetDotwRoomBlockFor_SaveBooking_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, int i, int j, string NewAllocationId, string ChangedOccupancy);
+        string GetDotwRoomBlockFor_SaveBooking_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, int i, int j, string NewAllocationId, string ChangedOccupancy);
         string GetDOtwSaveBookingRequest(DataSet dsCartDetails, int i, String ClientID, string UserName, string Password, string BookingType, string RoomBlockFOrSaveBooking, string AgentCode);
-        //string GetDOtwSaveBookingRequest_newversion(BookRequest_newversion bookRequest, int i, String ClientID, string UserName, string Password, string BookingType, string RoomBlockFOrSaveBooking, string AgentCode);
+        string GetDOtwSaveBookingRequest_newversion(BookRequest_newversion bookRequest, int i, String ClientID, string UserName, string Password, string BookingType, string RoomBlockFOrSaveBooking, string AgentCode);
 
         void DotwRejectAll(ref string Error, int bookingstatus, int i, string DOTWRQ, string DOTWRS, ref DataTable dtAgentVoucher, int total, DataRow[] 
 DOTWDetails, string returnedCode, string UniqueNo, string AgentUniqueNo, DataSet dsCartDetails);
