@@ -26470,137 +26470,136 @@ new SqlParameter("@AgentId", AgentId),
 
                                         #region Call API for Agentpermissionforvervo
 
-                                        string keydata = "GET_FLAG_CACHE";
+                                        //string keydata = "GET_FLAG_CACHE";
 
-                                        ApiResponsecheckvervo response;
+                                        //ApiResponsecheckvervo response;
 
-                                        var headers = new Dictionary<string, string>
+                                        //var headers = new Dictionary<string, string>
+                                        //{
+                                        //    ["x-accept-language"] = "en",
+                                        //    ["x-tenant-id"] = TokenData.TanentId
+                                        //};
+
+                                        //if (!_cache.TryGetValue(keydata, out response))
+                                        //{
+                                        //    response = await _commonMethod.SendRequestAsync_checkvervo<ApiResponsecheckvervo>(
+                                        //        "https://api.rateaura.com" + "/api",   // ✅ FIXED
+                                        //        "auth/v1/get-flag",
+                                        //        HttpMethod.Get,
+                                        //        null,
+                                        //        token,              // ✅ use token
+                                        //        headers
+                                        //    );
+
+                                        //    if (response != null && response.statusCode == 200)   // ✅ FIXED
+                                        //    {
+                                        //        _cache.Set(keydata, response,
+                                        //            new MemoryCacheEntryOptions()
+                                        //                .SetAbsoluteExpiration(TimeSpan.FromHours(1)));
+                                        //    }
+                                        //    else
+                                        //    {
+                                        //        await _exception.Error(new Exception(
+                                        //            $"API failed. Status: {response?.statusCode}, Message: {response?.message}"
+                                        //        ));
+                                        //    }
+                                        //}
+
+                                        //// ✅ SET FLAG FROM RESPONSE
+                                        //IsVervoActive = response?.isVervo == true;
+                                        //DataTable VervoTechCredentail = await _commonMethod.GetVervoTechCredentailAtRoomRequest();
+                                        //// ✅ MAIN CONDITION
+                                        //if (IsVervoActive && !_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier))
                                         {
-                                            ["x-accept-language"] = "en",
-                                            ["x-tenant-id"] = TokenData.TanentId
-                                        };
+                                            //try
+                                            //{
+                                            //    string suppliercode = await _commonMethod.GetHotelSupplierCodeVervo(Supplier);
+                                            //    string suppliervervo = Supplier;
 
-                                        if (!_cache.TryGetValue(keydata, out response))
-                                        {
-                                            response = await _commonMethod.SendRequestAsync_checkvervo<ApiResponsecheckvervo>(
-                                                "https://api.rateaura.com" + "/api",   // ✅ FIXED
-                                                "auth/v1/get-flag",
-                                                HttpMethod.Get,
-                                                null,
-                                                token,              // ✅ use token
-                                                headers
-                                            );
+                                            //    List<int> HotelIds = new List<int>();
 
-                                            if (response != null && response.statusCode == 200)   // ✅ FIXED
-                                            {
-                                                _cache.Set(keydata, response,
-                                                    new MemoryCacheEntryOptions()
-                                                        .SetAbsoluteExpiration(TimeSpan.FromHours(1)));
-                                            }
-                                            else
-                                            {
-                                                await _exception.Error(new Exception(
-                                                    $"API failed. Status: {response?.statusCode}, Message: {response?.message}"
-                                                ));
-                                            }
+                                            //    string VervoUrl = Convert.ToString(VervoTechCredentail.Rows[0]["UrlName"]),
+                                            //           UserName = Convert.ToString(VervoTechCredentail.Rows[0]["UserName"]),
+                                            //           Password = Convert.ToString(VervoTechCredentail.Rows[0]["Password"]);
+
+                                            //    int giataId = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]);
+
+                                            //    string UrlNameVersion3 = VervoUrl +
+                                            //        "mappings/GetProviderHotelMappingsByVervotechId?vervotechId=" + giataId;
+
+                                            //    HotelIds.Add(giataId);
+
+                                            //    MapSupplierName = suppliercode;
+
+                                            //    string VervoRequest = "";
+
+                                            //    GetSingleProvidersversion3 = _commonMethod.GetProvidersdataversion3(
+                                            //        UrlNameVersion3,
+                                            //        UserName,
+                                            //        Password,
+                                            //        HotelIds,
+                                            //        "",
+                                            //        giataId,
+                                            //        Searchkey,
+                                            //        agentID,
+                                            //        "PreBook",
+                                            //        ref VervoRequest
+                                            //    );
+
+                                            //    if (!string.IsNullOrEmpty(GetSingleProvidersversion3))
+                                            //    {
+                                            //        var HotelContentSingleProvider =
+                                            //            JsonConvert.DeserializeObject<HotelProviderMappingV3>(GetSingleProvidersversion3);
+
+                                            //        if (HotelContentSingleProvider?.ProviderHotels?.Count > 0)
+                                            //        {
+                                            //            UnicaId = HotelContentSingleProvider.VervotechId;
+
+                                            //            foreach (var hotel in HotelContentSingleProvider.ProviderHotels)
+                                            //            {
+                                            //                if (hotel.ProviderFamily == null || hotel.ProviderHotelId == null)
+                                            //                    continue;
+
+                                            //                ProvideFmly =
+                                            //                   hotel.ProviderFamily.ToLower() == suppliercode.ToLower()
+                                            //                   ? hotel.ProviderFamily
+                                            //                   : "";
+
+                                            //                //string XMLHotelCode = "";
+
+                                            //                if (ProvideFmly.ToLower() == "riu")
+                                            //                {
+                                            //                    XMLHotelCode = hotel.ProviderHotelId;
+
+                                            //                    if (XMLHotelCode.Length == 3)
+                                            //                        XMLHotelCode = "0" + XMLHotelCode;
+                                            //                }
+                                            //                else
+                                            //                {
+                                            //                    string xmlId = Convert.ToString(
+                                            //                        dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]);
+
+                                            //                    if (hotel.ProviderHotelId.ToLower() == xmlId.ToLower())
+                                            //                        XMLHotelCode = hotel.ProviderHotelId;
+                                            //                }
+
+                                            //                if (!string.IsNullOrEmpty(XMLHotelCode) &&
+                                            //                    !string.IsNullOrEmpty(ProvideFmly))
+                                            //                {
+                                            //                    break;
+                                            //                }
+                                            //            }
+                                            //        }
+                                            //    }
+                                            //}
+                                            //catch (Exception ex)
+                                            //{
+                                            //    await _exception.Error(ex);
+                                            //}
                                         }
-
-                                        // ✅ SET FLAG FROM RESPONSE
-                                        IsVervoActive = response?.isVervo == true;
 
                                         #endregion
-                                     DataTable VervoTechCredentail = await _commonMethod.GetVervoTechCredentailAtRoomRequest();
 
-
-                                        // ✅ MAIN CONDITION
-                                        if (IsVervoActive && !_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier))
-                                        {
-                                            try
-                                            {
-                                                string suppliercode = await _commonMethod.GetHotelSupplierCodeVervo(Supplier);
-                                                string suppliervervo = Supplier;
-
-                                                List<int> HotelIds = new List<int>();
-
-                                                string VervoUrl = Convert.ToString(VervoTechCredentail.Rows[0]["UrlName"]),
-                                                       UserName = Convert.ToString(VervoTechCredentail.Rows[0]["UserName"]),
-                                                       Password = Convert.ToString(VervoTechCredentail.Rows[0]["Password"]);
-
-                                                int giataId = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]);
-
-                                                string UrlNameVersion3 = VervoUrl +
-                                                    "mappings/GetProviderHotelMappingsByVervotechId?vervotechId=" + giataId;
-
-                                                HotelIds.Add(giataId);
-
-                                                MapSupplierName = suppliercode;
-
-                                                string VervoRequest = "";
-
-                                                GetSingleProvidersversion3 = _commonMethod.GetProvidersdataversion3(
-                                                    UrlNameVersion3,
-                                                    UserName,
-                                                    Password,
-                                                    HotelIds,
-                                                    "",
-                                                    giataId,
-                                                    Searchkey,
-                                                    agentID,
-                                                    "PreBook",
-                                                    ref VervoRequest
-                                                );
-
-                                                if (!string.IsNullOrEmpty(GetSingleProvidersversion3))
-                                                {
-                                                    var HotelContentSingleProvider =
-                                                        JsonConvert.DeserializeObject<HotelProviderMappingV3>(GetSingleProvidersversion3);
-
-                                                    if (HotelContentSingleProvider?.ProviderHotels?.Count > 0)
-                                                    {
-                                                        UnicaId = HotelContentSingleProvider.VervotechId;
-
-                                                        foreach (var hotel in HotelContentSingleProvider.ProviderHotels)
-                                                        {
-                                                            if (hotel.ProviderFamily == null || hotel.ProviderHotelId == null)
-                                                                continue;
-
-                                                             ProvideFmly =
-                                                                hotel.ProviderFamily.ToLower() == suppliercode.ToLower()
-                                                                ? hotel.ProviderFamily
-                                                                : "";
-
-                                                            //string XMLHotelCode = "";
-
-                                                            if (ProvideFmly.ToLower() == "riu")
-                                                            {
-                                                                XMLHotelCode = hotel.ProviderHotelId;
-
-                                                                if (XMLHotelCode.Length == 3)
-                                                                    XMLHotelCode = "0" + XMLHotelCode;
-                                                            }
-                                                            else
-                                                            {
-                                                                string xmlId = Convert.ToString(
-                                                                    dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]);
-
-                                                                if (hotel.ProviderHotelId.ToLower() == xmlId.ToLower())
-                                                                    XMLHotelCode = hotel.ProviderHotelId;
-                                                            }
-
-                                                            if (!string.IsNullOrEmpty(XMLHotelCode) &&
-                                                                !string.IsNullOrEmpty(ProvideFmly))
-                                                            {
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                await _exception.Error(ex);
-                                            }
-                                        }
                                         #endregion
                                         #endregion
 
