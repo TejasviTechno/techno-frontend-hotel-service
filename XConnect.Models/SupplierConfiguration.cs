@@ -17,6 +17,7 @@ namespace XConnect.Models
         public LetsFlyConfig LetsFly { get; set; }
         public IWTXConfig IWTX { get; set; }
         public TboConfig TBO { get; set; }
+        public JuniperConfig Juniper { get; set; }
     }
 
     public class ExpediaConfig
@@ -149,5 +150,12 @@ namespace XConnect.Models
         public string V1BookUrl { get; set; }
         public string V1BookingDetail { get; set; }
         public string V1Cancel { get; set; }
+    }
+    public class JuniperConfig
+    {
+        public string HotelAvail { get; set; }
+        public string CheckAvail { get; set; }
+        public string Booking { get; set; }
+
     }
 }

@@ -43,7 +43,7 @@ namespace XConnect.BAL.Interface
         Task<CancellationPolicyRS_Multi_newapi> GetCancellationPolicyMulti(PreBookRequest policyRQ, TokenData tokenData, AdvancedOptions advancedOptions, string userAgent, string IP);
 
         Task<PreBookResponse_newapi> PreBook_9(PreBookRequest prebookRQ, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);
-        Task<PreBookResponse_newapi> PreBook(PreBookRequest prebookRQ, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);
+        Task<PreBookResponse_newapi> PreBook(PreBookRequest prebookRQ, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName,string headerValue);
         Task<CheckChargesResponse> CheckHotelCancellationCharges(CheckChargesRequest checkChargesRequest, TokenData tokenData, AdvancedOptions advancedOptions);
         Task<CancelBookingResponse_newapi> CancelBooking(CancelBookingRequest RQ, TokenData tokenData, AdvancedOptions advancedOptions, string userAgent, string IP, string HostName);
         Task<BookResponse_newapi> Book(BookRequest bookRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);

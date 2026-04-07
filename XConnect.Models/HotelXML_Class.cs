@@ -948,6 +948,8 @@ namespace XConnect.Models
 
         public DataRow[] LetsFly_Codes { get; set; }
         public DataRow[] Akbartravel_codes { get; set; }//tjp
+
+        public DataRow[] Dingus_codes { get; set; }//tjp
     }
 
     public class SupplierDetails
@@ -2541,6 +2543,14 @@ namespace XConnect.Models
 
     }
     #endregion
+    public class ApiResponsecheckvervo
+    {
+        public int statusCode { get; set; }
+        public bool success { get; set; }
+        public string message { get; set; }
+        public string timestamp { get; set; }
+        public bool isVervo { get; set; }
+    }
 
 }
 

@@ -41,6 +41,7 @@ using System.Diagnostics;
 
 
 
+
 namespace XConnect.CommonUtilities
 {
     public class CommonMethodRepo : ICommonMethod
@@ -3456,7 +3457,7 @@ namespace XConnect.CommonUtilities
         }
 
 
-        public void ThirdPartyBookingHistory(string UniqueNo, string AgentUniqueNo, string XMLRequest, string XMLResponse, string Stage, string Provider, string StatusBooking, string ReferenceNo, string Website,string Searchkey = "")
+        public void ThirdPartyBookingHistory(string UniqueNo, string AgentUniqueNo, string XMLRequest, string XMLResponse, string Stage, string Provider, string StatusBooking, string ReferenceNo, string Website, string Searchkey = "")
         {
             Website = "API Out";
             SqlConnection conn1 = new SqlConnection(_connectionStrings.connectionStr_Logserver2_TP);//@Newadded on 12-mar-2024
@@ -10244,8 +10245,8 @@ new SqlParameter("@timeoutMs", timeoutMs)
         }
         #endregion
 
-       // public async Task<bool> CheckVervopatchBookingTime(string AgentCode)
-       public bool CheckVervopatchBookingTime(string AgentCode)
+        // public async Task<bool> CheckVervopatchBookingTime(string AgentCode)
+        public bool CheckVervopatchBookingTime(string AgentCode)
         {
             switch (AgentCode.ToLower())
             {
@@ -10286,7 +10287,7 @@ new SqlParameter("@timeoutMs", timeoutMs)
 
             return dt;
         }
-        public  bool ExcludeSupplierFromVervoMappingCheck(string SupplierName)
+        public bool ExcludeSupplierFromVervoMappingCheck(string SupplierName)
         {
             switch (SupplierName.ToLower())
             {
@@ -10357,7 +10358,7 @@ new SqlParameter("@timeoutMs", timeoutMs)
 
             return supplierCode;
         }
-        public  string GetProvidersdataversion3(string Url, string UserName, string Password, List<int> HotelId, string SupplierName, int GiataId, string Searchkey, int AgentId, string MethodName, ref string VervoRequest)
+        public string GetProvidersdataversion3(string Url, string UserName, string Password, List<int> HotelId, string SupplierName, int GiataId, string Searchkey, int AgentId, string MethodName, ref string VervoRequest)
         {
 
             string Response = "";
@@ -10374,7 +10375,7 @@ new SqlParameter("@timeoutMs", timeoutMs)
                 }
                 catch (Exception ex)
                 {
-                   // Common.ErrorBooking(ex, AgentId.ToString());
+                    // Common.ErrorBooking(ex, AgentId.ToString());
                 }
             }
             catch (Exception ex)
@@ -10385,7 +10386,7 @@ new SqlParameter("@timeoutMs", timeoutMs)
             return Response;
         }
 
-        public  string GetsupplierResponseversion3(string strxmlRQRS, string strHost, string password, string UserName)
+        public string GetsupplierResponseversion3(string strxmlRQRS, string strHost, string password, string UserName)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             ServicePointManager.Expect100Continue = false;
@@ -10447,12 +10448,126 @@ new SqlParameter("@timeoutMs", timeoutMs)
                 };
 
                 // ✅ Use injected dependency
-                await _dlConnection.GetDataTable_Replica("SaveVervoValidationLogs_Xconnect", para,5);
+                await _dlConnection.GetDataTable_Replica("SaveVervoValidationLogs_Xconnect", para, 5);
             }
             catch (Exception ex)
             {
                 _ = _exception.Error(ex, "InsertVervoTechLogs");
             }
         }
+        //public async Task<T?> SendRequestAsync_checkvervo<T>(string baseUrl, string endpoint, HttpMethod method, object? parameters = null, string? token = null)
+        //{
+        //    try
+        //    {
+        //        var client = _httpClientFactory.CreateClient();
+
+        //        // configure base URL & headers at runtime
+        //        client.BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/");
+        //        client.DefaultRequestHeaders.Accept.Clear();
+        //        client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+        //        var request = new HttpRequestMessage(method, endpoint);
+
+        //        if (!string.IsNullOrEmpty(token))
+        //            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        //        if (parameters != null && (method == HttpMethod.Post || method == HttpMethod.Put || method.Method == "PATCH"))
+        //        {
+        //            var json = Newtonsoft.Json.JsonConvert.SerializeObject(parameters);
+        //            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+        //        }
+
+        //        var response = await client.SendAsync(request);
+        //        response.EnsureSuccessStatusCode();
+
+        //        var jsonResponse = await response.Content.ReadAsStringAsync();
+        //        return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(jsonResponse);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _ = _exception.Error(ex, "GetHotelNameForRedis");
+        //        //Console.WriteLine($"[ApiService Error] {ex.Message}");
+        //        return default;
+        //    }
+        //}
+        
+public async Task<T?> SendRequestAsync_checkvervo<T>(
+    string baseUrl,
+    string endpoint,
+    HttpMethod method,
+    object? parameters = null,
+    string? token = null,
+    Dictionary<string, string>? headers = null)
+    {
+        try
+        {
+            // Create HttpClient using the injected factory
+            var client = _httpClientFactory.CreateClient();
+
+            // Ensure BaseAddress ends with a slash
+            client.BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/");
+
+            // Create the HttpRequestMessage
+            using var request = new HttpRequestMessage(method, endpoint);
+
+            // Set the Accept header to JSON
+            request.Headers.Accept.Clear();
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            // Authorization header if token is provided
+            if (!string.IsNullOrEmpty(token))
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            // Add custom headers if provided
+            if (headers != null)
+            {
+                foreach (var header in headers)
+                {
+                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
+            }
+
+            // Add the request body if parameters are provided and the method requires it
+            if (parameters != null &&
+                (method == HttpMethod.Post || method == HttpMethod.Put || method.Method == "PATCH"))
+            {
+                var json = JsonSerializer.Serialize(parameters);  // Serialize parameters to JSON
+                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            }
+
+            // Send the request asynchronously
+            var response = await client.SendAsync(request);
+
+            // Read the response content as a string
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            // Handle unsuccessful responses
+            if (!response.IsSuccessStatusCode)
+            {
+                _ = _exception.Error(new Exception(
+                    $"API Error: {(int)response.StatusCode} - {jsonResponse}"
+                ));
+                return default;  // Return default if there is an error
+            }
+
+            // If the response is empty, return default
+            if (string.IsNullOrWhiteSpace(jsonResponse))
+                return default;
+
+            // Deserialize the JSON response into the desired type T
+            return JsonSerializer.Deserialize<T>(jsonResponse);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception if any occurs
+            _ = _exception.Error(ex, "SendRequestAsync_checkvervo");
+            return default;  // Return default if an exception occurs
+        }
     }
+
+
+}
+        
 }

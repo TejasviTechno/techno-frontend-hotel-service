@@ -470,6 +470,7 @@ namespace XConnect.API.Controllers
 
             DateTime EntryTime = DateTime.Now;
 
+            //string language = Request.Headers["language"].ToString();
 
             string IP = _platformService.GetIPAddress();
             //string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
@@ -3403,6 +3404,14 @@ namespace XConnect.API.Controllers
             TokenData TokenData = new TokenData();
             string Seach_Key = "";
 
+            var headerValue = Request.Headers["Authorization"].ToString();
+
+            //var headerValue = Request.Headers["Authorization"].ToString();
+
+            string token = headerValue.StartsWith("Bearer ")
+                ? headerValue.Substring("Bearer ".Length).Trim()
+                : headerValue;
+
             string IP = _platformService.GetIPAddress();
             //string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
             string userAgent = _platformService.GetUserPlatform(IP);
@@ -3419,7 +3428,7 @@ namespace XConnect.API.Controllers
                     Int32 HotelId = 0;
 
                     //PreBookResponse RS = _xconnect.PreBook(payload, TokenData, data.AdvancedOptions, ref log, JsonRQ);//#MongoDB
-                    PreBookResponse_newapi response = await _hotelXML.PreBook(payload, authData.tokenData, data.AdvancedOptions, JsonRQ, userAgent, IP, MainURL);
+                    PreBookResponse_newapi response = await _hotelXML.PreBook(payload, authData.tokenData, data.AdvancedOptions, JsonRQ, userAgent, IP, MainURL, token);
 
                     Seach_Key = payload.Searchkey;
 

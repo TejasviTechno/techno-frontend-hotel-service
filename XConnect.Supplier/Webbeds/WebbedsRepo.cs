@@ -2118,6 +2118,7 @@ namespace XConnect.Supplier.Webbeds
 
                 string dotwroomtypecode = spitid[0].ToString();
                 string allocationDetails = spitid[6].ToString();
+                string Nationality = spitid[8].ToString();//added
                 int ratebasis = Convert.ToInt32(spitid[1]);
                 StringBuilder sbDOTWBlockReq = new StringBuilder();
                 sbDOTWBlockReq.Append("<adultsCode>" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["NoOfAdults"]) + "</adultsCode>");
@@ -2135,8 +2136,9 @@ namespace XConnect.Supplier.Webbeds
                 }
                 sbDOTWBlockReq.Append("</children>");
                 sbDOTWBlockReq.Append("<rateBasis>-1</rateBasis>");
-                sbDOTWBlockReq.Append("<passengerNationality>" + Convert.ToString(dsCartDetails.Tables[0].Rows[i]["Nationality"]) + "</passengerNationality>");
-                sbDOTWBlockReq.Append("<passengerCountryOfResidence>" + Convert.ToString(dsCartDetails.Tables[0].Rows[i]["Nationality"]) + "</passengerCountryOfResidence>");
+                sbDOTWBlockReq.Append("<passengerNationality>" + Convert.ToString(Nationality) + "</passengerNationality>");
+                //sbDOTWBlockReq.Append("<passengerCountryOfResidence>" + Convert.ToString(dsCartDetails.Tables[0].Rows[i]["Nationality"]) + "</passengerCountryOfResidence>");
+                sbDOTWBlockReq.Append("<passengerCountryOfResidence>" + Convert.ToString(Nationality) + "</passengerCountryOfResidence>");
                 sbDOTWBlockReq.Append("<roomTypeSelected>");
                 sbDOTWBlockReq.Append("<code>" + Convert.ToString(dotwroomtypecode) + "</code>");
                 sbDOTWBlockReq.Append("<selectedRateBasis>" + Convert.ToInt32(ratebasis) + "</selectedRateBasis>");
@@ -2382,13 +2384,12 @@ namespace XConnect.Supplier.Webbeds
                     {
                         //sbDOTWBookingReq.Append("<passenger leading=\"" + (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1 ? "yes" : "no") + "\">");
                         sbDOTWBookingReq.Append("<passenger leading=\"" + (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1 ? "yes" : (isLead == "yes" && k == 0 ? isLead : "no")) + "\">");
-                        //isLead = (isLead != string.Empty ? isLead : (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1 ? "yes" : "no"));
-                        //sbDOTWBookingReq.Append("<passenger leading=\"" + (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1 ? "yes" : "no") + "\">");
-                        //sbDOTWBookingReq.Append("<passenger leading=\"" + isLead + "\">");
-
+                      
                         string salution = string.Empty;
                         if (bookRequest.userCart.UserCartDetails != null)
                         {
+
+                            //060426
                             //dsCartDetails.Tables[2].DefaultView.RowFilter = "GroupValue='" + Convert.ToString(dtPassengers.DefaultView[k]["Prefix"]) + "'";
                             //if (bookRequest.userCart.UserCartDetails.Count > 0)
                             //    salution = Convert.ToString(dsCartDetails.Tables[2].DefaultView[0]["XMLID"]);
@@ -2483,7 +2484,7 @@ namespace XConnect.Supplier.Webbeds
                 sbDOTWBookingReq.Append("<toDate>" + checkoutdate.Substring(0, 4) + "-" + checkoutdate.Substring(4, 2) + "-" + checkoutdate.Substring(6, 2) + "</toDate>");
                 sbDOTWBookingReq.Append("<currency>" + WebBedsStaticInfo.DOTWCurrency + "</currency>");
                 //sbDOTWBookingReq.Append("<productId>" + Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlHotelId"]) + "</productId>");
-                sbDOTWBookingReq.Append("<productId>" + Convert.ToString("") + "</productId>");
+                sbDOTWBookingReq.Append("<productId>" + Convert.ToString("") + "</productId>");//need060426
                 string CustRef = string.Empty;
                 for (int rm = 0; rm < bookRequest.userCart.UserCartDetails.Count; rm++)
                     CustRef = CustRef + "'" + Convert.ToString(bookRequest.userCart.UserCartDetails[i].UserCartDetailId) + "',";

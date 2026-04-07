@@ -102,6 +102,8 @@ using XConnect.Supplier.Letsfly.Interface;
 using XConnect.Supplier.Letsfly;
 using XConnect.Supplier.AkbarTravel.Interface;
 using XConnect.Supplier.AkbarTravel;
+using XConnect.Supplier.Dingus.Interface;
+using XConnect.Supplier.Dingus;
 
 
 
@@ -164,7 +166,7 @@ namespace XConnect.API.Extensions
             services.AddScoped<IPriceTravel, PriceTravelRepo>();
             services.AddScoped<ILetsfly, LetsflyRepo>();
             services.AddScoped<IAkbartravel, AkbartravelRepo>();
-           
+            services.AddScoped<IDingus, DingusRepository>();
 
             return services;
         }
