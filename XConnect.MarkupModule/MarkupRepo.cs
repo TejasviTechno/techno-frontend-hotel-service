@@ -236,6 +236,84 @@ namespace XConnect.Markup
             }
 
         }
+        public void ProcessHotelRoom_WithMarkup_nites(double Factor, string Currency, bool IsPolicyDynamic, bool IsCombineRoom, int Multi, int City, string Country, string checkin, string checkout, ref double RatePerStay, ref DataRow drHotelRoom, bool isPerce, double AgentPercentage, double AgentMarkupAmount, double SubAgentMarkup, double B2CMarkup, int IsParentId, int SupplierID = 0, Int64 GiataId = 0, DataSet dsAgentDetails = null, DataTable dtVatHotelList = null
+ )
+        {
+            try
+            {
+                DataTable dtvatlist = new DataTable();
+                if (drHotelRoom.Table.Columns.Contains("BuyingPrice"))
+                    drHotelRoom["BuyingPrice"] = RatePerStay / Factor;
+                if (drHotelRoom.Table.Columns.Contains("SupplierCurrency"))
+                    drHotelRoom["SupplierCurrency"] = Currency.ToUpper();
+
+                // if (objSearPera != null)
+                // dtvatlist = Common.GetVatCountrylist(Convert.ToString(Convert.ToString(objSearPera.CountryID)) == "" ? 0 : Convert.ToInt32(Convert.ToString(objSearPera.CountryID)), Convert.ToInt32(objSearPera.CityID), "hotel");
+                drHotelRoom["CompanyBuyingPrice"] = RatePerStay;
+
+                double b2cItemPriceMarkup = 0;
+                if (isPerce)
+                {
+                    b2cItemPriceMarkup = Convert.ToDouble(RatePerStay) * AgentPercentage / 100;
+                }
+                else
+                    b2cItemPriceMarkup = AgentMarkupAmount * Multi;
+
+                RatePerStay = RatePerStay + b2cItemPriceMarkup;
+
+                drHotelRoom["CompanySellingPrice"] = RatePerStay;
+                double VatSellingPric = RatePerStay;
+
+                if (dtvatlist.Rows.Count > 0)
+                {
+                    drHotelRoom["CompanySellingPrice"] = Convert.ToDouble(drHotelRoom["CompanySellingPrice"]) + (Convert.ToDouble(GetcalVatAmount(Convert.ToDecimal(drHotelRoom["CompanySellingPrice"]) - Convert.ToDecimal(drHotelRoom["CompanyBuyingPrice"]), Convert.ToDecimal(dtvatlist.Rows[0]["IntRate"]))));
+                    RatePerStay = Convert.ToDouble(drHotelRoom["CompanySellingPrice"]);
+                }
+                drHotelRoom["VatdiffAmount"] = Convert.ToDecimal(drHotelRoom["CompanySellingPrice"]) - Convert.ToDecimal(VatSellingPric);
+                double AgentBuyingPrice = RatePerStay;
+                if (1 == 1)
+                {
+                    if (IsParentId == 0)
+                    {
+                        drHotelRoom["AgentBuyingPrice"] = RatePerStay;
+                        double subb2bMarkup = (RatePerStay * SubAgentMarkup) / 100;
+                        RatePerStay = RatePerStay + subb2bMarkup;
+                        drHotelRoom["AgentSellingPrice"] = RatePerStay;
+                    }
+
+                    if (IsParentId == 1)
+                        drHotelRoom["AgentBuyingPrice"] = RatePerStay;
+                    else
+                        drHotelRoom["SubAgentBuyingPice"] = RatePerStay;
+
+                    double b2bMarkup = (RatePerStay * B2CMarkup) / 100;
+                    RatePerStay = RatePerStay + b2bMarkup;
+                    if (IsParentId == 1)
+                    {
+                        drHotelRoom["AgentSellingPrice"] = RatePerStay;
+                    }
+                    else
+                        drHotelRoom["SubAgentSellingPrice"] = RatePerStay;
+                }
+
+                drHotelRoom["FinalSellingPrice"] = RatePerStay;
+                if (drHotelRoom.Table.Columns.Contains("IsCombineRoom"))
+                    drHotelRoom["IsCombineRoom"] = IsCombineRoom;
+                if (drHotelRoom.Table.Columns.Contains("IsPolicyDynamic"))
+                    drHotelRoom["IsPolicyDynamic"] = IsPolicyDynamic;
+                if (drHotelRoom.Table.Columns.Contains("CheckInDate"))
+                {
+                    drHotelRoom["CheckInDate"] = checkin;
+                    drHotelRoom["CheckOutDate"] = checkout;
+                    drHotelRoom["CityId"] = City;
+                }
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+            }
+
+        }
 
         public double ProcessHotelRateBreakupPrice_WithMarkup(int Multi, int City, string CountryId, double Price, double B2CMarkup, int IsParentId, bool isPerce, double AgentPercentage, double AgentMarkupAmount, double SubAgentMarkup, ref double RateBrackUp)
         {

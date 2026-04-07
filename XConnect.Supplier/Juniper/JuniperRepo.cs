@@ -34,10 +34,11 @@ namespace XConnect.Supplier.Juniper
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
         private readonly IVCN _vcn;
+        private readonly SupplierConfiguration _supplierConfig;
 
 
 
-        public JuniperRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings, IVCN vcn)
+        public JuniperRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
@@ -45,6 +46,7 @@ namespace XConnect.Supplier.Juniper
             _exception = exception;
             _keySettings = keySettings.Value;
             _vcn = vcn;
+            _supplierConfig = supplierConfig.Value;
         }
 
         
@@ -132,9 +134,11 @@ namespace XConnect.Supplier.Juniper
 
                                                                 //xhotel.URL = Convert.ToString(JuniperChild.WebSiteURL) + JuniperInfo.HotelAvail;
                                                                 if (_keySettings.SupplierProxy == "0")
-                                                                    xhotel.URL = Convert.ToString(JuniperChild.WebSiteURL) + JuniperInfo.HotelAvail;
+                                                                    //xhotel.URL = Convert.ToString(JuniperChild.WebSiteURL) + JuniperInfo.HotelAvail;
+                                                                    xhotel.URL = Convert.ToString(JuniperChild.WebSiteURL) + _supplierConfig.Juniper.HotelAvail;
                                                                 else
-                                                                    xhotel.URL = Convert.ToString(JuniperChild.WebSiteURLforAPI) + JuniperInfo.HotelAvail;
+                                                                    //xhotel.URL = Convert.ToString(JuniperChild.WebSiteURLforAPI) + JuniperInfo.HotelAvail;
+                                                                    xhotel.URL = Convert.ToString(JuniperChild.WebSiteURLforAPI) + _supplierConfig.Juniper.HotelAvail;
 
 
                                                                 xhotel.UserId = Convert.ToString(JuniperChild.UserID);
@@ -1206,7 +1210,8 @@ namespace XConnect.Supplier.Juniper
                 {
                     #region Cancellation Policy RS
                     string Error = "";
-                    string URL = Url + JuniperInfo.CheckAvail;
+                   // string URL = Url + JuniperInfo.CheckAvail;
+                    string URL = Url + _supplierConfig.Juniper.CheckAvail;
                     //string ResponseData =  GetSupplierResponse(ref Error, "", searchRQString, URL, SearchTimeOut, Provider, Searchpara);
                     //ResponseDto responseDto = await GetSupplierResponse("", searchRQString, URL, SearchTimeOut, Provider, Searchpara);
                     ResponseDto responseDto = await _commonMethod.GetSupplierResponse("", searchRQString, URL, SearchTimeOut, Provider, Searchpara);
@@ -1442,7 +1447,8 @@ namespace XConnect.Supplier.Juniper
                 {
                     #region Cancellation Policy RS
                     string Error = "";
-                    string URL = Url + JuniperInfo.CheckAvail;
+                    //string URL = Url + JuniperInfo.CheckAvail;
+                    string URL = Url + _supplierConfig.Juniper.CheckAvail;
                     //string ResponseData = GetSupplierResponse(ref Error, "", searchRQString, URL, SearchTimeOut, Provider, Searchpara);
                     //ResponseDto responseDto = await GetSupplierResponse("", searchRQString, URL, SearchTimeOut, Provider, Searchpara);
                     ResponseDto responseDto = await _commonMethod.GetSupplierResponse("", searchRQString, URL, SearchTimeOut, Provider, Searchpara);
@@ -2148,7 +2154,7 @@ namespace XConnect.Supplier.Juniper
                 if (searchRQString != null)
                 {
                     #region Cancellation Policy RS
-                    string URL = Url + JuniperInfo.CheckAvail;
+                    string URL = Url + _supplierConfig.Juniper.CheckAvail;
                     //string ResponseData = GetSupplierResponse(ref Error, "", searchRQString, URL, SearchTimeOut, provider, objSearPera);
                     ResponseDto responseDto = await GetSupplierResponse("", searchRQString, URL, SearchTimeOut, provider, objSearPera);
                     string ResponseData = responseDto.Response;
@@ -2421,7 +2427,8 @@ namespace XConnect.Supplier.Juniper
                         dtCheckPriceReqStructure.Rows.Add(_commonMethod.AddCheckPriceReq(dtCheckPriceReqStructure.NewRow(), j + 1, UserCartId, UserCartDetailId, RoomTypeId, SupplierName, xslrequest));
 
                     #region PriceCheck RS
-                    string URL = Convert.ToString(SupplierDetails[0]["websiteurl"]) + JuniperInfo.CheckAvail;
+                    //string URL = Convert.ToString(SupplierDetails[0]["websiteurl"]) + JuniperInfo.CheckAvail;
+                    string URL = Convert.ToString(SupplierDetails[0]["websiteurl"]) + _supplierConfig.Juniper.CheckAvail;
 
                     System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                     timerroomprocess.Start();
@@ -2630,7 +2637,8 @@ namespace XConnect.Supplier.Juniper
                         dtCheckPriceReqStructure.Rows.Add(_commonMethod.AddCheckPriceReq(dtCheckPriceReqStructure.NewRow(), j + 1, UserCartId, UserCartDetailId, RoomTypeId, SupplierName, xslrequest));
 
                     #region PriceCheck RS
-                    string URL = Convert.ToString(SupplierDetails[0]["websiteurl"]) + JuniperInfo.CheckAvail;
+                    //string URL = Convert.ToString(SupplierDetails[0]["websiteurl"]) + JuniperInfo.CheckAvail;
+                    string URL = Convert.ToString(SupplierDetails[0]["websiteurl"]) + _supplierConfig.Juniper.CheckAvail;
 
                     System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                     timerroomprocess.Start();
@@ -3270,7 +3278,8 @@ namespace XConnect.Supplier.Juniper
                     if (xslrequest != "")
                     {
                         #region BookingRule RS
-                        string BookRuleURL = Convert.ToString(SupplierDetails[0]["WebSiteURL"]) + JuniperInfo.CheckAvail;
+                        //string BookRuleURL = Convert.ToString(SupplierDetails[0]["WebSiteURL"]) + JuniperInfo.CheckAvail;
+                        string BookRuleURL = Convert.ToString(SupplierDetails[0]["WebSiteURL"]) + _supplierConfig.Juniper.CheckAvail;
                         string HotelBookingRuleRS = GetSupplierResponse_report(ref Error, "", xslrequest, BookRuleURL, 120000, SupplierName);
 
 

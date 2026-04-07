@@ -154,6 +154,8 @@ using XConnect.Analytics.Interface;
 using Microsoft.Extensions.Logging;
 using XConnect.Supplier.AkbarTravel.Interface;
 using static XConnect.Models.SpeedCategory;
+using System.Buffers.Text;
+using XConnect.Supplier.Dingus.Interface;
 //using static XConnect.Supplier.Omnibees.OmnibeesCancelRQ;
 //using System.Text.Json;
 
@@ -228,6 +230,7 @@ namespace Xconnect.BLL
         private readonly IPriceTravel _pricetravel;
         private readonly ILetsfly _letsfly;
         private readonly IAkbartravel _akbartravel;
+        private readonly IDingus _dingus;
 
 
         private readonly ISiteMinder _siteMinder;
@@ -243,7 +246,7 @@ namespace Xconnect.BLL
 
 
 
-        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel)
+        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus)
         {
             _dlConnection = dlConnection;
             _cache = cache;
@@ -312,6 +315,7 @@ namespace Xconnect.BLL
             _supplierConfig = supplierConfig.Value;
             _analytic = analytic;
             _akbartravel = akbartravel;
+            _dingus = dingus;
         }
 
         #region Static Data - used
@@ -426,7 +430,7 @@ namespace Xconnect.BLL
             availHotelList.Count = 0;
             availHotelList.SearchKey = "";
             #endregion
-
+            DataTable dtVatHotelList = null;
             try
             {
                 string IsTimeCutOffActive = Convert.ToString(_keySettings.IsTimeCutOffActive);
@@ -1211,7 +1215,7 @@ namespace Xconnect.BLL
                 string NewSearchKey = Search_Key;
                 SearchPara.SearchKey = NewSearchKey;
                 //advancedOptions.dtMeal = dtMealData;
-                Task<List<Options>> dsFinalDataset = NewHotelSearch(NewSearchKey, dtROE, SearchByOneID, advancedOptions, Tokendata, IsParentId, SubAgentMarkup, B2CMarkup, dsGiatadata, agentPercent, dtCountryCityMarkup, TariffID, commonSearchList, 0, IsB2B, SearchPara, AgentId, dsAgentDetails, EchoToken, SessionId, AgentCode, dtCountryCityMarkup, IdWithLocalRates_oth, IdWithLocalRates_staah, IdWithLocalRates_siteminder, IdWithLocalRates_hotelrunner, IdWithLocalRates_ratetiger, IdWithLocalRates_dedge, IdWithLocalRates_travelclick, IdWithLocalRates_rategain, Platform, true, MainTimer, withcancellation);
+                Task<List<Options>> dsFinalDataset = NewHotelSearch(NewSearchKey, dtROE, SearchByOneID, advancedOptions, Tokendata, IsParentId, SubAgentMarkup, B2CMarkup, dsGiatadata, agentPercent, dtCountryCityMarkup, TariffID, commonSearchList, 0, IsB2B, SearchPara, AgentId, dsAgentDetails, EchoToken, SessionId, AgentCode, dtCountryCityMarkup, IdWithLocalRates_oth, IdWithLocalRates_staah, IdWithLocalRates_siteminder, IdWithLocalRates_hotelrunner, IdWithLocalRates_ratetiger, IdWithLocalRates_dedge, IdWithLocalRates_travelclick, IdWithLocalRates_rategain, Platform, true, MainTimer, withcancellation, dtVatHotelList );
                 #endregion hit
 
                 #region "Prepare Response"
@@ -1434,7 +1438,7 @@ namespace Xconnect.BLL
             return finalResponse_Comp;
         }
 
-        public async Task<List<Options>> NewHotelSearch(string NewSearchKey, DataTable dtROE, bool SearchByOneID, AdvancedOptions advancedOptions, TokenData tokenData, int IsParentId, double SubAgentMarkup, double B2CMarkup, DataSet dsGiatadata, decimal AgentPercent, DataTable dtCountryCityMarkup, int TariffID, CommonSearchList commonSearchList, int hit, bool IsB2B, HotelSearchParameter SearchPara, int AgentId, DataSet dsAgentDetails, string EchoToken, string SessionId, string AgentCode, DataTable dtMarkupDetails, DataTable OwnIDSList_oth, DataTable OwnIDSList_Staah, DataTable OwnIDSList_siteminder, DataTable OwnIDSList_hotelrunner, DataTable OwnIDSList_ratetiger, DataTable OwnIDSList_dedge, DataTable OwnIDSList_travelclick, DataTable OwnIDSList_rategain, string Platform, bool HitFromAll = true, Stopwatch MainTimer = null, bool withcancellation = false)
+        public async Task<List<Options>> NewHotelSearch(string NewSearchKey, DataTable dtROE, bool SearchByOneID, AdvancedOptions advancedOptions, TokenData tokenData, int IsParentId, double SubAgentMarkup, double B2CMarkup, DataSet dsGiatadata, decimal AgentPercent, DataTable dtCountryCityMarkup, int TariffID, CommonSearchList commonSearchList, int hit, bool IsB2B, HotelSearchParameter SearchPara, int AgentId, DataSet dsAgentDetails, string EchoToken, string SessionId, string AgentCode, DataTable dtMarkupDetails, DataTable OwnIDSList_oth, DataTable OwnIDSList_Staah, DataTable OwnIDSList_siteminder, DataTable OwnIDSList_hotelrunner, DataTable OwnIDSList_ratetiger, DataTable OwnIDSList_dedge, DataTable OwnIDSList_travelclick, DataTable OwnIDSList_rategain, string Platform, bool HitFromAll = true, Stopwatch MainTimer = null, bool withcancellation = false,DataTable dtVatHotelList = null)
         {
             ConcurrentBag<HotelX> AllTask = new ConcurrentBag<HotelX>();
             var allTasks = new List<Task>();
@@ -1443,7 +1447,7 @@ namespace Xconnect.BLL
             {
                 System.Diagnostics.Stopwatch timerroom = new System.Diagnostics.Stopwatch();
                 timerroom.Start();
-
+                
                 #region Expedia Profit
                 int EANProfit = 55;
                 DataTable dtEANProfit = await GetEANProfit(SearchPara.SearchKey);
@@ -1591,15 +1595,15 @@ namespace Xconnect.BLL
                 List<SupplierDetails> TechnoDetails = new List<SupplierDetails>();
                 List<SupplierDetails> bookingv3Details = new List<SupplierDetails>();
                 List<SupplierDetails> HotelTraderDetails = new List<SupplierDetails>();
-                List<SupplierDetails> ParsecDetails = new List<SupplierDetails>();//tjp
-                List<SupplierDetails> ETG_Details = new List<SupplierDetails>();//tjp
-                List<SupplierDetails> RezliveDetails = new List<SupplierDetails>();//tjp
-                List<SupplierDetails> HotelsTrackDetails = new List<SupplierDetails>();//tjp
+                List<SupplierDetails> ParsecDetails = new List<SupplierDetails>();
+                List<SupplierDetails> ETG_Details = new List<SupplierDetails>();
+                List<SupplierDetails> RezliveDetails = new List<SupplierDetails>();
+                List<SupplierDetails> HotelsTrackDetails = new List<SupplierDetails>();
                 List<SupplierDetails> PkFare_Details = new List<SupplierDetails>();
                 List<SupplierDetails> Price_TravelDetails = new List<SupplierDetails>();
                 List<SupplierDetails> Letsfly_Details = new List<SupplierDetails>();
-                List<SupplierDetails> akbartravel_details = new List<SupplierDetails>();//tjp
-
+                List<SupplierDetails> akbartravel_details = new List<SupplierDetails>();
+                List<SupplierDetails> Dingus_details = new List<SupplierDetails>();
                 //-----------------------------------------------------------------------------------
 
                 List<SupplierSearchConfig> EAN_B2BSearchConfig = new List<SupplierSearchConfig>();
@@ -1671,7 +1675,8 @@ namespace Xconnect.BLL
                 List<SupplierSearchConfig> PkFare_SearchConfig = new List<SupplierSearchConfig>();
                 List<SupplierSearchConfig> Price_TravelSearchConfig = new List<SupplierSearchConfig>();
                 List<SupplierSearchConfig> Letsfly_SearchConfig = new List<SupplierSearchConfig>();
-                List<SupplierSearchConfig> akbartravel_SearchConfig = new List<SupplierSearchConfig>();//tjp
+                List<SupplierSearchConfig> akbartravel_SearchConfig = new List<SupplierSearchConfig>();
+                List<SupplierSearchConfig> Dingus_SearchConfig = new List<SupplierSearchConfig>();
 
 
 
@@ -1991,6 +1996,10 @@ namespace Xconnect.BLL
                                         akbartravel_details.Add(item);
                                         akbartravel_SearchConfig = GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara);
                                         break;
+                                    case "dingus":
+                                        Dingus_details.Add(item);
+                                        Dingus_SearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
+                                        break;
                                     default:
                                         break;
 
@@ -2039,7 +2048,7 @@ namespace Xconnect.BLL
 
                 }
 
-                Parallel.For(1, 55, workerId =>
+                Parallel.For(1, 56, workerId =>
                 {
                     switch (workerId)
                     {
@@ -2881,6 +2890,56 @@ namespace Xconnect.BLL
                                 //    _akbartravel.Getakbartravel_RequestOnly_async(commonSearchList.commonHotelCodes.Akbartravel_codes, lstRating, dtPreferredDataHotel, SearchPara, akbartravel_details,akbartravel_SearchConfig,  ref AllTask, AgentCode, hit, tokenData, dtXMLCity);
 
                                 //}
+                            }
+
+                            #endregion
+                            break;
+                        case 55:
+                            #region Dingus
+
+                            if ((SearchPara.IsSearchFor.ToLower().IndexOf("dingus") >= 0 || SearchPara.IsSearchFor.ToLower().IndexOf("multi") >= 0) && HitFromAll)
+                            {
+
+                                DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchNew(SearchPara.Nationality, dtXMLCity, "dingus");
+                                if (dataForSearch.XmlNationality != "" && commonSearchList.commonHotelCodes != null && commonSearchList.commonHotelCodes.Dingus_codes != null)
+                                {
+                                    DateTime todaysdate = DateTime.Now;
+                                    string dateString = todaysdate.ToString("yyyy-MM-dd");
+
+                                    string checkin = Convert.ToString(SearchPara.CheckInDate);
+                                    checkin = checkin.Substring(6, 4) + "-" + checkin.Substring(3, 2) + "-" + checkin.Substring(0, 2);
+
+                                    DateTime checkinDate = DateTime.ParseExact(checkin, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                                    DateTime todaysDate = Convert.ToDateTime(dateString);
+
+                                    TimeSpan difference = todaysDate - checkinDate;
+                                    int daysDifference = Math.Abs(difference.Days);
+
+                                    if (Dingus_SearchConfig.Count > 0)
+                                    {
+                                        //if (SearchPara.Rooms.Count == 1)  //new change
+                                        {
+                                            if (daysDifference > 7)
+                                            {
+                                                //if (Dingus_SearchConfig[0].RestrictedNationality != null)
+                                                if (Dingus_SearchConfig != null)
+                                                {
+
+                                                    //string RestrictedNationality = Convert.ToString(Dingus_SearchConfig[0].RestrictedNationality).ToLower();
+                                                    string RestrictedNationality = "";// Convert.ToString(Dingus_SearchConfig[0].RestrictedNationality).ToLower();
+                                                    if (!RestrictedNationality.Contains(Convert.ToString(SearchPara.Nationality).ToLower()) || SearchPara.CountryID != 13068)
+                                                    {
+                                                        _dingus.DingusRequestOnly_async(commonSearchList.commonHotelCodes.Dingus_codes, lstRating, dtROE, SearchPara, Dingus_details, Dingus_SearchConfig, dtPreferredDataHotel, ref AllTask, dataForSearch.xmlCity, dataForSearch.xmlCountry, dataForSearch.XmlNationality, hit, "dingus", tokenData);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    _dingus.DingusRequestOnly_async(commonSearchList.commonHotelCodes.Dingus_codes, lstRating, dtROE, SearchPara, Dingus_details, Dingus_SearchConfig, dtPreferredDataHotel, ref AllTask, dataForSearch.xmlCity, dataForSearch.xmlCountry, dataForSearch.XmlNationality, hit, "dingus", tokenData);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
 
                             #endregion
@@ -4997,6 +5056,9 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                                             case "pkfare":
                                                                 response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL, item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType, item.UserId).ConfigureAwait(false);
                                                                 break;
+                                                            case "dingus":
+                                                                response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL, item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType, item.UserId).ConfigureAwait(false);
+                                                                break;
                                                             #endregion
                                                             default:
                                                                 break;
@@ -5660,6 +5722,15 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     {
                                         var result = await _letsfly.Letsfly_HotelSearchWithRooms(item, commonSearch, item.RQRS[0].Response, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, dsAgentDetails, item.Supplier, dtCountryCityMarkup, AgentId, TariffID, item.AgentWiseMarkup, item.IsShowSupplier, item.SupplierID, item.MasterSupplierID, processTimeout, ProccessCutOffTime, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog, dtROE, dsAgentDetails.Tables[1]);
                                         //public async Task<List<Options>> PkFare_HotelSearchWithRooms(DataTable dtROE, CommonSearch commonSearch, HotelX item, string ResponseData, string WSurl, string Username, string Password, Int32 SearchTimeOut, HotelSearchParameter SearchParam, bool DebugMode, string Currency, double CurrencyFactor, DataSet dsAgentDetails, string SupplierName, DataTable dtCountryCityMarkup, Int32 AgentId, Int32 TariffID, double AgentPercentage, Boolean IsShowSupplier, int SupplierID, int MasterSupplierID);
+                                        item.dtHotelRoom = result;
+                                        return result;
+                                    }));
+                                    break;
+                                case "dingus":
+                                    dataTable.Add(Task.Run(async () =>
+                                    {
+                                        var result = await _dingus.XMLDingusPriceOnly_Async(item, commonSearch, item.RQRS[0].Response, SearchPara, item.XmlCity, item.XmlCountry, item.CurrencyCode, item.CurrencyFactor, item.XmlNationality,
+                                      dtAgentDetail, item.Supplier, dsAgentDetails, dtVatHotelList, item.SupplierID, item.GIATACode, dtROE);
                                         item.dtHotelRoom = result;
                                         return result;
                                     }));
@@ -6709,6 +6780,16 @@ new SqlParameter("@AgentId", AgentId),
                             }
                             string authorizationHeader = $"User={UserName},APIKey={Password},Signature={signature},Timestamp={timestamp}";
                             Request.Headers.TryAddWithoutValidation("Authorization", authorizationHeader);
+                            break;
+                        case "dingus":
+                            Request = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, strHost);
+                            Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
+                            Request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+                            Request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
+                            Request.Headers.Connection.Add("keep-alive");
+                            Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "text/xml");
+                            Request.Content.Headers.ContentType.CharSet = "utf-8";
+
                             break;
                         default:
                             //Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
@@ -9259,6 +9340,7 @@ new SqlParameter("@AgentId", AgentId),
             list.PkFare_Codes = null;
             list.Price_Travel_Codes = null;
             list.LetsFly_Codes = null;
+            list.Dingus_codes = null;
 
 
             try
@@ -9639,6 +9721,12 @@ new SqlParameter("@AgentId", AgentId),
                                     case "letsfly":
                                         list.LetsFly_Codes = FilterHotelCodesTechWise(lstdtHotelCommon, SuppplierCheck);
                                         break;
+                                    #endregion
+                                    #region dingus
+                                    case "dingus":
+                                        list.Dingus_codes = FilterHotelCodesTechWise(lstdtHotelCommon, SuppplierCheck);
+                                        break;
+
                                     #endregion
                                     default:
                                         break;
@@ -15124,7 +15212,7 @@ new SqlParameter("@AgentId", AgentId),
             }
         }
 
-        public async Task<PreBookResponse_newapi> PreBook(PreBookRequest prebookRQ, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName)
+        public async Task<PreBookResponse_newapi> PreBook(PreBookRequest prebookRQ, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName,string token)
         {
             PreBookResponse_newapi preBookResponse_1 = new PreBookResponse_newapi();
             PreBookResponse preBookResponse = new PreBookResponse();
@@ -15863,7 +15951,7 @@ new SqlParameter("@AgentId", AgentId),
 
                     if (true)// (UserCartId > 0)
                     {
-                        preBookRS = await GeneratePrebookResponse_newversion(objdata, dsCartDetails, GuestUserID, UserCartId, tokenData, advancedOptions, SearchKey, userAgent, IP);
+                        preBookRS = await GeneratePrebookResponse_newversion(objdata, dsCartDetails, GuestUserID, UserCartId, tokenData, advancedOptions, SearchKey, userAgent, IP, token);
                         timerPreBook.Stop();
                         PreBookTime = PreBookTime + ",| after GeneratePrebookResponse time:" + timerPreBook.Elapsed.ToString();
                         timerPreBook.Restart();
@@ -16657,7 +16745,7 @@ new SqlParameter("@AgentId", AgentId),
             return preBookRS;
         }
 
-        public async Task<PreBookRS> GeneratePrebookResponse_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetailss, int GuestUserID, int UserCartId, TokenData tokenData, AdvancedOptions advancedOptions, string Searchkey = "", string platform = "", string IP = "")
+        public async Task<PreBookRS> GeneratePrebookResponse_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetailss, int GuestUserID, int UserCartId, TokenData tokenData, AdvancedOptions advancedOptions, string Searchkey = "", string platform = "", string IP = "",string token = "")
         {
             PreBookRS preBookRS = new PreBookRS();
             try
@@ -16665,7 +16753,7 @@ new SqlParameter("@AgentId", AgentId),
                 DataSet dsCartDetails = new DataSet();
                 DataTable dtPriceDetail = new DataTable();
                 DataSet DsPriceUpdate = new DataSet();
-                HotelCartRoomPrices hotelCartRoomPrices = await GetHotelCartRoomPricesNew_newversion(objdata, dsCartDetailss, GuestUserID, UserCartId, tokenData, advancedOptions, Searchkey, platform, IP);
+                HotelCartRoomPrices hotelCartRoomPrices = await GetHotelCartRoomPricesNew_newversion(objdata, dsCartDetailss, GuestUserID, UserCartId, tokenData, advancedOptions, Searchkey, platform, IP, token);
                 dtPriceDetail = hotelCartRoomPrices.dtPriceDetail;
                 dsCartDetails = hotelCartRoomPrices.dsCartDetails;
                 DsPriceUpdate = hotelCartRoomPrices.DsPriceUpdate;
@@ -25940,7 +26028,7 @@ new SqlParameter("@AgentId", AgentId),
             return hotelCartRoomPrices;
         }
 
-        public async Task<HotelCartRoomPrices> GetHotelCartRoomPricesNew_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, int GuestUserId, int UsercartID, TokenData TokenData, AdvancedOptions advancedoptions, string Searchkey = "", string platform = "", string IP = "")
+        public async Task<HotelCartRoomPrices> GetHotelCartRoomPricesNew_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, int GuestUserId, int UsercartID, TokenData TokenData, AdvancedOptions advancedoptions, string Searchkey = "", string platform = "", string IP = "",string token = "")
         {
             HotelCartRoomPrices hotelCartRoomPrices = new HotelCartRoomPrices();
             //DataSet dsCartDetails = new DataSet();
@@ -26376,152 +26464,143 @@ new SqlParameter("@AgentId", AgentId),
                                         string GetSingleProviders = "";
                                         string MapSupplierName = "";
                                         bool IsVervoActive = false;
-                                        #region Chceck Vervo Active or not
-                                        //try
-                                        //{
-                                        //    SqlParameter[] para = new SqlParameter[]{
-                                        //        new SqlParameter("@AgentId",  agentID),
-                                        //        };
-                                        //    IsVervoActive = Convert.ToBoolean(await _dlConnection.GetExecuteScalarSP("CheckVervoActiveByAgent_Xconnect", para));
-
-                                        //}
-                                        //catch (Exception ex)
-                                        //{
-                                        //    _ = _exception.Error(ex, Searchkey);
-                                        //}
-                                        #endregion
+                                        
                                         #region vervo
                                         string GetSingleProvidersversion3 = "";
 
                                         #region Call API for Agentpermissionforvervo
-                                        //string keydataRoE = "Vervo";
-                                        //ApiResponseNew<DtRoeNew> dtRoeNew;
-                                        //if (!_cache.TryGetValue(keydataRoE, out dtRoeNew))
-                                        //{
-                                        //    dtRoeNew = await _commonMethod.SendRequestAsync<ApiResponseNew<DtRoeNew>>(_remoteServices.CommonServices.BaseUrl + "/api", "Currency/ROE", HttpMethod.Get);
 
-                                        //    if (dtRoeNew != null && dtRoeNew.result != null && dtRoeNew.statusCode == 200)
-                                        //    {
-                                        //        var cacheEntryOptions = new MemoryCacheEntryOptions()
-                                        //            .SetAbsoluteExpiration(DateTime.Now.AddHours(1));  // Set cache to expire in 12 hours
+                                        string keydata = "GET_FLAG_CACHE";
 
-                                        //        _cache.Set(keydataRoE, dtRoeNew, cacheEntryOptions);
-                                        //    }
-                                        //    else
-                                        //    {
-                                        //        // Create an exception for the invalid API response
-                                        //        var ex = new Exception(
-                                        //            $"Vervo API call failed. StatusCode: {dtRoeNew?.statusCode}, Result is null: {dtRoeNew?.result == null}"
-                                        //        );
+                                        ApiResponsecheckvervo response;
 
-                                        //        _ = _exception.Error(ex);
-                                        //    }
+                                        var headers = new Dictionary<string, string>
+                                        {
+                                            ["x-accept-language"] = "en",
+                                            ["x-tenant-id"] = TokenData.TanentId
+                                        };
 
-                                        //}
-                                        //if (dtRoeNew?.result != null)
-                                        //{
-                                        //    // Deserialize into your strong type
-                                        //    mainconfig.dtROENew = dtRoeNew?.result;
-                                        //}
+                                        if (!_cache.TryGetValue(keydata, out response))
+                                        {
+                                            response = await _commonMethod.SendRequestAsync_checkvervo<ApiResponsecheckvervo>(
+                                                "https://api.rateaura.com" + "/api",   // ✅ FIXED
+                                                "auth/v1/get-flag",
+                                                HttpMethod.Get,
+                                                null,
+                                                token,              // ✅ use token
+                                                headers
+                                            );
+
+                                            if (response != null && response.statusCode == 200)   // ✅ FIXED
+                                            {
+                                                _cache.Set(keydata, response,
+                                                    new MemoryCacheEntryOptions()
+                                                        .SetAbsoluteExpiration(TimeSpan.FromHours(1)));
+                                            }
+                                            else
+                                            {
+                                                await _exception.Error(new Exception(
+                                                    $"API failed. Status: {response?.statusCode}, Message: {response?.message}"
+                                                ));
+                                            }
+                                        }
+
+                                        // ✅ SET FLAG FROM RESPONSE
+                                        IsVervoActive = response?.isVervo == true;
 
                                         #endregion
-                                        //if (_commonMethod.CheckVervopatchBookingTime(AgentCode))
-                                        //    IsVervoActive = false;
-
-                                        //DataTable VervoTechCredentail = await _commonMethod.GetVervoTechCredentailAtRoomRequest();
-                                        //if (Convert.ToInt32(VervoTechCredentail.Rows[0]["statusflag"]) == 1)
-                                        //    IsVervoActive = false;
-                                        //if (IsVervoActive && !_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier))
-                                        //{
-                                        //    try
-                                        //    {
-                                        //        string suppliercode = await _commonMethod.GetHotelSupplierCodeVervo(Supplier);
-                                        //        string suppliervervo = "";
-                                        //        suppliervervo = Supplier;
-                                        //        {
-                                        //            List<int> HotelIds = new List<int>();
-                                        //            string VervoUrl = Convert.ToString(VervoTechCredentail.Rows[0]["UrlName"])
-                                        //            , UserName = Convert.ToString(VervoTechCredentail.Rows[0]["UserName"])
-                                        //            , Password = Convert.ToString(VervoTechCredentail.Rows[0]["Password"]),
-                                        //            UrlNameVersion3 = VervoUrl + "mappings/GetProviderHotelMappingsByVervotechId?vervotechId=" + Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]);
-
-                                        //            HotelIds.Add(Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]));
-                                        //            MapSupplierName = suppliercode;
-                                        //            string VervoRequest = "";
-                                        //            GetSingleProvidersversion3 = _commonMethod.GetProvidersdataversion3(UrlNameVersion3, UserName, Password, HotelIds, "", Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]), Searchkey, agentID, "PreBook", ref VervoRequest);
-                                        //            if (GetSingleProvidersversion3 != string.Empty)
-                                        //            {
-                                        //                HotelProviderMappingV3 HotelContentSingleProvider = JsonConvert.DeserializeObject<HotelProviderMappingV3>(GetSingleProvidersversion3);
+                                     DataTable VervoTechCredentail = await _commonMethod.GetVervoTechCredentailAtRoomRequest();
 
 
-                                        //                if (HotelContentSingleProvider != null)
-                                        //                {
-                                        //                    UnicaId = HotelContentSingleProvider.VervotechId;
-                                        //                    //pp = 0;
-                                        //                    if (HotelContentSingleProvider.ProviderHotels != null && HotelContentSingleProvider.ProviderHotels.Count > 0)
-                                        //                    {
-                                        //                        for (int mj = 0; mj < HotelContentSingleProvider.ProviderHotels.Count; mj++)
-                                        //                        {
-                                        //                            if (HotelContentSingleProvider.ProviderHotels[mj].ProviderFamily != null && HotelContentSingleProvider.ProviderHotels[mj].ProviderHotelId != null)
-                                        //                            {
-                                        //                                if (HotelContentSingleProvider.ProviderHotels[mj].ProviderFamily.ToLower() == suppliercode.ToLower())
-                                        //                                {
-                                        //                                    ProvideFmly = Convert.ToString(HotelContentSingleProvider.ProviderHotels[mj].ProviderFamily);
+                                        // ✅ MAIN CONDITION
+                                        if (IsVervoActive && !_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier))
+                                        {
+                                            try
+                                            {
+                                                string suppliercode = await _commonMethod.GetHotelSupplierCodeVervo(Supplier);
+                                                string suppliervervo = Supplier;
 
-                                        //                                }
-                                        //                                else
-                                        //                                {
-                                        //                                    ProvideFmly = "";
-                                        //                                }
-                                        //                                if (ProvideFmly.ToLower() == "riu")
-                                        //                                {
-                                        //                                    if (HotelContentSingleProvider.ProviderHotels[mj].ProviderHotelId != null)
-                                        //                                    {
-                                        //                                        XMLHotelCode = Convert.ToString(HotelContentSingleProvider.ProviderHotels[mj].ProviderHotelId);
-                                        //                                        if (ProvideFmly.ToLower() == "riu")
-                                        //                                        {
-                                        //                                            int abc = Convert.ToInt32(XMLHotelCode.Length);
-                                        //                                            if (abc == 3)
-                                        //                                            {
-                                        //                                                XMLHotelCode = "0" + XMLHotelCode;
-                                        //                                            }
-                                        //                                        }
-                                        //                                    }
-                                        //                                    else
-                                        //                                    {
-                                        //                                        XMLHotelCode = "";
-                                        //                                    }
-                                        //                                }
-                                        //                                else
-                                        //                                {
-                                        //                                    if (HotelContentSingleProvider.ProviderHotels[mj].ProviderHotelId.ToLower() == Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]).ToLower())
-                                        //                                    {
-                                        //                                        XMLHotelCode = Convert.ToString(HotelContentSingleProvider.ProviderHotels[mj].ProviderHotelId);
-                                        //                                    }
-                                        //                                    else
-                                        //                                    {
-                                        //                                        XMLHotelCode = "";
-                                        //                                    }
-                                        //                                }
-                                        //                                if (XMLHotelCode != "" && ProvideFmly != "")
-                                        //                                {
-                                        //                                    break;
-                                        //                                }
-                                        //                            }
-                                        //                        }
-                                        //                    }
+                                                List<int> HotelIds = new List<int>();
 
-                                        //                }
+                                                string VervoUrl = Convert.ToString(VervoTechCredentail.Rows[0]["UrlName"]),
+                                                       UserName = Convert.ToString(VervoTechCredentail.Rows[0]["UserName"]),
+                                                       Password = Convert.ToString(VervoTechCredentail.Rows[0]["Password"]);
 
-                                        //            }
-                                        //        }
-                                        //    }
-                                        //    catch (Exception ex)
-                                        //    {
-                                        //        _ = _exception.Error(ex);
-                                        //    }
+                                                int giataId = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]);
 
-                                        //}
+                                                string UrlNameVersion3 = VervoUrl +
+                                                    "mappings/GetProviderHotelMappingsByVervotechId?vervotechId=" + giataId;
+
+                                                HotelIds.Add(giataId);
+
+                                                MapSupplierName = suppliercode;
+
+                                                string VervoRequest = "";
+
+                                                GetSingleProvidersversion3 = _commonMethod.GetProvidersdataversion3(
+                                                    UrlNameVersion3,
+                                                    UserName,
+                                                    Password,
+                                                    HotelIds,
+                                                    "",
+                                                    giataId,
+                                                    Searchkey,
+                                                    agentID,
+                                                    "PreBook",
+                                                    ref VervoRequest
+                                                );
+
+                                                if (!string.IsNullOrEmpty(GetSingleProvidersversion3))
+                                                {
+                                                    var HotelContentSingleProvider =
+                                                        JsonConvert.DeserializeObject<HotelProviderMappingV3>(GetSingleProvidersversion3);
+
+                                                    if (HotelContentSingleProvider?.ProviderHotels?.Count > 0)
+                                                    {
+                                                        UnicaId = HotelContentSingleProvider.VervotechId;
+
+                                                        foreach (var hotel in HotelContentSingleProvider.ProviderHotels)
+                                                        {
+                                                            if (hotel.ProviderFamily == null || hotel.ProviderHotelId == null)
+                                                                continue;
+
+                                                             ProvideFmly =
+                                                                hotel.ProviderFamily.ToLower() == suppliercode.ToLower()
+                                                                ? hotel.ProviderFamily
+                                                                : "";
+
+                                                            //string XMLHotelCode = "";
+
+                                                            if (ProvideFmly.ToLower() == "riu")
+                                                            {
+                                                                XMLHotelCode = hotel.ProviderHotelId;
+
+                                                                if (XMLHotelCode.Length == 3)
+                                                                    XMLHotelCode = "0" + XMLHotelCode;
+                                                            }
+                                                            else
+                                                            {
+                                                                string xmlId = Convert.ToString(
+                                                                    dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]);
+
+                                                                if (hotel.ProviderHotelId.ToLower() == xmlId.ToLower())
+                                                                    XMLHotelCode = hotel.ProviderHotelId;
+                                                            }
+
+                                                            if (!string.IsNullOrEmpty(XMLHotelCode) &&
+                                                                !string.IsNullOrEmpty(ProvideFmly))
+                                                            {
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                await _exception.Error(ex);
+                                            }
+                                        }
                                         #endregion
                                         #endregion
 

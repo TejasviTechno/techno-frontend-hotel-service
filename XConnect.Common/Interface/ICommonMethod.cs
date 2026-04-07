@@ -310,6 +310,17 @@ namespace XConnect.CommonUtilities.Interface
         bool ExcludeSupplierFromVervoMappingCheck(string SupplierName);//added300326
         Task<string> GetHotelSupplierCodeVervo(string supplierName, int Timeout = 5, int CacheMinutes = 60);
        string GetProvidersdataversion3(string Url, string UserName, string Password, List<int> HotelId, string SupplierName, int GiataId, string Searchkey, int AgentId, string MethodName, ref string VervoRequest);
+        //Task<T?> SendRequestAsync_checkvervo<T>(string baseUrl, string endpoint, HttpMethod method, object? parameters = null, string? token = null);
+        Task<T?> SendRequestAsync_checkvervo<T>(
+        string baseUrl,
+        string endpoint,
+        HttpMethod method,
+        object? parameters = null,
+        string? token = null,
+        Dictionary<string, string>? headers = null);
+
+
+
     }
 
 }
