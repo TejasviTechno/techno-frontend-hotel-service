@@ -4458,6 +4458,7 @@ namespace XConnect.CommonUtilities
                         case "elevatedmc":
                         case "agoda_chain":
                         case "hotelbedsv1_new":
+                        case "dingus":
 
                             dataFor.XmlNationality = Convert.ToString(GetThirdPartyStaticData_New(dtXMLCity.Tables[1], "Desc", Convert.ToString(Natinality), "XmlNationality", "Agoda"));
 
