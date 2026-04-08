@@ -2545,7 +2545,7 @@ namespace XConnect.Models
     #endregion
     public class ApiResponsecheckvervo
     {
-        public int statusCode { get; set; }
+        public int status { get; set; }
         public bool success { get; set; }
         public string message { get; set; }
         public string timestamp { get; set; }

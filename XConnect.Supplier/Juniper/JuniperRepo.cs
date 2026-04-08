@@ -1856,39 +1856,11 @@ namespace XConnect.Supplier.Juniper
         {
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
-            //WebClient wc = new WebClient();
-            //// wc.DownloadData(strHost, strxmlRQRS);
-            //string resultData = wc.UploadString(strHost, "POST", strxmlRQRS);
-            //return resultData;
-
-            //SqlConnection conn1 = new SqlConnection(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["ConnectionString"].ToString());
-            //conn1.Open();
-            //SqlCommand comm1 = new SqlCommand();
-            //comm1.Connection = conn1;
-            //comm1.CommandText = "insert into XMLRequestResponseTrack (XmlRequest,XmlResponse,ResponseDate,Provider,TypeRequest) values('" + strxmlRQRS + "','" + "" + "',getdate(),'','" + "Proper" + "')";
-            //comm1.ExecuteScalar();
-            //conn1.Close();
-
+            
             string strOutput = "";
             try
             {
-
-                // App.Logger.Logger.Log("Request ::  " + strSupplier + " - " + strService);
-                //strHost = strHost+ strxmlRQRS;
-
                 HttpWebRequest Request;
-
-
-
-
-                //strxmlRQRS = strxmlRQRS.Replace("&amp;", "&");
-                //strxmlRQRS = strxmlRQRS.Replace("\n", string.Empty);
-                //strxmlRQRS = strxmlRQRS.Replace("\t", string.Empty);
-                //strxmlRQRS = strxmlRQRS.Replace(" ", string.Empty);
-
-
-
-
                 Request = (HttpWebRequest)HttpWebRequest.Create(strHost);
                 //string replacement = Regex.Replace(s, @"\t|\n|\r", ""); 
 
@@ -1913,35 +1885,10 @@ namespace XConnect.Supplier.Juniper
                 {
                     Request.Headers.Add("SOAPAction", XMLHotelBookingCommon.AOXCancelAction);
                 }
-                ////------------Animesh Aox end
-
-                //if (strSoapAction != string.Empty)
-                //{
-                //    Request.Headers.Add("SoapAction", strSoapAction);
-                //}
-
-                //if (strGzipCompression.Equals("Y"))
-                //{
+               
                 Request.Headers.Add("Accept-Encoding", "gzip");
-                //Request.Timeout = 10000;
-                //  }
-
-
-
-
-                //Forming the request
+              
                 Stream newStream = null;
-
-                //if (strMethod.ToLower().Equals("post") && !strSoapAction.ToLower().Equals("application/x-www-form-urlencoded"))
-                //{
-
-                //bhai Request
-
-                //Travoco Change Start
-
-                //Travoco Change End
-
-
 
                 byte[] data = Encoding.ASCII.GetBytes(strxmlRQRS);
                 Request.ContentLength = data.Length;
@@ -1993,15 +1940,6 @@ namespace XConnect.Supplier.Juniper
                         _ = _commonMethod.XMLRequestResponseTrack(strxmlRQRS, strOutput, Provider, "Proper");
                     }
 
-
-                    //SqlConnection conn = new SqlConnection(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["ConnectionString"].ToString());
-                    //conn.Open();
-                    //SqlCommand comm = new SqlCommand();
-                    //comm.Connection = conn;
-                    ////comm.CommandText = "insert into XMLRequestResponseTrack (XmlRequest,XmlResponse,ResponseDate,Provider,TypeRequest) values('" + strxmlRQRS + "','" + strOutput.Replace("'", "''") + "',getdate(),'','" + "Proper" + "')";
-                    //comm.CommandText = "insert into XMLRequestResponseTrack (XmlRequest,XmlResponse,ResponseDate,Provider,TypeRequest) values('" + strxmlRQRS + "','" + strHost + "',getdate(),'','" + "Proper" + "')";
-                    //comm.ExecuteScalar();
-                    //conn.Close();
                 }
                 catch (WebException webExcp)
                 {
@@ -2022,13 +1960,6 @@ namespace XConnect.Supplier.Juniper
                             string result = httpResponse.StatusDescription.ToString();
                             string result1 = new StreamReader(webExcp.Response.GetResponseStream()).ReadToEnd();
 
-                            //SqlConnection conn = new SqlConnection(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["ConnectionString"].ToString());
-                            //conn.Open();
-                            //SqlCommand comm = new SqlCommand();
-                            //comm.Connection = conn;
-                            //comm.CommandText = "insert into XMLRequestResponseTrackError (XmlRequest,XmlResponse,ResponseDate,Provider,TypeRequest) values('" + strxmlRQRS + "','" + result1.Replace("'", "''").Replace(",", " ") + "',getdate(),'','" + "Proper" + "')";
-                            //comm.ExecuteScalar();
-                            //conn.Close();
                             _ = _commonMethod.XMLRequestResponseTrackError(strxmlRQRS, result1, Provider, Searchkey);
                             Error = result1;
                             return result1;
@@ -2048,17 +1979,7 @@ namespace XConnect.Supplier.Juniper
             {
                 _exception.ErrorNew(ex, _LogAPI.Book, Searchkey);
                 Error = ex.Message.ToString();
-                //strOutput = ex.StackTrace;
-                //Common.XMLRequestResponseTrackError(strxmlRQRS, strOutput, Provider, "Proper");
-                //SqlConnection conn = new SqlConnection(System.Web.Configuration.WebConfigurationManager.ConnectionStrings["ConnectionString"].ToString());
-                //conn.Open();
-                //SqlCommand comm = new SqlCommand();
-                //comm.Connection = conn;
-                //comm.CommandText = "insert into XMLRequestResponseTrackError (XmlRequest,XmlResponse,ResponseDate,Provider,TypeRequest) values('" + strxmlRQRS + "','" + ex.Message.Replace("'", "''").Replace(",", " ") + "',getdate(),'','Proper')";
-                //comm.ExecuteScalar();
-                //conn.Close();
-
-                //bool rethrow = ExceptionPolicy.HandleException(ex, EnumExceptionPolicyTypes.Type.Propagate_Policy); if (rethrow) { throw; }
+               
             }
             //trackRequest(strxmlRQRS, strOutput);
             return strOutput;
@@ -2848,25 +2769,7 @@ namespace XConnect.Supplier.Juniper
             string SupplierName = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]);
             try
             {
-                //if (AgentCode.ToLower() == "tstd")
-                //{
-                //    #region Booking DataRaw
-                //    DataRow newRowEgyptExpress = dtAgentVoucher.NewRow();
-                //    newRowEgyptExpress["UserCartId"] = dsCartDetails.Tables[0].Rows[i]["UserCartId"];
-                //    newRowEgyptExpress["UserCartDetailId"] = dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"];
-                //    newRowEgyptExpress["AgentVoucherNo"] = "TestBooking For API";
-                //    newRowEgyptExpress["XMLRequest"] = "-";
-                //    newRowEgyptExpress["XMLResponse"] = "-";
-                //    newRowEgyptExpress["RoomStatus"] = 6;
-                //    newRowEgyptExpress["SupplierName"] = dsCartDetails.Tables[1].DefaultView[0]["SupplierName"];
-                //    newRowEgyptExpress["PackageId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["PackageId"]);
-                //    dtAgentVoucher.Rows.Add(newRowEgyptExpress);
-                //    #endregion
-                //}
-                //else
-                //{
-
-
+            
                 #region Declaration
                 AgentVoucherNo = "";
                 bookingStatus = 6;
@@ -3413,6 +3316,190 @@ namespace XConnect.Supplier.Juniper
                 return "";
             }
         }
+        public string Get_Juniper_HotelBookingRulesRQ_newversion(bool isNonRefundable, double CurrencyFactor, string Currency, BookRequest_newversion bookRequest, DataRow[] SupplierDetails, string RatePlanCode, string HotelId, int i, int j, string SupplierName, string UniqueNo, string AgentUniqueNo, bool IsPriceUpdate, ref double Gross, bool IsError)
+        {
+            string Error = "";
+            try
+            {
+                {
+                    #region BookingRule RQ
+
+                    string UserID = Convert.ToString(SupplierDetails[0]["UserId"]);
+                    string Password = Convert.ToString(SupplierDetails[0]["Password"]);
+                    int CutOffDays = Convert.ToInt32(SupplierDetails[0]["CutOffDays"]);
+                    string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate );
+                    CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                    string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
+                    CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                    double FinalPrice = Math.Round(Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].BaseServiceBuyingAmount), 2);
+                    string BookingCode = "";
+
+                    StringBuilder BookingRuleRQ = new StringBuilder();
+                    BookingRuleRQ.Append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns=\"http://www.juniper.es/webservice/2007/\">");
+                    BookingRuleRQ.Append("<soapenv:Header/>");
+                    BookingRuleRQ.Append("<soapenv:Body>");
+                    BookingRuleRQ.Append("<HotelBookingRules>");
+                    BookingRuleRQ.Append("<HotelBookingRulesRQ Version=\"1.1\" Context=\"VALUATION\" Language=\"en\">");
+                    BookingRuleRQ.Append("<Login Email=\"" + UserID + "\" Password=\"" + Password + "\"/>");
+                    BookingRuleRQ.Append("<HotelBookingRulesRequest>");
+                    BookingRuleRQ.Append("<HotelOption RatePlanCode=\"" + RatePlanCode + "\"/>");
+                    BookingRuleRQ.Append("<SearchSegmentsHotels>");
+                    BookingRuleRQ.Append("<SearchSegmentHotels Start=\"" + CheckIn + "\" End=\"" + CheckOut + "\"/>");
+                    BookingRuleRQ.Append("<HotelCodes>");
+                    BookingRuleRQ.Append("<HotelCode>" + HotelId + "</HotelCode>");
+                    BookingRuleRQ.Append("</HotelCodes>");
+                    BookingRuleRQ.Append("</SearchSegmentsHotels>");
+                    BookingRuleRQ.Append("</HotelBookingRulesRequest>");
+                    BookingRuleRQ.Append("<AdvancedOptions>");
+                    BookingRuleRQ.Append("<UseCurrency>" + Currency + "</UseCurrency>");
+                    BookingRuleRQ.Append("</AdvancedOptions>");
+                    BookingRuleRQ.Append("</HotelBookingRulesRQ>");
+                    BookingRuleRQ.Append("</HotelBookingRules>");
+                    BookingRuleRQ.Append("</soapenv:Body>");
+                    BookingRuleRQ.Append("</soapenv:Envelope>");
+                    string xslrequest = BookingRuleRQ.ToString();
+                    #endregion
+
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), xslrequest, "-", "Before Request hit BookingRule", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", "-", "Within Earth");
+
+                    if (xslrequest != "")
+                    {
+                        #region BookingRule RS
+                        //string BookRuleURL = Convert.ToString(SupplierDetails[0]["WebSiteURL"]) + JuniperInfo.CheckAvail;
+                        string BookRuleURL = Convert.ToString(SupplierDetails[0]["WebSiteURL"]) + _supplierConfig.Juniper.CheckAvail;
+                        string HotelBookingRuleRS = GetSupplierResponse_report(ref Error, "", xslrequest, BookRuleURL, 120000, SupplierName);
+
+
+                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), xslrequest, HotelBookingRuleRS, "After Request hit BookingRule", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", "-", "");
+
+                        if (HotelBookingRuleRS == string.Empty || HotelBookingRuleRS.Contains("Error"))
+                            return "";
+
+                        if (SupplierName.ToLower() == "robios")
+                        {
+                            HotelBookingRuleRS = HotelBookingRuleRS.Replace("<Address><Address>", "<Address>");
+                            HotelBookingRuleRS = HotelBookingRuleRS.Replace("</Longitude></Address>", "</Longitude>");
+                            HotelBookingRuleRS = HotelBookingRuleRS.Replace("<Address>", "<Address1>");
+                            HotelBookingRuleRS = HotelBookingRuleRS.Replace("</Address>", "</Address1>");
+
+                        }
+                        else
+                        {
+                            //HotelBookingRuleRS = HotelBookingRuleRS.Replace("<Address>", "").Replace("</Address>", "");
+                            if (HotelBookingRuleRS.IndexOf("<Address") > 0)
+                            {
+                                String Data2 = HotelBookingRuleRS.Substring(HotelBookingRuleRS.IndexOf("<Address"), HotelBookingRuleRS.IndexOf("</Address>") - HotelBookingRuleRS.IndexOf("<Address")) + "</Address>";
+                                HotelBookingRuleRS = HotelBookingRuleRS.Replace(Data2, "");
+                            }
+                        }
+
+                        if (HotelBookingRuleRS.IndexOf("<PhoneNumbers") > 0)
+                        {
+                            String Data3 = HotelBookingRuleRS.Substring(HotelBookingRuleRS.IndexOf("<PhoneNumbers"), HotelBookingRuleRS.IndexOf("</PhoneNumbers>") - HotelBookingRuleRS.IndexOf("<PhoneNumbers")) + "</PhoneNumbers>";
+                            HotelBookingRuleRS = HotelBookingRuleRS.Replace(Data3, "");
+                        }
+                        if (HotelBookingRuleRS.IndexOf("<HotelContent") > 0)
+                        {
+                            String Data4 = HotelBookingRuleRS.Substring(HotelBookingRuleRS.IndexOf("<HotelContent"), HotelBookingRuleRS.IndexOf("</HotelContent>") - HotelBookingRuleRS.IndexOf("<HotelContent")) + "</HotelContent>";
+                            HotelBookingRuleRS = HotelBookingRuleRS.Replace(Data4, "");
+                        }
+
+
+                        DataSet BookingRuleResponse = _commonMethod.GetDataSetFromXMLString(HotelBookingRuleRS);
+                        #endregion
+
+                        #region DataRaw
+                        DataTable dtHotelOption = BookingRuleResponse.Tables["HotelOption"];
+                        DataRow[] drHotelOption = (dtHotelOption.Select("HotelOption_Id='" + j + "'"));
+                        int HotelOption_Id = Convert.ToInt32(drHotelOption[0]["HotelOption_Id"]);
+
+                        DataRow[] drBookingCode = (BookingRuleResponse.Tables["BookingCode"].Select("HotelOption_Id='" + HotelOption_Id + "'"));
+                        BookingCode = Convert.ToString(drBookingCode[0]["BookingCode_Text"]);
+
+                        DataRow[] drPriceInformation = (BookingRuleResponse.Tables["PriceInformation"].Select("PriceInformation_Id='" + HotelOption_Id + "'"));
+                        int PriceInformation_Id = Convert.ToInt32(drPriceInformation[0]["PriceInformation_Id"]);
+
+                        DataRow[] drPrices = (BookingRuleResponse.Tables["Prices"].Select("Prices_Id='" + PriceInformation_Id + "'"));
+                        int Prices_Id = Convert.ToInt32(drPrices[0]["Prices_Id"]);
+
+                        DataRow[] drPrice = (BookingRuleResponse.Tables["Price"].Select("Price_Id='" + Prices_Id + "'"));
+                        int Price_Id = Convert.ToInt32(drPrice[0]["Price_Id"]);
+
+                        DataRow[] drTotalFixAmounts = (BookingRuleResponse.Tables["TotalFixAmounts"].Select("TotalFixAmounts_Id='" + Price_Id + "'"));
+                        int TotalFixAmounts_Id = Convert.ToInt32(drTotalFixAmounts[0]["TotalFixAmounts_Id"]);
+                        Gross = Math.Round(Convert.ToDouble(drTotalFixAmounts[0]["Gross"]), 2);
+                        double GrossCheck = Gross * CurrencyFactor;
+                        GrossCheck = Math.Round(GrossCheck, 2);
+
+                        #endregion
+
+                        #region BookingCode 
+                        if (BookingCode != "")
+                        {
+                            if (Math.Round(GrossCheck.TruncateDecimalPlaces(0)) > Math.Round(FinalPrice.TruncateDecimalPlaces(0)))
+                                BookingCode = "";
+                            else
+                            {
+                                try
+                                {
+                                    if (BookingRuleResponse.Tables.Contains("CancellationPolicy"))
+                                    {
+                                        DataRow[] drCancellationPolicy = (BookingRuleResponse.Tables["CancellationPolicy"].Select("CancellationPolicy_Id='" + HotelOption_Id + "'"));
+                                        int CancellationPolicy_Id = Convert.ToInt32(drCancellationPolicy[0]["CancellationPolicy_Id"]);
+                                        DataRow[] drFirstDayCostCancellation = (BookingRuleResponse.Tables["FirstDayCostCancellation"].Select("CancellationPolicy_Id='" + CancellationPolicy_Id + "'"));
+                                        string FirstDayCostCancellation_Text = Convert.ToString(drFirstDayCostCancellation[0]["FirstDayCostCancellation_Text"]);
+                                        double CancelCharge = Gross;
+                                        DateTime CancelDate = DateTime.Now.Date;
+                                        CancelDate = Convert.ToDateTime(FirstDayCostCancellation_Text).Date;
+                                        DateTime NowDate = DateTime.Now.Date;
+                                        if (CancelDate <= DateTime.Now.Date)
+                                            CancelDate = DateTime.Now.Date;
+                                        else
+                                            CancelDate = CancelDate.AddDays(CutOffDays).Date;
+                                        if (CancelDate.Date < DateTime.Now.Date)
+                                            CancelDate = DateTime.Now.Date;
+                                        bool IsZeroCharge = false;
+                                        if (NowDate < CancelDate && CancelDate.Date > DateTime.Now.Date)
+                                        {
+                                            IsZeroCharge = true;
+                                            //0 charge
+                                        }
+                                        else
+                                        {
+                                            if (CancelDate < DateTime.Now.Date)
+                                                CancelDate = DateTime.Now.Date;
+                                        }
+                                        if (!isNonRefundable && !IsZeroCharge)
+                                            BookingCode = "";
+                                    }
+                                    else
+                                    {
+                                        if (!isNonRefundable)
+                                            BookingCode = "";
+                                    }
+                                    return BookingCode;
+                                }
+                                catch (Exception ex)
+                                {
+                                    BookingCode = "";
+                                    _ = _exception.ErrorNew(ex, _LogAPI.Book);
+                                }
+                            }
+                        }
+                        else
+                            return "";
+                        #endregion
+
+                    }
+                    return BookingCode;
+                }
+            }
+            catch (Exception e)
+            {
+                _ = _exception.ErrorNew(e, _LogAPI.Book);
+                return "";
+            }
+        }
 
         public string Get_Juniper_BookingRequest(int i, DataSet dsCartDetails, string AgentCode, DataTable dtPassengers, DataRow[] SupplierDetails, string BookingCode, double Gross, string UniqueNo, string Provider, string RatePlanCode, string Currency, bool IsPruvo)
         {
@@ -3637,7 +3724,229 @@ namespace XConnect.Supplier.Juniper
                 return "";
             }
         }
+        public string Get_Juniper_BookingRequest_newversion(int i, BookRequest_newversion bookRequest, string AgentCode, DataTable dtPassengers, DataRow[] SupplierDetails, string BookingCode, double Gross, string UniqueNo, string Provider, string RatePlanCode, string Currency, bool IsPruvo)
+        {
+            try
+            {
+                #region Booking RQ
+                string UserID = Convert.ToString(SupplierDetails[0]["UserId"]);
+                string Password = Convert.ToString(SupplierDetails[0]["Password"]);
+                string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[i].CheckInDate);
+                CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[i].CheckOutDate);
+                CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                //string HotelCode = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
+                string HotelCode = Convert.ToString("");//need 070426
+                double Max = Gross;
+                double Min = Gross;
+                string NationalityCode = "";// Convert.ToString(Common.GetThirdPartyStaticData_Xml("Nationality", "Nationality", Convert.ToString(SearchPara.Nationality), "XmlId", "Gta"));
+                string ExternalReference = "API_" + Convert.ToString(AgentCode + "_" + UniqueNo);
+                string CountryName = "";
 
+                if (Provider.ToLower() == "bookohotel")
+                {
+                    if (RatePlanCode != "")
+                        CountryName = Get_BookoHotel_RoomTypeID(RatePlanCode, ref CountryName);
+                }// added on 29-May_2025
+
+                RatePlanCode = Get_LOH_RoomTypeID(RatePlanCode, ref NationalityCode);
+
+                StringBuilder objGuestRequest = new StringBuilder();
+                int cnt = 0;
+                int LPX = 0;
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[i].RoomTypeId) + "' and UserCartID='" + Convert.ToString(bookRequest.userCart.UserCartDetails[i].UserCartId) + "' and ServiceType='Hotel'";
+                
+                dtPassengers.DefaultView.Sort = "IsLead desc";
+                if (dtPassengers.DefaultView.Count > 0)
+                {
+                    DataTable dtPax = dtPassengers.DefaultView.ToTable();
+                    for (int k = 0; k < dtPax.Rows.Count; k++)
+                    {
+                        string FName = Convert.ToString(dtPax.Rows[k]["FirstName"]);
+                        string LName = Convert.ToString(dtPax.Rows[k]["LastName"]);
+                        int ChildAge = Convert.ToInt32(dtPax.Rows[k]["ChildAge"]);
+                        int AdultAge = 30;
+                        //=============== New Added on 1-dec-2023
+                        string address = "";
+                        string city = "";
+                        string postalcode = "";
+                        string phonenumber = "";
+                        //==============
+
+                        DataRow[] drPassengers = dtPax.Select("IsLead='1'");
+                        if (drPassengers.Length == 0)
+                        {
+                            if (Convert.ToString(dtPax.Rows[k]["PaxType"]).Trim().ToLower() == "adult")
+                                dtPax.Rows[k]["IsLead"] = 1;
+                            dtPax.AcceptChanges();
+
+                        }
+                        if (Convert.ToInt16(dtPax.Rows[k]["IsLead"]) == 1)
+                        {
+                            cnt = cnt + 1;
+                            objGuestRequest.Append("<Pax IdPax=\"" + cnt + "\">");
+                            objGuestRequest.Append("<Age>" + AdultAge + "</Age>");
+                            objGuestRequest.Append("<Name>" + FName + "</Name>");
+                            objGuestRequest.Append("<Surname>" + LName + "</Surname>");
+                            objGuestRequest.Append("<Nationality>" + NationalityCode + "</Nationality>");
+                            if (Provider.ToLower() == "tds" || Provider.ToLower() == "s2bglobal" || Provider.ToLower() == "robios")//added on 29-May-2025
+                            {
+                                objGuestRequest.Append("<PhoneNumbers>");
+                                objGuestRequest.Append("<PhoneNumber>" + phonenumber + "</PhoneNumber>");
+                                objGuestRequest.Append("</PhoneNumbers>");
+                            }
+                            if (Provider.ToLower() == "robios")
+                            {
+                                objGuestRequest.Append("<Address>" + address + "</Address>");
+                                objGuestRequest.Append("<City>" + city + "</City>");
+                                objGuestRequest.Append("<PostalCode>" + postalcode + "</PostalCode>");
+                            }
+                            if (Provider.ToLower() == "bookohotel")//added on 29-May-2025
+                            {
+                                if (CountryName != "")
+                                    objGuestRequest.Append("<Country>" + CountryName + "</Country>");
+                            }
+                            objGuestRequest.Append("</Pax>");
+                            LPX = cnt;
+                        }
+                        else
+                        {
+                            if (Convert.ToString(dtPax.Rows[k]["PaxType"]).Trim().ToLower() == "adult")
+                            {
+                                cnt = cnt + 1;
+                                objGuestRequest.Append("<Pax IdPax=\"" + cnt + "\">");
+                                objGuestRequest.Append("<Age>" + AdultAge + "</Age>");
+                                objGuestRequest.Append("<Name>" + FName + "</Name>");
+                                objGuestRequest.Append("<Surname>" + LName + "</Surname>");
+                                objGuestRequest.Append("<Nationality>" + NationalityCode + "</Nationality>");
+                                if (Provider.ToLower() == "bookohotel")
+                                {
+                                    if (CountryName != "")
+                                        objGuestRequest.Append("<Country>" + CountryName + "</Country>");
+                                }//added on 29-May-2025
+                                objGuestRequest.Append("</Pax>");
+                            }
+                            else
+                            {
+                                cnt = cnt + 1;
+                                objGuestRequest.Append("<Pax IdPax=\"" + cnt + "\">");
+                                objGuestRequest.Append("<Age>" + ChildAge + "</Age>");
+                                objGuestRequest.Append("<Name>" + FName + "</Name>");
+                                objGuestRequest.Append("<Surname>" + LName + "</Surname>");
+                                objGuestRequest.Append("<Nationality>" + NationalityCode + "</Nationality>");
+                                if (Provider.ToLower() == "bookohotel")
+                                {
+                                    if (CountryName != "")
+                                        objGuestRequest.Append("<Country>" + CountryName + "</Country>");
+                                }//added on 29-May-2025
+                                objGuestRequest.Append("</Pax>");
+                            }
+                        }
+                    }
+                }
+                StringBuilder BookRQ = new StringBuilder();
+                BookRQ.Append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns=\"http://www.juniper.es/webservice/2007/\">");
+                BookRQ.Append("<soapenv:Header/>");
+                BookRQ.Append("<soapenv:Body>");
+                BookRQ.Append("<HotelBooking>");
+                BookRQ.Append("<HotelBookingRQ Version=\"1.1\" Context=\"BOOKING\" Language=\"en\">");
+                BookRQ.Append("<Login Email=\"" + UserID + "\" Password=\"" + Password + "\"/>");
+                BookRQ.Append("<Paxes>");
+                BookRQ.Append(objGuestRequest.ToString());
+                BookRQ.Append("</Paxes>");
+                BookRQ.Append("<Holder>");
+                BookRQ.Append("<RelPax IdPax=\"" + LPX + "\"/>");
+                BookRQ.Append("</Holder>");
+                BookRQ.Append("<ExternalBookingReference>" + ExternalReference + "</ExternalBookingReference>");
+                BookRQ.Append("<Elements>");
+                BookRQ.Append("<HotelElement>");
+                BookRQ.Append("<BookingCode>" + "#BookingCode" + "</BookingCode>");
+                BookRQ.Append("<RelPaxesDist>");
+                int R = 0;
+                for (int x = 0; x < bookRequest.userCart.UserCartDetails.Count; x++)
+                {
+                    BookRQ.Append("<RelPaxDist>");
+                    BookRQ.Append("<RelPaxes>");
+                    for (int y = 0; y < Convert.ToInt32(bookRequest.userCart.UserCartDetails[x].NoofAdult); y++)
+                    {
+                        R = R + 1;
+                        BookRQ.Append("<RelPax IdPax=\"" + R + "\"/>");
+                    }
+                    if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[x].NoofChild) > 0)
+                    {
+                        for (int z = 0; z < Convert.ToInt32(bookRequest.userCart.UserCartDetails[x].NoofChild); z++)
+                        {
+                            R = R + 1;
+                            BookRQ.Append("<RelPax IdPax=\"" + R + "\"/>");
+                        }
+                    }
+                    BookRQ.Append("</RelPaxes>");
+                    BookRQ.Append("</RelPaxDist>");
+                }
+                BookRQ.Append("</RelPaxesDist>");
+                BookRQ.Append("<HotelBookingInfo Start=\"" + CheckIn + "\" End=\"" + CheckOut + "\">");
+                BookRQ.Append("<Price>");
+                BookRQ.Append("<PriceRange Minimum=\"" + 0 + "\" Maximum=\"" + Max + "\" Currency=\"" + Currency + "\"/>");
+                BookRQ.Append("</Price>");
+                BookRQ.Append("<Status>OK</Status>");
+                if (Provider.ToLower() != "robios")
+                {
+                    //ticket no 39833
+                    string Packag = "Package";
+                    BookRQ.Append("<PackageContracts>" + Packag + "</PackageContracts>");
+                }
+                BookRQ.Append("<HotelCode>" + HotelCode + "</HotelCode>");
+                BookRQ.Append("</HotelBookingInfo>");
+
+                if (Provider.ToLower() == "robios")
+                {
+                    #region APISO VC
+                    int usercartdetailsid = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].UserCartDetailId);
+                    string Pan = "";
+                    string CVV = "0", Expiry = "0";
+                    //GetApisoDetail(usercartdetailsid, "", ref Pan, ref CVV, ref Expiry, IsPruvo);
+
+                    DataTable dtbookingdata = _commonMethod.GetApisoBookingData(usercartdetailsid);
+
+                    if (dtbookingdata != null)
+                    {
+                        _vcn.GetApisoServiceDatatoCreateVCN("", Convert.ToInt32(dtbookingdata.Rows[0]["OnlineBookingMasterId"]), Convert.ToInt32(dtbookingdata.Rows[0]["OnlineBookingDetailsId"]), ref Pan, ref CVV, ref Expiry, IsPruvo);
+                        //PANN = Pan;
+                    }
+
+
+                    #endregion
+
+                    string ExpiryRegex = Convert.ToString(Expiry).Substring(2, 2);
+                    string ExpiryRegexFisrt = Convert.ToString(Expiry).Substring(0, 2);
+                    Expiry = ExpiryRegex + "/" + ExpiryRegexFisrt;
+
+                    //BookRQ.Append("<CreditCard=\"" + "" + "\" CardCode=\"" + "VI" + "\" CvC=\"" + "737" + "\" CardNumber=\"" + 123 + "\" ExpireDate=\"" + "03/30" + "\"/>");
+                    BookRQ.Append("<CreditCard  CardCode=\"" + "MC" + "\" CvC=\"" + CVV + "\" CardNumber=\"" + Pan + "\" ExpireDate=\"" + Expiry + "\">");
+                    BookRQ.Append("<Name>" + "WITHINEARTH" + "</Name>");
+                    BookRQ.Append("<Surname>" + "WITHINEARTH" + "</Surname>");
+                    BookRQ.Append("</CreditCard>");
+                }
+                BookRQ.Append("</HotelElement>");
+                BookRQ.Append("</Elements>");
+                BookRQ.Append("<AdvancedOptions>");
+                BookRQ.Append("<UseCurrency>" + Currency + "</UseCurrency>");
+                BookRQ.Append("</AdvancedOptions>");
+                BookRQ.Append("</HotelBookingRQ>");
+                BookRQ.Append("</HotelBooking>");
+                BookRQ.Append("</soapenv:Body>");
+                BookRQ.Append("</soapenv:Envelope>");
+                string BookingRQ = BookRQ.ToString();
+
+                return BookingRQ.ToString();
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorNew(ex, _LogAPI.Book);
+                return "";
+            }
+        }
         public string Get_BookoHotel_RoomTypeID(string RoomTypeId, ref string Nationality)
         {
             try
