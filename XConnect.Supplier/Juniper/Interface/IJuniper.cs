@@ -31,5 +31,9 @@ namespace XConnect.Supplier.Juniper.Interface
         void Get_Juniper_BookingProcess(string AgentCode, ref DataTable dtAgentVoucher, ref DataSet dsCartDetails, ref DataTable dtCheckPriceReqStructure, ref DataTable dtPassengers, ref DataTable dtCAncellationPolicy, HotelSearchParameter SearchPara, DataRow[] SupplierDetails,TokenData tokenData, ref string AgentVoucherNo, ref int bookingStatus, ref string UniqueNo, ref string AgentUniqueNo, ref bool isNonRefundable, int i, string SearchKey, int AgentId, bool IsPruvo);
 
         string Get_JuniperNew_BookingCancelRQ(string AgentVoucherNo, DataRow[] SupplierDetails, string Provider = "");
+        string Get_LOH_RoomTypeID(string RoomTypeId, ref string Nationality);
+        string Get_Juniper_HotelBookingRulesRQ_newversion(bool isNonRefundable, double CurrencyFactor, string Currency, BookRequest_newversion bookRequest, DataRow[] SupplierDetails, string RatePlanCode, string HotelId, int i, int j, string SupplierName, string UniqueNo, string AgentUniqueNo, bool IsPriceUpdate, ref double Gross, bool IsError);
+        string Get_Juniper_BookingRequest_newversion(int i, BookRequest_newversion bookRequest, string AgentCode, DataTable dtPassengers, DataRow[] SupplierDetails, string BookingCode, double Gross, string UniqueNo, string Provider, string RatePlanCode, string Currency, bool IsPruvo);
+         string GetSupplierResponse_report(ref string Error, string strUniqueId, string strxmlRQRS, string strHost, Int32 TimeOut, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "");
     }
 }

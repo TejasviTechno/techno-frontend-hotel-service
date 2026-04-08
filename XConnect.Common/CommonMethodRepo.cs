@@ -10272,7 +10272,7 @@ new SqlParameter("@timeoutMs", timeoutMs)
 
                 SqlParameter[] para = new SqlParameter[] { };
 
-                dt = await _dlConnection.GetDataTableAsync("GetVervoTechCredentail_API", para);
+                dt = await _dlConnection.GetDataTableAsync("GetVervoTechCredentail", para);
 
                 if (dt != null && dt.Rows.Count > 0)
                 {
