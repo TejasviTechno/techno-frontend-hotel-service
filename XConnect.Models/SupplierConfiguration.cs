@@ -18,6 +18,7 @@ namespace XConnect.Models
         public IWTXConfig IWTX { get; set; }
         public TboConfig TBO { get; set; }
         public JuniperConfig Juniper { get; set; }
+        public IBoosyConfig IBoosy { get; set; }
     }
 
     public class ExpediaConfig
@@ -157,5 +158,14 @@ namespace XConnect.Models
         public string CheckAvail { get; set; }
         public string Booking { get; set; }
 
+    }
+    public class IBoosyConfig
+    {
+        public string Metha_URL { get; set; }
+        public string RS_NoCount { get; set; }
+        public string RS_Success { get; set; }
+        public int IBoosy_Rate_Plan_Count_10 { get; set; }
+        public string Methabook_BookStatus { get; set; }
+        public string Bookingurl { get; set; }
     }
 }

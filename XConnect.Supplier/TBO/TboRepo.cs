@@ -893,9 +893,12 @@ namespace XConnect.Supplier.TBO
                     //string ResponseData1 =  _commonMethod.GetTrvcoResponse_report(ref Error, xslRequest, TBOUrl, SearchTimeOut, "TBO");
                     ResponseDto responseDto = await _commonMethod.GetTrvcoResponse_report(xslRequest, TBOUrl, SearchTimeOut, "TBO");
 
+                   
+
                     string ResponseData1 = responseDto.Response;
                     ResponseData = responseDto.Response;
                     Error = responseDto.Error;
+                    _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(roomtypeid), Convert.ToString(ownsystemid), xslRequest, Convert.ToString(ResponseData + " "+Error), "Before Get Policy & Price Check", "tbo", "Response", "-", "");
 
 
                     timerroomprocess.Stop();

@@ -25,10 +25,12 @@ namespace XConnect.Supplier.Iboosy.Interface
         Task<PriceCheckCMDto> MethaBookPriceCheck(string AvailabilityCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] MethaBookDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string BookingCode, string MealCode, string Searchkey = "", int AgentId = 0);
 
         string MethaBookBookingRequest(string BookingCode, List<string> RoomCode, string HotelCode, DataTable dtPassengers, DataSet dsCartDetails, string ClientReference, string UniqueNo, bool IsErrors);
+        string MethaBookBookingRequest_newversion(string BookingCode, List<string> RoomCode, string HotelCode, DataTable dtPassengers, BookRequest_newversion bookRequest, string ClientReference, string UniqueNo, bool IsErrors);
 
         Task<ResponseDto> MethaBookResponseNew(string Request, string Url, string UserName, string Password, int TimeOut, string Method, string Searchkey = "", bool frombook = false);
 
         Task<MethaBookBookingDetail> MethaBookBookingDetail(string ClientReference, int bookingStatus, string AgtVoucherNo, DataRow[] MethaBookDetails, DataSet dsCartDetails, int i, int TimeOut, string refno);
+        Task<MethaBookBookingDetail> MethaBookBookingDetail_newversion(string ClientReference, int bookingStatus, string AgtVoucherNo, DataRow[] MethaBookDetails, BookRequest_newversion bookRequest, int i, int TimeOut, string refno);
 
         Task<int> MethaBookCancellationProcess(string AgentVoucheNo, DataRow[] MethaBookDetails, string rerefenceNo, DataSet dsCartDetails, int bookingStatus);
     }

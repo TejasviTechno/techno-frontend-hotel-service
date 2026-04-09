@@ -92,7 +92,7 @@ namespace XConnect.Supplier.ETG
 
                                         List<HotelCodeByCity> filter = new List<HotelCodeByCity>();
                                       //  filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
-                                        filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Ostrovok_Details.TechName);
+                                        filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Ostrovok_Details.HotelSupplier);
 
 
                                         #region "HotelDo"

@@ -34,6 +34,7 @@ namespace XConnect.Supplier.XTG.Interface
 
         //book 210825
         Task<string> GetXTGBookingRequest(DataTable dtPassengers, DataSet dsCartDetails, string internalRef, string client, int Timeout, string SupplierCode, string UniqueNo, string AgentUniqueNo, string XTGSiteID, string XTGWebUrl, string XTGApiKey, TokenData tokenData);
+        Task<string> GetXTGBookingRequest_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, string internalRef, string client, int Timeout, string SupplierCode, string UniqueNo, string AgentUniqueNo, string XTGSiteID, string XTGWebUrl, string XTGApiKey, TokenData tokenData);
 
         GraphQLQuery_Response GetXTGResponse(ref string Error, string url, string query, object variables, string Apikey, int TimeOut, HotelSearchParameter para = null, string Provider = "", bool DebugMode = false);
 

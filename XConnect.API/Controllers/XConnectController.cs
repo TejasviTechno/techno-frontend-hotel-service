@@ -484,7 +484,7 @@ namespace XConnect.API.Controllers
                 string MainURL = _platformService.GetHostName();
 
                 bool IsRefereshCache = data.AdvancedOptions.CustomerIpAddress == "777" ? true : false;
-                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent, IsRefereshCache);
                 if (Convert.ToBoolean(authData.tokenData.AgentId))
                 {
 

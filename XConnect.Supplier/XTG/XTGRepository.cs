@@ -50,9 +50,10 @@ namespace XConnect.Supplier.XTG
         private readonly ISupplierRes _supplierRes;
         private readonly IMemoryCache _cache;
         private readonly KeySettings _keySettings;
+        private readonly SupplierConfiguration _supplierConfig;
 
 
-        public XTGRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IMemoryCache cache, IOptions<KeySettings> keySettings)
+        public XTGRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IMemoryCache cache, IOptions<KeySettings> keySettings, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
@@ -60,6 +61,7 @@ namespace XConnect.Supplier.XTG
             _exception = exception;
             _cache = cache;
             _keySettings = keySettings.Value;
+            _supplierConfig = supplierConfig.Value;
         }
         public void GetXTGRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, DataTable dtROE, bool HitFromAll, HotelSearchParameter SearchPara, List<SupplierDetails> XTGDetails, List<SupplierSearchConfig> XTGSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string Natinality, int Hit, TokenData tokenData)
         {
@@ -3943,7 +3945,155 @@ namespace XConnect.Supplier.XTG
             }
             return string.Empty;
         }
+        public async Task<string> GetXTGBookingRequest_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, string internalRef, string client, int Timeout, string SupplierCode, string UniqueNo, string AgentUniqueNo, string XTGSiteID, string XTGWebUrl, string XTGApiKey, TokenData tokenData)
+        {
+            try
+            {
 
+                string OptionRefId = Convert.ToString(bookRequest.userCart.UserCartDetails[0].PurchaseToken);
+                #region "Price CHeck Before booking"
+                try
+                {
+                    string ownroomtypeid = Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId);
+                    string[] spitid = ownroomtypeid.Split(new String[] { "$$" }, StringSplitOptions.None);
+                    string RoomTypeId = spitid[0].ToString();
+                    string Currency = spitid[4].ToString();
+                    string Error = "";
+                    string RequestStringQuote = GetQuoteRequest_XTG(RoomTypeId, XTGSiteID, 60000, SupplierCode);
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), RequestStringQuote, "-", "Before Get Price Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName).ToLower(), "Response Confirm", "-", "API Out");
+                    var clientXTG = new XMLTravelGate.GraphQLClient(XTGWebUrl);
+
+                    GraphQLQuery_Response objResponse = new GraphQLQuery_Response();
+                    //XMLTravelGate.GraphQLQuery_Response objResponse = new XMLTravelGate.GraphQLQuery_Response();
+                    objResponse = GetXTGResponse(ref Error, XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_Quote_Query, Newtonsoft.Json.Linq.JObject.Parse(RequestStringQuote), XTGApiKey, Timeout);
+
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), RequestStringQuote, objResponse.Response, "After Get Price Request hit booking ", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName).ToLower(), "Response Confirm", "-", "API Out");
+                    if (objResponse.IsError == true)
+                    {
+                    }
+                    else
+                    {
+                        DataSet ResponseDataXTG = null;
+                        try
+                        {
+                            string ResponseString = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(objResponse.Response).InnerXml;
+                            ResponseDataXTG = _commonMethod.GetDataSetFromXMLString(ResponseString);
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = _exception.ErrorNew(ex, _LogAPI.Book);
+                        }
+                        if (ResponseDataXTG == null || (ResponseDataXTG.Tables["error"] != null && ResponseDataXTG.Tables["error"].Rows.Count > 0) || ResponseDataXTG.Tables["optionQuote"] == null)
+                        {
+
+                        }
+                        else
+                        {
+                            if (ResponseDataXTG.Tables["optionQuote"].Rows.Count > 0)
+                            {
+                                //DataTable dtInrCurrencyXTG = 1;// Common.GetCountryCurrency(XMLTravelGate.XTG_Currency);
+                                double CurrencyFactor = 1;// Convert.ToDouble(dtInrCurrencyXTG.Rows[0]["AmtToExch"]);
+                                if (Currency.ToLower() != tokenData.SiteCurrency.ToLower())
+                                {
+                                    //DataTable dtInrCurrencyXTG = _commonMethod.GetCountryCurrency(Currency);
+                                    //CurrencyFactor = Convert.ToDouble(dtInrCurrencyXTG.Rows[0]["AmtToExch"]);
+
+                                    CurrencyFactor = _commonMethod.GetROEByCurrency(Currency, tokenData.dtROE);
+                                }
+                                double Price = Convert.ToDouble(ResponseDataXTG.Tables["price"].Rows[0]["net"]) * CurrencyFactor;
+                               // if (Math.Round(Price, 2) > Math.Round(Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]), 2))
+                                if (Math.Round(Price, 2) > Math.Round(Convert.ToDouble(bookRequest.userCart.UserCartDetails[0].BaseServiceBuyingAmount), 2))
+                                {
+                                    OptionRefId = "";
+                                }
+
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _ = _exception.ErrorNew(ex, _LogAPI.Book);
+
+                }
+                #endregion
+                #region Booking Req_Old
+                
+                #endregion
+                #region Booking Req
+                XMLTravelGate.XTG_BookRQ xTG_BookRQ = new XMLTravelGate.XTG_BookRQ();
+                XMLTravelGate.Settings settings = new XMLTravelGate.Settings();
+                settings.client = client;
+                settings.timeout = Timeout;
+                settings.auditTransactions = true;
+                settings.context = SupplierCode;
+                settings.testMode = false;
+                if (SupplierCode.ToLower() == "wtetest")
+                    settings.testMode = true;
+                xTG_BookRQ.settings = settings;
+                XMLTravelGate.BookInput bookInput = new XMLTravelGate.BookInput();
+                bookInput.clientReference = internalRef;
+                bookInput.optionRefId = OptionRefId;
+                //deltaprice
+                XMLTravelGate.DeltaPrice deltaPrice = new XMLTravelGate.DeltaPrice();
+                deltaPrice.amount = 0;
+                deltaPrice.percent = 0;
+                deltaPrice.applyBoth = true;
+                //end deltaprice
+                //holder
+                XMLTravelGate.Holder holder = new XMLTravelGate.Holder();
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId) + "' and UserCartId=" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].UserCartId);
+                dtPassengers.DefaultView.Sort = "IsLead desc";
+                holder.title = Convert.ToString(dtPassengers.DefaultView[0]["Prefix"]).Trim().Replace(".", "").ToUpper();
+                holder.name = Convert.ToString(dtPassengers.DefaultView[0]["FirstName"]).Trim();
+                holder.surname = Convert.ToString(dtPassengers.DefaultView[0]["LastName"]).Trim();
+
+                //
+
+                //rooms
+                List<XMLTravelGate.Room> roomlist = new List<XMLTravelGate.Room>();
+                for (int rm = 0; rm < bookRequest.userCart.UserCartDetails.Count; rm++)
+                {
+                    dtPassengers.DefaultView.RowFilter = "RoomNo='" + (rm + 1) + "' and PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[rm].RoomTypeId) + "' and UserCartId=" + Convert.ToString(bookRequest.userCart.UserCartDetails[rm].UserCartId);
+
+                    dtPassengers.DefaultView.Sort = "IsLead desc";
+
+                    XMLTravelGate.Room room = new XMLTravelGate.Room();
+                    room.occupancyRefId = (rm + 1);
+                    List<XMLTravelGate.Paxbook> paxesList = new List<XMLTravelGate.Paxbook>();
+
+                    for (int j = 0; j < dtPassengers.DefaultView.Count; j++)
+                    {
+                        XMLTravelGate.Paxbook paxes = new XMLTravelGate.Paxbook();
+                        paxes.name = Convert.ToString(dtPassengers.DefaultView[j]["FirstName"]).Trim();
+                        paxes.surname = Convert.ToString(dtPassengers.DefaultView[j]["LastName"]).Trim();
+                        paxes.age = (Convert.ToString(dtPassengers.DefaultView[j]["PaxType"]).ToLower() == "child" ? Convert.ToInt32(dtPassengers.DefaultView[j]["ChildAge"]) : XMLTravelGate.AdultAge);
+                        paxes.title = Convert.ToString(dtPassengers.DefaultView[j]["Prefix"]).Trim().Replace(".", "").ToUpper();
+                        paxesList.Add(paxes);
+                    }
+                    room.paxes = paxesList;
+                    roomlist.Add(room);
+                }
+                //Loop Passengers
+
+                //end loop
+
+                bookInput.deltaPrice = deltaPrice;
+                bookInput.rooms = roomlist;
+                bookInput.holder = holder;
+                xTG_BookRQ.BookInput = bookInput;
+                string RequestString = Newtonsoft.Json.JsonConvert.SerializeObject(xTG_BookRQ);
+                #endregion
+                return RequestString;
+
+
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorNew(ex, _LogAPI.Book);
+            }
+            return string.Empty;
+        }
 
         public void GetXTGBookingByReference(ref string NewReference, ref int BookingStatus, string UniqNo, string SupplierName, string PnrNo, bool IsByOurReference, string Reference, string xtgclient, string XTGURL, string ApikEy, string context, string AccessCode, string hotelCode, string currency,int AgentId)
         {
