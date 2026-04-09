@@ -31,14 +31,17 @@ namespace XConnect.Supplier
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
+        private readonly SupplierConfiguration _supplierConfig;
 
-        public iBoosyRepository(ICommonMethod commonMethod, IException exception, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings)
+
+        public iBoosyRepository(ICommonMethod commonMethod, IException exception, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _exception = exception;
             _markup = markup;
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
+             _supplierConfig = supplierConfig.Value;
         }
 
         public void GetMethaBookRequestOnly_async_old(DataRow[] commonCode, List<StarRating> listRating, DataTable dtROE, HotelSearchParameter SearchPara, List<SupplierDetails> MethaBookDetails, List<SupplierSearchConfig> MethaBookSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string XmlNationality, int Hit, TokenData tokenData, string Provider)
@@ -1602,6 +1605,112 @@ namespace XConnect.Supplier
                 return "";
             }
         }
+        public string MethaBookBookingRequest_newversion(string BookingCode, List<string> RoomCode, string HotelCode, DataTable dtPassengers, BookRequest_newversion bookRequest, string ClientReference, string UniqueNo, bool IsErrors)
+        {
+            try
+            {
+                StringBuilder MethaBook = new StringBuilder();
+                //if (IsErrors == false)
+                //{
+                //    string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckInDate);
+                //    CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                //    string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckOutDate);
+                //    CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                //    string MealCode = Convert.ToString(bookRequest.userCart.UserCartDetails[0].MealPlan);
+                //    double Gross = Convert.ToDouble(bookRequest.userCart.UserCartDetails[0].BaseServiceBuyingAmount);
+                //    //string Currency = Convert.ToString(dsCartDetails.Tables[0].Rows[0]["SupplierCurrency"]);
+
+                //    StringBuilder Paxes = new StringBuilder();
+
+                //    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId) + "' and UserCartID='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].UserCartId) + "'";
+                //    DataTable dtnewpassanger = dtPassengers.DefaultView.ToTable();
+
+                //    for (int i = 0; i < dtnewpassanger.DefaultView.Count; i++)
+                //    {
+                //        if (i >= 1)
+                //        {
+                //            Paxes.Append("},{");
+                //        }
+                //        Paxes.Append("\"PaxId\":" + (i + 1) + ",");
+                //        if (Convert.ToString(dtnewpassanger.Rows[i]["IsLead"]) == "1")
+                //        {
+                //            Paxes.Append("\"Holder\":\"true\",");
+                //            Paxes.Append("\"Document\":\"" + 111111 + "\",");
+                //        }
+                //        else
+                //        {
+                //            Paxes.Append("\"Holder\":\"false\",");
+                //        }
+                //        Paxes.Append("\"Name\":\"" + Convert.ToString(dtnewpassanger.Rows[i]["FirstName"]) + "\",");
+                //        Paxes.Append("\"SurName\":\"" + Convert.ToString(dtnewpassanger.Rows[i]["LastName"]) + "\",");
+                //        if (dtnewpassanger.Rows[i]["PaxType"].ToString().ToLower() == "child")
+                //            Paxes.Append("\"Age\":" + Convert.ToString(dtnewpassanger.Rows[i]["ChildAge"]) + "");
+                //        else
+                //            Paxes.Append("\"Age\":" + 30 + "");
+                //    }
+
+                //    StringBuilder RoomPax = new StringBuilder();
+                //    int PaxId = 0;
+                //    for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
+                //    {
+                //        dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]) + "' and UserCartID='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartID"]) + "' and RoomNo='" + Convert.ToInt32(j + 1) + "'";
+                //        DataTable dtnewpassanger1 = dtPassengers.DefaultView.ToTable();
+                //        if (j >= 1)
+                //        {
+                //            RoomPax.Append("},{");
+                //        }
+                //        RoomPax.Append("\"RoomType\":\"" + RoomCode[j] + "\",");
+                //        RoomPax.Append("\"RoomRefId\":\"" + (j + 1) + "\",");
+                //        RoomPax.Append("\"Paxes\":[{");
+                //        for (int k = 0; k < dtnewpassanger1.DefaultView.Count; k++)
+                //        {
+                //            PaxId = PaxId + 1;
+                //            if (k >= 1)
+                //            {
+                //                RoomPax.Append("},{");
+                //            }
+                //            RoomPax.Append("\"PaxId\":" + PaxId + "");
+                //        }
+                //        RoomPax.Append("}]");
+                //    }
+                //    MethaBook.Append("{");
+                //    MethaBook.Append("\"bookingRq\":{");
+                //    MethaBook.Append("\"Language\":" + "\"en\",");
+                //    MethaBook.Append("\"ClientReference\":\"" + ClientReference + "\",");
+                //    MethaBook.Append("\"Paxes\":[{");
+                //    MethaBook.Append(Paxes.ToString());
+                //    MethaBook.Append("}],");
+                //    MethaBook.Append("\"Services\":{");
+                //    MethaBook.Append("\"AccommodationServices\":[{");
+                //    MethaBook.Append("\"BookingCode\":\"" + BookingCode + "\",");
+                //    MethaBook.Append("\"AccommodationCode\":\"" + HotelCode + "\",");
+                //    MethaBook.Append("\"CheckInDate\":\"" + CheckIn + "\",");
+                //    MethaBook.Append("\"CheckOutDate\":\"" + CheckOut + "\",");
+                //    MethaBook.Append("\"MealPlanCode\":\"" + MealCode + "\",");
+                //    MethaBook.Append("\"Price\":{");
+                //    MethaBook.Append("\"gross\":\"" + Gross + "\",");
+                //    MethaBook.Append("\"currencyCode\":\"" + Currency + "\"");
+                //    MethaBook.Append("},");
+                //    MethaBook.Append("\"Rooms\":[{");
+                //    MethaBook.Append(RoomPax.ToString());
+                //    MethaBook.Append("}]");
+                //    MethaBook.Append("}]");
+                //    MethaBook.Append("}");
+                //    MethaBook.Append("}");
+                //    MethaBook.Append("}");
+
+                    string MethaBookReq = MethaBook.ToString();
+                    return MethaBookReq;
+                //}
+                //else
+                //    return "";
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorNew(ex, _LogAPI.Book);
+                return "";
+            }
+        }
 
         public async Task<MethaBookBookingDetail> MethaBookBookingDetail(string ClientReference, int bookingStatus, string AgtVoucherNo, DataRow[] MethaBookDetails, DataSet dsCartDetails, int i, int TimeOut, string refno)
         {
@@ -1640,6 +1749,58 @@ namespace XConnect.Supplier
                     else if (BookingStatus.ToLower() == "onrequest")
                     {
                         bookingStatus = await MethaBookCancellationProcess(AgtVoucherNo, MethaBookDetails, refno, dsCartDetails, bookingStatus);
+                    }
+                    else
+                        bookingStatus = 2;
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorBooking(ex, "00");
+            }
+
+            methaBookBookingDetail.AgentVoucherNo = AgtVoucherNo;
+            methaBookBookingDetail.bookingStatus = bookingStatus;
+            return methaBookBookingDetail;
+        }
+
+        public async Task<MethaBookBookingDetail> MethaBookBookingDetail_newversion(string ClientReference, int bookingStatus, string AgtVoucherNo, DataRow[] MethaBookDetails, BookRequest_newversion bookRequest, int i, int TimeOut, string refno)
+        {
+            MethaBookBookingDetail methaBookBookingDetail = new MethaBookBookingDetail();
+            try
+            {
+                string Url = Convert.ToString(MethaBookDetails[0]["WebSiteURL"]) + _supplierConfig.IBoosy.Bookingurl;
+                string UserName = Convert.ToString(MethaBookDetails[0]["UserName"]);
+                string Password = Convert.ToString(MethaBookDetails[0]["PassWord"]);
+                bookingStatus = 1;
+                string BookingStatus = "";
+                string Request = "?clientReference=" + ClientReference + "";
+                string Error = "";
+                ResponseDto responseDto = await MethaBookResponseNew(Request, Url, UserName, Password, TimeOut, "GET");
+
+                string BookingResponse = responseDto.Response;
+                Error = responseDto.Error;
+
+                if (BookingResponse == null || BookingResponse == "" || BookingResponse.ToLower().Contains("exceptions") == true)
+                {
+                    bookingStatus = 1;
+                }
+                else
+                {
+                    MethaBook.RootObject MethaBookResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<MethaBook.RootObject>(BookingResponse);
+                    for (int b = 0; b < MethaBookResponse.bookingRs.bookings.Count; b++)
+                    {
+                        MethaBook.Booking drBooking = MethaBookResponse.bookingRs.bookings[b];
+                        BookingStatus = Convert.ToString(drBooking.status);
+                        AgtVoucherNo = Convert.ToString(drBooking.locator);
+
+
+                    }
+                    if (BookingStatus.ToLower() == "confirmed")
+                        bookingStatus = 6;
+                    else if (BookingStatus.ToLower() == "onrequest")
+                    {
+                        bookingStatus = 0;//await MethaBookCancellationProcess(AgtVoucherNo, MethaBookDetails, refno, dsCartDetails, bookingStatus);
                     }
                     else
                         bookingStatus = 2;

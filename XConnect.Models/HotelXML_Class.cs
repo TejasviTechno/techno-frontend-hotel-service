@@ -979,6 +979,7 @@ namespace XConnect.Models
         public string TechName { get; set; } //130325
 
         public string WebSiteURLforAPI { get; set; } //Added on 3-MAR-2025
+        public string HotelSupplier { get; set; } //Added on 09 april 2026
 
     }
 
