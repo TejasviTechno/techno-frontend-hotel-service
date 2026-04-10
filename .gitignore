@@ -155,3 +155,8 @@ node_modules/
 *.directory
 *.env
 *.env.local
+
+
+## App Settting 
+XConnect.API/appsettings.json
+XConnect.API/appsettings.Development.json
