@@ -13,19 +13,16 @@ Thumbs.db
 *.userosscache
 *.sln.docstates
 
-<<<<<<< HEAD
 # Build results
 **/bin/
 **/obj/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
-=======
 ##############################
 # VS Code
 ##############################
 .vscode/
->>>>>>> 8853a752b4d5e26b4d490189ba50f032d48cf177
 
 ##############################
 # Rider / IntelliJ
