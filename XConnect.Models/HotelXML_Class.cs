@@ -1498,6 +1498,8 @@ namespace XConnect.Models
         public int NoofRoom { get; set; }
         public string Nationality { get; set; }
         public bool IsCombineRoom { get; set; }//230326
+        public string HotelEmail { get; set; }//100426
+        
 
         public List<UserCartDetails_Prebook> userCartDetails_Prebooks { get; set; }
     }
@@ -1553,6 +1555,7 @@ namespace XConnect.Models
         public double BaseSellingPrice { get; set; }
         public int SupplierId { get; set; }
         public int SuppliercurrencyId { get; set; }
+        public string SupplierEmail { get; set; } //Added on 10-APR-26
 
     }
 

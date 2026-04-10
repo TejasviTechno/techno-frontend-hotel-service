@@ -183,6 +183,7 @@ namespace Xconnect.BLL
 
         private readonly SupplierConfiguration _supplierConfig;
         private readonly IAnalytics _analytic;
+        private readonly RemoteServices _remoteServices;
 
         #region Supplier DI
         private readonly IExpedia _expedia;
@@ -246,7 +247,7 @@ namespace Xconnect.BLL
 
 
 
-        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus)
+        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices)
         {
             _dlConnection = dlConnection;
             _cache = cache;
@@ -316,6 +317,7 @@ namespace Xconnect.BLL
             _analytic = analytic;
             _akbartravel = akbartravel;
             _dingus = dingus;
+            _remoteServices = remoteServices.Value;
         }
 
         #region Static Data - used
@@ -16105,6 +16107,7 @@ new SqlParameter("@AgentId", AgentId),
                 userCart_Prebook.NoofRoom = Convert.ToInt32(para.Rooms.Count);
                 userCart_Prebook.Nationality = Convert.ToString(objdata.Nationality);
                 userCart_Prebook.IsCombineRoom = Convert.ToBoolean(objdata.IsCombineRoom);//230326
+                userCart_Prebook.HotelEmail = Convert.ToString(objdata.ReservationEmail);//100426
 
 
                 List<UserCartDetails_Prebook> userCartDetails_Prebook = new List<UserCartDetails_Prebook>();
@@ -16170,6 +16173,8 @@ new SqlParameter("@AgentId", AgentId),
                         supplierRateBreakUp_Prebook.BaseSellingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].CompanySellingPrice);
                         supplierRateBreakUp_Prebook.SupplierId = Convert.ToInt32(BookOption.Hotel.SupplierId);// Convert.ToInt32(objdata.SupplierID);
                         supplierRateBreakUp_Prebook.SuppliercurrencyId = _commonMethod.GetCurrencyIdCurrencyCode(objdata.SupplierCurrency, tokenData.dtROE);
+                        supplierRateBreakUp_Prebook.SupplierEmail = Convert.ToString(objdata.ShoppingCartDetails[room].SupplierEmail);//Added on 10-APR-26
+
                         userCartDetails_Pre.supplierRateBreakUp_Prebook = supplierRateBreakUp_Prebook;
                         #endregion
                         #region AgentRB
@@ -26489,144 +26494,147 @@ new SqlParameter("@AgentId", AgentId),
                                         _markup.getAgetMarkupSetting(Supplier.ToLower() == "oth" ? Convert.ToString(_keySettings.IsWithinearth) == "1" ? "withinearth" : "oth" : Supplier, Convert.ToString(dsCartDetails.Tables[0].Rows[i]["giataid"]), dsAgentDetails.Tables[1], dtCountryCityMarkup, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, agentID, hotelRating, CityId, CountryId, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["CheckInDate"]));
 
                                         #region "Vervotech Hotelcode check" //#vervo
-                                        //string HotelName = "", XMLHotelCode = "", ProvideFmly = "";
-                                        //int UnicaId = 0;
-                                        //string GetSingleProviders = "";
-                                        //string MapSupplierName = "";
-                                        //bool IsVervoActive = false;
+                                        string HotelName = "", XMLHotelCode = "", ProvideFmly = "";
+                                        int UnicaId = 0;
+                                        string GetSingleProviders = "";
+                                        string MapSupplierName = "";
+                                        bool IsVervoActive = false;
 
                                         #region vervo
                                         string GetSingleProvidersversion3 = "";
                                         int giataId = 0;
                                         #region Call API for Agentpermissionforvervo
 
-                                       //string keydata = "GET_FLAG_CACHE";
+                                        string keydata = "GET_FLAG_CACHE";
 
-                                       // ApiResponsecheckvervo response;
+                                        ApiResponsecheckvervo response;
 
-                                       // var headers = new Dictionary<string, string>
-                                       // {
-                                       //     ["x-accept-language"] = "en",
-                                       //     ["x-tenant-id"] = TokenData.TanentId
-                                       // };
+                                        var headers = new Dictionary<string, string>
+                                        {
+                                            ["x-accept-language"] = "en",
+                                            ["x-tenant-id"] = TokenData.TanentId
+                                        };
 
-                                       // if (!_cache.TryGetValue(keydata, out response))
-                                       // {
-                                       //     response = await _commonMethod.SendRequestAsync_checkvervo<ApiResponsecheckvervo>(
-                                       //         "https://api.rateaura.com" + "/api",   // ✅ FIXED
-                                       //         "auth/v1/get-flag",
-                                       //         HttpMethod.Get,
-                                       //         null,
-                                       //         token,              // ✅ use token
-                                       //         headers
-                                       //     );
+                                        if (!_cache.TryGetValue(keydata, out response))
+                                        {
+                                            response = await _commonMethod.SendRequestAsync_checkvervo<ApiResponsecheckvervo>(
+                                                _remoteServices.CommonServices.BaseUrl + "/api",   // ✅ FIXED
+                                                "auth/v1/get-flag",
+                                                HttpMethod.Get,
+                                                null,
+                                                token,              // ✅ use token
+                                                headers
+                                            );
 
-                                       //     if (response != null && response.status == 200)   // ✅ FIXED
-                                       //     {
-                                       //         _cache.Set(keydata, response,
-                                       //             new MemoryCacheEntryOptions()
-                                       //                 .SetAbsoluteExpiration(TimeSpan.FromHours(1)));
-                                       //     }
-                                       //     else
-                                       //     {
-                                       //         await _exception.Error(new Exception(
-                                       //             $"API failed. Status: {response?.status}, Message: {response?.message}"
-                                       //         ));
-                                       //     }
-                                       // }
+                                            if (response != null && response.status == 200)   // ✅ FIXED
+                                            {
+                                                _cache.Set(keydata, response,
+                                                    new MemoryCacheEntryOptions()
+                                                        .SetAbsoluteExpiration(TimeSpan.FromHours(1)));
+                                            }
+                                            else
+                                            {
+                                                // Create an exception for the invalid API response
+                                                var ex = new Exception(
+                                                    $"API call failed. StatusCode: {response?.status}, Message: {response?.message}"
+                                                );
 
-                                       // // ✅ SET FLAG FROM RESPONSE
-                                       // IsVervoActive = response?.isVervo == true;
-                                       // DataTable VervoTechCredentail = await _commonMethod.GetVervoTechCredentailAtRoomRequest();
-                                       // // ✅ MAIN CONDITION
-                                       // if (IsVervoActive && !_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier))
-                                       // {
-                                       //     try
-                                       //     {
-                                       //         string suppliercode = await _commonMethod.GetHotelSupplierCodeVervo(Supplier);
-                                       //         string suppliervervo = Supplier;
+                                                _ = _exception.Error(ex);
+                                            }
+                                        }
 
-                                       //         List<int> HotelIds = new List<int>();
+                                        // ✅ SET FLAG FROM RESPONSE
+                                        IsVervoActive = response?.isVervo == true;
+                                        DataTable VervoTechCredentail = await _commonMethod.GetVervoTechCredentailAtRoomRequest();
+                                        // ✅ MAIN CONDITION
+                                        if (IsVervoActive && !_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier))
+                                        {
+                                            try
+                                            {
+                                                string suppliercode = await _commonMethod.GetHotelSupplierCodeVervo(Supplier);
+                                                string suppliervervo = Supplier;
 
-                                       //         string VervoUrl = Convert.ToString(VervoTechCredentail.Rows[0]["UrlName"]),
-                                       //                UserName = Convert.ToString(VervoTechCredentail.Rows[0]["UserName"]),
-                                       //                Password = Convert.ToString(VervoTechCredentail.Rows[0]["Password"]);
+                                                List<int> HotelIds = new List<int>();
 
-                                       //          giataId = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]);
+                                                string VervoUrl = Convert.ToString(VervoTechCredentail.Rows[0]["UrlName"]),
+                                                       UserName = Convert.ToString(VervoTechCredentail.Rows[0]["UserName"]),
+                                                       Password = Convert.ToString(VervoTechCredentail.Rows[0]["Password"]);
 
-                                       //         string UrlNameVersion3 = VervoUrl +
-                                       //             "mappings/GetProviderHotelMappingsByVervotechId?vervotechId=" + giataId;
+                                                giataId = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]);
 
-                                       //         HotelIds.Add(giataId);
+                                                string UrlNameVersion3 = VervoUrl +
+                                                    "mappings/GetProviderHotelMappingsByVervotechId?vervotechId=" + giataId;
 
-                                       //         MapSupplierName = suppliercode;
+                                                HotelIds.Add(giataId);
 
-                                       //         string VervoRequest = "";
+                                                MapSupplierName = suppliercode;
 
-                                       //         GetSingleProvidersversion3 = _commonMethod.GetProvidersdataversion3(
-                                       //             UrlNameVersion3,
-                                       //             UserName,
-                                       //             Password,
-                                       //             HotelIds,
-                                       //             "",
-                                       //             giataId,
-                                       //             Searchkey,
-                                       //             agentID,
-                                       //             "PreBook",
-                                       //             ref VervoRequest
-                                       //         );
+                                                string VervoRequest = "";
 
-                                       //         if (!string.IsNullOrEmpty(GetSingleProvidersversion3))
-                                       //         {
-                                       //             var HotelContentSingleProvider =
-                                       //                 JsonConvert.DeserializeObject<HotelProviderMappingV3>(GetSingleProvidersversion3);
+                                                GetSingleProvidersversion3 = _commonMethod.GetProvidersdataversion3(
+                                                    UrlNameVersion3,
+                                                    UserName,
+                                                    Password,
+                                                    HotelIds,
+                                                    "",
+                                                    giataId,
+                                                    Searchkey,
+                                                    agentID,
+                                                    "PreBook",
+                                                    ref VervoRequest
+                                                );
 
-                                       //             if (HotelContentSingleProvider?.ProviderHotels?.Count > 0)
-                                       //             {
-                                       //                 UnicaId = HotelContentSingleProvider.VervotechId;
+                                                if (!string.IsNullOrEmpty(GetSingleProvidersversion3))
+                                                {
+                                                    var HotelContentSingleProvider =
+                                                        JsonConvert.DeserializeObject<HotelProviderMappingV3>(GetSingleProvidersversion3);
 
-                                       //                 foreach (var hotel in HotelContentSingleProvider.ProviderHotels)
-                                       //                 {
-                                       //                     if (hotel.ProviderFamily == null || hotel.ProviderHotelId == null)
-                                       //                         continue;
+                                                    if (HotelContentSingleProvider?.ProviderHotels?.Count > 0)
+                                                    {
+                                                        UnicaId = HotelContentSingleProvider.VervotechId;
 
-                                       //                     ProvideFmly =
-                                       //                        hotel.ProviderFamily.ToLower() == suppliercode.ToLower()
-                                       //                        ? hotel.ProviderFamily
-                                       //                        : "";
+                                                        foreach (var hotel in HotelContentSingleProvider.ProviderHotels)
+                                                        {
+                                                            if (hotel.ProviderFamily == null || hotel.ProviderHotelId == null)
+                                                                continue;
 
-                                       //                     //string XMLHotelCode = "";
+                                                            ProvideFmly =
+                                                               hotel.ProviderFamily.ToLower() == suppliercode.ToLower()
+                                                               ? hotel.ProviderFamily
+                                                               : "";
 
-                                       //                     if (ProvideFmly.ToLower() == "riu")
-                                       //                     {
-                                       //                         XMLHotelCode = hotel.ProviderHotelId;
+                                                            //string XMLHotelCode = "";
 
-                                       //                         if (XMLHotelCode.Length == 3)
-                                       //                             XMLHotelCode = "0" + XMLHotelCode;
-                                       //                     }
-                                       //                     else
-                                       //                     {
-                                       //                         string xmlId = Convert.ToString(
-                                       //                             dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]);
+                                                            if (ProvideFmly.ToLower() == "riu")
+                                                            {
+                                                                XMLHotelCode = hotel.ProviderHotelId;
 
-                                       //                         if (hotel.ProviderHotelId.ToLower() == xmlId.ToLower())
-                                       //                             XMLHotelCode = hotel.ProviderHotelId;
-                                       //                     }
+                                                                if (XMLHotelCode.Length == 3)
+                                                                    XMLHotelCode = "0" + XMLHotelCode;
+                                                            }
+                                                            else
+                                                            {
+                                                                string xmlId = Convert.ToString(
+                                                                    dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]);
 
-                                       //                     if (!string.IsNullOrEmpty(XMLHotelCode) &&
-                                       //                         !string.IsNullOrEmpty(ProvideFmly))
-                                       //                     {
-                                       //                         break;
-                                       //                     }
-                                       //                 }
-                                       //             }
-                                       //         }
-                                       //     }
-                                       //     catch (Exception ex)
-                                       //     {
-                                       //         await _exception.Error(ex);
-                                       //     }
-                                       // }
+                                                                if (hotel.ProviderHotelId.ToLower() == xmlId.ToLower())
+                                                                    XMLHotelCode = hotel.ProviderHotelId;
+                                                            }
+
+                                                            if (!string.IsNullOrEmpty(XMLHotelCode) &&
+                                                                !string.IsNullOrEmpty(ProvideFmly))
+                                                            {
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                await _exception.Error(ex);
+                                            }
+                                        }
 
                                         #endregion
 
@@ -26642,12 +26650,12 @@ new SqlParameter("@AgentId", AgentId),
                                             Supplier = "xpedia";
                                         if (Supplier.IndexOf("_xtg") >= 0)
                                             Supplier = "xtg";
-                                        //if (IsVervoActive == false 
-                                        //    || ( (_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier)) ||
-                                        //    giataId == UnicaId
-                                        //    && Convert.ToString(dsCartDetails.Tables[0].DefaultView[0]["xmlhotelid"]) == XMLHotelCode
-                                        //    && ProvideFmly.ToLower() == MapSupplierName.ToLower()
-                                        //   ))
+                                        if (IsVervoActive == false
+                                            || ((_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier)) ||
+                                            giataId == UnicaId
+                                            && Convert.ToString(dsCartDetails.Tables[0].DefaultView[0]["xmlhotelid"]) == XMLHotelCode
+                                            && ProvideFmly.ToLower() == MapSupplierName.ToLower()
+                                           ))
                                         {
                                             switch (TechName.ToLower())
                                             {
@@ -29230,6 +29238,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     {
                                                         DataRow[] DOTWDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
 
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(DOTWDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
                                                         serviceTot = 0;
                                                         dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
@@ -29527,6 +29536,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         dtCartUpdateTable = _commonMethod.getCardUpdateTable();
 
                                                         DataRow[] DarinaDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(DarinaDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
 
                                                         for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
@@ -29694,6 +29704,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         }
 
                                                         DataRow[] SaltoursDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(SaltoursDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
 
                                                         for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
@@ -29802,6 +29813,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         //Room Req
 
                                                         DataRow[] uk_travcoDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(uk_travcoDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
 
                                                         for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
@@ -29928,6 +29940,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     try
                                                     {
                                                         DataRow[] HotelsProApiDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(HotelsProApiDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
 
                                                         string HotelID = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["XMLHotelId"]);
@@ -30051,6 +30064,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                         DataRow[] HotelBedsV1Details = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
 
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(HotelBedsV1Details[0]["SupplierEmail"]);//Added on 10-APR-26
 
                                                         for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
                                                         {
@@ -30192,6 +30206,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         string XTGWebUrl = Convert.ToString(XTGDetails[0]["WebSiteURL"]);
 
                                                         DataRow[] XTGChild = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(XTGChild[0]["SupplierEmail"]);//Added on 10-APR-26
 
                                                         string RequestString = _xtg.GetQuoteRequest_XTG(RoomTypeId, XTGSiteID, 60000, Convert.ToString(XTGChild[0]["UserId"]));
                                                         _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), RequestString, "-", "Before Get Price Request hit ", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower(), "Response Confirm", "-", "API Out");
@@ -30354,6 +30369,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     try
                                                     {
                                                         DataRow[] TravelLandaDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(TravelLandaDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
 
                                                         for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
@@ -30504,6 +30520,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                 //AgentPercentage = Convert.ToDouble(drSupRow[0]["AgentWiseMarkup"]);
                                                                 blnIsShowSupplier = (Convert.ToInt16(drSupRow[0]["IsShowSupplier"]) == 1 ? true : false);
                                                                 SupplierIDs = Convert.ToInt32(drSupRow[0]["SupplierID"]);
+
                                                             }
                                                         }
                                                         #endregion
@@ -30514,6 +30531,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         //DataRow[] SupplierDetail = null;
 
                                                         DataRow[] SupplierDetail = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(SupplierDetail[0]["SupplierEmail"]);//Added on 10-APR-26
 
 
                                                         //switch (Supplier.ToLower())
@@ -30676,6 +30694,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         CutOffDays = _commonMethod.GetCutOffDays(dsAgentDetails.Tables[1], Supplier);
 
                                                         DataRow[] fitruumsDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(fitruumsDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
 
                                                         //double FinalPrice = 0;
@@ -31023,6 +31042,9 @@ new SqlParameter("@AgentId", AgentId),
                                                             CurrencyFactorHotel24x7 = _commonMethod.GetROEByCurrency(QTechCurrency, TokenData.dtROE);
                                                         }
 
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(QTechDetails[0]["SupplierEmail"]);//Added on 10-APR-26
+
+
                                                         UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]);
                                                         int SupplierID = 0;
                                                         double Rate = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]);
@@ -31126,6 +31148,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     try
                                                     {
                                                         DataRow[] MethaBookDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(MethaBookDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
 
                                                         dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
@@ -31236,6 +31259,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     try
                                                     {
                                                         DataRow[] HotelDoDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(HotelDoDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
                                                         dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
                                                         dtCartUpdateTable = _commonMethod.getCardUpdateTable();
@@ -31349,6 +31373,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             //}
                                                             //break;
                                                             DataRow[] TBOV1Details = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                            objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(TBOV1Details[0]["SupplierEmail"]);//Added on 10-APR-26
 
                                                             serviceTot = 0;
                                                             dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
@@ -31458,7 +31483,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     {
                                                         DataRow[] DidaDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
 
-
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(DidaDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
                                                         int SupplierID = 0;
                                                         //for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
@@ -31672,6 +31697,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     try
                                                     {
                                                         DataRow[] XPDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(XPDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
 
                                                         if (true)//if (SaveUserCartID == 0)
@@ -32150,6 +32176,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     try
                                                     {
                                                         DataRow[] RestelDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(RestelDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
 
                                                         serviceTot = 0;
@@ -32663,6 +32690,8 @@ new SqlParameter("@AgentId", AgentId),
                                                         }
                                                         double FinalPrice = 0;
                                                         string RefrenceNo = "";
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(technoDetails[0]["SupplierEmail"]);//Added on 10-APR-26
+
                                                         string UserID = Convert.ToString(technoDetails[0]["UserID"]);
                                                         string Password = Convert.ToString(technoDetails[0]["Password"]);
                                                         int HotelCode = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[0]["XMLHotelId"]);
@@ -33755,6 +33784,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     {
                                                         DataRow[] IWTXDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
 
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(IWTXDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
                                                         //dtPriceUpdateTable = Common.getPriceUpdateTable();
                                                         //dtCartUpdateTable = Common.getCardUpdateTable();
@@ -34381,6 +34411,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     try
                                                     {
                                                         DataRow[] ratehawk_Details = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(ratehawk_Details[0]["SupplierEmail"]);//Added on 10-APR-26
 
                                                         DataTable dtPolicy = null;
                                                         double FinalPrice = 0;
@@ -34759,6 +34790,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     try
                                                     {
                                                         DataRow[] letsflyDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        objdata.ShoppingCartDetails[0].SupplierEmail = Convert.ToString(letsflyDetails[0]["SupplierEmail"]);//Added on 10-APR-26
 
                                                         serviceTot = 0;
                                                         dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
@@ -35046,6 +35078,11 @@ new SqlParameter("@AgentId", AgentId),
                                                     #endregion
                                             }
                                         }
+                                        else
+                                        {
+                                            dtPriceDetail = await ProcessPricePoupTable(IsActivePopUp, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, 0, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, 0);
+                                        }
+
 
                                         
 

@@ -406,6 +406,8 @@ namespace XConnect.Models.Hotel
         public decimal AdultBuyingRate { get; set; }
         public decimal ChildBuyingRate { get; set; }
         public Int32 OldBookingDetailID { get; set; }//#Pruvo added on 6-MAY-2024 
+        public string SupplierEmail { get; set; } = "";//10-APR-26
+
     }
     public class RoomDetailsNew
     {
