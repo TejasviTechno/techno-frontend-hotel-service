@@ -411,10 +411,12 @@ namespace XConnect.Markup
                         Supplier = "agoda";
                     if (Supplier.ToLower() == "getaroom_api")
                         Supplier = "getaroom";
-                    if (Supplier.ToLower() == "iol_b2c" || Supplier.ToLower() == "iolx3_b2b" || Supplier.ToLower() == "iol_cug" || Supplier.ToLower() == "iol_b2b")
+                    if (Supplier.IndexOf("iol_") >= 0)
                         Supplier = "IWTX";
-                    if (Supplier.ToLower() == "etg_b2b_tp" || Supplier.ToLower() == "etg_b2b_dc")
-                        Supplier = "ratehawk";
+                    // if (Supplier.ToLower() == "iol_b2c" || Supplier.ToLower() == "iolx3_b2b" || Supplier.ToLower() == "iol_cug" || Supplier.ToLower() == "iol_b2b")
+                    // if (Supplier.ToLower() == "etg_b2b_tp" || Supplier.ToLower() == "etg_b2b_dc")
+                    if (Supplier.IndexOf("etg_") >= 0)
+                            Supplier = "ratehawk";
                     //need 
                     double AgentMarkupAmount = 0.0;
                     Boolean isPerce = true;
