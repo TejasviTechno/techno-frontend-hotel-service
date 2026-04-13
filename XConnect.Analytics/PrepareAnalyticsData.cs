@@ -145,7 +145,8 @@ namespace XConnect.Analytics
                     client = clientDetails,
                     BrowserAgent = browserInfo,
                     SiteType = _userContextAccessor.SiteType,
-                    SearchAvailTrace= SearchAvailTrace
+                    SearchAvailTrace= SearchAvailTrace,
+                    Source = analyticsData.source,
                 };
 
 
@@ -466,35 +467,35 @@ namespace XConnect.Analytics
             {
                 switch (statuscode)
                 {
-                    case 200: description = "Successfull"; break;
+                    case 200: description = "Success"; break;
                     case 201: description = "Created - Booking confirmed"; break;
                     case 202: description = "Accepted - Processing (Async booking cases)"; break;
-                    case 204: description = "No Content - Success but no data returned"; break;
+                    case 204: description = "Success but no data returned"; break;
 
                     case 301: description = "Moved Permanently"; break;
                     case 302: description = "Temporary Redirect"; break;
                     case 304: description = "Not Modified"; break;
 
-                    case 400: description = "Bad Request - Invalid JSON or missing fields"; break;
-                    case 401: description = "Unauthorized - Wrong API credentials"; break;
-                    case 402: description = "Payment Required - Billing issue"; break;
+                    case 400: description = "Bad Request"; break;
+                    case 401: description = "Unauthorized"; break;
+                    case 402: description = "Payment Required"; break;
                     case 403: description = "Forbidden - IP not whitelisted"; break;
                     case 404: description = "Not Found"; break;
-                    case 405: description = "Method Not Allowed - Wrong HTTP method"; break;
-                    case 406: description = "Not Acceptable - Wrong headers"; break;
+                    case 405: description = "Method Not Allowed"; break;
+                    case 406: description = "Not Acceptable"; break;
                     case 408: description = "Request Timeout"; break;
                     case 409: description = "Conflict - Duplicate booking"; break;
                     case 410: description = "Gone - Resource expired"; break;
-                    case 412: description = "Precondition Failed - Invalid conditions"; break;
-                    case 415: description = "Unsupported Media Type - Use application/json"; break;
-                    case 422: description = "Unprocessable Entity - Invalid data (dates, pax)"; break;
-                    case 429: description = "Too Many Requests - Rate limit exceeded"; break;
+                    case 412: description = "Invalid conditions"; break;
+                    case 415: description = "Unsupported Media Type"; break;
+                    case 422: description = "Invalid data (dates, pax)"; break;
+                    case 429: description = "Too Many Requests"; break;
 
-                    case 500: description = "Internal Server Error - Server crash"; break;
-                    case 501: description = "Not Implemented - Feature not supported"; break;
-                    case 502: description = "Bad Gateway - Gateway issue"; break;
-                    case 503: description = "Service Unavailable - Supplier down"; break;
-                    case 504: description = "Gateway Timeout - Supplier slow"; break;
+                    case 500: description = "Internal Server Error"; break;
+                    case 501: description = "Feature not supported"; break;
+                    case 502: description = "Bad Gateway"; break;
+                    case 503: description = "Service Unavailable"; break;
+                    case 504: description = "Gateway Timeout"; break;
 
                     default: description = "No Count"; break;
                 }
