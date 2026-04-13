@@ -1052,7 +1052,7 @@ namespace XConnect.Supplier.ETG
                                                 sellingAmount = Convert.ToDouble(ETGResponse.data.hotels[i].rates[room].payment_options.payment_types[0].amount);
                                                 double companybuying = sellingAmount * CurrencyFactorOstrovok;
                                                 double TotalPrice = (sellingAmount + commission) * CurrencyFactorOstrovok;
-                                                string RoomTypeId = RoomName + "$$$" + sellingAmount + "$$$" + ItemCode + "$$$" + Currency + "$$$" + XMLnationality + "$$$" + Etg_MatchHas;// + "$$$" + search_hash;
+                                                string RoomTypeId = RoomName + "$$$" + sellingAmount + "$$$" + ItemCode + "$$$" + Currency + "$$$" + XMLnationality + "$$$" + Etg_MatchHas + "$$$" + search_hash;
                                                 int night = SearchParam.NoofNights;
                                                 double NightRate = TotalPrice / night;
                                                 #region RateBreakup
@@ -2227,7 +2227,7 @@ namespace XConnect.Supplier.ETG
 
                // #endregion
                 #region New BookHash               
-                string[] array = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["RoomTypeId"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string[] array = Convert.ToString(RoomTypeId).Split(new String[] { "$$$" }, StringSplitOptions.None);
                 //string Currency = array[3];
                 string Etg_UniqueId = array[6];
 
@@ -2629,6 +2629,8 @@ namespace XConnect.Supplier.ETG
         {
             try
             {
+                
+
                 int No_Child = 0;
                 int childAge1 = 0;
                 string child1 = "";
@@ -2649,6 +2651,7 @@ namespace XConnect.Supplier.ETG
                 BookingReq.Append("\"phone\": \"" + mobile + "\"");
                 BookingReq.Append("},");
                 BookingReq.Append("\"partner\": {");
+               // BookingReq.Append("\"partner_order_id\": \"" + UniqueNo + "\",");
                 BookingReq.Append("\"partner_order_id\": \"" + UniqueNo + "\",");
                 BookingReq.Append("\"comment\": \"" + partner_comment + "\",");
                 BookingReq.Append("\"amount_sell_b2b2c\": \"" + SellingAmount + "\"");
