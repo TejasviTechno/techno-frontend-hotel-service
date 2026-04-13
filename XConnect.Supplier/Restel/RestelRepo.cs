@@ -2074,7 +2074,8 @@ namespace XConnect.Supplier.Restel
                // string MealId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["MealPlanCode"]);
                 string MealId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].MealPlan);
 
-                string ExternalReference = "BOOK_" + AgentUniqueNo + "_" + UniqueNo;
+               // string ExternalReference = "BOOK_" + AgentUniqueNo + "_" + UniqueNo;
+                string ExternalReference = bookRequest.BookRQ.InternalReference +"_"+ UniqueNo;
                // int NoOfNoghts = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["NoOfNight"]);
                 int NoOfNoghts = Convert.ToInt32(bookRequest.userCart.NoOfNight);
 
@@ -2143,7 +2144,8 @@ namespace XConnect.Supplier.Restel
                 BookRQ.Append(LeadPax.ToString());
                 BookRQ.Append("<observaciones></observaciones>");
                 BookRQ.Append("<num_mensaje/>");
-                BookRQ.Append("<num_expediente>11990</num_expediente>");
+               // BookRQ.Append("<num_expediente>11990</num_expediente>");
+                BookRQ.Append("<num_expediente>"+ ExternalReference + "</num_expediente>");//added 13april
                 BookRQ.Append("<forma_pago>25</forma_pago>");  //12 Hotel Payment  25 Credit 44 Prepayment 
                 BookRQ.Append("<tipo_targeta></tipo_targeta>");
                 BookRQ.Append("<num_targeta></num_targeta>");

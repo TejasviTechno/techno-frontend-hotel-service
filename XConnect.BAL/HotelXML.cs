@@ -47902,7 +47902,7 @@ new SqlParameter("@AgentId", AgentId),
                         string ReponseSPR = "";
                         string time = "";
                         string Error = "";
-                        string ReferenceNo = "";
+                        string ReferenceNo = bookRequest.BookRQ.InternalReference;
                         string AgentUniqueNo = tokenData.AgentCode;
                         bool isNonRefundable = false;
                         System.Diagnostics.Stopwatch timerSupp = new System.Diagnostics.Stopwatch();
@@ -49011,6 +49011,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 string WebSiteURL = Convert.ToString(XPDetails[0]["WebSiteURL"]);
                                                 //double Rate = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["Rate"]);
                                                 string Order_Booking_Id = UserCartDetailId;
+                                                Order_Booking_Id = Order_Booking_Id + "##" + bookRequest.BookRQ.InternalReference;//added 13april
                                                 int NoOfRoom = Convert.ToInt32(bookRequest.userCart.UserCartDetails.Count);
                                                 string EtgUserID = Convert.ToString(XPDetails[0]["UserID"]);
                                                 string Key = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserID + ":" + Password));
