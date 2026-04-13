@@ -11531,6 +11531,17 @@ new SqlParameter("@AgentId", AgentId),
                                         stage = APIName;
                                         break;
                                 }
+                                bool isapi1 = tokendata.IsFromAPI;
+                                string source = "";
+                                if (isapi1)
+                                {
+                                    source = "APIOut";
+                                }
+                                else
+                                {
+                                    source = "Web";
+                                }
+
                                 _analytic.PushHotelDetailsClientDataForAnalyticsAsyc(new AnalyticsData
                                 {
                                     Result = value,
@@ -11542,6 +11553,7 @@ new SqlParameter("@AgentId", AgentId),
                                     Description = ErrorCode,
                                     Errorcode = ErrorCode,
                                     Search_Key = Search_Key,
+                                    source = source
 
                                 });
                             }
