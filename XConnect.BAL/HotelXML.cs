@@ -63176,5 +63176,75 @@ new SqlParameter("@AgentId", AgentId),
 
         #endregion MobileTeamNewVersion
 
+        public async Task<string> RemoveAgentWiseSupplier(int AgentId)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]
+                {
+                new SqlParameter("@AgentId",AgentId)
+                };
+
+                String x = Convert.ToString(await _dlConnection.GetExecuteScalarQry_new("RemoveAgentWiseSupplier", para));
+
+                return "Delete SuccessFully";
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+                return "Error..!";
+            }
+
+        }
+        public async Task<List<GetRange>> GetRangeForAPI(GetRangeForAPI getRangeForAPI, int AgentId)
+        {
+            try
+            {
+
+                SqlParameter[] para = new SqlParameter[] {
+    new SqlParameter("@AgentId",AgentId),
+    new SqlParameter("@FromDate", getRangeForAPI.FromDate.ToString("yyyy-MM-dd")),
+    new SqlParameter("@ToDate",getRangeForAPI.ToDate.ToString("yyyy-MM-dd")),
+    new SqlParameter("@ChunkSize",100)
+    };
+                DataTable dt = await _dlConnection.GetDataTableByConnectionStringAsync("GetAgentChunksNew", para, _connectionStrings.ConnectionStringforlogtrack_APILogVM);
+                //dt.Columns["agentId"].ColumnName = "AgentId";
+                //dt.Columns["MaxId"].ColumnName = "MAX(Id)";
+                //dt.Columns["MinId"].ColumnName = "MIN(Id)";
+
+                List<GetRange> lst = HtmlExtensions.ToList<GetRange>(dt);
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return null;
+            }
+        }
+        public async Task<List<Agentlistlogs>> GetAgentListApiOutLogs(ApiOutLogs apiOutLogs, int AgentId)
+        {
+            try
+            {
+
+                SqlParameter[] para = new SqlParameter[] {
+    new SqlParameter("@AgentId",AgentId),
+    new SqlParameter("@FromDate", apiOutLogs.FromDate.ToString("yyyy-MM-dd")),
+    new SqlParameter("@ToDate",apiOutLogs.ToDate.ToString("yyyy-MM-dd")),
+    new SqlParameter("@fromids",apiOutLogs.fromids),
+    new SqlParameter("@toids",apiOutLogs.toids),
+    new SqlParameter("@ApiName",apiOutLogs.ApiName),
+    new SqlParameter("@HotelId","")
+    };
+                DataTable dt = await _dlConnection.GetDataTableByConnectionStringAsync("GetAgentListApiOutLogs_k_new", para, _connectionStrings.ConnectionStringforlogtrack_APILogVM);
+                List<Agentlistlogs> lst = HtmlExtensions.ToList<Agentlistlogs>(dt);
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return null;
+            }
+        }
+
     }
 }
