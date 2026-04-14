@@ -5487,5 +5487,129 @@ namespace XConnect.API.Controllers
 
         }
         #endregion MobileTeamNewVersion
+
+        [Route("RemoveAgentWiseSupplier")]
+        [HttpGet]
+        public async Task<IActionResult> RemoveAgentWiseSupplier()
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            try
+            {
+                int AgentId = await _authenticationTokenAgent.Authenticate_new();
+
+                if (Convert.ToBoolean(AgentId))
+                {
+                    String lstFiltOption = await _hotelXML.RemoveAgentWiseSupplier(AgentId);
+                    return Ok(lstFiltOption);
+                }
+                else
+                {
+                    timer.Stop();
+                    return NotFound(StatusCodes.Status401Unauthorized);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                timer.Stop();
+                await _exception.Error(ex);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [Route("GetRangeForAPI")]
+        [HttpPost]
+        public async Task<IActionResult> GetRangeForAPI(CommonRequest data)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            TokenData TokenData = new TokenData();
+
+            try
+            {
+                string IP = _platformService.GetIPAddress();
+                string userAgent = _platformService.GetBrowserInfo(_platformService.GetRequest());
+
+
+                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                if (Convert.ToBoolean(authData.tokenData.AgentId))
+                {
+                    GetRangeForAPI payload = Newtonsoft.Json.JsonConvert.DeserializeObject<GetRangeForAPI>(data.Request.ToString());
+                    List<GetRange> lstFiltOption = await _hotelXML.GetRangeForAPI(payload, authData.tokenData.AgentId);
+                    if (lstFiltOption != null)
+                    {
+                        timer.Stop();
+                        return Ok(lstFiltOption);
+                    }
+                    else
+                    {
+                        timer.Stop();
+                        return NotFound(StatusCodes.Status500InternalServerError);
+                    }
+                }
+                else
+                {
+                    timer.Stop();
+                    return NotFound(StatusCodes.Status401Unauthorized);
+                }
+            }
+            catch (Exception ex)
+            {
+                timer.Stop();
+                await _exception.Error(ex);
+                return NotFound(StatusCodes.Status500InternalServerError);
+
+            }
+
+        }
+
+        [Route("GetAgentListApiOutLogs")]
+        [HttpPost]
+        public async Task<IActionResult> GetAgentListApiOutLogs(CommonRequest data)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            TokenData TokenData = new TokenData();
+
+            try
+            {
+                string IP = _platformService.GetIPAddress();
+                string userAgent = _platformService.GetBrowserInfo(_platformService.GetRequest());
+
+
+                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                if (Convert.ToBoolean(authData.tokenData.AgentId))
+                {
+                    ApiOutLogs payload = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiOutLogs>(data.Request.ToString());
+                    List<Agentlistlogs> lstFiltOption = await _hotelXML.GetAgentListApiOutLogs(payload, authData.tokenData.AgentId);
+                    if (lstFiltOption != null)
+                    {
+                        timer.Stop();
+                        return Ok(lstFiltOption);
+                    }
+                    else
+                    {
+                        timer.Stop();
+                        return NotFound(StatusCodes.Status500InternalServerError);
+                    }
+                }
+                else
+                {
+                    timer.Stop();
+                    return NotFound(StatusCodes.Status401Unauthorized);
+                }
+            }
+            catch (Exception ex)
+            {
+                timer.Stop();
+                await _exception.Error(ex);
+                return NotFound(StatusCodes.Status500InternalServerError);
+
+            }
+
+        }
+
     }
 }

@@ -98,5 +98,10 @@ namespace XConnect.BAL.Interface
         //Task<CancelBookingResponse_newversion> Cancel_newversion_old(CancelBookingRequest_new cancelRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);
         Task<CancelBookingResponse_newversion1> Cancel_newversion(CancelBookingRequest_new cancelRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName);
 
+        Task<string> RemoveAgentWiseSupplier(int AgentId);
+
+        Task<List<GetRange>> GetRangeForAPI(GetRangeForAPI getRangeForAPI, int AgentId);
+        Task<List<Agentlistlogs>> GetAgentListApiOutLogs(ApiOutLogs apiOutLogs, int AgentId);
+
     }
 }

@@ -68,4 +68,46 @@ namespace XConnect.Models
         public decimal ExchangeRate { get; set; }
         public string CurrencyFullName { get; set; }
     }
+
+    #region Report
+    public class GetRangeForAPI
+    {
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public string ApiName { get; set; }
+    }
+
+    public class GetRange
+    {
+        public int AgentId { get; set; }
+        public Int64 MaxId { get; set; }
+        public Int64 MinId { get; set; }
+
+    }
+
+    public class ApiOutLogs
+    {
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public string fromids { get; set; }
+        public string toids { get; set; }
+        public string ApiName { get; set; }
+    }
+
+    public class Agentlistlogs
+    {
+        public int AgentID { get; set; }
+
+        public Int64 Id { get; set; }
+        public string Request { get; set; }
+        public string Response { get; set; }
+        public DateTime EntryDate { get; set; }
+        public string Token { get; set; }
+        public string ApiName { get; set; }
+        public string IpAddress { get; set; }
+        public string ElapsedTime { get; set; }
+        public string Provider { get; set; }
+    }
+
+    #endregion
 }

@@ -1765,5 +1765,70 @@ namespace XConnect.DAL
         }
         #endregion MobileTeamNewVersion
 
+        public async Task<object> GetExecuteScalarQry_new(string Qry, SqlParameter[] para)
+        {
+
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionStrings.ConnectionString))
+                {
+                    object obj = null;
+
+                    using (SqlCommand cmd = new SqlCommand(Qry, con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        foreach (SqlParameter par in para)
+                        {
+                            cmd.Parameters.Add(par);
+                        }
+
+                        await con.OpenAsync();
+
+                        obj = await cmd.ExecuteScalarAsync();
+                        return obj;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+
+        }
+        public async Task<DataTable> GetDataTableByConnectionStringAsync(string SPName, SqlParameter[] para, string connectionString)
+        {
+            DataTable dt = new DataTable();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(SPName, conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    if (para != null && para.Length > 0)
+                    {
+                        cmd.Parameters.AddRange(para);
+                    }
+
+                    await conn.OpenAsync();
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        dt.Load(reader);
+                    }
+                }
+            }
+
+            return dt;
+        }
+
+
+
     }
 }

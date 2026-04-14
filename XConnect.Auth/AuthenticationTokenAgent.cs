@@ -603,5 +603,22 @@ namespace Xconnect.Auth
 
             return saltSize;
         }
+
+        public async Task<int> Authenticate_new()
+        {
+            int agentid = 0;
+            try
+            {
+                TokenDetails _token = getTokenDetailsFromuserContext(_userContextAccessor);
+
+                agentid = Convert.ToInt32(_token.agentId);
+                return agentid;
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+            }
+            return agentid;
+        }
     }
 }
