@@ -63156,7 +63156,8 @@ new SqlParameter("@AgentId", AgentId),
     new SqlParameter("@AgentId",AgentId),
     new SqlParameter("@FromDate", getRangeForAPI.FromDate.ToString("yyyy-MM-dd")),
     new SqlParameter("@ToDate",getRangeForAPI.ToDate.ToString("yyyy-MM-dd")),
-    new SqlParameter("@ChunkSize",100)
+    new SqlParameter("@ChunkSize",100),
+     new SqlParameter("@APIName",getRangeForAPI.ApiName)
     };
                 DataTable dt = await _dlConnection.GetDataTableByConnectionStringAsync("GetAgentChunksNew", para, _connectionStrings.ConnectionStringforlogtrack_APILogVM);
                 //dt.Columns["agentId"].ColumnName = "AgentId";

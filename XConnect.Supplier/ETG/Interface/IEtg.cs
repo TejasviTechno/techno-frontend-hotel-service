@@ -30,7 +30,7 @@ namespace XConnect.Supplier.ETG.Interface
 
         Task<ETGPriceCheck> Get_OSTV_PriceCheck(DataSet dsCartDetails, DataRow[] Ostrovok_Details, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, bool isForBooking, string IsFor, string URl, TokenData TokenData, string xslRequest, string ResponseData, string order_id,string UserPlatform);
         Task<ETGPriceCheck> Get_OSTV_PriceCheck_newversion(BookRequest_newversion bookRequest, DataRow[] Ostrovok_Details, int i, int j, string UniqueNo, bool isForBooking, string IsFor, string URl, TokenData TokenData, string xslRequest, string ResponseData, string order_id, string UserPlatform);
-        Task<string> GetRatehawkRoomResponse(string strxmlRQRS, string strHost, string Key, string UniqueNo = "");
+        Task<string> GetRatehawkRoomResponse(string strxmlRQRS, string strHost, string Key, string UniqueNo = "",int Timeout=60000);
         Task<ResponseDto> GetETGRoomResponse(string strxmlRQRS, string strHost, string Key, string UniqueNo = "");
 
         string EtgBookingCancelRQ(string Id);
