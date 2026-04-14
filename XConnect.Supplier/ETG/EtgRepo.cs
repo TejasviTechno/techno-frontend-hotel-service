@@ -1960,7 +1960,7 @@ namespace XConnect.Supplier.ETG
                     #region Price Check RS
 
                     //PrebookResponseData = GetOstrovokRoomResponse(PrebookRQ, PrebookURL, Key, ref Error, UserCartDetailId);
-                    PrebookResponseData = await GetRatehawkRoomResponse(PrebookRQ, PrebookURL, Key, UserCartDetailId);
+                    PrebookResponseData = await GetRatehawkRoomResponse(PrebookRQ, PrebookURL, Key, UserCartDetailId,60000);
 
                     _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), UserCartDetailId, PrebookRQ, PrebookResponseData + Error, "After Hit Prebook Response", SupplierName, "Prebook Response Confirm", "-", "Withinearth");
 
@@ -2241,7 +2241,7 @@ namespace XConnect.Supplier.ETG
                     #region Price Check RS
 
                     //PrebookResponseData = GetOstrovokRoomResponse(PrebookRQ, PrebookURL, Key, ref Error, UserCartDetailId);
-                    PrebookResponseData = await GetRatehawkRoomResponse(PrebookRQ, PrebookURL, Key, UserCartDetailId);
+                    PrebookResponseData = await GetRatehawkRoomResponse(PrebookRQ, PrebookURL, Key, UserCartDetailId,60000);
 
                     _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), UserCartDetailId, PrebookRQ, PrebookResponseData + Error, "After Hit Prebook Response", SupplierName, "Prebook Response Confirm", "-", "Withinearth");
 
@@ -2446,7 +2446,7 @@ namespace XConnect.Supplier.ETG
             }
         }
 
-        public async Task<string> GetRatehawkRoomResponse(string strxmlRQRS, string strHost, string Key, string UniqueNo = "")
+        public async Task<string> GetRatehawkRoomResponse(string strxmlRQRS, string strHost, string Key, string UniqueNo = "",int Timeout=60000)
         {
 
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
@@ -2466,7 +2466,7 @@ namespace XConnect.Supplier.ETG
                                | SecurityProtocolType.Tls12;
                                //| SecurityProtocolType.Ssl3;
                 ServicePointManager.Expect100Continue = false;
-                Request.Timeout = 180000;
+                Request.Timeout = Timeout;
                 Request.UseDefaultCredentials = true;
                 Stream newStream = null;
                 byte[] data = Encoding.ASCII.GetBytes(strxmlRQRS);
@@ -2927,7 +2927,7 @@ namespace XConnect.Supplier.ETG
                     System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                     timerroomprocess.Start();
                     //ResponseData = GetOstrovokRoomResponse(xslRequest, URl, Key, ref Error, UniqueNo);
-                    ResponseData = await GetRatehawkRoomResponse(xslRequest, URl, Key, UniqueNo);
+                    ResponseData = await GetRatehawkRoomResponse(xslRequest, URl, Key, UniqueNo,120000);
                     eTGPriceCheck.RatehawkResponse = ResponseData;
                     timerroomprocess.Stop();
                     time = timerroomprocess.Elapsed.ToString();
