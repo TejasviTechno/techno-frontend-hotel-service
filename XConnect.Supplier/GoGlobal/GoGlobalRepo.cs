@@ -30,13 +30,15 @@ namespace XConnect.Supplier.GoGlobal
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
-        public GoGlobalRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings)
+        private readonly SupplierConfiguration _supplierConfig;//Added on 15-april-26
+        public GoGlobalRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _exception = exception;
             _keySettings = keySettings.Value;
+            _supplierConfig = supplierConfig.Value;
         }
 
         public void GetGoGlobalRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> GGDetails, List<SupplierSearchConfig> GGSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string citycode, int Hit, string Nationality, string Supplier, DataTable dtROE, bool SearchByOneID, TokenData tokenData)
@@ -103,7 +105,8 @@ namespace XConnect.Supplier.GoGlobal
                                     xhotels.RQRS = RQRS;
                                     xhotels.ReturnRooms = Convert.ToInt32(GGDetails[0].ReturnRooms);
                                     xhotels.TechName = Convert.ToString(GGDetails[0].TechName);
-                                    xhotels.Action = Convert.ToString(GoGlobalStaticInfo.AvailabilitySearch);
+                                    //xhotels.Action = Convert.ToString(GoGlobalStaticInfo.AvailabilitySearch);
+                                    xhotels.Action = Convert.ToString(_supplierConfig.GoGlobal.AvailabilitySearch);
                                     #endregion
                                     AllTask.Add(xhotels);
                                     //break; remove on 17-DEC-2024
@@ -145,7 +148,8 @@ namespace XConnect.Supplier.GoGlobal
                             xhotels.RQRS = RQRS;
                             xhotels.ReturnRooms = Convert.ToInt32(GGDetails[0].ReturnRooms);
                             xhotels.TechName = Convert.ToString(GGDetails[0].TechName);
-                            xhotels.Action = Convert.ToString(GoGlobalStaticInfo.AvailabilitySearch);
+                            //xhotels.Action = Convert.ToString(GoGlobalStaticInfo.AvailabilitySearch);
+                            xhotels.Action = Convert.ToString(_supplierConfig.GoGlobal.AvailabilitySearch);
 
                             #endregion
                             AllTask.Add(xhotels);
@@ -260,7 +264,8 @@ namespace XConnect.Supplier.GoGlobal
                                                                 xhotels.RQRS = RQRS;
                                                                 xhotels.ReturnRooms = Convert.ToInt32(GGDetails.ReturnRooms);
                                                                 xhotels.TechName = Convert.ToString(GGDetails.TechName);
-                                                                xhotels.Action = Convert.ToString(GoGlobalStaticInfo.AvailabilitySearch);
+                                                                //xhotels.Action = Convert.ToString(GoGlobalStaticInfo.AvailabilitySearch);
+                                                                xhotels.Action = Convert.ToString(_supplierConfig.GoGlobal.AvailabilitySearch);
                                                                 #endregion
                                                                 AllTask.Add(xhotels);
                                                                 //break; remove on 17-DEC-2024
@@ -304,7 +309,7 @@ namespace XConnect.Supplier.GoGlobal
                                                         xhotels.RQRS = RQRS;
                                                         xhotels.ReturnRooms = Convert.ToInt32(GGDetails.ReturnRooms);
                                                         xhotels.TechName = Convert.ToString(GGDetails.TechName);
-                                                        xhotels.Action = Convert.ToString(GoGlobalStaticInfo.AvailabilitySearch);
+                                                        xhotels.Action = Convert.ToString(_supplierConfig.GoGlobal.AvailabilitySearch);
 
                                                         #endregion
                                                         AllTask.Add(xhotels);
@@ -1401,6 +1406,99 @@ namespace XConnect.Supplier.GoGlobal
             return BookingREQ;
         }
 
+        public string GoGlobalBooking_newversion(int i, DataTable dtPassengers, BookRequest_newversion bookRequest, string UserName, string Password, string UserId, string UniqueNo, string AgentCode, string SpecialReqToPass)
+        {
+            StringBuilder Request = new StringBuilder();
+            string BookingREQ = "";
+            try
+            {
+                string InternalReference = "Book_" + AgentCode + "_" + UniqueNo;
+                Request.Append("<soap12:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:soap12='http://www.w3.org/2003/05/soap-envelope'>");
+                Request.Append("<soap12:Body>");
+                Request.Append("<MakeRequest xmlns='http://www.goglobal.travel/'>");
+                Request.Append("<requestType>2</requestType>");
+                Request.Append("<xmlRequest>");
+                Request.Append("<![CDATA[");
+                Request.Append("<Root>");
+                Request.Append("<Header>");
+                Request.Append("<Agency>" + UserId + "</Agency>");
+                Request.Append("<User>" + UserName + "</User>");
+                Request.Append("<Password>" + Password + "</Password>");
+                Request.Append("<Operation>BOOKING_INSERT_REQUEST</Operation>");
+                Request.Append("<OperationType>Request</OperationType>");
+                Request.Append("</Header>");
+                //Request.Append("<Main Version=\"2.0\">");
+                Request.Append("<Main Version=\"2.3\">");
+
+                Request.Append("<AgentReference>" + InternalReference + "</AgentReference>");
+
+                for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
+                {
+                    int RoomNo = Convert.ToInt32(j + 1);
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartID='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartId) + "' and RoomNo='" + RoomNo + "'";
+                    if (j == 0)
+                    {
+                        string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
+                        CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                        string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
+                        CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                        DateTime StartDate = DateTime.ParseExact(CheckIn, "yyyy-MM-dd", null);
+                        DateTime EndDate = DateTime.ParseExact(CheckOut, "yyyy-MM-dd", null);
+                        double NumberOfNights = (EndDate - StartDate).TotalDays;
+                        string HotelSearchCode = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
+                        Request.Append("<HotelSearchCode>" + HotelSearchCode + "</HotelSearchCode>");
+                        Request.Append("<ArrivalDate>" + CheckIn + "</ArrivalDate>");
+                        Request.Append("<Nights>" + NumberOfNights + "</Nights>");
+                        Request.Append("<NoAlternativeHotel>1</NoAlternativeHotel>");
+                        Request.Append("<Leader LeaderPersonID=\"" + 1 + "\"/>");
+                        Request.Append("<Rooms>");
+                    }
+                    DataTable dtnewpassanger = dtPassengers.DefaultView.ToTable();
+                    DataRow[] TTLAdult = dtnewpassanger.Select("PaxType='Adult'");
+                    Request.Append("<RoomType Adults=\"" + Convert.ToInt32(TTLAdult.Length) + "\">");
+                    Request.Append("<Room RoomID=\"" + RoomNo + "\">");
+                    for (int b = 0; b < dtnewpassanger.Rows.Count; b++)
+                    {
+                        if (Convert.ToString(dtnewpassanger.Rows[b]["PaxType"]) == "Adult")
+                        {
+                            Request.Append("<PersonName PersonID=\"" + (b + 1) + "\" Title=\"" + Convert.ToString(dtnewpassanger.Rows[b]["Prefix"]) + "\" FirstName=\"" + Convert.ToString(dtnewpassanger.Rows[b]["FirstName"]) + "\" LastName=\"" + Convert.ToString(dtnewpassanger.Rows[b]["LastName"]) + "\"/>");
+                        }
+                        else if (Convert.ToString(dtnewpassanger.Rows[b]["PaxType"]) == "Child")
+                        {
+                            int childage = Convert.ToInt32(dtnewpassanger.Rows[b]["ChildAge"]);
+                            Request.Append("<ExtraBed PersonID=\"" + (b + 1) + "\" FirstName=\"" + Convert.ToString(dtnewpassanger.Rows[b]["FirstName"]) + "\" LastName=\"" + Convert.ToString(dtnewpassanger.Rows[b]["LastName"]) + "\" ChildAge=\"" + childage + "\"/>");
+                        }
+                    }
+                    Request.Append("</Room>");
+                    Request.Append("</RoomType>");
+                }
+                Request.Append("</Rooms>");
+                string SpecialReq = "";
+                try
+                {
+                    if (!string.IsNullOrEmpty(SpecialReqToPass))
+                        Request.Append("<Remark>" + SpecialReqToPass + "</Remark>");
+                }
+                catch (Exception ex)
+                {
+                    _ = _exception.ErrorNew(ex, _LogAPI.Book);
+                }
+                Request.Append("</Main>");
+                Request.Append("</Root>");
+                Request.Append("]]>");
+                Request.Append("</xmlRequest>");
+                Request.Append("</MakeRequest>");
+                Request.Append("</soap12:Body>");
+                Request.Append("</soap12:Envelope>");
+                BookingREQ = Request.ToString();
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorNew(ex, _LogAPI.Book);
+                return BookingREQ;
+            }
+            return BookingREQ;
+        }
         public string VoucherBooking(string UserName, string Password, string UserId, string BookingCode)
         {
             StringBuilder Request = new StringBuilder();

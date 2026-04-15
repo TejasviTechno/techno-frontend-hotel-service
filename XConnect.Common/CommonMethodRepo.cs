@@ -56,6 +56,8 @@ namespace XConnect.CommonUtilities
         private readonly MongoSettings _mongoSettings;
         private readonly RabitMQSettings _rabitmqSettings;
         private readonly IAnalyticsSupplier _analyticSupplier;
+        private readonly SupplierConfiguration _supplierConfig;
+
 
 
         public static string SEARCH_KEY = "";
@@ -78,7 +80,7 @@ namespace XConnect.CommonUtilities
         private readonly IExceptionLogStore _stores;
         private readonly ILogger<CommonMethodRepo> _logger;
 
-        public CommonMethodRepo(IException exception, IDLConnection dlConnection, IMemoryCache cache, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IOptions<MongoSettings> mongoSettings, MongoDbFactoryNew factory, RabbitMQPublisher publisher, IOptions<RabitMQSettings> rabitmqSettings, IHttpClientFactory httpClientFactory, IExceptionLogStore stores, ILogger<CommonMethodRepo> logger, IAnalyticsSupplier analyticSupplier)
+        public CommonMethodRepo(IException exception, IDLConnection dlConnection, IMemoryCache cache, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IOptions<MongoSettings> mongoSettings, MongoDbFactoryNew factory, RabbitMQPublisher publisher, IOptions<RabitMQSettings> rabitmqSettings, IHttpClientFactory httpClientFactory, IExceptionLogStore stores, ILogger<CommonMethodRepo> logger, IAnalyticsSupplier analyticSupplier, IOptions<SupplierConfiguration> supplierConfig)
         {
             _exception = exception;
             _dlConnection = dlConnection;
@@ -105,6 +107,7 @@ namespace XConnect.CommonUtilities
             _stores = stores;
             _logger = logger;
             _analyticSupplier = analyticSupplier;
+            _supplierConfig = supplierConfig.Value;
         }
 
         //15-JAN-26
@@ -2852,17 +2855,23 @@ namespace XConnect.CommonUtilities
                     request.ContentType = "application/soap+xml; charset=utf-8";
                     request.Headers.Add("Accept-Encoding", "gzip");
                     if (Stage.ToLower() == "policy")
-                        request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.PriceBreakDown));
+                       // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.PriceBreakDown));
+                        request.Headers.Add("API-Operation", Convert.ToString(_supplierConfig.GoGlobal.PriceBreakDown));
                     else if (Stage.ToLower() == "checkprice")
-                        request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingValuation));
+                       // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingValuation));
+                        request.Headers.Add("API-Operation", Convert.ToString(_supplierConfig.GoGlobal.BookingValuation));
                     else if (Stage.ToLower() == "booking")
-                        request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingInsert));
+                        //request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingInsert));
+                        request.Headers.Add("API-Operation", Convert.ToString(_supplierConfig.GoGlobal.BookingInsert));
                     else if (Stage.ToLower() == "cancel")
-                        request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingCancellation));
+                       // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingCancellation));
+                        request.Headers.Add("API-Operation", Convert.ToString(_supplierConfig.GoGlobal.BookingCancellation));
                     else if (Stage.ToLower() == "voucher")
-                        request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.VoucherDetails));
+                       // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.VoucherDetails));
+                        request.Headers.Add("API-Operation", Convert.ToString(_supplierConfig.GoGlobal.VoucherDetails));
                     else if (Stage.ToLower() == "bookingstatus")
-                        request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingStatus));
+                        //request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingStatus));
+                        request.Headers.Add("API-Operation", Convert.ToString(_supplierConfig.GoGlobal.BookingStatus));
 
                     request.Headers.Add("API-AgencyID", UserId);
                 }

@@ -411,7 +411,9 @@ namespace XConnect.Markup
                         Supplier = "agoda";
                     if (Supplier.ToLower() == "getaroom_api")
                         Supplier = "getaroom";
-                    if (Supplier.IndexOf("iol_") >= 0)
+                    if (Supplier.Contains("iolv2"))
+                        Supplier = "IWTX2";
+                    else if (Supplier.Contains("iol"))
                         Supplier = "IWTX";
                     if (Supplier.IndexOf("hotelbeds") >= 0)
                         Supplier = "hotelbedsv1";

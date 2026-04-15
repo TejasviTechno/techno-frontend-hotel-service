@@ -182,11 +182,11 @@ namespace Xconnect.Auth
                 //if (IsMobileDevice == 1 || IP == "203.122.18.162" || IP == "203.122.10.18" || IP == "203.122.10.19" || IP == "103.19.248.44" || IP == "49.248.19.101" || IP == "::1" || IP== "52.210.41.136")// || (IsMobileDevice == 0 && IP == "103.19.248.157"))
                 if (ismobile != 1)
                     ismobile = listips.mainconfig.ismobile;
-                if (listips.IPsList.Count > 0 || ismobile == 1 || IP == "::1")
+                if (listips.IPsList.Count > 0 || ismobile == 1 || IP == "::1" || !_token.IsFromAPI)
 
                 {
                     List<IPWhitelist> ips = listips.IPsList.Where(X => X.IP == IP).ToList();
-                    if (ips.Count > 0 || ismobile == 1 || IP == "::1")
+                    if (ips.Count > 0 || ismobile == 1 || IP == "::1" || !_token.IsFromAPI)
                     {
                         //string Url = parts[Convert.ToInt32(_MainToken.URL)];
                         int agentid = Convert.ToInt32(_token.agentId);

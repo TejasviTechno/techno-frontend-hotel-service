@@ -1322,64 +1322,10 @@ namespace Xconnect.BLL
 
                     #region GetDataFromCache //RoomMapping
                     bool ActiveRoomMApping = false;
-                    bool isvervoRoomMapping = false; bool isGimoRoomMapping = false; int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
-                    #region Not Used
-                    //try
-                    //{
-                    //    string keydata = "GetActiveRoomMApping_AgentID_" + Convert.ToString(SearchPara.AgentID);
-                    //    DataSet dsActiveRoomMApping = new DataSet();
-                    //    if (!_cache.TryGetValue(keydata, out dsActiveRoomMApping) || advancedOptions.CustomerIpAddress == "777")
-                    //    {
-                    //        SqlParameter[] para = new SqlParameter[] {
-                    //    new SqlParameter("@AgentId",SearchPara.AgentID),
-                    //    };
-                    //        dsActiveRoomMApping = await _dlConnection.GetDataSet_Limit("GetActiveRoomMapping_Agent", para, 5);//@HID
-                    //        if (dsActiveRoomMApping.Tables[0].Rows.Count > 0)
-                    //        {
-                    //            var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    //       .SetAbsoluteExpiration(DateTime.Now.AddMinutes(5));  // Set cache to expire in 12 hours
-
-                    //            _cache.Set(keydata, dsActiveRoomMApping, cacheEntryOptions);
-                    //        }
-                    //    }
-
-                    //    //ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]); comment on 30May2025
-                    //    #region RoomMAppingConfig
-                    //    //This Region Add ON 30May2025
-
-                    //    ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]);
-                    //    if (!ActiveRoomMApping)
-                    //        ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[1].Rows[0]["IsGimoRoomMapping"]);
-
-                    //    if (ActiveRoomMApping)
-                    //    {
-                    //        isvervoRoomMapping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]);
-                    //        isGimoRoomMapping = Convert.ToBoolean(dsActiveRoomMApping.Tables[1].Rows[0]["IsGimoRoomMapping"]);
-                    //        if (isvervoRoomMapping)
-                    //            Roommapping = 1; //vervo
-
-                    //        if (isGimoRoomMapping)
-                    //            Roommapping = 2;  //Gimmo
-                    //    }
-
-                    //    #endregion RoomMAppingConfig
-                    //}
-                    //catch (Exception EA)
-                    //{
-                    //    await _exception.Error(EA);
-                    //    ActiveRoomMApping = false;
-                    //}
-                    #endregion
+                    int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
+                    
                     #endregion
 
-                    //if (ActiveRoomMApping && SearchPara.Filters.IsShowRooms == 1)
-                    //{
-                    //    finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode); //convert to final response //RoomMapping
-                    //}
-                    //else
-                    //{
-                    //    finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList(finalResponse, NewSearchKey, withcancellation); //convert to final response // No RoomMapping
-                    //}
                     if (Tokendata.AgentCode.ToLower() == "dag2") //Add On 17SEP2025
                     {
                         finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping
@@ -43006,8 +42952,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 #region Booking Response
                                                                                 if (IsErrors == false && IspolicyChange == false)
                                                                                 {
-                                                                                    //GGResponse = XMLHotelBookingCommon.AbreuOnlineResponse_Supplier(GoGlobalBookingRequest, Convert.ToString(SupplierDetails[0]["WebSiteURL"]), Convert.ToInt32(180000), SearchKey);
-
+                                                                                   
                                                                                     timerroomprocess.Start();
 
                                                                                     ResponseDto responseDto = await _commonMethod.AbreuOnlineResponse_Supplier(GoGlobalBookingRequest, Convert.ToString(SupplierDetails[0]["WebSiteURL"]), Convert.ToInt32(180000), SearchKey, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), Convert.ToString(SupplierDetails[0]["UserId"]), "booking");
@@ -52256,6 +52201,296 @@ new SqlParameter("@AgentId", AgentId),
                                     }
                                     break;
                                 #endregion
+                                #region "GoGlobal"
+                                case "goglobal":
+                                    try
+                                    {
+
+                                        for (int j = 0; j < 1; j++)//bcoz merge
+                                        {
+                                            if (XPDetails != null)
+                                            {
+                                                bookingStatus = 6;
+                                                bool IsErrors = false;
+                                                bool IspolicyChange = false;
+                                                string SpecialReqToPass = "";
+                                                double itemprice = 0;
+                                                //double CompanyBuyPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["Rate"]);
+                                                double CompanyBuyPrice = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].BaseServiceBuyingAmount);
+                                                UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                string UserId = Convert.ToString(XPDetails[0]["UserId"]);
+                                                string UserName = Convert.ToString(XPDetails[0]["UserName"]);
+                                                string Password = Convert.ToString(XPDetails[0]["Password"]);
+
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), "   IsError : " + Convert.ToString(IsErrors) + "    IspolicyChange : " + Convert.ToString(IspolicyChange), "Please check IsPriceUpdate, IsError, IspolicyChange Before booking", "Just Before Request hit booking PriceCheck", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "Withinearth");
+                                                
+                                                string GoGlobalBookingRequest = _goglobal.GoGlobalBooking_newversion(j, dtPassengers, bookRequest, UserName, Password, UserId, UniqueNo, tokenData.AgentCode, SpecialReqToPass);
+
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), GoGlobalBookingRequest, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "Withinearth");
+                                                string GGResponse = "";
+
+                                                #region Booking Response
+                                                if (IsErrors == false && IspolicyChange == false)
+                                                {
+                                                    System.Diagnostics.Stopwatch timerroomprocess_goglobal = new System.Diagnostics.Stopwatch();
+
+                                                    timerroomprocess_goglobal.Start();
+
+                                                    ResponseDto responseDto = await _commonMethod.AbreuOnlineResponse_Supplier(GoGlobalBookingRequest, Convert.ToString(XPDetails[0]["WebSiteURL"]), Convert.ToInt32(180000),bookRequest.SearchKey , Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), Convert.ToString(XPDetails[0]["UserId"]), "booking");
+                                                    GGResponse = responseDto.Response;
+                                                    Error = responseDto.Error;
+
+                                                    RequestSPR = GoGlobalBookingRequest;
+                                                    ReponseSPR = GGResponse;
+                                                    timerroomprocess_goglobal.Stop();
+                                                    time = timerroomprocess_goglobal.Elapsed.ToString();
+
+                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), GoGlobalBookingRequest, GGResponse + Error, "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "Withinearth");
+                                                   
+                                                }
+                                                #endregion
+
+                                                if (GGResponse == null || GGResponse.Trim() == string.Empty)
+                                                {
+                                                    bookingStatus = 2;
+                                                    
+                                                    if (isNonRefundable && Convert.ToInt32(XPDetails[0]["IsVeryNonrefundable"]) != 1)
+                                                        bookingStatus = 1;
+                                                    #region SupplierPR Booking
+                                                    if (bookingStatus == 6)
+                                                        responsetype = "Success";
+                                                    else
+                                                        responsetype = "GeneralError";
+
+                                                    try
+                                                    {
+                                                       // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, GoGlobalBookingRequest, GGResponse, Error);
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                    }
+                                                    #endregion
+                                                    //DataRow TLrow = dtAgentVoucher.NewRow();
+                                                    //TLrow["UserCartId"] = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]);
+                                                    //TLrow["UserCartDetailId"] = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]);
+                                                    //TLrow["AgentVoucherNo"] = "";
+                                                    //TLrow["XMLRequest"] = GoGlobalBookingRequest;
+                                                    //TLrow["XMLResponse"] = GGResponse;
+                                                    //TLrow["SupplierName"] = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]);
+                                                    //TLrow["RoomStatus"] = bookingStatus;
+                                                    //TLrow["PackageId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["PackageId"]);
+                                                    //dtAgentVoucher.Rows.Add(TLrow);
+                                                    #region BookingData
+
+                                                    //List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
+                                                    AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                    agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                    agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                    agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                    agentVoucher.XMLRequest = GoGlobalBookingRequest;
+                                                    agentVoucher.XMLResponse = GGResponse;
+                                                    agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                    agentVoucher.SupplierName = suppliername;
+                                                    agentVouchers.Add(agentVoucher);
+                                                    //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                    bookResponse_1.agentVouchers = agentVouchers;
+                                                    #endregion
+                                                }
+                                                else
+                                                {
+                                                    string Remark = "";
+
+                                                    try
+                                                    {
+
+                                                        if (GGResponse.Contains("Category"))
+                                                        {
+                                                            string data = GGResponse.Substring(GGResponse.IndexOf("Category"), GGResponse.IndexOf("PersonName") - GGResponse.IndexOf("Category")) + "PersonName";
+                                                            GGResponse = GGResponse.Replace(data, "&gt;&lt;PersonName");
+
+                                                        }
+                                                        string decodedXml = GGResponse.Replace("&amp;", "&").Replace("&lt;", "<").Replace("&gt;", ">").Replace("&quot;", "\"").Replace("&apos;", " ");
+                                                        GGResponse = decodedXml;
+                                                        DataSet GGData = _commonMethod.GetDataSetFromXMLString(GGResponse);
+                                                        if (GGData.Tables.Contains("Main") == true)
+                                                        {
+                                                            if (GGData.Tables["Main"].Rows.Count > 0)
+                                                            {
+                                                                if (GGData.Tables["Main"].Columns.Contains("Remark"))
+                                                                {
+                                                                    Remark = Convert.ToString(GGData.Tables["Main"].Rows[0]["Remark"]);
+                                                                }
+                                                                string BStatus = Convert.ToString(GGData.Tables["Main"].Rows[0]["BookingStatus"]);
+                                                                string GoBookingCode = Convert.ToString(GGData.Tables["Main"].Rows[0]["GoBookingCode"]);
+                                                                string GoReference = Convert.ToString(GGData.Tables["Main"].Rows[0]["GoReference"]);
+
+                                                                string SupplierReferenceNumber = "";
+                                                                try
+                                                                {
+                                                                    string VoucherRequest = _goglobal.VoucherBooking(UserName, Password, UserId, GoBookingCode);
+                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), VoucherRequest, "-", "Before Request hit Voucher booking (AfterBookingRequest)", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "RaynaB2B");
+                                                                    
+                                                                    ResponseDto responseDto1 = await _commonMethod.AbreuOnlineResponse_Supplier(VoucherRequest, Convert.ToString(XPDetails[0]["WebSiteURL"]), Convert.ToInt32(180000), bookRequest.SearchKey, "goglobal", UserId, "voucher");
+                                                                    string VoucherResponse = responseDto1.Response;
+                                                                    Error = responseDto1.Error;
+
+                                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), VoucherRequest, VoucherResponse + Error, "After Request hit Voucher booking (AfterBookingRequest)", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "RaynaB2B");
+                                                                    RequestSPR = RequestSPR + "#VoucherRequest= " + VoucherRequest;
+                                                                    ReponseSPR = ReponseSPR + "#VoucherResponse= " + VoucherResponse;
+                                                                    decodedXml = VoucherResponse.Replace("&amp;", "&").Replace("&lt;", "<").Replace("&gt;", ">").Replace("&quot;", "\"").Replace("&apos;", " ");
+                                                                    string VCRResponse = decodedXml;
+                                                                    DataSet VCRData = _commonMethod.GetDataSetFromXMLString(VCRResponse);
+                                                                    if (VCRData.Tables.Contains("Main") == true)
+                                                                    {
+                                                                        if (VCRData.Tables["Main"].Rows.Count > 0)
+                                                                        {
+                                                                            if (VCRData.Tables["Main"].Columns.Contains("Remark"))
+                                                                            {
+                                                                                Remark = Remark + " " + Convert.ToString(VCRData.Tables["Main"].Rows[0]["Remark"]);
+                                                                            }
+                                                                            SupplierReferenceNumber = Convert.ToString(VCRData.Tables["Main"].Rows[0]["SupplierReferenceNumber"]);
+                                                                        }
+                                                                    }
+                                                                }
+                                                                catch (Exception ex)
+                                                                {
+                                                                    _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                                }
+
+                                                                AgentVoucherNo = GoBookingCode + "|" + GoReference + "|" + SupplierReferenceNumber;
+
+                                                                if (BStatus.ToLower() == "rq" || BStatus.ToLower() == "rs")
+                                                                {
+                                                                    #region Check Booking Status
+                                                                    try
+                                                                    {
+                                                                        string BookingStatusRQ = _goglobal.GOGlobalBookingStatusRequest(GoBookingCode, UserName, Password, UserId);
+                                                                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingStatusRQ, "-", "Before Request hit BookingStatus", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "RaynaB2B");
+                                                                        
+                                                                        ResponseDto responseDto3 = await _commonMethod.AbreuOnlineResponse_Supplier(BookingStatusRQ, Convert.ToString(XPDetails[0]["WebSiteURL"]), Convert.ToInt32(180000), bookRequest.SearchKey, "goglobal", UserId, "bookingstatus");
+                                                                        string BookingStatusRS = responseDto3.Response;
+                                                                        Error = responseDto3.Error;
+
+
+                                                                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingStatusRQ, BookingStatusRS + Error, "After Request hit BookingStatus", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "RaynaB2B");
+                                                                        RequestSPR = RequestSPR + "#BookingStatusRQ= " + BookingStatusRQ;
+                                                                        ReponseSPR = ReponseSPR + "#BookingStatusRS= " + BookingStatusRS;
+                                                                        if (BookingStatusRS == null || BookingStatusRS.Trim() == string.Empty)
+                                                                        {
+                                                                            bookingStatus = 2;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            string decodedXml1 = BookingStatusRS.Replace("&amp;", "&").Replace("&lt;", "<").Replace("&gt;", ">").Replace("&quot;", "\"").Replace("&apos;", " ");
+                                                                            BookingStatusRS = decodedXml1;
+                                                                            DataSet GGStatusData = _commonMethod.GetDataSetFromXMLString(BookingStatusRS);
+                                                                            if (GGStatusData.Tables.Contains("GoBookingCode"))
+                                                                            {
+                                                                                string BKStatus = Convert.ToString(GGStatusData.Tables["GoBookingCode"].Rows[0]["Status"]);
+                                                                                bookingStatus = _goglobal.GoGlobalBookingStatus(BKStatus);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    catch (Exception ex)
+                                                                    {
+                                                                        _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                                    }
+
+                                                                    #endregion
+                                                                }
+                                                                else
+                                                                {
+                                                                    bookingStatus = _goglobal.GoGlobalBookingStatus(BStatus);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                    }
+                                                    #region SupplierPR Booking
+                                                    if (bookingStatus == 6)
+                                                        responsetype = "Success";
+                                                    else
+                                                        responsetype = "GeneralError";
+
+                                                    try
+                                                    {
+                                                       // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, GoGlobalBookingRequest, GGResponse, Error);
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                    }
+                                                    #endregion
+                                                    //DataRow TLrow = dtAgentVoucher.NewRow();
+                                                    //TLrow["UserCartId"] = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]);
+                                                    //TLrow["UserCartDetailId"] = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]);
+                                                    //TLrow["AgentVoucherNo"] = AgentVoucherNo;
+                                                    //TLrow["XMLRequest"] = GoGlobalBookingRequest;
+                                                    //TLrow["XMLResponse"] = GGResponse;
+                                                    //TLrow["SupplierName"] = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]);
+                                                    //TLrow["RoomStatus"] = bookingStatus;
+                                                    //TLrow["PackageId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["PackageId"]);
+                                                    //TLrow["TicketNumber"] = Remark;
+                                                    //dtAgentVoucher.Rows.Add(TLrow);
+
+                                                    #region BookingData
+                                                    AgentVoucher agentVoucher = new AgentVoucher();
+                                                    agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                    agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                    agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                    agentVoucher.XMLRequest = GoGlobalBookingRequest;
+                                                    agentVoucher.XMLResponse = GGResponse;
+                                                    agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                    agentVoucher.SupplierName = suppliername;
+                                                    agentVouchers.Add(agentVoucher);
+                                                    bookResponse_1.agentVouchers = agentVouchers;
+                                                    #endregion
+                                                }
+                                            }
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        #region SupplierPerformanceReport Catch
+                                        try
+                                        {
+                                            Error = ex.Message + ex.StackTrace.ToString();
+                                            responsetype = "GeneralError";
+                                            time = "00:00:00.000000";
+                                            // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
+                                            // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+
+                                            #region BookingData
+                                            AgentVoucher agentVoucher = new AgentVoucher();
+                                            agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].UserCartId);
+                                            agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].UserCartDetailId);
+                                            agentVoucher.AgentVoucherNo = "";
+                                            agentVoucher.XMLRequest = "";
+                                            agentVoucher.XMLResponse = "";
+                                            agentVoucher.RoomStatus = Convert.ToString("2");
+                                            agentVoucher.SupplierName = suppliername;
+                                            agentVouchers.Add(agentVoucher);
+                                            bookResponse_1.agentVouchers = agentVouchers;
+                                            #endregion
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                        }
+                                        #endregion
+                                        _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                    }
+
+                                    break;
+                                #endregion
+
+
 
 
 
