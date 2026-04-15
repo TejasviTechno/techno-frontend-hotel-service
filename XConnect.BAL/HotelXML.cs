@@ -39278,7 +39278,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                     if (isNonRefundable && Convert.ToInt32(SupplierDetailsCommon[0]["IsVeryNonrefundable"]) != 1)
                                                                                         bookingStatus = 1;
 
-                                                                                    AgentVoucherNo = "-";
+                                                                                    AgentVoucherNo = " ";
                                                                                     #region SupplierPR Booking
                                                                                     if (bookingStatus == 6)
                                                                                         responsetype = "Success";
@@ -40331,7 +40331,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                        AgentVoucherNo = "-";
+                                                                                        AgentVoucherNo = " ";
                                                                                         bookingStatus = 2;
                                                                                         dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), AgentVoucherNo, MercanBookReq, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus));
                                                                                     }
@@ -44356,7 +44356,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 {
                                                                                     responsetype = "GeneralError";
                                                                                     bookingStatus = 2;
-                                                                                    AgentVoucherNo = "-";
+                                                                                    AgentVoucherNo = " ";
                                                                                     dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), AgentVoucherNo, PkfareBookingReq, PkfareBookingRes, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                                                 }
                                                                                 else
@@ -44395,7 +44395,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                                     {
                                                                                                         responsetype = "GeneralError";
                                                                                                         bookingStatus = 2;
-                                                                                                        AgentVoucherNo = "-";
+                                                                                                        AgentVoucherNo = " ";
                                                                                                         dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), AgentVoucherNo, PkfareBookingReq, PkfareBookingRes, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                                                                     }
 
@@ -44404,7 +44404,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                                 {
                                                                                                     responsetype = "GeneralError";
                                                                                                     bookingStatus = 2;
-                                                                                                    AgentVoucherNo = "-";
+                                                                                                    AgentVoucherNo = " ";
                                                                                                     dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), AgentVoucherNo, PkfareBookingReq, PkfareBookingRes, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                                                                 }
 
@@ -44419,7 +44419,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                         catch (Exception ex)
                                                                                         {
                                                                                             bookingStatus = 2;
-                                                                                            AgentVoucherNo = "-";
+                                                                                            AgentVoucherNo = " ";
                                                                                             _ = _exception.Error(ex);
 
                                                                                             dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), AgentVoucherNo, PkfareBookingReq, PkfareBookingRes, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
@@ -44506,7 +44506,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 {
                                                                                     responsetype = "GeneralError";
                                                                                     bookingStatus = 2;
-                                                                                    AgentVoucherNo = "-";
+                                                                                    AgentVoucherNo = " ";
                                                                                     dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), AgentVoucherNo, letsflyBookingReq, LetsFlyBookingRes, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                                                 }
                                                                                 else
@@ -44563,7 +44563,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                                     {
                                                                                                         responsetype = "GeneralError";
                                                                                                         bookingStatus = 2;
-                                                                                                        AgentVoucherNo = "-";
+                                                                                                        AgentVoucherNo = "";
                                                                                                         dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), AgentVoucherNo, letsflyBookingReq, LetsFlyBookingRes, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                                                                     }
 
@@ -44572,7 +44572,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                                 {
                                                                                                     responsetype = "GeneralError";
                                                                                                     bookingStatus = 2;
-                                                                                                    AgentVoucherNo = "-";
+                                                                                                    AgentVoucherNo = " ";
                                                                                                     dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), AgentVoucherNo, letsflyBookingReq, LetsFlyBookingRes, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                                                                 }
 
@@ -44587,7 +44587,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                         catch (Exception ex)
                                                                                         {
                                                                                             bookingStatus = 2;
-                                                                                            AgentVoucherNo = "-";
+                                                                                            AgentVoucherNo = " ";
                                                                                             _ = _exception.Error(ex);
 
                                                                                             dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), AgentVoucherNo, letsflyBookingReq, LetsFlyBookingRes, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
@@ -45116,7 +45116,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                         responsetype = "GeneralError";
                                                                                         bookingStatus = 1;
                                                                                     }
-                                                                                    AgentVoucherNo = "-";
+                                                                                    AgentVoucherNo = " ";
                                                                                     dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), bookingStatus == 2 ? "Rejected" : AgentVoucherNo, HotelTraderBookingRequest, BookingResponse, Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), bookingStatus, voucherpackageid));
                                                                                 }
                                                                                 else
@@ -45248,7 +45248,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                     if (isNonRefundable && Convert.ToInt32(SupplierDetailsCommon[0]["IsVeryNonrefundable"]) != 1)
                                                                                         bookingStatus = 2;
 
-                                                                                    AgentVoucherNo = "-";
+                                                                                    AgentVoucherNo = " ";
                                                                                     dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), bookingStatus == 2 ? "Rejected" : AgentVoucherNo, WebHotelierBookingRequest, BookingResponse, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                                                 }
                                                                                 else
@@ -46791,7 +46791,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                     if (isNonRefundable && Convert.ToInt32(hyperguestDetails[0]["IsVeryNonrefundable"]) != 1)
                                                                                         bookingStatus = 1;
 
-                                                                                    AgentVoucherNo = "-";
+                                                                                    AgentVoucherNo = " ";
                                                                                     dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), bookingStatus == 2 ? "Rejected" : AgentVoucherNo, hyperguestBookingRequest, BookingResponse, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                                                                 }
                                                                                 else
@@ -49593,7 +49593,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 {
                                                     responsetype = "GeneralError";
                                                     bookingStatus = 2;
-                                                    AgentVoucherNo = "-";
+                                                    AgentVoucherNo = " ";
 
                                                     #region BookingData
 
@@ -49677,7 +49677,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                     {
                                                                         responsetype = "GeneralError";
                                                                         bookingStatus = 2;
-                                                                        AgentVoucherNo = "-";
+                                                                        AgentVoucherNo = " ";
                                                                         #region BookingData
                                                                         AgentVoucher agentVoucher = new AgentVoucher();
                                                                         agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
@@ -49698,7 +49698,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                 {
                                                                     responsetype = "GeneralError";
                                                                     bookingStatus = 2;
-                                                                    AgentVoucherNo = "-";
+                                                                    AgentVoucherNo = " ";
                                                                     #region BookingData
                                                                     AgentVoucher agentVoucher = new AgentVoucher();
                                                                     agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
@@ -49737,7 +49737,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         catch (Exception ex)
                                                         {
                                                             bookingStatus = 2;
-                                                            AgentVoucherNo = "-";
+                                                            AgentVoucherNo = " ";
                                                             _ = _exception.Error(ex);
 
                                                             #region BookingData
