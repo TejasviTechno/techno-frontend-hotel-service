@@ -15207,6 +15207,7 @@ new SqlParameter("@AgentId", AgentId),
             try
             {
                 string SearchKey = prebookRQ.Searchkey;
+
                 int AgentId = tokenData.AgentId;
                 int giataSequence_RQ = Convert.ToInt32(prebookRQ.HotelOption.HotelOptionId.Split('|')[Convert.ToInt16(_cacheHotelOption.giataSeq)]);
                 string OwnsystemHotelId_RQ = prebookRQ.HotelOption.HotelOptionId.Split('|')[Convert.ToInt16(_cacheHotelOption.ownhotelid)];
@@ -15225,6 +15226,7 @@ new SqlParameter("@AgentId", AgentId),
                     return preBookResponse_1;
                 }
                 HotelSearchParameter para = finalResponse.AvailabilityRS.SearchKey.DecryptSearchKey();
+                para.SearchKey = SearchKey;
                 timerPreBook.Stop();
                 PreBookTime = PreBookTime + ",| After LoadHotelfromMainCache time:" + timerPreBook.Elapsed.ToString();
                 timerPreBook.Restart();
