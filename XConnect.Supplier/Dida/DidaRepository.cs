@@ -1940,8 +1940,8 @@ namespace Xconnect.Expedia
                 string checkin = checkInDate.ToString("yyyy-MM-dd");
                 string checkout = checkOutDate.ToString("yyyy-MM-dd");
 
-                string AgentReference = bookRequest.BookRQ.InternalReference + "_" + UniqueNo;
-                //string AgentReference = bookRequest.BookRQ.InternalReference + "_" + Convert.ToString(AgentCode + "_" + UniqueNo);
+               // string AgentReference = bookRequest.BookRQ.InternalReference + "_" + UniqueNo;
+                string AgentReference = bookRequest.BookRQ.InternalReference + "_" + Convert.ToString(AgentCode + "_" + UniqueNo);
                 string firstName = ""; string lastName = ""; string title = "";
                 string BookingRQ = "";
 
