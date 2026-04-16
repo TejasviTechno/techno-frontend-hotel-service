@@ -11657,17 +11657,18 @@ new SqlParameter("@AgentId", AgentId),
                 }
 
                 // Return the compressed content
-                if (_keySettings.IsActivejsonfile)
+                if (!_keySettings.IsActivejsonfile)
+                {
+                    return new FileContentResult(compressedContent, mediaType);
+
+                }
+                else
                 {
                     return new FileContentResult(compressedContent, mediaType)
                     {
                         FileDownloadName = $"{APIName}.json"
 
                     };
-                }
-                else
-                {
-                    return new FileContentResult(compressedContent, mediaType);
                 }
 
 
