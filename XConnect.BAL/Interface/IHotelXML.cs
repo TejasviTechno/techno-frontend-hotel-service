@@ -103,5 +103,7 @@ namespace XConnect.BAL.Interface
         Task<List<GetRange>> GetRangeForAPI(GetRangeForAPI getRangeForAPI, int AgentId);
         Task<List<Agentlistlogs>> GetAgentListApiOutLogs(ApiOutLogs apiOutLogs, int AgentId);
 
+        Task<List<Supplierlogs>> GetApiOutLogs(ApiRequest apiRequest);
+
     }
 }
