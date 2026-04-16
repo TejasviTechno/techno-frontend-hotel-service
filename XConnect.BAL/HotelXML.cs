@@ -1321,6 +1321,8 @@ namespace Xconnect.BLL
 
 
                     #region GetDataFromCache //RoomMapping
+
+                    
                     bool ActiveRoomMApping = false;
                     int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
                     
@@ -11632,13 +11634,18 @@ new SqlParameter("@AgentId", AgentId),
                 //    jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(value, settings);
                 //}
 
+                var bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
 
-                // Choose compression method
-                string compressionMethod = "deflate"; // Or "gzip" if needed
+                // Return the compressed content
+                //if (!_keySettings.IsActivejsonfile)
+                if(false)
+                {
+
+                    // Choose compression method
+                    string compressionMethod = "deflate"; // Or "gzip" if needed
 
                 // Serialize the value into a JSON string
                 //var jsonString = System.Text.Json.JsonSerializer.Serialize<T>(value);
-                var bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
 
                 // Compress the content
                 var compressedContent = Compress(bytes, compressionMethod);
@@ -11656,19 +11663,59 @@ new SqlParameter("@AgentId", AgentId),
                     context.Response.Headers["Client-IP"] = IP;
                 }
 
-                // Return the compressed content
-                if (!_keySettings.IsActivejsonfile)
-                {
-                    return new FileContentResult(compressedContent, mediaType);
-
-                }
-                else
-                {
+                
                     return new FileContentResult(compressedContent, mediaType)
                     {
                         FileDownloadName = $"{APIName}.json"
 
                     };
+                }
+                else
+                {
+                    // return new FileContentResult(compressedContent, mediaType);
+
+                    string acceptEncoding = context.Request.Headers["Accept-Encoding"].ToString();
+                      string compressionMethod = "none";
+                    if (!string.IsNullOrEmpty(acceptEncoding))
+                    {
+                        if (acceptEncoding.Contains("gzip", StringComparison.OrdinalIgnoreCase))
+                            compressionMethod = "gzip";
+                        else if (acceptEncoding.Contains("deflate", StringComparison.OrdinalIgnoreCase))
+                            compressionMethod = "deflate";
+                        else if (acceptEncoding.Contains("br", StringComparison.OrdinalIgnoreCase))
+                            compressionMethod = "br";
+                        else if (acceptEncoding.Contains("zstd", StringComparison.OrdinalIgnoreCase))
+                            compressionMethod = "zstd";
+                        else
+                            compressionMethod = "gzip";
+                    }
+                    else
+                        compressionMethod = "deflate";
+
+
+
+                    // Compress if needed
+                   byte[]  compressedContent = bytes;
+                    if (compressionMethod != "none")
+                    {
+                        compressedContent = CompressNew(bytes, compressionMethod); //ZLIB-wrapped DEFLATE (RFC 1950)
+                    }
+                    context.Response.Headers["Content-Encoding"] = compressionMethod;
+                    context.Response.Headers["Content-Type"] = mediaType;
+                    context.Response.Headers["Custom-ElapsedTime"] = ElapsedTime;
+                    context.Response.Headers["ErrorCode"] = ErrorCode;
+                    context.Response.Headers["CityId"] = CityId;
+                    context.Response.StatusCode = StatusCode;
+                    if (!string.IsNullOrWhiteSpace(IP))
+                    {
+                        context.Response.Headers["Client-IP"] = IP;
+                    }
+                    // Return the compressed content
+                    return new FileContentResult(compressedContent, mediaType)
+                    {
+                        FileDownloadName = $"{APIName}.json"
+                    };
+
                 }
 
 
@@ -11683,6 +11730,77 @@ new SqlParameter("@AgentId", AgentId),
                     StatusCode = 500
                 };
             }
+        }
+        public byte[] CompressNew(byte[] input, string compressionMethod) //New Added on 10-FEB-26
+        {
+            if (compressionMethod.Equals("gzip", StringComparison.OrdinalIgnoreCase))
+            {
+                // GZip compression
+                using (var ms = new MemoryStream())
+                {
+                    using (var gzip = new GZipStream(ms, CompressionLevel.Fastest, leaveOpen: true))
+                    {
+                        gzip.Write(input, 0, input.Length);
+                    }
+                    return ms.ToArray();
+                }
+            }
+            else if (compressionMethod.Equals("deflate", StringComparison.OrdinalIgnoreCase))
+            {
+                // ZLIB-wrapped DEFLATE (RFC 1950)
+                using (var ms = new MemoryStream())
+                {
+                    // 1. Write ZLIB header (default compression)
+                    ms.WriteByte(0x78);
+                    ms.WriteByte(0x9C);
+
+
+
+                    // 2. Compress raw DEFLATE
+                    using (var deflate = new DeflateStream(ms, CompressionLevel.Fastest, leaveOpen: true))
+                    {
+                        deflate.Write(input, 0, input.Length);
+                    }
+
+
+
+                    // 3. Calculate Adler-32 checksum
+                    uint adler = Adler32(input);
+
+
+
+                    // 4. Write checksum (big-endian)
+                    ms.WriteByte((byte)((adler >> 24) & 0xFF));
+                    ms.WriteByte((byte)((adler >> 16) & 0xFF));
+                    ms.WriteByte((byte)((adler >> 8) & 0xFF));
+                    ms.WriteByte((byte)(adler & 0xFF));
+
+
+
+                    return ms.ToArray();
+                }
+            }
+            else
+            {
+                throw new NotSupportedException($"Compression method '{compressionMethod}' is not supported.");
+            }
+        }
+        private uint Adler32(byte[] data) //New Added on 10-FEB-26
+        {
+            const uint MOD_ADLER = 65521;
+            uint a = 1, b = 0;
+
+
+
+            foreach (var c in data)
+            {
+                a = (a + c) % MOD_ADLER;
+                b = (b + a) % MOD_ADLER;
+            }
+
+
+
+            return (b << 16) | a;
         }
 
 
