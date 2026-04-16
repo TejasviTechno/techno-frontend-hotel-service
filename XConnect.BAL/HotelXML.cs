@@ -15227,6 +15227,7 @@ new SqlParameter("@AgentId", AgentId),
                 }
                 HotelSearchParameter para = finalResponse.AvailabilityRS.SearchKey.DecryptSearchKey();
                 para.SearchKey = SearchKey;
+                //Added comment in feature/jay
                 timerPreBook.Stop();
                 PreBookTime = PreBookTime + ",| After LoadHotelfromMainCache time:" + timerPreBook.Elapsed.ToString();
                 timerPreBook.Restart();
