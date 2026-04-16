@@ -48402,7 +48402,7 @@ new SqlParameter("@AgentId", AgentId),
                                         agentVoucher.AgentVoucherNo = "";
                                         agentVoucher.XMLRequest = "";
                                         agentVoucher.XMLResponse = "";
-                                        agentVoucher.RoomStatus = Convert.ToString(2);
+                                        agentVoucher.RoomStatus = Convert.ToString(1);
                                         agentVoucher.SupplierName = suppliername;
                                         agentVouchers.Add(agentVoucher);
                                         //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
@@ -48685,7 +48685,7 @@ new SqlParameter("@AgentId", AgentId),
                                         agentVoucher.AgentVoucherNo = "";
                                         agentVoucher.XMLRequest = DidaBookRequest;
                                         agentVoucher.XMLResponse = Error;
-                                        agentVoucher.RoomStatus = Convert.ToString(2);
+                                        agentVoucher.RoomStatus = Convert.ToString(1);
                                         agentVoucher.SupplierName = suppliername;
                                         agentVouchers.Add(agentVoucher);
                                         //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
