@@ -108,6 +108,30 @@ namespace XConnect.Models
         public string ElapsedTime { get; set; }
         public string Provider { get; set; }
     }
+    public class Supplierlogs
+    {
+        // public int AgentID { get; set; }
+
+        public Int64 Id { get; set; }
+        public string Request { get; set; }
+        public string Response { get; set; }
+
+        public string ErrorCode { get; set; }
+        //public string Token { get; set; }
+        //public string ApiName { get; set; }
+        //public string IpAddress { get; set; }
+        //public string ElapsedTime { get; set; }
+        public string Refno { get; set; }
+        public string Provider { get; set; }
+        public DateTime EntryDate { get; set; }
+    }
+    public class ApiRequest
+    {
+
+        public string ReferenceNo { get; set; }
+        public string SupplierType { get; set; }
+        public string ApiName { get; set; }
+    }
 
     #endregion
 }
