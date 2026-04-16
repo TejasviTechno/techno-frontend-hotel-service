@@ -1321,6 +1321,8 @@ namespace Xconnect.BLL
 
 
                     #region GetDataFromCache //RoomMapping
+
+                    
                     bool ActiveRoomMApping = false;
                     int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
                     
@@ -11635,7 +11637,8 @@ new SqlParameter("@AgentId", AgentId),
                 var bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
 
                 // Return the compressed content
-                if (!_keySettings.IsActivejsonfile)
+                //if (!_keySettings.IsActivejsonfile)
+                if(false)
                 {
 
                     // Choose compression method
@@ -11679,11 +11682,12 @@ new SqlParameter("@AgentId", AgentId),
                             compressionMethod = "gzip";
                         else if (acceptEncoding.Contains("deflate", StringComparison.OrdinalIgnoreCase))
                             compressionMethod = "deflate";
+                        else if (acceptEncoding.Contains("br", StringComparison.OrdinalIgnoreCase))
+                            compressionMethod = "br";
+                        else if (acceptEncoding.Contains("zstd", StringComparison.OrdinalIgnoreCase))
+                            compressionMethod = "zstd";
                         else
-                            compressionMethod = "deflate";
-
-
-
+                            compressionMethod = "gzip";
                     }
                     else
                         compressionMethod = "deflate";
