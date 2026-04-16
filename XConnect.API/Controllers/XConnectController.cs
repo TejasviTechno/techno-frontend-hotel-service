@@ -5624,8 +5624,8 @@ namespace XConnect.API.Controllers
                 string userAgent = _platformService.GetBrowserInfo(_platformService.GetRequest());
 
 
-                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
-                if (Convert.ToBoolean(authData.tokenData.AgentId))
+                //AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                //if (Convert.ToBoolean(authData.tokenData.AgentId))
                 {
                     ApiRequest payload = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiRequest>(data.Request.ToString());
                     List<Supplierlogs> lstFiltOption = await _hotelXML.GetApiOutLogs(payload);
@@ -5640,11 +5640,11 @@ namespace XConnect.API.Controllers
                         return NotFound(StatusCodes.Status500InternalServerError);
                     }
                 }
-                else
-                {
-                    timer.Stop();
-                    return NotFound(StatusCodes.Status401Unauthorized);
-                }
+                //else
+                //{
+                //    timer.Stop();
+                //    return NotFound(StatusCodes.Status401Unauthorized);
+                //}
             }
             catch (Exception ex)
             {

@@ -11690,7 +11690,7 @@ new SqlParameter("@AgentId", AgentId),
                             compressionMethod = "gzip";
                     }
                     else
-                        compressionMethod = "deflate";
+                        compressionMethod = "gzip";
 
 
 
