@@ -2845,7 +2845,7 @@ namespace XConnect.Supplier.Juniper
 
                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest, "-", "Before Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Request Confirm", "-", "Within Earth");
 
-                string Url = Convert.ToString(SupplierDetails[0]["WebSiteURL"]) + JuniperInfo.Booking;
+                string Url = Convert.ToString(SupplierDetails[0]["WebSiteURL"]) +_supplierConfig.Juniper.Booking;
                 string ResponseDatatest = "";
                 isNonRefundable = false;
                 #endregion
@@ -3328,9 +3328,17 @@ namespace XConnect.Supplier.Juniper
                     string Password = Convert.ToString(SupplierDetails[0]["Password"]);
                     int CutOffDays = Convert.ToInt32(SupplierDetails[0]["CutOffDays"]);
                     string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate );
-                    CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                    //CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
                     string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
-                    CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                   // CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+
+                    // Parse the strings to DateTime
+                    DateTime checkInDate = DateTime.Parse(CheckIn);
+                    DateTime checkOutDate = DateTime.Parse(CheckOut);
+
+                    // Convert to "yyyy-MM-dd" format
+                     CheckIn = checkInDate.ToString("yyyy-MM-dd");
+                     CheckOut = checkOutDate.ToString("yyyy-MM-dd");
                     double FinalPrice = Math.Round(Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].BaseServiceBuyingAmount), 2);
                     string BookingCode = "";
 
@@ -3732,11 +3740,22 @@ namespace XConnect.Supplier.Juniper
                 string UserID = Convert.ToString(SupplierDetails[0]["UserId"]);
                 string Password = Convert.ToString(SupplierDetails[0]["Password"]);
                 string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[i].CheckInDate);
-                CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                //CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
                 string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[i].CheckOutDate);
-                CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                // CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
                 //string HotelCode = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
-                string HotelCode = Convert.ToString("");//need 070426
+
+                DateTime checkInDate = DateTime.Parse(CheckIn);
+                DateTime checkOutDate = DateTime.Parse(CheckOut);
+
+                // Convert to "yyyy-MM-dd" format
+                CheckIn = checkInDate.ToString("yyyy-MM-dd");
+                CheckOut = checkOutDate.ToString("yyyy-MM-dd");
+
+                string[] spitid = RatePlanCode.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string HotelCode = spitid[3].ToString();
+
+                //string HotelCode = Convert.ToString("");//need 070426
                 double Max = Gross;
                 double Min = Gross;
                 string NationalityCode = "";// Convert.ToString(Common.GetThirdPartyStaticData_Xml("Nationality", "Nationality", Convert.ToString(SearchPara.Nationality), "XmlId", "Gta"));
@@ -3898,35 +3917,35 @@ namespace XConnect.Supplier.Juniper
                 BookRQ.Append("<HotelCode>" + HotelCode + "</HotelCode>");
                 BookRQ.Append("</HotelBookingInfo>");
 
-                if (Provider.ToLower() == "robios")
-                {
-                    #region APISO VC
-                    int usercartdetailsid = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].UserCartDetailId);
-                    string Pan = "";
-                    string CVV = "0", Expiry = "0";
-                    //GetApisoDetail(usercartdetailsid, "", ref Pan, ref CVV, ref Expiry, IsPruvo);
+                //if (Provider.ToLower() == "robios")
+                //{
+                //    #region APISO VC
+                //    int usercartdetailsid = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].UserCartDetailId);
+                //    string Pan = "";
+                //    string CVV = "0", Expiry = "0";
+                //    //GetApisoDetail(usercartdetailsid, "", ref Pan, ref CVV, ref Expiry, IsPruvo);
 
-                    DataTable dtbookingdata = _commonMethod.GetApisoBookingData(usercartdetailsid);
+                //    DataTable dtbookingdata = _commonMethod.GetApisoBookingData(usercartdetailsid);
 
-                    if (dtbookingdata != null)
-                    {
-                        _vcn.GetApisoServiceDatatoCreateVCN("", Convert.ToInt32(dtbookingdata.Rows[0]["OnlineBookingMasterId"]), Convert.ToInt32(dtbookingdata.Rows[0]["OnlineBookingDetailsId"]), ref Pan, ref CVV, ref Expiry, IsPruvo);
-                        //PANN = Pan;
-                    }
+                //    if (dtbookingdata != null)
+                //    {
+                //        _vcn.GetApisoServiceDatatoCreateVCN("", Convert.ToInt32(dtbookingdata.Rows[0]["OnlineBookingMasterId"]), Convert.ToInt32(dtbookingdata.Rows[0]["OnlineBookingDetailsId"]), ref Pan, ref CVV, ref Expiry, IsPruvo);
+                //        //PANN = Pan;
+                //    }
 
 
-                    #endregion
+                //    #endregion
 
-                    string ExpiryRegex = Convert.ToString(Expiry).Substring(2, 2);
-                    string ExpiryRegexFisrt = Convert.ToString(Expiry).Substring(0, 2);
-                    Expiry = ExpiryRegex + "/" + ExpiryRegexFisrt;
+                //    string ExpiryRegex = Convert.ToString(Expiry).Substring(2, 2);
+                //    string ExpiryRegexFisrt = Convert.ToString(Expiry).Substring(0, 2);
+                //    Expiry = ExpiryRegex + "/" + ExpiryRegexFisrt;
 
-                    //BookRQ.Append("<CreditCard=\"" + "" + "\" CardCode=\"" + "VI" + "\" CvC=\"" + "737" + "\" CardNumber=\"" + 123 + "\" ExpireDate=\"" + "03/30" + "\"/>");
-                    BookRQ.Append("<CreditCard  CardCode=\"" + "MC" + "\" CvC=\"" + CVV + "\" CardNumber=\"" + Pan + "\" ExpireDate=\"" + Expiry + "\">");
-                    BookRQ.Append("<Name>" + "WITHINEARTH" + "</Name>");
-                    BookRQ.Append("<Surname>" + "WITHINEARTH" + "</Surname>");
-                    BookRQ.Append("</CreditCard>");
-                }
+                //    //BookRQ.Append("<CreditCard=\"" + "" + "\" CardCode=\"" + "VI" + "\" CvC=\"" + "737" + "\" CardNumber=\"" + 123 + "\" ExpireDate=\"" + "03/30" + "\"/>");
+                //    BookRQ.Append("<CreditCard  CardCode=\"" + "MC" + "\" CvC=\"" + CVV + "\" CardNumber=\"" + Pan + "\" ExpireDate=\"" + Expiry + "\">");
+                //    BookRQ.Append("<Name>" + "WITHINEARTH" + "</Name>");
+                //    BookRQ.Append("<Surname>" + "WITHINEARTH" + "</Surname>");
+                //    BookRQ.Append("</CreditCard>");
+                //}
                 BookRQ.Append("</HotelElement>");
                 BookRQ.Append("</Elements>");
                 BookRQ.Append("<AdvancedOptions>");
