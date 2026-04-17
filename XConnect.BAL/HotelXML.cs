@@ -11637,8 +11637,7 @@ new SqlParameter("@AgentId", AgentId),
                 var bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
 
                 // Return the compressed content
-                //if (!_keySettings.IsActivejsonfile)
-                if(false)
+                if (!_keySettings.IsActivejsonfile)
                 {
 
                     // Choose compression method
