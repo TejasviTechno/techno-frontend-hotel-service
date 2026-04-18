@@ -20,6 +20,7 @@ namespace XConnect.Models
         public JuniperConfig Juniper { get; set; }
         public IBoosyConfig IBoosy { get; set; }
         public GoGlobalConfig GoGlobal { get; set; }
+        public OmnibeesConfig Omnibees { get; set; }
     }
 
     public class ExpediaConfig
@@ -179,4 +180,14 @@ namespace XConnect.Models
         public string VoucherDetails { get; set; }
         public string BookingStatus { get; set; }
     }
+    public class OmnibeesConfig
+    {
+        public string Target { get; set; }
+        public string OmnibessHotelAvai { get; set; }
+        public string OmnibessHotelBook { get; set; }
+        public string DerbySoftAuthorization { get; set; }
+        public string OmnibeesCancel { get; set; }
+        public string Version { get; set; }
+    }
+
 }

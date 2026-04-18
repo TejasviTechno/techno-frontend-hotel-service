@@ -1322,32 +1322,64 @@ namespace Xconnect.BLL
 
                     #region GetDataFromCache //RoomMapping
 
-                    
-                    bool ActiveRoomMApping = false;
-                    int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
-                    
-                   
 
-                    if (Tokendata.AgentCode.ToLower() == "dag2") //Add On 17SEP2025
-                    {
-                        finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping
+                    //bool ActiveRoomMApping = false;
+                    //int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
 
-                    }
-                    else
+
+
+                    //if (Tokendata.AgentCode.ToLower() == "dag2") //Add On 17SEP2025
+                    //{
+                    //    finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping
+
+                    //}
+                    //else
+                    //{
+                    //    if (ActiveRoomMApping && SearchPara.Filters.IsShowRooms == 1 || IsAvailbilityWithCancellationv2 == 1)  //ADD on 29-JAN-2025
+                    //    {
+                    //        if (IsAvailbilityWithCancellationv2 == 1)
+                    //            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMappingv2(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 29-JAN-2025
+                    //        else
+
+                    //            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 30-May-2025 
+                    //    }
+                    //    else
+                    //    {
+                    //        finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList(finalResponse, NewSearchKey, withcancellation, Tokendata.IsFromAPI); //convert to final response // No RoomMapping
+                    //    }
+                    //}
+                    #endregion
+                    #region GetDataFromCache 
+                    //170426tttt
+                    if (true)
                     {
-                        if (ActiveRoomMApping && SearchPara.Filters.IsShowRooms == 1 || IsAvailbilityWithCancellationv2 == 1)  //ADD on 29-JAN-2025
+                        bool ActiveRoomMApping = true;
+                        bool ActiveRoomMAppingwithException = false;
+                        bool ActiveRoomId = false;
+                        int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
+                        if (ActiveRoomMAppingwithException) //Add On 17SEP2025
                         {
-                            if (IsAvailbilityWithCancellationv2 == 1)
-                                finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMappingv2(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 29-JAN-2025
-                            else
-                                
-                                finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 30-May-2025 
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping
+
+                        }
+                        else if (ActiveRoomId)
+                        {
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMappingv2(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 29-JAN-2025
+
+                        }
+                        else if (ActiveRoomMApping)
+                        {
+
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 30-May-2025 
                         }
                         else
                         {
                             finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList(finalResponse, NewSearchKey, withcancellation, Tokendata.IsFromAPI); //convert to final response // No RoomMapping
                         }
+
                     }
+
+
                     #endregion
                 }
 
@@ -1636,8 +1668,42 @@ namespace Xconnect.BLL
                 DataTable dtSupplierDetails = new DataTable();
                 DataTable dtSupplierSearchConfig = new DataTable();
                 // DataTable dtXMLCity = new DataTable();
+
+                //if (dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                //    dtSupplierDetails = dsAgentDetails.Tables[1];
+                //added16/04/2026
                 if (dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
-                    dtSupplierDetails = dsAgentDetails.Tables[1];
+                {
+
+
+                    try
+                    {
+                        if (!string.IsNullOrEmpty(SearchPara.SuppilerId))
+                        {
+                            // Split the comma-separated string into an array of IDs
+                            var supplierIds = SearchPara.SuppilerId.Split(',');
+
+                            // Build a filter string like "suplierid=12 OR suplierid=10 OR suplierid=5"
+                            var filter = string.Join(" OR ", supplierIds.Select(id => $"SupplierID={id.Trim()}"));
+
+                            // Apply the filter
+                            var rows = dsAgentDetails.Tables[1].Select(filter);
+
+                            // Convert filtered rows back to DataTable (only if any rows exist)
+                            dtSupplierDetails = rows.Length > 0 ? rows.CopyToDataTable() : dsAgentDetails.Tables[1].Clone();
+                        }
+                        else
+                        {
+                            dtSupplierDetails = dsAgentDetails.Tables[1];
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        dtSupplierDetails = dsAgentDetails.Tables[1];
+                    }
+                }
+                //end
+
                 if (dsAgentDetails.Tables[2] != null && dsAgentDetails.Tables[2].Rows.Count > 0)
                     dtSupplierSearchConfig = dsAgentDetails.Tables[2];
                 DataSet dtXMLCity = new DataSet();
@@ -45560,7 +45626,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest, "-", "Before Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Request Confirm", "-", "WithinEarth");
 
-                                                                            string BookingUrl = Convert.ToString(OmnibeesDetails[0]["WebSiteURL"] + Convert.ToString(OmnibeesStaticInfo.OmnibessHotelBook));
+                                                                            string BookingUrl = Convert.ToString(OmnibeesDetails[0]["WebSiteURL"] + Convert.ToString(_supplierConfig.Omnibees.OmnibessHotelBook));
                                                                             string OmnibeesUserName = Convert.ToString(OmnibeesDetails[0]["UserName"]);
                                                                             string OmnibeesPassword = Convert.ToString(OmnibeesDetails[0]["Password"]);
                                                                             isNonRefundable = false;
@@ -57211,7 +57277,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                 string OmnibeesBookingCancelRQ = _omnibees.Get_Omnibees_BookingCancelRQ(AgentVoucherNo_Cancle, SupplierDetailsCommon, Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]), CheckIn, CheckOut);
                                 _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(OmnibeesBookingCancelRQ), "-", "Before Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "TechnoHub");
-                                string Omnibees_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(OmnibeesStaticInfo.OmnibeesCancel);
+                                string Omnibees_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + _supplierConfig.Omnibees.OmnibeesCancel;
                                 #endregion
 
                                 #region Booking Cancel RS
@@ -61015,7 +61081,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                 string OmnibeesBookingCancelRQ = _omnibees.Get_Omnibees_BookingCancelRQ(AgentVoucherNo_Cancle, SupplierDetailsCommon, Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]), CheckIn, CheckOut);
                                 _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(OmnibeesBookingCancelRQ), "-", "Before Request hit bookingCancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "TechnoHub");
-                                string Omnibees_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(OmnibeesStaticInfo.OmnibeesCancel);
+                                string Omnibees_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + Convert.ToString(_supplierConfig.Omnibees.OmnibeesCancel);
                                 #endregion
 
                                 #region Booking Cancel RS

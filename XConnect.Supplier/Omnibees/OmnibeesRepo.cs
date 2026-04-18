@@ -32,7 +32,8 @@ namespace XConnect.Supplier.Omnibees
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
         private readonly IVCN _vcn;
-        public OmnibeesRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings, IVCN vcn)
+        private readonly SupplierConfiguration _supplierConfig;
+        public OmnibeesRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
@@ -40,10 +41,11 @@ namespace XConnect.Supplier.Omnibees
             _exception = exception;
             _keySettings = keySettings.Value;
             _vcn = vcn;
+            _supplierConfig = supplierConfig.Value;
         }
 
 
-        public void GetOmnibeesRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> OmnibeesDetails, List<SupplierSearchConfig> OmnibeesSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string Xmlnationality, int Hit, DataSet dtXMLCity, DataTable dtROE,TokenData tokenData)
+        public void GetOmnibeesRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> OmnibeesDetails, List<SupplierSearchConfig> OmnibeesSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string Xmlnationality, int Hit, DataSet dtXMLCity, DataTable dtROE, TokenData tokenData)
         {
             try
             {
@@ -93,14 +95,14 @@ namespace XConnect.Supplier.Omnibees
                                         //xhotel.URL = Convert.ToString(OmnibeesDetails[0].WebSiteURL) + OmnibeesStaticInfo.OmnibessHotelAvai;
 
                                         if (_keySettings.SupplierProxy == "0")
-                                            xhotel.URL = Convert.ToString(OmnibeesDetails[0].WebSiteURL) + OmnibeesStaticInfo.OmnibessHotelAvai;
+                                            xhotel.URL = Convert.ToString(OmnibeesDetails[0].WebSiteURL) + _supplierConfig.Omnibees.OmnibessHotelAvai;
                                         else
-                                            xhotel.URL = Convert.ToString(OmnibeesDetails[0].WebSiteURLforAPI) + OmnibeesStaticInfo.OmnibessHotelAvai;
+                                            xhotel.URL = Convert.ToString(OmnibeesDetails[0].WebSiteURLforAPI) + _supplierConfig.Omnibees.OmnibessHotelAvai;
 
                                         xhotel.UserId = Convert.ToString(OmnibeesDetails[0].UserID);
                                         xhotel.UserName = Convert.ToString(OmnibeesDetails[0].UserName);
                                         xhotel.PassWord = Convert.ToString(OmnibeesDetails[0].Password);
-                                        xhotel.Version = Convert.ToString(OmnibeesDetails[0].version);
+                                        xhotel.Version = _supplierConfig.Omnibees.Version;
                                         xhotel.CurrencyCode = CurrencyCode;
                                         xhotel.CurrencyFactor = CurrencyFactorOmnibees;
                                         xhotel.XmlCity = XMLCity;
@@ -123,7 +125,7 @@ namespace XConnect.Supplier.Omnibees
                                             RQRS objrq = new RQRS();
                                             List<RoomDetails> serchRooms = new List<RoomDetails>();
                                             serchRooms.Add(SearchPara.Rooms[rr]);
-                                            objrq.Request = XMLOmnibeesRequestOnly_async(xhotel.URL, xhotel.UserId, xhotel.UserName, xhotel.PassWord, xhotel.SearchTimeOut, SearchPara, IdsForSearch, CurrencyFactorOmnibees, DebugMode, XMLCity, Xmlnationality, xhotel.Version);
+                                            objrq.Request = XMLOmnibeesRequestOnly_async(xhotel.URL, xhotel.UserId, xhotel.UserName, xhotel.PassWord, xhotel.SearchTimeOut, SearchPara, IdsForSearch, DebugMode, XMLCity, Xmlnationality, xhotel.Version);
                                             objrq.Response = ""; RQRS.Add(objrq);
                                         }
                                         xhotel.RQRS = RQRS;
@@ -145,9 +147,162 @@ namespace XConnect.Supplier.Omnibees
                 _exception.Error(ex);
             }
         }
+        public void GetOmnibeesRequestOnly_async_new(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> lstOmnibeesDetails, List<SupplierSearchConfig> lstOmnibeesSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string Xmlnationality, int Hit, DataSet dtXMLCity, DataTable dtROE, TokenData tokenData)
+        {
+            try
+            {
+
+                List<StarRating> lstRating = new List<StarRating>();
+                lstRating = _commonMethod.GetStarRatingStringList_xtg(SearchPara);
+
+                List<HotelCodeByCity> DtHotelDAta = HtmlExtensions.ToList<HotelCodeByCity>(commonCode.CopyToDataTable());
+                int ratingcount = lstRating.Count;
+                int hotelcount = DtHotelDAta.Count;
+                foreach (SupplierDetails OmnibeesChild in lstOmnibeesDetails)
+                {
+                    try
+                    {
+                        int SupplierID = OmnibeesChild.SupplierID;
+                        string Supplier = OmnibeesChild.SupplierName;
+
+                            if (lstOmnibeesSearchConfig.Count > 0)
+                            {
+                                List<SupplierSearchConfig> OmnibeesSearchConfig = lstOmnibeesSearchConfig
+                                       .Where(x => x != null && x.SupplierID == SupplierID)
+                                       .ToList();
+                                if (OmnibeesSearchConfig != null && OmnibeesSearchConfig.Count > 0)
+                                {
+                                    if ((SearchPara.IsSearchFor.ToLower().IndexOf(Supplier.ToLower()) >= 0 || SearchPara.IsSearchFor.ToLower().IndexOf("multi") >= 0))
+                                    {
+                                        DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchTechwise(SearchPara.Nationality, dtXMLCity, Supplier, OmnibeesChild.TechName);
+
+                                        if (dataForSearch.XmlNationality != "" && SearchPara.PastDate == false)
+                                        {
+                                            string Ids = string.Empty;
+                                            string xmlbase = "";
+                                            _commonMethod.GetPrefferedHotelCodes(ref Ids, ref xmlbase, ref OmnibeesSearchConfig, Supplier, dtPreferredDataHotel, SearchPara.IsSearchFor);
+
+                                            List<HotelCodeByCity> filter = new List<HotelCodeByCity>();
+                                            filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, OmnibeesChild.HotelSupplier);
 
 
-        public string XMLOmnibeesRequestOnly_async(string JCUrl, string UserId, string JCUserName, string JCPassword, Int32 SearchTimeOut, HotelSearchParameter SearchParam, string JCHotelIds, double CurrencyFactorJacTravel, bool DebugMode, string CityCode, string XmlBaseNationality, string Version)
+                                            string CurrencyCode = Convert.ToString(OmnibeesChild.CurrencyShortName);
+                                            string Sitecurrency = tokenData.SiteCurrency;
+
+                                            double CurrencyFactorOmnibees = 1;
+
+                                            if (CurrencyCode.ToLower() != Sitecurrency.ToLower()) // change systembase currency 
+                                            {
+                                                CurrencyFactorOmnibees = _commonMethod.GetROEByCurrency(CurrencyCode, dtROE);
+                                            }
+
+                                            if (OmnibeesSearchConfig != null)
+                                            {
+
+                                                for (int k = 0; k < OmnibeesSearchConfig.Count; k++)
+                                                {
+                                                    bool DebugMode = (Convert.ToInt32(OmnibeesSearchConfig[k].DebugMode) == 0 ? false : true);
+                                                    string UserName = Convert.ToString(OmnibeesChild.UserName);
+                                                    string Password = Convert.ToString(OmnibeesChild.Password);
+
+
+                                                    {
+                                                        int IsCitywisesearch = Convert.ToInt32(OmnibeesSearchConfig[k].City);
+
+                                                        if (Convert.ToInt32(OmnibeesSearchConfig[k].CityID) == 0 || Convert.ToInt32(OmnibeesSearchConfig[k].CityID) == SearchPara.CityID)
+                                                        {
+                                                            if (filter.Count > 0)
+                                                            {
+                                                                int NoOfRecord = Convert.ToInt32(OmnibeesSearchConfig[k].Noofrecords);
+                                                                double count = Convert.ToDouble(filter.Count);
+                                                                int NoOfDiv = Convert.ToInt32(Math.Ceiling(count / Convert.ToDouble(NoOfRecord)));
+                                                                List<List<XMLID_Search>> lstxml = _commonMethod.GetXMLIDString(NoOfDiv, NoOfRecord, count, filter);
+
+                                                                for (int a = 0; a < NoOfDiv; a++)
+                                                                {
+                                                                    string Uniqueid = Guid.NewGuid().ToString().Substring(0, 8);
+                                                                    //var paramValues1 = String.Join(",", splittedtables[a].Select().Select(x => String.Join(",", Convert.ToString(x.ItemArray[0]))));
+                                                                    //string IdsForSearch = Convert.ToString(paramValues1);
+                                                                    string IdsForSearch = Convert.ToString(_commonMethod.GetHotelCodeByCOmma(lstxml[a]));
+
+                                                                    HotelX Xhotel = new HotelX();
+                                                                    Xhotel.Supplier = Supplier;
+                                                                    Xhotel.DebugeMode = DebugMode;
+                                                                    Xhotel.SearchTimeOut = Convert.ToInt32(OmnibeesSearchConfig[k].HotelSearchTimeOut);
+                                                                    //if (Hit > 0)
+                                                                    Xhotel.ProcessTimeout = Convert.ToInt32(OmnibeesSearchConfig[k].HotelSearchTimeOut2);
+
+                                                                    if (_keySettings.SupplierProxy == "0")
+                                                                        Xhotel.URL = Convert.ToString(OmnibeesChild.WebSiteURL) + _supplierConfig.Omnibees.OmnibessHotelAvai;
+                                                                    else
+                                                                        Xhotel.URL = Convert.ToString(OmnibeesChild.WebSiteURLforAPI) + _supplierConfig.Omnibees.OmnibessHotelAvai;
+
+                                                                    Xhotel.UserId = Convert.ToString(OmnibeesChild.UserID);
+                                                                    Xhotel.UserName = UserName;
+                                                                    Xhotel.PassWord = Password;
+                                                                    Xhotel.CurrencyCode = CurrencyCode;
+                                                                    Xhotel.Version = _supplierConfig.Omnibees.Version;
+                                                                    Xhotel.CurrencyFactor = CurrencyFactorOmnibees;
+                                                                    Xhotel.XmlCity = dataForSearch.xmlCity;
+                                                                    Xhotel.XmlCountry = "";
+                                                                    Xhotel.XmlNationality = dataForSearch.XmlNationality;
+                                                                    Xhotel.Action = Uniqueid;
+
+
+                                                                    #region "CoomonCode"
+                                                                    bool IsHitSeperate = _commonMethod.IsSuppliersWithSeperateRoomRquest(Xhotel.Supplier);
+                                                                    int NoOfRoomsSearch = 1;
+                                                                    if (IsHitSeperate)
+                                                                        NoOfRoomsSearch = SearchPara.Rooms.Count;
+                                                                    List<RQRS> RQRS = new List<RQRS>();
+                                                                    Xhotel.IsSeperate = IsHitSeperate;
+                                                                    for (int rr = 0; rr < NoOfRoomsSearch; rr++)
+                                                                    {
+                                                                        RQRS objrq = new RQRS();
+                                                                        List<RoomDetails> serchRooms = new List<RoomDetails>();
+                                                                        serchRooms.Add(SearchPara.Rooms[rr]);
+                                                                        objrq.Request = XMLOmnibeesRequestOnly_async(Xhotel.URL, Xhotel.UserId, Xhotel.UserName, Xhotel.PassWord, Xhotel.SearchTimeOut, SearchPara, IdsForSearch, DebugMode, XMLCity, Xmlnationality, Xhotel.Version);
+                                                                        objrq.Response = "";
+                                                                        RQRS.Add(objrq);
+                                                                    }
+                                                                    Xhotel.RQRS = RQRS;
+                                                                    Xhotel.ReturnRooms = OmnibeesChild.ReturnRooms; //190225
+                                                                    Xhotel.TechName = OmnibeesChild.TechName; //190225
+                                                                    #endregion
+                                                                    AllTask.Add(Xhotel);
+                                                                }
+
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                            }
+                        
+
+                    }
+                    catch (Exception ex)
+                    {
+                        _exception.Error(ex);
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+            }
+        }
+
+
+        public string XMLOmnibeesRequestOnly_async(string JCUrl, string UserId, string JCUserName, string JCPassword, Int32 SearchTimeOut, HotelSearchParameter SearchParam, string JCHotelIds, bool DebugMode, string CityCode, string XmlBaseNationality, string Version)
         {
             try
             {
@@ -283,7 +438,7 @@ namespace XConnect.Supplier.Omnibees
                 Request.OnRequestInd = false;
                 Request.PrimaryLangID = 1;
                 //Request.RequestedCurrency = Convert.ToInt32(ConfigurationManager.AppSettings["RequestedCurrency"]);
-                Request.Target =  OmnibeesStaticInfo.Target;
+                Request.Target = Convert.ToInt32(_supplierConfig.Omnibees.Target);
                 //Request.RequestedCurrency = 34;
                 string timeStamp = GetTimestamp(DateTime.Now);
 
@@ -359,7 +514,9 @@ namespace XConnect.Supplier.Omnibees
                         bool isshow = false;
                         for (int v = 0; v < RatePlanFilter[0].PaymentPolicies.AcceptedPayments.Count; v++)
                         {
-                            if (RatePlanFilter[0].PaymentPolicies.AcceptedPayments[v].GuaranteeTypeCode == 5)
+                            //if (RatePlanFilter[0].PaymentPolicies.AcceptedPayments[v].GuaranteeTypeCode == 5)
+                            if (RatePlanFilter[0].PaymentPolicies.AcceptedPayments[v].GuaranteeTypeCode == 3 || RatePlanFilter[0].PaymentPolicies.AcceptedPayments[v].GuaranteeTypeCode == 4)
+
                             {
                                 isshow = true;
                                 break;
@@ -528,7 +685,8 @@ namespace XConnect.Supplier.Omnibees
                                             bool isshow = false;
                                             for (int v = 0; v < RatePlanFilter[0].PaymentPolicies.AcceptedPayments.Count; v++)
                                             {
-                                                if (RatePlanFilter[0].PaymentPolicies.AcceptedPayments[v].GuaranteeTypeCode == 5)
+                                                //if (RatePlanFilter[0].PaymentPolicies.AcceptedPayments[v].GuaranteeTypeCode == 5)
+                                                if (RatePlanFilter[0].PaymentPolicies.AcceptedPayments[v].GuaranteeTypeCode == 3 || RatePlanFilter[0].PaymentPolicies.AcceptedPayments[v].GuaranteeTypeCode == 4)
                                                 {
                                                     isshow = true;
                                                     break;
@@ -850,7 +1008,7 @@ namespace XConnect.Supplier.Omnibees
                     {
                         timerroomx.Stop();
                         SearchParam.SupplierTime += ",|Finish:Omnibees Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
-                        _= Task.Run(() =>  _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "Omnibees", SearchParam.SearchKey, 1, AgentId));
+                        _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "Omnibees", SearchParam.SearchKey, 1, AgentId));
                     }
                 }
                 catch (Exception x)
@@ -864,7 +1022,7 @@ namespace XConnect.Supplier.Omnibees
             return options;
         }
 
-        public  string ReturnOmnibeesCurrency(int CurrencyCode)
+        public string ReturnOmnibeesCurrency(int CurrencyCode)
         {
             string CurrencyName = "";
             switch (CurrencyCode)
@@ -1110,7 +1268,7 @@ namespace XConnect.Supplier.Omnibees
 
                     Request.OnRequestInd = false;
                     Request.PrimaryLangID = 1;
-                    Request.Target = Convert.ToInt32(OmnibeesStaticInfo.Target);
+                    Request.Target = Convert.ToInt32(_supplierConfig.Omnibees.Target);
                     //Request.RequestedCurrency = Convert.ToInt32(ConfigurationManager.AppSettings["RequestedCurrency"]);
                     //Request.RequestedCurrency = 34;
                     string timeStamp = GetTimestamp(DateTime.UtcNow);
@@ -1126,9 +1284,9 @@ namespace XConnect.Supplier.Omnibees
                 }
                 #endregion
 
-                string OmnibeesUrl = Convert.ToString(OmnibeesDetails[0]["WebSiteURL"] + Convert.ToString(OmnibeesStaticInfo.OmnibessHotelAvai));
-                string GetRoomResponse = GetOmnibeesResponse(ref Error,jsonString, OmnibeesUrl, 180000, OmnibeesUserName, OmnibeesPassword, SupplierName);
-               
+                string OmnibeesUrl = Convert.ToString(OmnibeesDetails[0]["WebSiteURL"] + _supplierConfig.Omnibees.OmnibessHotelAvai);
+                string GetRoomResponse = GetOmnibeesResponse(ref Error, jsonString, OmnibeesUrl, 180000, OmnibeesUserName, OmnibeesPassword, SupplierName);
+
 
                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), jsonString, GetRoomResponse + Error, "Before Request hit Room request", Convert.ToString(dsCartDetails.Tables[1].DefaultView[jj]["SupplierName"]), "Request Confirm", "-", "TechnoHub");
 
@@ -1610,7 +1768,7 @@ namespace XConnect.Supplier.Omnibees
             catch (Exception ex)
             {
                 errorinrq = ex.Message;
-                _ =_exception.ErrorBooking(ex, "");
+                _ = _exception.ErrorBooking(ex, "");
             }
             return string.Empty;
         }
@@ -1636,7 +1794,7 @@ namespace XConnect.Supplier.Omnibees
                 httpWebRequest.ContentType = "application/x-www-form-urlencoded";
                 if (Provider.ToLower() == "derbysoft")
                 {
-                    httpWebRequest.Headers.Add("Authorization", Convert.ToString(OmnibeesStaticInfo.DerbySoftAuthorization));
+                    httpWebRequest.Headers.Add("Authorization", _supplierConfig.Omnibees.DerbySoftAuthorization);
                     httpWebRequest.Accept = "application/json";
                     httpWebRequest.Method = "POST";
                     httpWebRequest.ContentType = "application/json";
@@ -1678,7 +1836,7 @@ namespace XConnect.Supplier.Omnibees
                     {
                         para.SupplierTime += ",SupplierName :" + Provider + " : " + "Execution Time :" + timer.Elapsed.ToString();
                         if (DebugMode)
-                            _ =_commonMethod.XMLRequestResponseTrack(request, response, Provider, "Proper");
+                            _ = _commonMethod.XMLRequestResponseTrack(request, response, Provider, "Proper");
                     }
                     if (Convert.ToString(_keySettings.IsLogTrack) == "1")
                     {
@@ -1758,7 +1916,7 @@ namespace XConnect.Supplier.Omnibees
 
                     cancelRequest.Segment = segment;
 
-                    cancelRequest.Target = Convert.ToInt32(OmnibeesStaticInfo.Target);
+                    cancelRequest.Target = Convert.ToInt32(_supplierConfig.Omnibees.Target);
 
                     cancelRequest.TimeStamp = Convert.ToDateTime(DateTime.Now); //Convert.ToDateTime("2021-03-19T06:00:37.2687519+00:00");
                     cancelRequest.Version = Convert.ToDouble(version);
@@ -1795,7 +1953,7 @@ namespace XConnect.Supplier.Omnibees
             }
             catch (Exception ex)
             {
-                _ =_exception.ErrorNew(ex, ErrorLog._LogAPI.CancelBooking);
+                _ = _exception.ErrorNew(ex, ErrorLog._LogAPI.CancelBooking);
                 return "";
             }
 

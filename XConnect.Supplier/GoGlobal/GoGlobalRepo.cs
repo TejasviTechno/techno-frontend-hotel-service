@@ -192,14 +192,14 @@ namespace XConnect.Supplier.GoGlobal
 
                                 if (GGSearchConfig != null && GGSearchConfig.Count > 0)
                                 {
-                                    if ((SearchPara.Filters.IsShowRooms == 1 && SearchByOneID) || SearchPara.Filters.IsShowRooms == 0)
+                                    //if ((SearchPara.Filters.IsShowRooms == 1 && SearchByOneID) || SearchPara.Filters.IsShowRooms == 0)
                                     {
                                         DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchTechwise(SearchPara.Nationality, dtXMLCity, Supplier, "goglobal");
 
                                         if (dataForSearch.XmlNationality != "")
                                         {
                                             List<HotelCodeByCity> filter = new List<HotelCodeByCity>();
-                                            filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
+                                            filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, GGDetails.HotelSupplier);
 
                                             if (filter.Count > 0)
                                             {
@@ -266,6 +266,7 @@ namespace XConnect.Supplier.GoGlobal
                                                                 xhotels.TechName = Convert.ToString(GGDetails.TechName);
                                                                 //xhotels.Action = Convert.ToString(GoGlobalStaticInfo.AvailabilitySearch);
                                                                 xhotels.Action = Convert.ToString(_supplierConfig.GoGlobal.AvailabilitySearch);
+                                                                xhotels.UserId = Convert.ToString(GGDetails.UserID);
                                                                 #endregion
                                                                 AllTask.Add(xhotels);
                                                                 //break; remove on 17-DEC-2024
@@ -310,6 +311,7 @@ namespace XConnect.Supplier.GoGlobal
                                                         xhotels.ReturnRooms = Convert.ToInt32(GGDetails.ReturnRooms);
                                                         xhotels.TechName = Convert.ToString(GGDetails.TechName);
                                                         xhotels.Action = Convert.ToString(_supplierConfig.GoGlobal.AvailabilitySearch);
+                                                        xhotels.UserId = Convert.ToString(GGDetails.UserID);
 
                                                         #endregion
                                                         AllTask.Add(xhotels);
