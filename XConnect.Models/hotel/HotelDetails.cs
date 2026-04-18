@@ -95,6 +95,10 @@ namespace XConnect.Models.Hotel
         public string SearchKey { get; set; }
         public int City_ID { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string SuppilerId { get; set; }
+
+
     }
 
     public class RoomDetails
