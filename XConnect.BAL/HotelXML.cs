@@ -1353,7 +1353,7 @@ namespace Xconnect.BLL
                     //170426tttt
                     if (true)
                     {
-                        bool ActiveRoomMApping = true;
+                        bool ActiveRoomMApping = false;
                         bool ActiveRoomMAppingwithException = false;
                         bool ActiveRoomId = false;
                         int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
