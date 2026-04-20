@@ -790,6 +790,21 @@ namespace Xconnect.Expedia
                     Item.ResponseType = "NoCount";
                     return options;
                 }
+                try
+                {
+                    if (Dida_Response != null && Dida_Response.Error != null)
+                    {
+                        //Item.ResponseStatus = Convert.ToInt32(Dida_Response.Error.Code);
+                        Item.ResponseType = "NoCount";
+                        Item.ActualReason = Dida_Response.Error.Message;
+                        return options;
+                    }
+                }
+                catch
+                {
+
+                }
+                
                 if (Dida_Response == null)
                 {
                     Item.ResponseStatus = 204;
