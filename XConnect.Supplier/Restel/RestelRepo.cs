@@ -2103,21 +2103,29 @@ namespace XConnect.Supplier.Restel
                 #region Booking RQ
 
                 //string CheckIn = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]);
-                string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
-                CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+               // string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
+               // CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
                 //string CheckOut = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckOutDate"]);
-                string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
-                CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                //string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
+               // CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
                 //string PropertyId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["ContractID"]);
                // string PropertyId = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
                
                // string MealId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["MealPlanCode"]);
                 string MealId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].MealPlan);
 
-               // string ExternalReference = "BOOK_" + AgentUniqueNo + "_" + UniqueNo;
-                string ExternalReference = bookRequest.BookRQ.InternalReference +"_"+ UniqueNo;
+
+
+
+                string ExternalReference = "BOOK_" + AgentUniqueNo + "_" + UniqueNo;
+                //string ExternalReference = bookRequest.BookRQ.InternalReference +"_"+ UniqueNo;
                // int NoOfNoghts = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["NoOfNight"]);
                 int NoOfNoghts = Convert.ToInt32(bookRequest.userCart.NoOfNight);
+
+
+
+                
+
 
                 //string SPUI = Convert.ToString(bookRequest.userCart.UserCartDetails[j].spui);
                 string RoomType = "";

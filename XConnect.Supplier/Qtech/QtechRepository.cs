@@ -30,15 +30,17 @@ namespace XConnect.Supplier.Qtech
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
+        private readonly SupplierConfiguration _supplierConfig;//Added on 18-april-26
 
 
-        public QtechRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception)
+        public QtechRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
             _exception = exception;
+            _supplierConfig = supplierConfig.Value;
         }
 
         public void GetQTechRequestOnly_Async_bck(DataTable dtROE, DataRow[] commonCode, DataTable dtPreferredDataHotel, HotelSearchParameter SearchPara, List<SupplierSearchConfig> QTechSearchConfig, List<SupplierDetails> QTechDetails, ref ConcurrentBag<HotelX> AllTask, string AgentCode, string CityCode, string CountryCode, List<StarRating> listRating, int Hit, string Provider, string XmlNationality)
@@ -1375,17 +1377,19 @@ namespace XConnect.Supplier.Qtech
                                                                     if (_keySettings.SupplierProxy == "0")
                                                                     {
                                                                         if (Supplier.ToLower() == "nirvana")
-                                                                            xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                           // xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(_supplierConfig.Qtech.Nirvana_url) + _supplierConfig.Qtech.HotelAvail;
                                                                         else
-                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + QtechInfo.HotelAvail;
+                                                                           // xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + _supplierConfig.Qtech.HotelAvail;
 
                                                                     }
                                                                     else
                                                                     {
                                                                         if (Supplier.ToLower() == "nirvana")
-                                                                            xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(_supplierConfig.Qtech.Nirvana_url) + _supplierConfig.Qtech.HotelAvail;
                                                                         else
-                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURLforAPI) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURLforAPI) + _supplierConfig.Qtech.HotelAvail;
                                                                     }
 
                                                                     xhotel.UserId = Convert.ToString(QtechChild.UserID);
@@ -1457,17 +1461,19 @@ namespace XConnect.Supplier.Qtech
                                                                     if (_keySettings.SupplierProxy == "0")
                                                                     {
                                                                         if (Supplier.ToLower() == "nirvana")
-                                                                            xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                            // xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(_supplierConfig.Qtech.Nirvana_url) + _supplierConfig.Qtech.HotelAvail;
                                                                         else
-                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + QtechInfo.HotelAvail;
+                                                                            // xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + _supplierConfig.Qtech.HotelAvail;
 
                                                                     }
                                                                     else
                                                                     {
                                                                         if (Supplier.ToLower() == "nirvana")
-                                                                            xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(_supplierConfig.Qtech.Nirvana_url) + _supplierConfig.Qtech.HotelAvail;
                                                                         else
-                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURLforAPI) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURLforAPI) + _supplierConfig.Qtech.HotelAvail;
                                                                     }
 
                                                                     xhotel.UserId = Convert.ToString(QtechChild.UserID);
@@ -1531,21 +1537,22 @@ namespace XConnect.Supplier.Qtech
                                                                     xhotel.ProcessTimeout = Convert.ToInt32(QtechSearchConfig[k].HotelSearchTimeOut2);
 
                                                                     //xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + QtechInfo.HotelAvail;
-
                                                                     if (_keySettings.SupplierProxy == "0")
                                                                     {
                                                                         if (Supplier.ToLower() == "nirvana")
-                                                                            xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                            // xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(_supplierConfig.Qtech.Nirvana_url) + _supplierConfig.Qtech.HotelAvail;
                                                                         else
-                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + QtechInfo.HotelAvail;
+                                                                            // xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + _supplierConfig.Qtech.HotelAvail;
 
                                                                     }
                                                                     else
                                                                     {
                                                                         if (Supplier.ToLower() == "nirvana")
-                                                                            xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(_supplierConfig.Qtech.Nirvana_url) + _supplierConfig.Qtech.HotelAvail;
                                                                         else
-                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURLforAPI) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURLforAPI) + _supplierConfig.Qtech.HotelAvail;
                                                                     }
 
                                                                     xhotel.UserId = Convert.ToString(QtechChild.UserID);
@@ -1610,17 +1617,19 @@ namespace XConnect.Supplier.Qtech
                                                                     if (_keySettings.SupplierProxy == "0")
                                                                     {
                                                                         if (Supplier.ToLower() == "nirvana")
-                                                                            xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                            // xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(_supplierConfig.Qtech.Nirvana_url) + _supplierConfig.Qtech.HotelAvail;
                                                                         else
-                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + QtechInfo.HotelAvail;
+                                                                            // xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURL) + _supplierConfig.Qtech.HotelAvail;
 
                                                                     }
                                                                     else
                                                                     {
                                                                         if (Supplier.ToLower() == "nirvana")
-                                                                            xhotel.URL = Convert.ToString(QtechInfo.Nirvana_url) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(_supplierConfig.Qtech.Nirvana_url) + _supplierConfig.Qtech.HotelAvail;
                                                                         else
-                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURLforAPI) + QtechInfo.HotelAvail;
+                                                                            xhotel.URL = Convert.ToString(QtechChild.WebSiteURLforAPI) + _supplierConfig.Qtech.HotelAvail;
                                                                     }
 
                                                                     xhotel.UserId = Convert.ToString(QtechChild.UserID);
@@ -2474,7 +2483,8 @@ namespace XConnect.Supplier.Qtech
                 string CancellationPolicyRQ = "";
 
                 StringBuilder Sb_CanPolicyRQ = new StringBuilder();
-                Sb_CanPolicyRQ.Append("" + Url + QtechInfo.Mercan_CancelltionPolicyAction);
+                //Sb_CanPolicyRQ.Append("" + Url + QtechInfo.Mercan_CancelltionPolicyAction);
+                Sb_CanPolicyRQ.Append("" + Url + _supplierConfig.Qtech.CancelltionPolicyAction);
                 Sb_CanPolicyRQ.Append("&username=" + username + "");
                 Sb_CanPolicyRQ.Append("&password=" + password + "");
                 Sb_CanPolicyRQ.Append("&hotel_id=" + HotelCode + "");
@@ -2678,7 +2688,8 @@ namespace XConnect.Supplier.Qtech
                 string section_unique_id = RoomTypeId.Split('$')[2];
 
                 StringBuilder Sb_CanPolicyRQ = new StringBuilder();
-                Sb_CanPolicyRQ.Append("" + Url + QtechInfo.Mercan_CancelltionPolicyAction);
+                //Sb_CanPolicyRQ.Append("" + Url + QtechInfo.Mercan_CancelltionPolicyAction);
+                Sb_CanPolicyRQ.Append("" + Url +_supplierConfig.Qtech.CancelltionPolicyAction);
                 Sb_CanPolicyRQ.Append("&username=" + username + "");
                 Sb_CanPolicyRQ.Append("&password=" + password + "");
                 Sb_CanPolicyRQ.Append("&hotel_id=" + HotelCode + "");

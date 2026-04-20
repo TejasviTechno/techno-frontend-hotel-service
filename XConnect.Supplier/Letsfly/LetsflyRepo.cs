@@ -1533,22 +1533,43 @@ namespace XConnect.Supplier.Letsfly
                 string ChildAge = "";
                 ReferenceNo = ReferenceNo + "|" + UserCartDetailId;
                 List<int> Child = new List<int>();
+                //for (int k = 0; k < NoOfRooms; k++)
+                //{
+                //    NoOfAdults += Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofAdult);
+                //    NoOfChild += Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild);
+
+                //    if (NoOfChild > 0)
+                //    {
+                //        if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild) == 1)
+                //        {
+                //            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
+
+                //        }
+                //        else if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild) == 2)
+                //        {
+                //            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
+                //            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
+                //        }
+                //    }
+                //}
+
                 for (int k = 0; k < NoOfRooms; k++)
                 {
                     NoOfAdults += Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofAdult);
                     NoOfChild += Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild);
 
-                    if (NoOfChild > 0)
-                    {
-                        if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild) == 1)
-                        {
-                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
+                    int childCount = Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild);
 
-                        }
-                        else if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild) == 2)
+                    if (childCount > 0)
+                    {
+                        var childAges = bookRequest.userCart.UserCartDetails[k].ChildAge.Split(',');
+
+                        foreach (var age in childAges)
                         {
-                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
-                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
+                            if (!string.IsNullOrWhiteSpace(age))
+                            {
+                                Child.Add(Convert.ToInt32(age));
+                            }
                         }
                     }
                 }
