@@ -1116,7 +1116,7 @@ namespace XConnect.Supplier.Restel
 
 
                 string CancelPolicyRQ = Get_Restel_Policy_PriceCheckRQ(PropertyId, CheckIn, NoOfNights, RoomTypeId_Own, MealID, ref RoomName, Type, RoomNo);
-                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(RoomTypeId_Own), Convert.ToString(ownsystemid), CancelPolicyRQ, "", "After Get Policy", Provider, "Request", "-", "");
+                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(RoomTypeId_Own), Convert.ToString(ownsystemid), CancelPolicyRQ, "", "After Get Policy", Provider, "Request", SearchKey, "");
 
 
                 //Common.ThirdPartyBookingHistory(Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), "", BookingDetailsRequest, "-", "Before Request hit BookingDetail for Supplier HotelDo", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Request Confirm", "-", "WithinEarth");
@@ -1139,7 +1139,7 @@ namespace XConnect.Supplier.Restel
 
                     ////ThirdPartyBookingHistory("testjac", "", CancelPolicyRQ, ResponseData, "testJac", "", "", "", "");
                     //ThirdPartyBookingHistory("restel", "", CancelPolicyRQ, ResponseData, "restel", "", "", "", "");
-                    _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(RoomTypeId_Own), Convert.ToString(ownsystemid), CancelPolicyRQ, Convert.ToString(ResponseData), "After Get Policy", Provider, "Response", "-", "");
+                    _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(RoomTypeId_Own), Convert.ToString(ownsystemid), CancelPolicyRQ, Convert.ToString(ResponseData), "After Get Policy", Provider, "Response", SearchKey, "");
 
 
                     if (ResponseData == string.Empty || ResponseData.Contains("Error"))
@@ -1750,7 +1750,7 @@ namespace XConnect.Supplier.Restel
 
                 Request = "xml=" + resreq.ToString();
 
-                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), resreq.ToString(), "", "Before get price " + SupplierName + " request hit " + j + "is for Price Check" + false, SupplierName, "response confirm", "-", "Withinearth");
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), resreq.ToString(), "", "Before get price " + SupplierName + " request hit " + j + "is for Price Check" + false, SupplierName, "response confirm", "-", "Withinearth",Searchkey);
 
                 dtCheckPriceReqStructure.Rows.Add(_commonMethod.AddCheckPriceReq(dtCheckPriceReqStructure.NewRow(), j + 1, UserCartId, UserCartDetailId, RoomTypeId, SupplierName, resreq.ToString()));
 
@@ -1765,7 +1765,7 @@ namespace XConnect.Supplier.Restel
                 timerroomprocess.Stop();
                 time = timerroomprocess.Elapsed.ToString();
 
-                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), resreq.ToString(), ResponseData + Error, "After get price " + SupplierName + " request hit " + j + "is for Price Check" + false, SupplierName, "response confirm", "-", "Withinearth");
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), resreq.ToString(), ResponseData + Error, "After get price " + SupplierName + " request hit " + j + "is for Price Check" + false, SupplierName, "response confirm", "-", "Withinearth",Searchkey);
 
                 if (ResponseData == string.Empty || ResponseData.Contains("Error"))
                 {

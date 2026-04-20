@@ -891,13 +891,13 @@ namespace XConnect.Supplier.GoGlobal
 
 
                 string PreBookingRequest = PriceBreakDownForCheckPrice(Convert.ToString(GGDetails[0]["UserName"]), Convert.ToString(GGDetails[0]["Password"]), Convert.ToString(GGDetails[0]["UserId"]), roomtypeid);
-                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(roomtypeid), Convert.ToString(ownsystemid), PreBookingRequest, "-", "Before Get PriceBreakDown", "GoGlobal", "Response", "-", "");
+                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(roomtypeid), Convert.ToString(ownsystemid), PreBookingRequest, "-", "Before Get PriceBreakDown", "GoGlobal", "Response", SearchKey, "");
                 //string ResponseData = _commonMethod.AbreuOnlineResponse_Supplier(ref Error, PreBookingRequest, Convert.ToString(GGDetails[0]["WebSiteURL"]), Convert.ToInt32(10000), SearchKey, "goglobal", Convert.ToString(GGDetails[0]["UserId"]), "policy");
                 ResponseDto responseDto = await _commonMethod.AbreuOnlineResponse_Supplier(PreBookingRequest, Convert.ToString(GGDetails[0]["WebSiteURL"]), Convert.ToInt32(10000), SearchKey, "goglobal", Convert.ToString(GGDetails[0]["UserId"]), "policy");
                 string ResponseData = responseDto.Response;
                 Error = responseDto.Error;
 
-                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(roomtypeid), Convert.ToString(ownsystemid), PreBookingRequest, Convert.ToString(ResponseData + Error), "After Get PriceBreakDown", "GoGlobal", "Response", "-", "");
+                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(roomtypeid), Convert.ToString(ownsystemid), PreBookingRequest, Convert.ToString(ResponseData + Error), "After Get PriceBreakDown", "GoGlobal", "Response", SearchKey, "");
 
                 string decodedXml = "";
                 string Currency = "";
@@ -1165,7 +1165,7 @@ namespace XConnect.Supplier.GoGlobal
 
                 Request = BookingValueationPolicy(Convert.ToString(GGDetails[0]["UserName"]), Convert.ToString(GGDetails[0]["Password"]), Convert.ToString(GGDetails[0]["UserId"]), CheckIn, HotelSearchCode);
 
-                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), Request, "-", "Before Request BookingValueation (After Price Check BookingTime)", "GoGlobal", "Request Confirm", " - ", "RaynaB2B");
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), Request, "-", "Before Request BookingValueation (After Price Check BookingTime)", "GoGlobal", "Request Confirm", " - ", "RaynaB2B",SearchKey);
                 //string Response = XMLHotelBookingCommon.AbreuOnlineResponse_Supplier(Request, Convert.ToString(GGDetails[0]["WebSiteURL"]), Convert.ToInt32(120000));
 
                 System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();

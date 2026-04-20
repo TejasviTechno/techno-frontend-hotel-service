@@ -173,6 +173,7 @@ namespace XConnect.Models
         public int IBoosy_Rate_Plan_Count_10 { get; set; }
         public string Methabook_BookStatus { get; set; }
         public string Bookingurl { get; set; }
+        public string Cancel { get; set; }
     }
     public class GoGlobalConfig
     {

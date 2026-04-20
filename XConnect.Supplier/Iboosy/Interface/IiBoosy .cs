@@ -33,5 +33,6 @@ namespace XConnect.Supplier.Iboosy.Interface
         Task<MethaBookBookingDetail> MethaBookBookingDetail_newversion(string ClientReference, int bookingStatus, string AgtVoucherNo, DataRow[] MethaBookDetails, BookRequest_newversion bookRequest, int i, int TimeOut, string refno);
 
         Task<int> MethaBookCancellationProcess(string AgentVoucheNo, DataRow[] MethaBookDetails, string rerefenceNo, DataSet dsCartDetails, int bookingStatus);
+        Task<int> MethaBookCancellationProcess_newversion(string AgentVoucheNo, DataRow[] MethaBookDetails, string rerefenceNo, BookRequest_newversion bookRequest, int bookingStatus);
     }
 }

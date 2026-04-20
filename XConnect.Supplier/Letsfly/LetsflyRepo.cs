@@ -984,7 +984,7 @@ namespace XConnect.Supplier.Letsfly
             priceCheckDto.Flag = false;
             return priceCheckDto;
         }
-        public async Task<PriceCheckCMDto> GetLetsflyPriceCheckREQRES_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, DataRow[] letsflyDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData)
+        public async Task<PriceCheckCMDto> GetLetsflyPriceCheckREQRES_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, DataRow[] letsflyDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData, string Searchkey)
         {
             PriceCheckCMDto priceCheckDto = new PriceCheckCMDto();
             string time = "";
@@ -1004,7 +1004,7 @@ namespace XConnect.Supplier.Letsfly
             try
             {
                 prebookRequest = LetsFlyPriceCheckRequest(RoomTypeId, j, HotelId, dsCartDetails);
-                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, "", "Before Hit Price Check Response", SupplierName, "Price Check Request Confirm", "-", "withinearth");
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, "", "Before Hit Price Check Response", SupplierName, "Price Check Request Confirm", "-", "withinearth",Searchkey);
 
                 if (prebookRequest != "")
                 {
@@ -1024,7 +1024,7 @@ namespace XConnect.Supplier.Letsfly
                     timerroomprocess.Stop();
                     time = timerroomprocess.Elapsed.ToString();
 
-                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, ResponseData + Error, "After Hit Price Check Response", SupplierName, "Price Check Response Confirm", "-", "withinearth");
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, ResponseData + Error, "After Hit Price Check Response", SupplierName, "Price Check Response Confirm", "-", "withinearth",Searchkey);
 
                     if (string.IsNullOrEmpty(ResponseData) || ResponseData.Contains("Error"))
                     {
@@ -1533,46 +1533,27 @@ namespace XConnect.Supplier.Letsfly
                 string ChildAge = "";
                 ReferenceNo = ReferenceNo + "|" + UserCartDetailId;
                 List<int> Child = new List<int>();
-                //for (int k = 0; k < NoOfRooms; k++)
-                //{
-                //    NoOfAdults += Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofAdult);
-                //    NoOfChild += Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild);
-
-                //    if (NoOfChild > 0)
-                //    {
-                //        if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild) == 1)
-                //        {
-                //            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
-
-                //        }
-                //        else if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild) == 2)
-                //        {
-                //            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
-                //            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
-                //        }
-                //    }
-                //}
-
                 for (int k = 0; k < NoOfRooms; k++)
                 {
                     NoOfAdults += Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofAdult);
                     NoOfChild += Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild);
 
-                    int childCount = Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild);
-
-                    if (childCount > 0)
+                    if (NoOfChild > 0)
                     {
-                        var childAges = bookRequest.userCart.UserCartDetails[k].ChildAge.Split(',');
-
-                        foreach (var age in childAges)
+                        if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild) == 1)
                         {
-                            if (!string.IsNullOrWhiteSpace(age))
-                            {
-                                Child.Add(Convert.ToInt32(age));
-                            }
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
+
+                        }
+                        else if (Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].NoofChild) == 2)
+                        {
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
+                            Child.Add(Convert.ToInt32(bookRequest.userCart.UserCartDetails[k].ChildAge));
                         }
                     }
                 }
+
+                
 
 
                 string remark = "";

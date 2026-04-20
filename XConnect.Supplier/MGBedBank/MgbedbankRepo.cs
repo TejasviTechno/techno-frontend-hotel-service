@@ -1282,6 +1282,8 @@ namespace XConnect.Supplier.MGBedBank
 
                     bool IsRoomupdate = await _commonMethod.GetRoomNameUpdate(SpitIdRoomName, UserCartId);
 
+
+
                 }
                 else
                 {

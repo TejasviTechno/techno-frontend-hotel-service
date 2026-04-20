@@ -1848,5 +1848,38 @@ namespace XConnect.Supplier
 
             return bookingStatus;
         }
+        public async Task<int> MethaBookCancellationProcess_newversion(string AgentVoucheNo, DataRow[] MethaBookDetails, string rerefenceNo, BookRequest_newversion bookRequest, int bookingStatus)
+        {
+           // string CancelUrl = "/Bookings/v1.0/Cancel/" + AgentVoucheNo;
+            string CancelUrl = _supplierConfig.IBoosy.Cancel + AgentVoucheNo;
+            _commonMethod.ThirdPartyCancellationHistory(AgentVoucheNo, ""/*Convert.ToString(HttpContext.Current.Session["UserName"])*/, Convert.ToString(MethaBookDetails[0]["WebSiteURL"]) + Convert.ToString(CancelUrl), "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Request Confirm", rerefenceNo, "WithinEarth");
+            string Error = "";
+            ResponseDto responseDto = await MethaBookResponseNew(CancelUrl, Convert.ToString(MethaBookDetails[0]["WebSiteURL"]), Convert.ToString(MethaBookDetails[0]["UserName"]), Convert.ToString(MethaBookDetails[0]["Password"]), 60000, "PUT", "", false);
+            string MBResponse = responseDto.Response;
+            Error = responseDto.Error;
+
+            if (MBResponse.ToLower().Contains("exceptions") == true || MBResponse.Trim() == string.Empty)
+            {
+                _commonMethod.ThirdPartyCancellationHistory(AgentVoucheNo, "" /*Convert.ToString(HttpContext.Current.Session["UserName"])*/, Convert.ToString(MethaBookDetails[0]["WebSiteURL"]) + Convert.ToString(CancelUrl), Convert.ToString(MBResponse), "From Cancellation Page", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Hotel", rerefenceNo, "WithinEarth");
+                bookingStatus = 1;
+            }
+            else
+            {
+                string CancelStatus = "";
+                MethaBook.RootObject MBResponse1 = Newtonsoft.Json.JsonConvert.DeserializeObject<MethaBook.RootObject>(MBResponse);
+                for (int c = 0; c < MBResponse1.bookingRs.bookings.Count; c++)
+                {
+                    MethaBook.Booking drBooking1 = MBResponse1.bookingRs.bookings[c];
+                    CancelStatus = Convert.ToString(drBooking1.status);
+                    if (CancelStatus.ToLower() == "cancelledbycustomer")
+                    {
+                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(drBooking1.locator), "" /*Convert.ToString(HttpContext.Current.Session["UserName"])*/, Convert.ToString(MethaBookDetails[0]["WebSiteURL"]) + Convert.ToString(CancelUrl), Convert.ToString(MBResponse), "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Request Confirm", rerefenceNo, "WithinEarth");
+                        bookingStatus = 2;
+                    }
+                }
+            }
+
+            return bookingStatus;
+        }
     }
 }

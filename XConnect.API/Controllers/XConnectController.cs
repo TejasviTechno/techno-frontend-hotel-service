@@ -25,7 +25,7 @@ using XConnect.Supplier.GRNC;
 using static Azure.Core.HttpHeader;
 using static XConnect.Models.ErrorLog;
 
-//test
+
 
 
 namespace XConnect.API.Controllers
