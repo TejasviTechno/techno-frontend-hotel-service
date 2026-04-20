@@ -306,7 +306,8 @@ namespace XConnect.Analytics
                             FareInfo = fareInfo,
                             client = clientDetails,
                             BrowserAgent = browserInfo,
-                            SiteType = _userContextAccessor.SiteType
+                            SiteType = _userContextAccessor.SiteType,
+                            ActualDescription = allTasks[i].ActualReason,
                         };
                         supplierDataList.Add(supplierData);
                     }

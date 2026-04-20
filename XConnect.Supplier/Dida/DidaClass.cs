@@ -106,11 +106,17 @@ namespace XConnect.Supplier.Dida
         {
             public Success Success { get; set; }
             public AuditData AuditData { get; set; }
+            public Error Error { get; set; } // added 20042026
         }
 
         public class Success
         {
             public PriceDetails PriceDetails { get; set; }
+        }
+        public class Error
+        {
+            public string Code { get; set; } // added 20042026
+            public string Message { get; set; } // added 20042026
         }
     }
 }
