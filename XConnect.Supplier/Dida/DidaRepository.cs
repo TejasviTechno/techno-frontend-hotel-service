@@ -1614,7 +1614,7 @@ namespace Xconnect.Expedia
             // flag:3= Currency Cheange in PriceCheck Response
             // flag:4= Room is OnRequest or N/A at priceCheck
             // flag:5= Price is Changed...!
-
+            
             string responsetype = "Success";
             string time = "";
             string SupplierName = "Dida";
@@ -1952,8 +1952,8 @@ namespace Xconnect.Expedia
                 string checkin = checkInDate.ToString("yyyy-MM-dd");
                 string checkout = checkOutDate.ToString("yyyy-MM-dd");
 
-               // string AgentReference = bookRequest.BookRQ.InternalReference + "_" + UniqueNo;
-                string AgentReference = bookRequest.BookRQ.InternalReference + "_" + Convert.ToString(AgentCode + "_" + UniqueNo);
+                 string AgentReference = Convert.ToString(AgentCode + "_" + UniqueNo);;
+                //string AgentReference = bookRequest.BookRQ.InternalReference + "_" + Convert.ToString(AgentCode + "_" + UniqueNo);
                 string firstName = ""; string lastName = ""; string title = "";
                 string BookingRQ = "";
 

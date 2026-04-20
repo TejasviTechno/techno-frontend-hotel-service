@@ -2640,8 +2640,8 @@ namespace XConnect.Supplier.ETG
                 string BookingRequest = "";
                 string language = "en";
                 string partner_comment = "";
-                string mail_Id = ETGInfo.ETG_Mail;
-                string mobile = ETGInfo.ETG_Mobile;
+                string mail_Id = _supplierConfig.ETG.ETG_Mail;
+                string mobile = _supplierConfig.ETG.ETG_Mobile;
                 string comment = "comment string";
                 StringBuilder BookingReq = new StringBuilder();
                 BookingReq.Append("{");

@@ -21,6 +21,8 @@ namespace XConnect.Models
         public IBoosyConfig IBoosy { get; set; }
         public GoGlobalConfig GoGlobal { get; set; }
         public OmnibeesConfig Omnibees { get; set; }
+        public QtechConfig Qtech { get; set; }
+        public MGBedBankConfig MGBedBank { get; set; }
     }
 
     public class ExpediaConfig
@@ -86,6 +88,8 @@ namespace XConnect.Models
         public string booking_finish_status { get; set; }
         public string search_serp_hp { get; set; }
         public string order_cancel { get; set; }
+        
+
     }
     public class HotelbedsConfig
     {
@@ -189,5 +193,30 @@ namespace XConnect.Models
         public string OmnibeesCancel { get; set; }
         public string Version { get; set; }
     }
+    public  class QtechConfig
+    {
+        public string HotelAvail { get; set; }
+        public string Nirvana_url { get; set; }
+        public string CancelltionPolicyAction { get; set; }
 
+
+    }
+    public class MGBedBankConfig
+    {
+        public string WebSiteURL { get; set; }
+        public string WebSiteURLforAPI { get; set; }
+        public string Searchs { get; set; }
+        public string Currency { get; set; }
+
+        public string RecheckRate { get; set; }
+        public string BookHotel { get; set; }
+        public string CancelBooking { get; set; }
+        public string GetReservationDetail { get; set; }
+        public string GetReservationList { get; set; }
+        public string GetHotelDetail { get; set; }
+        public string GetNationalities { get; set; }
+        public string GetDestinationLists { get; set; }
+        public string GetPromotionTypes { get; set; }
+        public string GetMealPlanLists { get; set; }
+    }
 }
