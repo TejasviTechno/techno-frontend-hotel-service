@@ -775,11 +775,7 @@ namespace XConnect.Supplier.Techno
                 #endregion
                 //string Currency = ConfigurationManager.AppSettings["Bedlinker_techno_Currency"];
                 //DataTable dtInrCurrency = Common.GetCountryCurrency(Currency);
-                double CurrencyFactorWE_DMC = 1;
-                if (Currency.ToLower() != tokenData.SiteCurrency.ToLower())
-                {
-                    CurrencyFactorWE_DMC = _commonMethod.GetROEByCurrency(Currency, dtROE);
-                }
+              
                 //int HotelOptionId = 0;
                 //DataRow[] drHotelCode = dsHotel.Tables[0].Select("XMLHotelCode='" + HotelId + "'");
                 //string SearchKey = Convert.ToString(drHotelCode[0]["XMLCode"]);
@@ -806,6 +802,13 @@ namespace XConnect.Supplier.Techno
                 string UserID = Convert.ToString(drSuplierMarkup[0]["UserID"]);
                 string password = Convert.ToString(drSuplierMarkup[0]["Password"]);
                 Currency = Convert.ToString(drSuplierMarkup[0]["CurrencyShortName"]); //23-06-25
+                double CurrencyFactorWE_DMC = 1;
+                if (Currency.ToLower() != tokenData.SiteCurrency.ToLower())
+                {
+                    CurrencyFactorWE_DMC = _commonMethod.GetROEByCurrency(Currency, dtROE);
+                }
+
+
                 //string URL = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + TechnoInfo.WE_DMCCancellationPolicyURL;
                 string URL = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + _supplierConfig.Techno.WE_DMCCancellationPolicyURL;
                 //DataRow[] drRoom = dsHotel.Tables[1].Select("RoomTypeId='" + RoomTypeId_Own + "'");
