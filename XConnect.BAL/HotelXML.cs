@@ -2512,7 +2512,8 @@ namespace Xconnect.BLL
                                     {
                                         if (OmnibeesSearchConfig != null && OmnibeesSearchConfig.Count > 0 && OmnibeesSearchConfig.Count > 0)
                                         {
-                                            _omnibees.GetOmnibeesRequestOnly_async(commonSearchList.commonHotelCodes.Omnibees_Codes, lstRating, SearchPara, OmnibeesDetails, OmnibeesSearchConfig, dtPreferredDataHotel, ref AllTask, dataForSearch.xmlCity, dataForSearch.XmlNationality, hit, dtXMLCity, dtROE, tokenData);
+                                            _omnibees.GetOmnibeesRequestOnly_async_new(commonSearchList.commonHotelCodes.Omnibees_Codes, lstRating, SearchPara, OmnibeesDetails, OmnibeesSearchConfig, dtPreferredDataHotel, ref AllTask, dataForSearch.xmlCity, dataForSearch.XmlNationality, hit, dtXMLCity, dtROE, tokenData);
+
                                         }
                                     }
                                 }
@@ -5476,7 +5477,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     {
                                         dataTable.Add(Task.Run(async () =>
                                         {
-                                            var result = await _hyperguest.hyperguestHotelSearchWithRooms(item, commonSearch, item.RQRS[0].Response, item.XmlCity, SearchPara, item.CurrencyFactor, item.Supplier, dsAgentDetails, dtMarkupDetails, item.CurrencyCode, dtROE, item.XmlNationality, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
+                                            var result = await _hyperguest.hyperguestHotelSearchWithRooms_Multiroom(item, commonSearch, item.RQRS[0].Response, item.XmlCity, SearchPara, item.CurrencyFactor, item.Supplier, dsAgentDetails, dtMarkupDetails, item.CurrencyCode, dtROE, item.XmlNationality, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
                                             item.dtHotelRoom = result;
                                             return result;
                                         }));
@@ -31651,9 +31652,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             int ChildAge1 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["ChildAge1"]);
                                                             int ChildAge2 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["ChildAge2"]);
 
-                                                            int ChildAge = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["ChildAge"]);//added
-
-
+                                                            //int ChildAge = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["ChildAge"]);//added
                                                             // string childAgeData = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["ChildAge"]);
 
 
