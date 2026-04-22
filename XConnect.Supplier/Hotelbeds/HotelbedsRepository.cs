@@ -1400,19 +1400,7 @@ namespace Xconnect.Hotelbeds
                 Boolean blnIsShowSupplier = false;
                 string ConvertXml = "";
 
-                //DataTable policy = new DataTable();
-                //if (dsHotelBeds.Tables["cancellationPolicies"] != null)
-                //{
-                //    if (!dsHotelBeds.Tables["cancellationPolicies"].Columns.Contains("Date"))
-                //        dsHotelBeds.Tables["cancellationPolicies"].Columns.Add("Date", typeof(DateTime));
-
-                //    for (int dt = 0; dt < dsHotelBeds.Tables["cancellationPolicies"].Rows.Count; dt++)
-                //    {
-                //        dsHotelBeds.Tables["cancellationPolicies"].Rows[dt]["Date"] = Convert.ToDateTime(dsHotelBeds.Tables["cancellationPolicies"].Rows[dt]["from"]).Date;
-                //    }
-                //    dsHotelBeds.Tables["cancellationPolicies"].DefaultView.Sort = "Date Asc";
-                //    policy = dsHotelBeds.Tables["cancellationPolicies"].DefaultView.ToTable();
-                //}
+                
 
                 int CutOffDays = CacheMaster.CutOffDays;
                 // CutOffDays = Common.GetCutOffDays(commonSearch.dtSuplierMarkup, "HotelBedsV1");
@@ -1420,17 +1408,7 @@ namespace Xconnect.Hotelbeds
                 //for (int h = 1; h < counthotel; h++)
                 {
                     Item.ResponseType = "Success";
-                    //Check Time If High then return NoCount
-
-                    //--end
-                    // double price = ;
-                    // string starRating = Convert.ToString(dsHotelBeds.Tables["hotels"].Rows[h]["categoryCode"]);
-                    //string Stars = Common.HotelBedsStarRating(starRating);
-                    // double finalPrice = price;
-
-
-                    //New for CombinePrice
-                    //
+                    
                     double FinalPrice = 1;
                     #region "When not Need Room"  
                     // add hotel code from price only and room code blank here
@@ -1464,47 +1442,7 @@ namespace Xconnect.Hotelbeds
                             if (commonSearch.tokenData.AgentId != 1899)
                             {
                                 FinalPrice = 0;
-                                #region Old Code
-                                //for (int c = 0; c < SearchParam.Rooms.Count(); c++)
-                                //{
-                                //    int NoOfAdults = SearchParam.Rooms[c].NoofAdults;
-                                //    bool chk = false;
-                                //    double Total = 0;
-
-                                //    for (int a = 0; a < HBResponse.hotels.hotels[h].rooms.Count(); a++)
-                                //    {
-                                //        if (chk == false)
-                                //        {
-
-                                //            var p = HBResponse.hotels.hotels[h].rooms[a].rates
-                                //                        .Where(r => r.adults == NoOfAdults) // Filter by NoOfAdults
-                                //                        .Select(r => r.net) // Select only the net price
-                                //                        .Min();
-
-                                //            double MinPrice = 0;
-                                //            if (p != "")
-                                //            {
-                                //                double Price = Convert.ToDouble(p);
-                                //                chk = true;
-                                //                if (MinPrice == 0)
-                                //                    MinPrice = Price;
-                                //                else
-                                //                {
-                                //                    if (Price < MinPrice)
-                                //                        MinPrice = Price;
-                                //                }
-
-                                //            }
-
-                                //            if (MinPrice != 0)
-                                //                Total = Total + MinPrice;
-                                //        }
-                                //    }
-                                //    FinalPrice = FinalPrice + Total;
-                                //}
-                                #endregion
-
-                                for (int c = 0; c < SearchParam.Rooms.Count(); c++)
+                            for (int c = 0; c < SearchParam.Rooms.Count(); c++)
                                 {
                                     int NoOfAdults = SearchParam.Rooms[c].NoofAdults;
                                     bool chk = false;
@@ -1555,7 +1493,6 @@ namespace Xconnect.Hotelbeds
                             drXmlHotel["XmlHotelCity"] = Convert.ToString(HBResponse.hotels.hotels[h].destinationCode);
                             drXmlHotel["XMLCountry"] = "";
                             drXmlHotel["XMLCity"] = Convert.ToString(HBResponse.hotels.hotels[h].destinationCode);
-                            // drXmlHotel["SupplierName"] = "HotelBedsV1";
                             drXmlHotel["SupplierName"] = Item.Supplier;
                             drXmlHotel["BookingStatus"] = "Available";
                             drXmlHotel["IsOffer"] = "";
@@ -1608,10 +1545,6 @@ namespace Xconnect.Hotelbeds
 
                             #region hotelbedsnew
 
-                            //ResponseData = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(ResponseData, "root").InnerXml;
-                            //DataSet RoomResponse = new DataSet();
-                            //RoomResponse = Common.GetDataSetFromXMLString(ResponseData);
-                           
                             string Essen = "";
                             string RateType = "";
                             int NoOfNight = SearchParam.NoofNights;
@@ -1632,7 +1565,6 @@ namespace Xconnect.Hotelbeds
                             drXmlHotel["XmlHotelCity"] = Convert.ToString(HBResponse.hotels.hotels[h].destinationCode);
                             drXmlHotel["XMLCountry"] = "";
                             drXmlHotel["XMLCity"] = Convert.ToString(HBResponse.hotels.hotels[h].destinationCode);
-                            // drXmlHotel["SupplierName"] = "HotelBedsV1";
                             drXmlHotel["SupplierName"] = Item.Supplier;
                             drXmlHotel["BookingStatus"] = "Available";
                             drXmlHotel["IsOffer"] = "";
@@ -1664,7 +1596,7 @@ namespace Xconnect.Hotelbeds
                                 double SubAgentMarkup = 0;
                                 double ratePerNight = 0;
                                 int IsParentId = 1;
-                                //Common.getAgetMarkupSetting(Provider, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate);
+                                
                                 _markup.getAgetMarkupSetting(Provider, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate);
 
 
@@ -1796,24 +1728,6 @@ namespace Xconnect.Hotelbeds
 
                                                         if (SearchAdult == Adult && SearchChild == children && ChildAge1 == ResponseChild1Age && ChildAge2 == ResponseChild2Age)
                                                         {
-                                                            //DataRow[] drcancelationpolicy = RoomResponse.Tables["cancellationPolicies"].Select("rates_Id='" + rates_id + "'");
-                                                            //for (int l = 0; l < drcancelationpolicy.Length; l++)
-                                                            //{
-                                                            //    double Amount = Convert.ToDouble(drcancelationpolicy[l]["amount"]);
-                                                            //    DateTime FromDate = Convert.ToDateTime(drcancelationpolicy[l]["from"]);
-                                                            //}
-                                                            //if (RoomResponse.Tables.Contains("offers"))
-                                                            //{
-                                                            //    DataRow[] droffer = RoomResponse.Tables["offers"].Select("rates_Id='" + rates_id + "'");
-                                                            //    for (int p = 0; p < droffer.Length; p++)
-                                                            //    {
-                                                            //        double OfferAmount = Convert.ToDouble(droffer[p]["amount"]);
-                                                            //        string offerName = Convert.ToString(droffer[p]["name"]);
-                                                            //        string offercode = Convert.ToString(droffer[p]["code"]);
-                                                            //    }
-                                                            //}
-                                                            // }
-
                                                             #region Added For Cancellation Policy
 
                                                             DateTime FinalFromDate = DateTime.Now;
@@ -1882,13 +1796,7 @@ namespace Xconnect.Hotelbeds
 
                                 var Meal = DtHotelBedsV1_HotelRoom.DefaultView.ToTable(true, "MealName");
                                 var Room = DtHotelBedsV1_HotelRoom.DefaultView.ToTable(true, "RoomNo");
-                                //DataTable dtTemp = new DataTable();
-                                //dtTemp.Columns.Add("CobinationName");
-                                //dtTemp.Columns.Add("MealName");
-                                //dtTemp.Columns.Add("Price");
-                                //dtTemp.Columns.Add("RoomTypeID");
-                                //dtTemp.AcceptChanges();
-
+                               
                                 for (int a = 0; a < Meal.Rows.Count; a++)
                                 {
 
@@ -1936,14 +1844,6 @@ namespace Xconnect.Hotelbeds
                                             //DataRow drRoom = dtTemp.NewRow();
                                             for (int b = 0; b < drOther.Count(); b++)
                                             {
-                                                //RMNO = Convert.ToInt32(drOther[b]["RoomNo"]);
-                                                //RoomName = RoomName +" && "+ drOther[b]["RoomTypeName"];
-                                                //RoomPrice += Convert.ToDouble(drOther[b]["FinalSellingPrice"]);
-                                                //RoomMeal += drOther[b]["MealName"];
-                                                //for (int c = b+1; c < drOther.Count(); c++)
-                                                //if (Convert.ToInt32(drOther[b]["RoomNo"]) != RMNO && !strRoomTypeId.Contains(Convert.ToString(drOther[b]["RoomTypeCode"])))
-                                                //{
-                                                //    strRoomTypeId.Add(Convert.ToString(drOther[b]["RoomTypeCode"]));
                                                 if (Convert.ToInt32(drOther[b]["RoomNo"]) != RMNO && !strRoomTypeId.Contains(Convert.ToString(drOther[b]["RoomTypeId"])))
                                                 {
                                                     strRoomTypeId.Add(Convert.ToString(drOther[b]["RoomTypeId"]));
@@ -1953,14 +1853,7 @@ namespace Xconnect.Hotelbeds
                                                     RoomTypeID = RoomTypeID + "##$$" + drOther[b]["RoomTypeId"];
                                                     ADTOCC += Convert.ToInt32(drOther[b]["AdultsOccupancy"]);
                                                     CLDOCC += Convert.ToInt32(drOther[b]["ChildOccupancy"]);
-                                                    //RoomMeal += drOther[c]["MealName"];
-                                                    //RoomPrice = RoomPrice * CurrencyFactorHotelbedsv1;
-                                                    //drRoom["CobinationName"] = RoomName;
-                                                    //drRoom["MealName"] = RoomMeal;
-                                                    //drRoom["Price"] = RoomPrice;
-                                                    //drRoom["RoomTypeID"] = RoomTypeID;
-                                                    //break;
-
+                                               
                                                     #region Added For Policy by Jay                                                                                                    
                                                     strRoomPolicy.Add(Convert.ToDateTime(drOther[b]["FinalFromDate"]));
                                                     #endregion
@@ -1969,10 +1862,7 @@ namespace Xconnect.Hotelbeds
 
                                                 }
                                             }
-                                            //dtTemp.Rows.Add(drRoom);
-
-
-
+                                           
                                             #region "Logic For Room Name "
                                             string[] spitid = RoomName.Split(new String[] { "$$$" }, StringSplitOptions.None);
                                             if (SearchParam.Rooms.Count != spitid.Length)
@@ -1996,20 +1886,7 @@ namespace Xconnect.Hotelbeds
                                                 string RoomNme = roomlist[p].RoomName;
                                                 RoomNameMain = RoomNameMain + "(" + (p + 1) + ")" + RoomNme + " ";
                                             }
-                                            //for (int p = 0; p < roomlist.Count; p++)
-                                            //{
-                                            //    for (int q = (p + 1); q < roomlist.Count; q++)
-                                            //    {
-                                            //        if (roomlist[p].RoomName == roomlist[q].RoomName && roomlist[q].status)
-                                            //        {
-                                            //            roomlist[p].RoomCount = roomlist[p].RoomCount + roomlist[q].RoomCount;
-                                            //            roomlist[q].RoomCount = roomlist[p].RoomCount;
-                                            //            roomlist[q].status = false;
-                                            //        }
-                                            //    }
-                                            //    if (RoomNameMain.IndexOf(roomlist[p].RoomName) < 0 || RoomNameMain == "")
-                                            //        RoomNameMain = RoomNameMain + roomlist[p].RoomCount + " - " + roomlist[p].RoomName + " ";
-                                            //}
+                                          
                                             #endregion
 
                                             #region Find Cheapest date form Policy
@@ -2077,7 +1954,7 @@ namespace Xconnect.Hotelbeds
                                             drAdonisRoom["EssentialInformation"] = EssentialInfo;
                                             double ItemPrice = Convert.ToDouble(RoomPrice);
                                             _markup.ProcessHotelRoom_WithMarkup(CurrencyFactor, currency, true, true, SearchParam.NoofNights, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref ItemPrice, ref drAdonisRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
-                                            drAdonisRoom["SupplierName"] = "HotelBedsV1";
+                                            drAdonisRoom["SupplierName"] = Item.Supplier;
                                             dtHotelBedsV1Room.Rows.Add(drAdonisRoom);
 
                                             #endregion

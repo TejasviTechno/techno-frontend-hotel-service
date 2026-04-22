@@ -11,7 +11,7 @@ namespace XConnect.Supplier.Hyperguest
         #region hyperguest class
         public class hyperguest
         {
-            public static string hyperguest_Currency = "USD";
+           // public static string hyperguest_Currency = "USD";
 
             #region roomlist
             public class RoomList
@@ -321,6 +321,245 @@ namespace XConnect.Supplier.Hyperguest
             }
             #endregion
 
+            #region "class change"
+            public class HotelList1
+            {
+                public class Bar
+                {
+                    public double price { get; set; }
+                    public double searchCurrency { get; set; }
+                    public string currency { get; set; }
+                }
+
+                public class BeddingConfiguration
+                {
+                    public string type { get; set; }
+                    public String size { get; set; }
+                    public int quantity { get; set; }
+                }
+
+                public class Billing
+                {
+                    public double price { get; set; }
+                    public string currency { get; set; }
+                }
+
+                public class Calculation
+                {
+                    public string type { get; set; }
+                    public double value { get; set; }
+                    public double? searchCurrency { get; set; }
+                }
+
+                public class CancellationPolicy
+                {
+                    public int daysBefore { get; set; }
+                    public string penaltyType { get; set; }
+                    public double amount { get; set; }
+                    public TimeSetting timeSetting { get; set; }
+                    public string cancellationDeadlineHour { get; set; }
+                }
+
+                public class ChargeAmount
+                {
+                    public double price { get; set; }
+                    public string currency { get; set; }
+                    public double searchCurrency { get; set; }
+                    public Billing billing { get; set; }
+                    public Origin origin { get; set; }
+                    public Search search { get; set; }
+                }
+
+                public class Commission
+                {
+                    public double price { get; set; }
+                    public double searchCurrency { get; set; }
+                    public string currency { get; set; }
+                }
+
+                public class Contract
+                {
+                    public int contractId { get; set; }
+                    public string type { get; set; }
+                    public List<Term> terms { get; set; }
+                }
+
+                public class Fee
+                {
+                    public string description { get; set; }
+                    public double amount { get; set; }
+                    public double searchCurrency { get; set; }
+                    public string currency { get; set; }
+                    public string relation { get; set; }
+                    public string scope { get; set; }
+                    public string frequency { get; set; }
+                    public Calculation calculation { get; set; }
+                }
+
+                public class Net
+                {
+                    public double price { get; set; }
+                    public double searchCurrency { get; set; }
+                    public string currency { get; set; }
+                    public List<Taxis> taxes { get; set; }
+                }
+
+                public class NightlyBreakdown
+                {
+                    public string date { get; set; }
+                    public Prices prices { get; set; }
+                }
+
+                public class Origin
+                {
+                    public double price { get; set; }
+                    public string currency { get; set; }
+                }
+
+                public class Payment
+                {
+                    public string charge { get; set; }
+                    public string chargeType { get; set; }
+                    public ChargeAmount chargeAmount { get; set; }
+                }
+
+                public class Prices
+                {
+                    public Net net { get; set; }
+                    public Sell sell { get; set; }
+                    public Commission commission { get; set; }
+                    public Bar bar { get; set; }
+                    public List<Fee> fees { get; set; }
+                }
+
+                public class PropertyInfo
+                {
+                    public string name { get; set; }
+                    public int starRating { get; set; }
+                    public string cityName { get; set; }
+                    public int cityId { get; set; }
+                    public string countryCode { get; set; }
+                    public string regionName { get; set; }
+                    public double longitude { get; set; }
+                    public double latitude { get; set; }
+                    public int propertyType { get; set; }
+                    public string propertyTypeName { get; set; }
+                }
+
+                public class RatePlan
+                {
+                    public string ratePlanCode { get; set; }
+                    public string ratePlanName { get; set; }
+                    public double ratePlanId { get; set; }
+                    public RatePlanInfo ratePlanInfo { get; set; }
+                    public string board { get; set; }
+                    public Payment payment { get; set; }
+                    public Prices prices { get; set; }
+                    public List<string> remarks { get; set; }
+                    public List<CancellationPolicy> cancellationPolicies { get; set; }
+                    public List<NightlyBreakdown> nightlyBreakdown { get; set; }
+                    public bool isImmediate { get; set; }
+                }
+
+                public class RatePlanInfo
+                {
+                    public bool @virtual { get; set; }
+                    public List<Contract> contracts { get; set; }
+                    public List<Term> terms { get; set; }
+                    public string originalRatePlanCode { get; set; }
+                    public bool isPromotion { get; set; }
+                    public bool isPackageRate { get; set; }
+                    public bool isPrivate { get; set; }
+                    public string contractId { get; set; }
+                }
+
+                public class Result
+                {
+                    public int propertyId { get; set; }
+                    public PropertyInfo propertyInfo { get; set; }
+                    public List<string> remarks { get; set; }
+                    public List<Room> rooms { get; set; }
+                }
+
+                public class Room
+                {
+                    public SearchedPax searchedPax { get; set; }
+                    public string roomTypeCode { get; set; }
+                    public int numberOfAvailableRooms { get; set; }
+                    public string roomName { get; set; }
+                    public int roomId { get; set; }
+                    public Settings settings { get; set; }
+                    public List<RatePlan> ratePlans { get; set; }
+                }
+
+                public class Root
+                {
+                    public List<Result> results { get; set; }
+                    public DateTime timeStamp { get; set; }
+                }
+
+                public class Search
+                {
+                    public double price { get; set; }
+                    public string currency { get; set; }
+                }
+
+                public class SearchedPax
+                {
+                    public int adults { get; set; }
+                    public List<object> children { get; set; }
+                }
+
+                public class Sell
+                {
+                    public double price { get; set; }
+                    public double searchCurrency { get; set; }
+                    public string currency { get; set; }
+                    public List<Taxis> taxes { get; set; }
+                }
+
+                public class Settings
+                {
+                    public int numberOfBedrooms { get; set; }
+                    public int? roomSize { get; set; }
+                    public int maxAdultsNumber { get; set; }
+                    public int maxChildrenNumber { get; set; }
+                    public int maxInfantsNumber { get; set; }
+                    public int maxOccupancy { get; set; }
+                    public int numberOfBeds { get; set; }
+                    public List<BeddingConfiguration> beddingConfigurations { get; set; }
+                }
+
+                public class Taxis
+                {
+                    public string description { get; set; }
+                    public double amount { get; set; }
+                    public double searchCurrency { get; set; }
+                    public string currency { get; set; }
+                    public string relation { get; set; }
+                    public string scope { get; set; }
+                    public string frequency { get; set; }
+                    public Calculation calculation { get; set; }
+                }
+
+                public class Term
+                {
+                    public int id { get; set; }
+                    public string name { get; set; }
+                    public bool isPromotion { get; set; }
+                    public int contractId { get; set; }
+                    public string type { get; set; }
+                    public List<int> termIds { get; set; }
+                }
+
+                public class TimeSetting
+                {
+                    public int timeFromCheckIn { get; set; }
+                    public string timeFromCheckInType { get; set; }
+                }
+            }
+
+            #endregion
             #region pricechek req_new
             public class Pricecheck
             {

@@ -496,7 +496,7 @@ namespace XConnect.Supplier.Hyperguest
             }
             return "";
         }
-        public async Task<List<Options>> hyperguestHotelSearchWithRooms(HotelX Item, CommonSearch commonSearch, string ResponseData, string CityCode, HotelSearchParameter SearchParam, double CurrencyFactorHyperGuest, string Supplier, DataSet dsAgentDetails, DataTable dtMarkupDetails, string CurrencyCode, DataTable dtROE, string XmlNationality, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string StoreSupplierResErrorLog)
+        public async Task<List<Options>> hyperguestHotelSearchWithRooms_within(HotelX Item, CommonSearch commonSearch, string ResponseData, string CityCode, HotelSearchParameter SearchParam, double CurrencyFactorHyperGuest, string Supplier, DataSet dsAgentDetails, DataTable dtMarkupDetails, string CurrencyCode, DataTable dtROE, string XmlNationality, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string StoreSupplierResErrorLog)
         {
             System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
             timerroomx.Start();
@@ -995,7 +995,7 @@ namespace XConnect.Supplier.Hyperguest
             return options;
         }
 
-        public async Task<List<Options>> hyperguestHotelSearchWithRooms_Multiroom(HotelX Item, CommonSearch commonSearch, string ResponseData, string CityCode, HotelSearchParameter SearchParam, double CurrencyFactorHyperGuest, string Supplier, DataSet dsAgentDetails, DataTable dtMarkupDetails, string CurrencyCode, DataTable dtROE, string XmlNationality, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string StoreSupplierResErrorLog)
+        public async Task<List<Options>> hyperguestHotelSearchWithRooms_Multiroom_within(HotelX Item, CommonSearch commonSearch, string ResponseData, string CityCode, HotelSearchParameter SearchParam, double CurrencyFactorHyperGuest, string Supplier, DataSet dsAgentDetails, DataTable dtMarkupDetails, string CurrencyCode, DataTable dtROE, string XmlNationality, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string StoreSupplierResErrorLog)
         {
             System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
             timerroomx.Start();
@@ -1629,6 +1629,686 @@ namespace XConnect.Supplier.Hyperguest
             return options;
         }
 
+
+        public async Task<List<Options>> hyperguestHotelSearchWithRooms_Multiroom(HotelX Item, CommonSearch commonSearch, string ResponseData, string CityCode, HotelSearchParameter SearchParam, double CurrencyFactorHyperGuest, string Supplier, DataSet dsAgentDetails, DataTable dtMarkupDetails, string CurrencyCode, DataTable dtROE, string XmlNationality, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string StoreSupplierResErrorLog)
+        {
+            System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
+            timerroomx.Start();
+            List<Options> options = new List<Options>();
+            DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
+            try
+            {
+                HyperguestClass.hyperguest.HotelList1.Root DS = null;
+                try
+                {
+                    DS = Newtonsoft.Json.JsonConvert.DeserializeObject<HyperguestClass.hyperguest.HotelList1.Root>(ResponseData);
+
+                }
+
+                catch (Exception ex)
+                {
+                    Item.ResponseType = "NoCount";
+                    _exception.Error(ex);
+                }
+                if (DS == null)
+                {
+                    Item.ResponseType = "NoCount";
+                    return options;
+                }
+
+                if (DS.results.Count < 1)
+                {
+                    Item.ResponseType = "NoCount";
+                    return options;
+                }
+                var result = SearchParam.Rooms.GroupBy(x => new
+                {
+                    x.NoofAdults,
+                    x.NoofChild,
+                    x.Child1Age,
+                    x.Child2Age
+                }).Select(n => new
+                {
+                    NoofAdults = n.Key.NoofAdults,
+                    NoofChild = n.Key.NoofChild,
+                    ChildAge = n.ToList(),
+                    Count = n.Count()
+                });
+                String currency = "";
+
+                for (int i = 0; i < DS.results.Count; i++)
+                {
+                    {
+                        double Pricenew = 0;
+                        double LowRate = 0;
+                        bool israte = true;
+                        string BoardType = "";
+                        //if (DS.results[i].rooms.Count() == 0)
+                        //{
+                        //    continue;
+                        //}
+
+                        if (DS.results[i].rooms.Count > 0)
+                        {
+                            LowRate = 0;
+                            #region "When not Need Room"  
+                            if (SearchParam.Filters.IsShowRooms == 0)
+                            {
+                                #region "Hotel Code Block "
+                                var distinctRoomTypeCodes = DS.results[i].rooms.Select(x => x.roomTypeCode).Distinct().ToList();
+                                var roomLookup = distinctRoomTypeCodes.ToDictionary(roomTypeCode => roomTypeCode, roomTypeCode => DS.results[i].rooms.Where(x => x.roomTypeCode == roomTypeCode).ToList());
+
+                                for (int ro = 0; ro < DS.results[i].rooms.Count; ro++)
+                                {
+                                    Item.ResponseType = "Success";
+                                    int numberOfAvailablerooms1 = DS.results[i].rooms[ro].numberOfAvailableRooms;
+                                    if (numberOfAvailablerooms1 < SearchParam.Rooms.Count)
+                                    {
+                                        continue;
+                                    }
+
+                                    for (int RT = 0; RT < DS.results[i].rooms[ro].ratePlans.Count(); RT++)
+                                    {
+                                        string rateplancode = DS.results[i].rooms[ro].ratePlans[RT].ratePlanCode;
+                                        string board = DS.results[i].rooms[ro].ratePlans[RT].board;
+
+                                        currency = DS.results[i].rooms[ro].ratePlans[RT].prices.net.currency;
+                                        double CurrencyFactor = 1;
+                                        //added on 09-02-2024 #40209
+                                        //if (currency.ToLower() == "ars" || currency.ToLower() == "usd" || currency.ToLower() == "eur" || currency.ToLower() == "brl")
+                                        //{
+                                        //    if (currency.ToLower() != "usd")
+                                        //    {
+                                        //        if (currency.ToLower() == "ars")
+                                        //        {
+                                        //            currency = "AR$";
+                                        //        }
+                                        //        CurrencyFactor = _commonMethod.GetROEByCurrency(currency, dtROE);
+                                        //    }
+
+                                        //}
+                                        //else
+                                        //{
+                                        //    continue;
+                                        //}
+                                        //end
+
+                                        CurrencyFactor = _commonMethod.GetROEByCurrency(currency, dtROE);
+
+                                        foreach (var roomTypeCode1 in distinctRoomTypeCodes)
+                                        {
+                                            var filteredRooms = roomLookup[roomTypeCode1];
+                                            int Allroomavailable = 0;
+                                            List<int> roomlist1 = new List<int>();
+
+                                            // Reduce nested loop by pre-checking availability
+                                            if (filteredRooms.Count >= 1)
+                                            {
+                                                int numberOfAvailableRooms = filteredRooms[0].numberOfAvailableRooms;
+                                                if (numberOfAvailableRooms >= SearchParam.Rooms.Count)
+                                                {
+                                                    for (int b = 0; b < SearchParam.Rooms.Count; b++)
+                                                    {
+                                                        for (int a = 0; a < filteredRooms.Count; a++)
+                                                        {
+                                                            // Simplified matching conditions
+                                                            var room = filteredRooms[a];
+                                                            if (SearchParam.Rooms[b].NoofAdults == room.searchedPax.adults && SearchParam.Rooms[b].NoofChild == room.searchedPax.children.Count)
+                                                            {
+                                                                if (SearchParam.Rooms[b].NoofChild == 1 && SearchParam.Rooms[b].Child1Age != Convert.ToInt16(room.searchedPax.children[0]))
+                                                                {
+                                                                    continue;
+                                                                }
+                                                                if (SearchParam.Rooms[b].NoofChild == 2 && (SearchParam.Rooms[b].Child1Age != Convert.ToInt16(room.searchedPax.children[0]) || SearchParam.Rooms[b].Child2Age != Convert.ToInt16(room.searchedPax.children[1])))
+                                                                {
+                                                                    continue;
+                                                                }
+
+                                                                if (room.numberOfAvailableRooms != 0)
+                                                                {
+                                                                    Allroomavailable++;
+                                                                    roomlist1.Add(a);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if (Allroomavailable == SearchParam.Rooms.Count)
+                                                    {
+                                                        bool sameMealOptionForAll = filteredRooms.All(room => room.ratePlans.Any(rp => rp.ratePlanCode == rateplancode && rp.board == board));
+                                                        // Calculate price after checking availability
+                                                        for (int f = 0; f < filteredRooms[0].ratePlans.Count; f++)
+                                                        {
+                                                            string rateplanId = Convert.ToString(filteredRooms[0].ratePlans[f].ratePlanId);
+                                                            if (sameMealOptionForAll)
+                                                            {
+                                                                string RoomTypeCord = filteredRooms[0].roomTypeCode;
+                                                                int RoomId = filteredRooms[0].roomId;
+                                                                string uniqid = Guid.NewGuid().ToString();
+
+
+                                                                Pricenew = 0;
+                                                                if (roomlist1.Count >= Convert.ToInt32(SearchParam.Rooms.Count))
+                                                                {
+                                                                    Pricenew = roomlist1.Sum(x =>
+                                                                    {
+                                                                        try
+                                                                        {
+                                                                            var room = filteredRooms[x];
+                                                                            List<HyperguestClass.hyperguest.HotelList1.RatePlan> roomlist = room.ratePlans.Where(rp1 => rp1.ratePlanCode == rateplancode).ToList();
+                                                                            return Convert.ToDouble(roomlist[0].prices.net.price) * CurrencyFactor;
+                                                                        }
+                                                                        catch (Exception e1)
+                                                                        {
+                                                                            _exception.Error(e1);
+                                                                            return 0;
+                                                                        }
+                                                                    });
+
+                                                                    LowRate = (LowRate == 0) ? Pricenew : Math.Min(LowRate, Pricenew);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Double NetPrice = LowRate;
+                                #region "Hotel Code Block "
+                                DataRow drXmlHotel = DtHotel.NewRow();
+                                drXmlHotel["XMLHotelCode"] = Convert.ToString(DS.results[i].propertyId);
+                                drXmlHotel["HotelName"] = "";
+                                drXmlHotel["SupplierName"] = Supplier;
+                                drXmlHotel["OfficeID"] = 0;
+                                drXmlHotel["ContractID"] = 0;
+                                drXmlHotel["Rating"] = 0;
+                                drXmlHotel["Reviews"] = 0;
+                                drXmlHotel["UniqueNo"] = 0;
+                                drXmlHotel["IsShowSupplier"] = false;
+                                drXmlHotel["BookingStatus"] = "Available";
+                                drXmlHotel["XMLCity"] = "";
+                                drXmlHotel["SupplierCurrency"] = currency;
+                                drXmlHotel["FinalSellingPrice"] = NetPrice;
+                                drXmlHotel["SellingPrice"] = NetPrice;
+                                drXmlHotel["OfferText"] = "";
+                                DtHotel.Rows.Add(drXmlHotel);
+                                Double FinalTotal = NetPrice;
+                                #endregion
+                                if (FinalTotal > 0)
+                                {
+                                    #region "Room code Block"
+                                    bool willAddOrNot = true;
+                                    Int64 RaynaID = 0;
+                                    Int64 GiataId = 0;
+                                    int Rating = 0;
+                                    Int64 OwnsystemHotelId = 0;
+                                    double MinPrice = FinalTotal;
+                                    _markup.GetHotelDataCommon(ref MinPrice, ref willAddOrNot, ref OwnsystemHotelId, ref RaynaID, ref GiataId, ref Rating, ref drXmlHotel, commonSearch.AgentId, commonSearch.TariffID, commonSearch.dsAgentDetails, commonSearch.supplierGiataMaster, SearchParam, commonSearch.dtCountryCityMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId, commonSearch.SubAgentMarkup, commonSearch.SearchByHotel, commonSearch.HotelIDS);
+                                    if (willAddOrNot)
+                                    {
+                                        #region "Room Logic"
+                                        DataTable dt_HotelRoom = _commonMethod.GenerateRoomtypeDataTableNewV2();
+                                        DataTable dt_Cancellation = _commonMethod.GenerateCancellationDataTableNewV2();
+                                        DataTable dt_RateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
+                                        #endregion
+                                        decimal LowestPrice = Convert.ToDecimal(MinPrice).CalculatePrice(commonSearch.tokenData, commonSearch.advancedOptions, currency);
+                                        Options ops = (await _supplierRes.GetCommonRoomForSuppliers(GiataId, commonSearch.tokenData, commonSearch.advancedOptions, Convert.ToDouble(LowestPrice), drXmlHotel, dt_HotelRoom, dt_Cancellation, dt_RateBreackUp, SearchParam));
+                                        if (ops != null)
+                                            options.Add(ops);
+                                    }
+                                    #endregion
+                                }
+
+
+                                #endregion
+                            }
+                            #endregion
+                            #region"When Room need"
+                            else
+                            {
+                                string xmlhotelcode = Convert.ToString(DS.results[i].propertyId);
+                                Item.ResponseType = "Success";
+                                string HotelID = xmlhotelcode;
+                                double FinalMinPrice = 0;
+                                DataRow drXmlHotel = DtHotel.NewRow();
+                                drXmlHotel["XMLHotelCode"] = HotelID;
+                                drXmlHotel["HotelName"] = "";
+                                drXmlHotel["SupplierName"] = Supplier;
+                                drXmlHotel["OfficeID"] = 0;
+                                drXmlHotel["ContractID"] = 0;
+                                drXmlHotel["Rating"] = 0;
+                                drXmlHotel["Reviews"] = 0;
+                                drXmlHotel["UniqueNo"] = 0;
+                                drXmlHotel["IsShowSupplier"] = false;
+                                drXmlHotel["BookingStatus"] = "Available";
+                                drXmlHotel["XMLCity"] = "";
+                                drXmlHotel["SupplierCurrency"] = currency;
+                                drXmlHotel["FinalSellingPrice"] = 1;
+                                drXmlHotel["SellingPrice"] = 1;
+                                drXmlHotel["OfferText"] = "";
+                                DtHotel.Rows.Add(drXmlHotel);
+
+                                int CutOffDays = XMLHotelBookingCommon.CutOffDays;
+                                CutOffDays = _commonMethod.GetCutOffDays(commonSearch.dtSuplierMarkup, Supplier);
+                                int totalAdult = 0;
+                                int totalChild = 0;
+                                for (int b = 0; b < SearchParam.Rooms.Count; b++)
+                                {
+                                    totalAdult = Convert.ToInt32(SearchParam.Rooms[b].NoofAdults) + totalAdult;
+                                    totalChild = Convert.ToInt32(SearchParam.Rooms[b].NoofChild) + totalChild;
+                                }
+                                bool willAddOrNot = true;
+                                Int64 RaynaID = 0;
+                                Int64 GiataId = 0;
+                                int RatingHotel = 0;
+                                Int64 OwnsystemHotelId = 0;
+                                double MinPrice = 1;
+                                double AgentPercentage = 0;
+                                double AgentMarkupAmount = 0;
+                                Boolean blnIsShowSupplier = false;
+                                Boolean isPerce = true;
+
+
+                                #region "Room code Block"
+                                int Rating = 0;
+                                DataTable dtParsecRoom = _commonMethod.GenerateRoomtypeDataTableNewV2();
+                                DataTable dtParsecCacelationPolicy = _commonMethod.GenerateCancellationDataTableNewV2();
+                                DataTable dtParsecRoomRateBreakup = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
+                                _markup.GetHotelDataCommon(ref MinPrice, ref willAddOrNot, ref OwnsystemHotelId, ref RaynaID, ref GiataId, ref Rating, ref drXmlHotel, commonSearch.AgentId, commonSearch.TariffID, commonSearch.dsAgentDetails, commonSearch.supplierGiataMaster, SearchParam, commonSearch.dtCountryCityMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId, commonSearch.SubAgentMarkup, commonSearch.SearchByHotel, commonSearch.HotelIDS);
+                                if (willAddOrNot)
+                                {
+                                    _markup.getAgetMarkupSetting("hyperguest", GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), Convert.ToString(SearchParam.CheckInDate));
+                                    string Hotelremark = "";
+                                    for (int m = 0; m < DS.results[i].remarks.Count; m++)
+                                    {
+                                        string remark1 = Convert.ToString(DS.results[i].remarks[m]);
+                                        if (m == 0)
+                                            Hotelremark = remark1;
+                                        else
+                                            Hotelremark = Hotelremark + "<br>" + remark1;
+                                    }
+
+                                    _markup.GetHotelDataCommon(ref MinPrice, ref willAddOrNot, ref OwnsystemHotelId, ref RaynaID, ref GiataId, ref RatingHotel, ref drXmlHotel, commonSearch.AgentId, commonSearch.TariffID, commonSearch.dsAgentDetails, commonSearch.supplierGiataMaster, SearchParam, commonSearch.dtCountryCityMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId, commonSearch.SubAgentMarkup, commonSearch.SearchByHotel, commonSearch.HotelIDS);
+                                    var distinctRoomTypeCodes = DS.results[i]
+                                        .rooms
+                                        //.SelectMany(resulta => resulta.rooms)
+                                        .Select(room => room.roomTypeCode)
+                                        .Distinct();
+
+                                    foreach (var roomTypeCode1 in distinctRoomTypeCodes)
+                                    {
+                                        List<HyperguestClass.hyperguest.HotelList1.Room> filteredRooms = DS.results[i].rooms
+                                                    .Where(x => Convert.ToString(x.roomTypeCode) == roomTypeCode1)
+                                                    .ToList();
+
+                                        int Allroomavailable = 0;
+                                        List<int> roomlist1 = new List<int>();
+
+                                        if (filteredRooms != null && filteredRooms.Count > 0)
+                                        {
+                                            int numberOfAvailableRooms = filteredRooms[0].numberOfAvailableRooms;
+                                            if (numberOfAvailableRooms >= SearchParam.Rooms.Count)
+                                            {
+                                                if (filteredRooms.Count == result.ToList().Count)
+                                                {
+                                                    for (int b = 0; b < SearchParam.Rooms.Count; b++)
+                                                    {
+
+                                                        for (int a = 0; a < filteredRooms.Count; a++)
+                                                        {
+
+                                                            if (SearchParam.Rooms[b].NoofAdults == filteredRooms[a].searchedPax.adults)
+                                                            {
+                                                                if (SearchParam.Rooms[b].NoofChild == filteredRooms[a].searchedPax.children.Count)
+                                                                {
+                                                                    if (SearchParam.Rooms[b].NoofChild == 1)
+                                                                    {
+                                                                        if (SearchParam.Rooms[b].Child1Age != Convert.ToInt16(filteredRooms[a].searchedPax.children[0]))
+                                                                        {
+                                                                            continue;
+                                                                        }
+                                                                    }
+                                                                    if (SearchParam.Rooms[b].NoofChild == 2)
+                                                                    {
+                                                                        if (SearchParam.Rooms[b].Child1Age != Convert.ToInt16(filteredRooms[a].searchedPax.children[0])
+                                                                            && SearchParam.Rooms[b].Child2Age != Convert.ToInt16(filteredRooms[a].searchedPax.children[1]))
+                                                                        {
+                                                                            continue;
+                                                                        }
+                                                                    }
+                                                                    if (filteredRooms[a].numberOfAvailableRooms != 0)
+                                                                    {
+                                                                        Allroomavailable = Allroomavailable + 1;
+                                                                        roomlist1.Add(a);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    //if (Allroomavailable == result.ToList().Count)
+                                                    if (Allroomavailable == SearchParam.Rooms.Count)
+                                                    {
+                                                        for (int f = 0; f < filteredRooms[0].ratePlans.Count; f++)
+                                                        {
+                                                            string rateplancode = filteredRooms[0].ratePlans[f].ratePlanCode;
+                                                            string rateplanId = Convert.ToString(filteredRooms[0].ratePlans[f].ratePlanId);
+
+
+                                                            string board = filteredRooms[0].ratePlans.FirstOrDefault(rp => rp.ratePlanCode == rateplancode).board;
+
+                                                            bool sameMealOptionForAll = filteredRooms.All(room =>
+                                                                    room.ratePlans.Any(rp => rp.ratePlanCode == rateplancode && rp.board == board));
+
+                                                            if (sameMealOptionForAll)
+                                                            {
+                                                                double Price = 0;
+                                                                double RSprice = 0;
+                                                                string RSpriceNew = "";
+                                                                double exclusiveprice = 0;
+                                                                string RoomNamee = "";
+                                                                string Allremark = "";
+                                                                string RoomTypeCord = filteredRooms[0].roomTypeCode;
+                                                                currency = filteredRooms[0].ratePlans[0].prices.net.currency;
+                                                                int RoomId = filteredRooms[0].roomId;
+                                                                int cancelday = 365;
+                                                                string uniqid = Guid.NewGuid().ToString();
+                                                                int CancelDayAll = 0;
+                                                                double CurrencyFactorhyperguest = 1;
+                                                                //added on 09-02-2024 #40209
+                                                                //if (currency.ToLower() == "ars" || currency.ToLower() == "usd" || currency.ToLower() == "eur" || currency.ToLower() == "brl")
+                                                                //{
+                                                                //    if (currency.ToLower() != "usd")
+                                                                //    {
+                                                                //        if (currency.ToLower() == "ars")
+                                                                //        {
+                                                                //            currency = "AR$";
+                                                                //        }
+                                                                //        CurrencyFactorhyperguest = _commonMethod.GetROEByCurrency(currency, dtROE);
+                                                                //    }
+                                                                //}
+                                                                //else
+                                                                //{
+                                                                //    continue;
+                                                                //}
+                                                                //end
+                                                                CurrencyFactorhyperguest = _commonMethod.GetROEByCurrency(currency, dtROE);
+                                                                for (int x = 0; x < SearchParam.Rooms.Count; x++)
+                                                                {
+                                                                    List<HyperguestClass.hyperguest.HotelList1.RatePlan> roomlist = filteredRooms[roomlist1[x]].ratePlans.Where(rp1 => rp1.ratePlanCode == rateplancode).ToList();
+                                                                    //List<hyperguest.HotelList.RatePlan> roomlist = filteredRooms[roomlist1[x]].ratePlans.Where(rp1 => rp1.ratePlanCode == rateplancode).ToList();
+
+                                                                    Price = Price + Convert.ToDouble(roomlist[0].prices.net.price) * CurrencyFactorhyperguest;
+                                                                    RSprice = Convert.ToDouble(roomlist[0].prices.net.price);
+
+                                                                    RSpriceNew = RSpriceNew + Convert.ToString(RSprice) + "$$$";
+
+                                                                    exclusiveprice = exclusiveprice + Convert.ToDouble(roomlist[0].prices.sell.price);
+                                                                    int RoomNo = x + 1;
+
+                                                                    if (SearchParam.Rooms.Count == 1)
+                                                                    {
+                                                                        RoomNamee = filteredRooms[roomlist1[x]].roomName;
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        RoomNamee = RoomNamee + '[' + RoomNo + ']' + filteredRooms[roomlist1[x]].roomName + " ";
+                                                                    }
+                                                                    string remarkdisply = "";
+                                                                    string RoomWiseRemark = "";
+                                                                    string remark = "";
+                                                                    string RemarkRoom = Hotelremark;
+                                                                    int policyday = 0;
+                                                                    try
+                                                                    {
+                                                                        if (RemarkRoom != "" || RoomWiseRemark != "")
+                                                                        {
+                                                                            remark = RemarkRoom + "<br/>" + RoomWiseRemark;
+
+                                                                            if (SearchParam.Rooms.Count == 1)
+                                                                                Allremark = remark;
+
+                                                                            if (SearchParam.Rooms.Count > 1)
+                                                                            {
+                                                                                Allremark = Allremark + "[Room: " + RoomNo + "]" + remark;
+                                                                            }
+                                                                        }
+                                                                        #region Policy
+                                                                        if (roomlist[0].cancellationPolicies.Count != 0)
+                                                                        {
+
+                                                                            for (int d = 0; d < roomlist[0].cancellationPolicies.Count; d++)
+                                                                            {
+                                                                                policyday = Convert.ToInt32(roomlist[0].cancellationPolicies[d].daysBefore);
+                                                                                if (d == 0)
+                                                                                {
+                                                                                    cancelday = policyday;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    if (cancelday < policyday)
+                                                                                    {
+                                                                                        cancelday = policyday;
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+
+                                                                        if (SearchParam.Rooms.Count > 1)
+                                                                        {
+                                                                            if (x == 0)
+                                                                            {
+                                                                                CancelDayAll = cancelday;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                if (CancelDayAll < cancelday)
+                                                                                {
+                                                                                    CancelDayAll = cancelday;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            CancelDayAll = cancelday;
+                                                                        }
+
+
+                                                                        #endregion
+                                                                    }
+                                                                    catch (Exception)
+                                                                    {
+                                                                        throw;
+                                                                    }
+
+                                                                }
+
+                                                                string RoomTypeId = RoomTypeCord + "###" + rateplancode + "###" + xmlhotelcode + "###" + RSpriceNew + "###" + currency + "###" + XmlNationality + "###" + uniqid + "###" + rateplanId + "###" + RoomId;
+
+                                                                double TotalAmount = Price;
+
+                                                                #region Ratebreakup
+                                                                //for (int n = 0; n < SearchParam.NoofNights; n++)
+                                                                //{
+                                                                //    string CheckInDate = Convert.ToString(SearchParam.CheckInDate);
+                                                                //    string CheckOutDate = Convert.ToString(SearchParam.CheckOutDate);
+                                                                //    DateTime dtCheckInDate = DateTime.ParseExact(CheckInDate, "dd/MM/yyyy", null);
+                                                                //    DateTime dtCheckOutDate = DateTime.ParseExact(CheckOutDate, "dd/MM/yyyy", null);
+                                                                //    TimeSpan t = dtCheckOutDate - dtCheckInDate;
+                                                                //    double ratePerNight = TotalAmount;
+
+                                                                //    #region Vat
+                                                                //    double VatOnPerNight = 0;
+                                                                //    double Pricenew_wl = 0;
+                                                                //    ratePerNight = _commonMethod.ProcessHotelRateBreakupPrice_WithMarkup(1, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), ratePerNight, commonSearch.B2CMarkup, commonSearch.IsParentId, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, ref VatOnPerNight);
+                                                                //    // ratePerNight = ratePerNight;
+                                                                //    #endregion
+
+                                                                //    ratePerNight = ratePerNight / SearchParam.NoofNights;
+                                                                //    DataRow drRateBreackUp = dtParsecRoomRateBreakup.NewRow();
+                                                                //    drRateBreackUp["SupplierName"] = Supplier;
+                                                                //    drRateBreackUp["OwnsystemHotelId"] = OwnsystemHotelId;
+                                                                //    drRateBreackUp["ContractID"] = 0;
+                                                                //    drRateBreackUp["RoomNo"] = Convert.ToInt32(1);
+                                                                //    drRateBreackUp["RoomTypeId"] = RoomTypeId;
+                                                                //    drRateBreackUp["MealId"] = board;
+                                                                //    drRateBreackUp["Meal"] = board;
+                                                                //    string rateWeekColumn = Convert.ToString(dtCheckInDate.Date.AddDays(n).DayOfWeek).Substring(0, 3);
+                                                                //    drRateBreackUp["DateOfWeek"] = rateWeekColumn;
+                                                                //    DateTime rateDate = dtCheckInDate.Date.AddDays(n);
+                                                                //    drRateBreackUp["Date"] = rateDate;
+                                                                //    drRateBreackUp["Rate"] = ratePerNight;
+                                                                //    drRateBreackUp["OrderNo"] = 1;
+                                                                //    drRateBreackUp["RoomTypeName"] = RoomNamee;
+                                                                //    drRateBreackUp["DateOfWeek"] = rateWeekColumn;
+                                                                //    drRateBreackUp["Date"] = rateDate;
+                                                                //    drRateBreackUp["BookingStatus"] = "Available";
+                                                                //    drRateBreackUp["BoardTypeID"] = "";
+                                                                //    drRateBreackUp["VatdiffAmount"] = 0;
+                                                                //    drRateBreackUp["RateType"] = RoomNamee;
+                                                                //    drRateBreackUp["SupplierCurrency"] = currency;
+                                                                //    drRateBreackUp["BuyingPrice"] = ratePerNight / CurrencyFactorhyperguest;
+                                                                //    //drRateBreackUp["BuyingPrice"] = ratePerNight;
+                                                                //    dtParsecRoomRateBreakup.Rows.Add(drRateBreackUp);
+                                                                //}
+                                                                #endregion
+
+                                                                #region Rooms
+                                                                DataRow drRoom = dtParsecRoom.NewRow();
+                                                                drRoom["OwnsystemHotelId"] = OwnsystemHotelId;
+                                                                drRoom["RoomTypeCode"] = RoomTypeCord;
+                                                                drRoom["BoardType"] = board;
+                                                                drRoom["MealName"] = board;
+                                                                drRoom["MealId"] = board;
+                                                                drRoom["Type"] = "";
+                                                                drRoom["Board"] = "";
+                                                                drRoom["BookingStatus"] = "Available";
+                                                                drRoom["UniqueNo"] = uniqid;
+                                                                drRoom["ContractID"] = 0;
+                                                                drRoom["RoomNo"] = Convert.ToInt32(1);
+                                                                drRoom["BoardTypeID"] = "";
+                                                                drRoom["AdultsOccupancy"] = totalAdult;
+                                                                drRoom["ChildOccupancy"] = totalChild;
+                                                                drRoom["OfferCode"] = "";
+                                                                drRoom["OfferDescription"] = "";
+                                                                drRoom["RoomSequenceNo"] = "";
+
+                                                                string EssentialInformation = Allremark;
+
+                                                                drRoom["EssentialInformation"] = EssentialInformation;
+                                                                drRoom["Characteristic"] = "";
+                                                                #region Vat
+                                                                double itemprice = Price;
+                                                                _markup.ProcessHotelRoom_WithMarkup(CurrencyFactorhyperguest, currency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref Price, ref drRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId); //added taxPer 13-07-2024
+                                                                                                                                                                                                                                                                                                                                                                                                                                                // _markup.ProcessHotelRoom_WithMarkup(CurrencyFactorhyperguest, currency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref Price, ref drRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId, SupplierID, GiataId, dsAgentDetails, dtVatHotelList); //added taxPer 13-07-2024
+                                                                #endregion
+                                                                drRoom["SupplierName"] = Supplier;
+                                                                drRoom["RoomTypeName"] = RoomNamee;
+                                                                drRoom["RoomTypeId"] = RoomTypeId;
+                                                                //drRoom["JKGUIDID"] = JKGUIDID; //added new
+                                                                //drRoom["MarkupappliedDts"] = MarkupappliedDts; // added on 06-08-2024 #49746
+                                                                dtParsecRoom.Rows.Add(drRoom);
+                                                                #endregion
+
+                                                                #region cancellationpolicy
+                                                                DateTime CancellationDate = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).Date;
+                                                                double Penalty = Convert.ToDouble(Price);
+                                                                double CompanyChargeAmount = Price;
+                                                                double MainAgentCharge = Price;
+                                                                double MainAgentCharge_wl = Price;
+                                                                double CancelCharge_wl = Price;
+
+                                                                DateTime MainDate = new DateTime();
+                                                                DateTime StartDate = MainDate;
+                                                                DateTime CancelDate = CancellationDate.Date.AddDays(-CancelDayAll);
+                                                                DateTime NowDate = DateTime.Now.Date;
+                                                                //int CutOffDays = -1;
+                                                                double VatOnPolicy = 0;
+                                                                string remark1 = "";
+
+                                                                if (CancelDate.AddDays(CutOffDays).Date > DateTime.Now.Date)
+                                                                {
+                                                                    CancelDate = CancelDate.AddDays(CutOffDays).Date;
+                                                                }
+                                                                else
+                                                                {
+                                                                    CancelDate = DateTime.Now.Date;
+                                                                }
+                                                                if (NowDate < CancelDate)
+                                                                {
+
+
+                                                                    double zero = 0;
+                                                                    dtParsecCacelationPolicy.Rows.Add(_commonMethod.setCancellationPolicyRow(ref zero, dtParsecCacelationPolicy.NewRow(), CurrencyFactorhyperguest, currency, Supplier, Convert.ToString(OwnsystemHotelId), Convert.ToString(1), Convert.ToString(RoomTypeId), RoomNamee, board, Convert.ToDateTime(NowDate), CancelDate.AddDays(-1), 0, 0, "0", VatOnPolicy, uniqid, "NO", "", remark1 != string.Empty ? remark1 : "No Essential Information Available", "", ""));
+
+                                                                    //dtParsecCacelationPolicy.Rows.Add(Common.setCancellationPolicyRow(0, 0, ref zero, dtParsecCacelationPolicy.NewRow(), CurrencyFactorhyperguest, currency, Supplier, OwnsystemHotelId, Convert.ToString(1), Convert.ToString(RoomTypeId), RoomNamee, board, Convert.ToDateTime(NowDate), CancelDate.AddDays(-1), 0, 0, "0", VatOnPolicy, uniqid, "NO", "", remark1 != string.Empty ? remark1 : "No Essential Information Available", "", ""));
+                                                                    dtParsecCacelationPolicy.AcceptChanges();
+
+                                                                    dtParsecCacelationPolicy.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainAgentCharge_wl, dtParsecCacelationPolicy.NewRow(), CurrencyFactorhyperguest, currency, Supplier, Convert.ToString(OwnsystemHotelId), Convert.ToString(1),
+                                                                                         Convert.ToString(RoomTypeId), RoomNamee, board, Convert.ToDateTime(CancelDate), DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, Penalty, "0", VatOnPolicy, uniqid, "NO", "", remark1 != string.Empty ? remark1 : "No Essential Information Available", "", ""));
+                                                                    dtParsecCacelationPolicy.AcceptChanges();
+                                                                }
+                                                                else
+                                                                {
+                                                                    // dtParsecCacelationPolicy.Rows.Add(Common.setCancellationPolicyRow(MainAgentCharge_wl, CancelCharge_wl, ref CompanyChargeAmount, dtParsecCacelationPolicy.NewRow(), CurrencyFactorhyperguest, currency, Supplier, OwnsystemHotelId, Convert.ToString(1), Convert.ToString(RoomTypeId), RoomNamee, board, NowDate, DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, Penalty, "0", VatOnPolicy, uniqid, "Yes", "", remark1 != string.Empty ? remark1 : "No Essential Information Available"));
+                                                                    dtParsecCacelationPolicy.Rows.Add(_commonMethod.setCancellationPolicyRow(ref MainAgentCharge_wl, dtParsecCacelationPolicy.NewRow(), CurrencyFactorhyperguest, currency, Supplier, Convert.ToString(OwnsystemHotelId), Convert.ToString(1), Convert.ToString(RoomTypeId), RoomNamee, board, NowDate, DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, Penalty, "0", VatOnPolicy, uniqid, "Yes", "", remark1 != string.Empty ? remark1 : "No Essential Information Available"));
+
+                                                                    dtParsecCacelationPolicy.AcceptChanges();
+                                                                }
+                                                                #endregion
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+                                Options ops = (await _supplierRes.GetCommonRoomForSuppliers(GiataId, commonSearch.tokenData, commonSearch.advancedOptions, MinPrice, drXmlHotel, dtParsecRoom, dtParsecCacelationPolicy, dtParsecRoomRateBreakup, SearchParam));
+                                if (ops != null)
+                                    options.Add(ops);
+                                // here
+                                #endregion
+
+                            }
+                            #endregion
+                        }
+                        else
+                        {
+                            continue;
+                        }
+
+                    }
+                }
+                return options;
+            }
+            catch (Exception e)
+            {
+                Item.ResponseType = "NoCount";
+                await _exception.Error(e);
+            }
+            finally
+            {
+                #region ResProcessTimer
+                try
+                {
+                    //if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
+                    {
+                        timerroomx.Stop();
+                        SearchParam.SupplierTime += ",|Finish:hyperguest Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
+                        //Task.Run(() => FireAway_SQL_ResPorcessTimeLog("", "", "hyperguest", SearchParam.SearchKey, Convert.ToInt32(timerroomx.Elapsed.ToString()), 1));
+                    }
+                }
+                catch (Exception x)
+                {
+                    await _exception.Error(x);
+                }
+                #endregion
+            }
+            return options;
+        }
         //prebook
 
         public async Task<PriceCheckDto> hyperguestPriceCheck(DataSet dsCartDetails, DataRow[] hyperguestDetails, int j, double FinalPrice, double CurrencyFactorhyperguest, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int i, double CompanyBuyingPrice, int AgentId,TokenData tokenData)

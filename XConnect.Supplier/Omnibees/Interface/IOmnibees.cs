@@ -15,8 +15,8 @@ namespace XConnect.Supplier.Omnibees.Interface
     {
         void GetOmnibeesRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> OmnibeesDetails, List<SupplierSearchConfig> OmnibeesSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string Xmlnationality, int Hit, DataSet dtXMLCity, DataTable dtROE,TokenData tokenData);
 
-        //void GetOmnibeesRequestOnly_async_new(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> OmnibeesDetails, List<SupplierSearchConfig> OmnibeesSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask,  int Hit, DataSet dtXMLCity, DataTable dtROE,TokenData tokenData);
-
+        void GetOmnibeesRequestOnly_async_new(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> OmnibeesDetails, List<SupplierSearchConfig> OmnibeesSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string Xmlnationality,int Hit, DataSet dtXMLCity,DataTable dtROE,TokenData tokenData);
+    
         Task<List<Options>> XMLOmnibeesPriceOnly_async(HotelX Item, CommonSearch commonSearch, double AgentPercentage, int SearchTimeOut, string Supplier, DataTable dtCountryCityMarkup, int AgentId, DataSet dsAgentDetails, int SupplierID, string ResponseData, HotelSearchParameter SearchParam, string xmlcity, string xmlcountry, string xmlnationality, string OmnibeesCurrency, double CurrencyFactorOmnibees, Boolean IsShowSupplier, DataTable DtROE, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog);
 
         string Get_Omnibees_BookingRequest(DataSet dsCartDetails, DataTable dtPassengers, DataRow[] OmnibeesDetails, string UniqueNo, bool IsPriceUpdate, int i, int jj, string PreBookingToken, string UserID, string Password, string ExternalReference, string Bookingtokan, string referenceNumber, string AgentUniqueNo, ref string errorinrq, bool IsPruvo);
