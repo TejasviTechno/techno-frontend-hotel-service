@@ -9,10 +9,13 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Xml;
+using Azure;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols;
+using XConnect.Analytics;
 using XConnect.CommonUtilities;
 using XConnect.CommonUtilities.Interface;
 using XConnect.ErrorLogHandler.Interface;
@@ -41,9 +44,10 @@ namespace XConnect.Supplier.ETG
         private readonly IMemoryCache _cache;
         private readonly KeySettings _keySettings;
         private readonly SupplierConfiguration _supplierConfig;//Added on 27-FEB-26
+        private readonly ILogger<Analytic> _logger;
 
 
-        public EtgRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig)
+        public EtgRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig, ILogger<Analytic> logger)
         {
             _commonMethod = commonMethod;
             _markup = markup;
@@ -52,6 +56,7 @@ namespace XConnect.Supplier.ETG
             _keySettings = keySettings.Value;
             _exception = exception;
             _supplierConfig = supplierConfig.Value;
+            _logger = logger;
         }
         public void GetOstrovokRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> lstOstrovok_Details, List<SupplierSearchConfig> lstOstrovokSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, int Hit, DataTable dtROE, TokenData tokenData, DataSet dtXMLCity)
         {
@@ -2638,6 +2643,8 @@ namespace XConnect.Supplier.ETG
                 //Error = ex.Message.ToString();
                 //if (UniqueNo != "")
                 //    Common.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(UniqueNo), strxmlRQRS, ex.Message.ToString(), "Error Block", "Etg", "Price Check Response URL:" + strHost + ", Password:" + password, "-", "VivaBooking");
+                _commonMethod.ThirdPartyBookingHistory("", "", strxmlRQRS, strOutput + ex, "After Hit Prebook Response", "ratehawk", "Prebook Response Confirm", "-", "Withinearth", "");
+                _logger.LogError(ex, strOutput + ex+"Errot at prebook");
             }
             return strOutput;
         }
