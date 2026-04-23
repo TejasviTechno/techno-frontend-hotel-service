@@ -16295,9 +16295,19 @@ new SqlParameter("@AgentId", AgentId),
                     //userCartDetails_Pre.BaseServiceBuyingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
                     userCartDetails_Pre.BaseServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
 
-                    userCartDetails_Pre.CheckInDate = Convert.ToString(objdata.CheckInDate);
-                    userCartDetails_Pre.CheckOutDate = Convert.ToString(objdata.CheckOutDate);
-                    userCartDetails_Pre.DueDate = Convert.ToString(objdata.DueDate);
+                    //userCartDetails_Pre.CheckInDate = Convert.ToString(objdata.CheckInDate);
+                    //userCartDetails_Pre.CheckOutDate = Convert.ToString(objdata.CheckOutDate);
+
+                    DateTime checkIn = Convert.ToDateTime(objdata.CheckInDate);
+                    DateTime checkOut = Convert.ToDateTime(objdata.CheckOutDate);
+
+                    userCartDetails_Pre.CheckInDate = checkIn.ToString("MM/dd/yyyy HH:mm:ss");
+                    userCartDetails_Pre.CheckOutDate = checkOut.ToString("MM/dd/yyyy HH:mm:ss");
+
+                    //  userCartDetails_Pre.DueDate = Convert.ToString(objdata.DueDate);
+                    DateTime DueDate = Convert.ToDateTime(objdata.DueDate);
+                    userCartDetails_Pre.DueDate = DueDate.ToString("MM/dd/yyyy HH:mm:ss");
+
                     userCartDetails_Pre.DeadlineDate = Convert.ToString("");
                     userCartDetails_Pre.SupplierName = Convert.ToString(objdata.ShoppingCartDetails[room].SupplierName);
                     userCartDetails_Pre.LoyaltyPoints = Convert.ToDouble(0);
@@ -16373,9 +16383,13 @@ new SqlParameter("@AgentId", AgentId),
 
                             hotelPolicy_Prebook.RoomNumber = Convert.ToInt32(drPolicy[p]["RoomNo"]);
 
-                            hotelPolicy_Prebook.FromDate = Convert.ToString(drPolicy[p]["FromDate"]);
+                            //hotelPolicy_Prebook.FromDate = Convert.ToString(drPolicy[p]["FromDate"]);
 
-                            hotelPolicy_Prebook.Todate = Convert.ToString(drPolicy[p]["ToDate"]);
+                            //hotelPolicy_Prebook.Todate = Convert.ToString(drPolicy[p]["ToDate"]);
+                            DateTime fromDate = Convert.ToDateTime(drPolicy[p]["FromDate"]);
+                            DateTime toDate = Convert.ToDateTime(drPolicy[p]["ToDate"]);
+                            hotelPolicy_Prebook.FromDate = fromDate.ToString("MM/dd/yyyy HH:mm:ss");
+                            hotelPolicy_Prebook.Todate = toDate.ToString("MM/dd/yyyy HH:mm:ss");
 
                             hotelPolicy_Prebook.CancellationAmount = Convert.ToDouble(Convert.ToDouble(drPolicy[p]["BuyingPrice"]) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
 
