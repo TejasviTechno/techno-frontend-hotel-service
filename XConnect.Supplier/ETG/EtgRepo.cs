@@ -2519,7 +2519,7 @@ namespace XConnect.Supplier.ETG
                 //Error = ex.Message.ToString();
                 //if (UniqueNo != "")
                 //    Common.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(UniqueNo), strxmlRQRS, ex.Message.ToString(), "Error Block", "Etg", "Price Check Response URL:" + strHost + ", Password:" + password, "-", "VivaBooking");
-                _commonMethod.ThirdPartyBookingHistory("", "", strxmlRQRS, strOutput + ex, "After Hit Prebook Response", "ratehawk", "Prebook Response Confirm", "-", "Withinearth", "");
+                _commonMethod.ThirdPartyBookingHistory("", "", strxmlRQRS, strOutput + ex + Key + strHost, " Prebook in Response", "ratehawk", "Prebook Response Confirm", "-", "Withinearth", "");
                 _logger.LogError(ex, strOutput + ex+"Errot at prebook");
             }
             return strOutput;
