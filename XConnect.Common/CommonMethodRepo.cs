@@ -3549,14 +3549,14 @@ namespace XConnect.CommonUtilities
             SqlConnection conn1 = new SqlConnection(_connectionStrings.connectionStr_Logserver2_TP);//@Newadded on 12-mar-2024
             #region Get SEARCH_KEY
             //string Searchkey = "";
-            try
-            {
-                Searchkey = SEARCH_KEY;
-            }
-            catch (Exception x)
-            {
-                _exception.Error(x);
-            }
+            //try
+            //{
+            //    Searchkey = SEARCH_KEY;
+            //}
+            //catch (Exception x)
+            //{
+            //    _exception.Error(x);
+            //}
             #endregion
             try
             {

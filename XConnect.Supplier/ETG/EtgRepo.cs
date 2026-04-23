@@ -2267,127 +2267,6 @@ namespace XConnect.Supplier.ETG
                     #endregion
 
                     #region Price Check Logic
-        //            if (PrebookResponseData != null && EtgResponse.Tables["Row"].Rows[0]["status"].ToString() == "ok")
-        //            {
-        //                if (EtgResponse.Tables.Contains("changes"))
-        //                {
-        //                    if (EtgResponse.Tables["changes"].Columns.Contains("price_changed") == true)
-        //                    {
-        //                        price_changed = Convert.ToBoolean(EtgResponse.Tables["changes"].Rows[0]["price_changed"]);
-
-        //                        if (price_changed == true)
-        //                        {
-        //                            PrebookResponseData = "#Price Changed Tag Received from supplier =  " + price_changed + PrebookResponseData;
-        //                            //SuppReason = "PCS.";// Price change from supplier side
-        //                            responsetype = "GeneralError";
-        //                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
-
-
-        //                            priceCheckCMDto.Flag = true;
-        //                            return priceCheckCMDto;
-        //                        }
-        //                    }
-        //                }
-        //                int hotels_id = Convert.ToInt32(EtgResponse.Tables["hotels"].Rows[0]["hotels_Id"]);
-        //                if (EtgResponse.Tables.Contains("rates"))
-        //                {
-        //                    DataRow[] drRooms = EtgResponse.Tables["rates"].Select("hotels_Id='" + hotels_id + "'");
-        //                    book_hash = Convert.ToString(drRooms[0]["book_hash"]);
-        //                    rates_id = Convert.ToInt32(drRooms[0]["rates_Id"]);
-        //                    DataRow[] payment_option = EtgResponse.Tables["payment_options"].Select("rates_Id='" + rates_id + "'");
-        //                    int payment_optionId = Convert.ToInt32(payment_option[0]["payment_options_Id"]);
-
-        //                    DataRow[] drpayment_type = EtgResponse.Tables["payment_types"].Select("payment_options_Id='" + payment_optionId + "'");
-        //                    double Amount = Convert.ToDouble(drpayment_type[0]["amount"]);
-        //                    string Currency = Convert.ToString(drpayment_type[0]["currency_code"]);
-        //                    int payment_typeId = Convert.ToInt32(drpayment_type[0]["payment_types_Id"]);
-        //                    DataRow[] cancellation_penalty = EtgResponse.Tables["cancellation_penalties"].Select("payment_types_Id='" + payment_typeId + "'");
-        //                    int cancellation_penaltyId = Convert.ToInt32(cancellation_penalty[0]["cancellation_penalties_Id"]);
-        //                    free_cancellation_before = Convert.ToString(cancellation_penalty[0]["free_cancellation_before"]);
-        //                    policies = EtgResponse.Tables["policies"].Select("cancellation_penalties_Id='" + payment_optionId + "'");
-
-        //                    if (Currency.ToLower() != TokenData.SiteCurrency.ToLower())
-        //                    {
-        //                        CurrencyFactor = _commonMethod.GetROEByCurrency(Currency, TokenData.dtROE);
-        //                    }
-        //                    sellingAmount = Amount;
-        //                    FinalPrice = (sellingAmount) * CurrencyFactor;
-
-        //                }
-
-        //               // bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus(book_hash, UserCartId);
-        //                objdata.ShoppingCartDetails[0].EachoToken = book_hash;
-
-        //                FinalPrice = Convert.ToDouble(Math.Round(FinalPrice, 2));
-        //                priceCheckCMDto.ItemPrice = FinalPrice;
-
-        //                if (Convert.ToDouble(Math.Round(FinalPrice.TruncateDecimalPlaces(2))) > Math.Round(CompanyBuyingPrice.TruncateDecimalPlaces(2)))
-        //                {
-        //                    PrebookResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + PrebookResponseData;
-        //                    responsetype = "GeneralError";
-        //                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
-        //                    //SuppReason = "PCS";// Price change from supplier side
-
-        //                    priceCheckCMDto.Flag = true;
-        //                    return priceCheckCMDto;
-        //                }
-        //                #region Policy Check
-                       
-        //                {
-        //                    //DateTime DeadlineDate = DateTime.Now;
-        //                    string purchaseToken = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["purchaseToken"]);
-
-        //                    if (purchaseToken.ToLower() != "nonref")
-        //                    {
-        //                        string[] formats = {
-        //    "yyyy-MM-ddTHH:mm:ss",  // e.g. 3/12/2026 4:00:00 PM
-        //    "M/d/yyyy h:mm:ss tt",// e.g. 03/12/2026 04:00:00 PM
-        //    "dd/MM/yyyy HH:mm:ss",  // e.g. 12/03/2026 16:00:00
-        //    "dd/MM/yyyy",           // e.g. 12/03/2026
-        //    "M/d/yyyy",              // e.g. 3/12/2026
-        //    "yyyy/MM/dd"              // e.g. 3/12/2026
-        //};
-
-        //                        //DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-        //                        //DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
-        //                        DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, formats, CultureInfo.InvariantCulture);
-                                
-        //                        DateTime CancelDate = DateTime.Now.Date;// DateTime.ParseExact(currentdate, "MM/dd/yyyy", null);
-        //                        if (free_cancellation_before != "") 
-        //                        {
-        //                            DateTime dateString11 = DateTime.Parse(free_cancellation_before, CultureInfo.InvariantCulture).Date;
-        //                            //string formattedDate = dateString11.ToString("dd/MM/yyyy");
-        //                            string formattedDate = dateString11.ToString("yyyy/MM/dd");
-
-        //                            //CancelDate = DateTime.ParseExact(formattedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-        //                            CancelDate = DateTime.ParseExact(formattedDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
-
-        //                        }
-        //                        else
-        //                        {
-        //                            CancelDate = DateTime.Now.Date;
-        //                        }
-
-
-        //                        if (free_cancellation_beforeroom.Date != CancelDate.Date)
-        //                        {
-        //                            FinalPrice = 0;
-        //                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UserCartDetailId), PrebookRQ, "-", "(After Price Check BookingTime) Cancellation Policy Change", SupplierName, "Request Confirm", " - ", "Withinearth");
-        //                            PrebookResponseData = "#Policy Changed " + "#Main Policy = " + free_cancellation_beforeroom + " #New Policy = " + CancelDate + " #Response= " + PrebookResponseData;
-        //                            responsetype = "GeneralError";
-        //                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
-
-        //                            priceCheckCMDto.Flag = true;
-        //                            priceCheckCMDto.ItemPrice = FinalPrice;
-        //                            return priceCheckCMDto;
-
-        //                        }
-
-        //                        //}
-        //                    }
-        //                }
-        //                #endregion
-        //            }
                     if (PrebookResponseData != null && EtgResponse.Tables["Row"].Rows[0]["status"].ToString() == "ok")
                     {
                         if (EtgResponse.Tables.Contains("changes"))
@@ -2399,47 +2278,44 @@ namespace XConnect.Supplier.ETG
                                 if (price_changed == true)
                                 {
                                     PrebookResponseData = "#Price Changed Tag Received from supplier =  " + price_changed + PrebookResponseData;
+                                    //SuppReason = "PCS.";// Price change from supplier side
                                     responsetype = "GeneralError";
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
 
-                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(
-                                        SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
 
                                     priceCheckCMDto.Flag = true;
                                     return priceCheckCMDto;
                                 }
                             }
                         }
-
                         int hotels_id = Convert.ToInt32(EtgResponse.Tables["hotels"].Rows[0]["hotels_Id"]);
-
                         if (EtgResponse.Tables.Contains("rates"))
                         {
                             DataRow[] drRooms = EtgResponse.Tables["rates"].Select("hotels_Id='" + hotels_id + "'");
                             book_hash = Convert.ToString(drRooms[0]["book_hash"]);
                             rates_id = Convert.ToInt32(drRooms[0]["rates_Id"]);
-
                             DataRow[] payment_option = EtgResponse.Tables["payment_options"].Select("rates_Id='" + rates_id + "'");
                             int payment_optionId = Convert.ToInt32(payment_option[0]["payment_options_Id"]);
 
                             DataRow[] drpayment_type = EtgResponse.Tables["payment_types"].Select("payment_options_Id='" + payment_optionId + "'");
                             double Amount = Convert.ToDouble(drpayment_type[0]["amount"]);
                             string Currency = Convert.ToString(drpayment_type[0]["currency_code"]);
-
                             int payment_typeId = Convert.ToInt32(drpayment_type[0]["payment_types_Id"]);
-
                             DataRow[] cancellation_penalty = EtgResponse.Tables["cancellation_penalties"].Select("payment_types_Id='" + payment_typeId + "'");
-
+                            int cancellation_penaltyId = Convert.ToInt32(cancellation_penalty[0]["cancellation_penalties_Id"]);
                             free_cancellation_before = Convert.ToString(cancellation_penalty[0]["free_cancellation_before"]);
+                            policies = EtgResponse.Tables["policies"].Select("cancellation_penalties_Id='" + payment_optionId + "'");
 
                             if (Currency.ToLower() != TokenData.SiteCurrency.ToLower())
                             {
                                 CurrencyFactor = _commonMethod.GetROEByCurrency(Currency, TokenData.dtROE);
                             }
-
                             sellingAmount = Amount;
                             FinalPrice = (sellingAmount) * CurrencyFactor;
+
                         }
 
+                        // bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus(book_hash, UserCartId);
                         objdata.ShoppingCartDetails[0].EachoToken = book_hash;
 
                         FinalPrice = Convert.ToDouble(Math.Round(FinalPrice, 2));
@@ -2447,69 +2323,69 @@ namespace XConnect.Supplier.ETG
 
                         if (Convert.ToDouble(Math.Round(FinalPrice.TruncateDecimalPlaces(2))) > Math.Round(CompanyBuyingPrice.TruncateDecimalPlaces(2)))
                         {
-                            PrebookResponseData = "#Price Changed #Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + PrebookResponseData;
-
+                            PrebookResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + PrebookResponseData;
                             responsetype = "GeneralError";
-
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(
-                                SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
+                            //SuppReason = "PCS";// Price change from supplier side
 
                             priceCheckCMDto.Flag = true;
                             return priceCheckCMDto;
                         }
-
                         #region Policy Check
 
-                        string purchaseToken = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["purchaseToken"]);
-
-                        if (purchaseToken.ToLower() != "nonref")
                         {
-                            // ✅ Safe parsing
-                            DateTime free_cancellation_beforeroom = SafeParseDate(purchaseToken);
+                            //DateTime DeadlineDate = DateTime.Now;
+                            string purchaseToken = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["purchaseToken"]);
 
-                            DateTime CancelDate;
-
-                            if (!string.IsNullOrEmpty(free_cancellation_before))
+                            if (purchaseToken.ToLower() != "nonref")
                             {
-                                CancelDate = SafeParseDate(free_cancellation_before);
-                            }
-                            else
-                            {
-                                CancelDate = DateTime.Now;
-                            }
+                                string[] formats = {
+            "yyyy-MM-ddTHH:mm:ss",  // e.g. 3/12/2026 4:00:00 PM
+            "M/d/yyyy h:mm:ss tt",// e.g. 03/12/2026 04:00:00 PM
+            "dd/MM/yyyy HH:mm:ss",  // e.g. 12/03/2026 16:00:00
+            "dd/MM/yyyy",           // e.g. 12/03/2026
+            "M/d/yyyy",              // e.g. 3/12/2026
+            "yyyy/MM/dd"              // e.g. 3/12/2026
+        };
 
-                            if (free_cancellation_beforeroom.Date != CancelDate.Date)
-                            {
-                                FinalPrice = 0;
+                                //DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                //DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                                DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, formats, CultureInfo.InvariantCulture);
 
-                                _commonMethod.ThirdPartyBookingHistory(
-                                    Convert.ToString(UserCartDetailId),
-                                    Convert.ToString(UserCartDetailId),
-                                    PrebookRQ,
-                                    "-",
-                                    "(After Price Check BookingTime) Cancellation Policy Change",
-                                    SupplierName,
-                                    "Request Confirm",
-                                    " - ",
-                                    "Withinearth"
-                                );
+                                DateTime CancelDate = DateTime.Now.Date;// DateTime.ParseExact(currentdate, "MM/dd/yyyy", null);
+                                if (free_cancellation_before != "")
+                                {
+                                    DateTime dateString11 = DateTime.Parse(free_cancellation_before, CultureInfo.InvariantCulture).Date;
+                                    //string formattedDate = dateString11.ToString("dd/MM/yyyy");
+                                    string formattedDate = dateString11.ToString("yyyy/MM/dd");
 
-                                PrebookResponseData = "#Policy Changed #Main Policy = " + free_cancellation_beforeroom +
-                                                      " #New Policy = " + CancelDate +
-                                                      " #Response= " + PrebookResponseData;
+                                    //CancelDate = DateTime.ParseExact(formattedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                    CancelDate = DateTime.ParseExact(formattedDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
 
-                                responsetype = "GeneralError";
+                                }
+                                else
+                                {
+                                    CancelDate = DateTime.Now.Date;
+                                }
 
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(
-                                    SupplierName, "PreBook", AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
 
-                                priceCheckCMDto.Flag = true;
-                                priceCheckCMDto.ItemPrice = FinalPrice;
+                                if (free_cancellation_beforeroom.Date != CancelDate.Date)
+                                {
+                                    FinalPrice = 0;
+                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UserCartDetailId), PrebookRQ, "-", "(After Price Check BookingTime) Cancellation Policy Change", SupplierName, "Request Confirm", " - ", "Withinearth");
+                                    PrebookResponseData = "#Policy Changed " + "#Main Policy = " + free_cancellation_beforeroom + " #New Policy = " + CancelDate + " #Response= " + PrebookResponseData;
+                                    responsetype = "GeneralError";
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
 
-                                return priceCheckCMDto;
+                                    priceCheckCMDto.Flag = true;
+                                    priceCheckCMDto.ItemPrice = FinalPrice;
+                                    return priceCheckCMDto;
+
+                                }
+
+                                //}
                             }
                         }
-
                         #endregion
                     }
                     else
