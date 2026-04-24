@@ -33,8 +33,9 @@ namespace XConnect.Supplier.Hyperguest
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
         private readonly IVCN _vcn;
+        private readonly SupplierConfiguration _supplierConfig;
 
-        public HyperguestRepository(ICommonMethod commonMethod, IException exception, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IVCN vcn)
+        public HyperguestRepository(ICommonMethod commonMethod, IException exception, IMarkup markup, ISupplierRes supplierRes, IOptions<KeySettings> keySettings, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _exception = exception;
@@ -42,6 +43,7 @@ namespace XConnect.Supplier.Hyperguest
             _supplierRes = supplierRes;
             _keySettings = keySettings.Value;
             _vcn = vcn;
+            _supplierConfig = supplierConfig.Value;
         }
 
         public void GethyperguestRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> hyperguestDetails, List<SupplierSearchConfig> hyperguestSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string XMLCountry, string XMLNationality, int Hit, DataTable dtROE, string Provider, TokenData tokenData)
@@ -2476,6 +2478,210 @@ namespace XConnect.Supplier.Hyperguest
             priceCheckDto.Flag = 0;
             return priceCheckDto;
         }
+
+        public async Task<PriceCheckDto> hyperguestPriceCheck_new(DataSet dsCartDetails, DataRow[] hyperguestDetails, int j, double FinalPrice, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int i, double CompanyBuyingPrice, int AgentId, TokenData tokenData, string Searchkey = "")
+        {
+            PriceCheckDto priceCheckDto = new PriceCheckDto();
+            string CancellationPolicyRQ = "";
+            string responsetype = "Success";
+            string ResponseData = "";
+            string time = "";
+            string Error = "";
+            string request = "";
+            double Finalprice1 = 0;
+            string currency = "";
+            double CurrencyFactor = 1;
+            try
+            {
+                string username = Convert.ToString(hyperguestDetails[0]["UserName"]);
+                string password = Convert.ToString(hyperguestDetails[0]["Password"]);
+                string roomtypeid = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]);
+                string CheckIn = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]);
+                CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                string CheckOut = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckOutDate"]);
+                CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+
+                string BookUrl = _supplierConfig.Hyperguest.HyperguestBookingURL;//"http://booking-node.server/booking/create";
+                string URL = BookUrl + _supplierConfig.Hyperguest.Prebook_book;
+
+                request = hyperguestPriceCheckRequest_new(roomtypeid, j, CheckIn, CheckOut, dsCartDetails);
+
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), request, "-", "Before Block Request hit Price check", Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Request Confirm j=" + j + "", Searchkey, "WithinEarth");
+
+                System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+                timerroomprocess.Start();
+
+                ResponseDto responseDto = await GethyperguestResponse(request, URL, password, 120000);
+                ResponseData = responseDto.Response;
+                Error = responseDto.Error;
+
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), request, ResponseData + Error, "After Block Request hit Price check", Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Request Confirm j=" + j + "", Searchkey, "WithinEarth");
+
+                timerroomprocess.Stop();
+                time = timerroomprocess.Elapsed.ToString();
+
+                if (ResponseData == "" || ResponseData == null)
+                {
+                    try
+                    {
+                        responsetype = "GeneralError";
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);//"purchaseToken"
+                    }
+                    catch (Exception e)
+                    {
+                        _ = _exception.Error(e);
+                    }
+
+                    priceCheckDto.Flag = 2;
+                    return priceCheckDto;
+                }
+                if (ResponseData.ToLower().Contains("errorCode")) //#09-OCT-2024 K2
+                {
+                    FinalPrice = 0;
+
+                    priceCheckDto.Flag = 0;
+                    priceCheckDto.FinalPrice = FinalPrice;
+                    return priceCheckDto;
+                }
+                if (ResponseData.ToLower().Contains("error")) //#04-NOV-2024 K2
+                {
+                    FinalPrice = 0;
+                    priceCheckDto.Flag = 0;
+                    priceCheckDto.FinalPrice = FinalPrice;
+                    return priceCheckDto;
+                }
+                hyperguest.PriceCheckRespNew.Root DS = new hyperguest.PriceCheckRespNew.Root();
+                try
+                {
+                    DS = Newtonsoft.Json.JsonConvert.DeserializeObject<hyperguest.PriceCheckRespNew.Root>(ResponseData);
+                }
+                catch (Exception ex)
+                {
+                    FinalPrice = 0;
+                    _ = _exception.Error(ex);
+
+                    priceCheckDto.Flag = 0;
+                    priceCheckDto.FinalPrice = FinalPrice;
+                    return priceCheckDto;
+                }
+                if (DS.content == null) //#09-OCT-2024 K2
+                {
+                    FinalPrice = 0;
+
+                    priceCheckDto.Flag = 0;
+                    priceCheckDto.FinalPrice = FinalPrice;
+                    return priceCheckDto;
+                }
+                if (ResponseData.Contains("priceChange") == false)
+                {
+                    FinalPrice = CompanyBuyingPrice;
+                    priceCheckDto.Flag = 0;
+                    priceCheckDto.FinalPrice = FinalPrice;
+                    return priceCheckDto;
+                }
+                else
+                {
+                    int adultcount = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[0]["NoOfAdults"]);
+                    int childage1 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[0]["ChildAge1"]);
+                    int childage2 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[0]["ChildAge2"]);
+                    int childage3 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[0]["ChildAge3"]);
+                    int childage4 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[0]["ChildAge4"]);
+                    var NoOfChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[0]["NoOfChild"]);
+
+                    string[] spitid1 = roomtypeid.Split(new String[] { "###" }, StringSplitOptions.None);
+                    string RSpriceNew = "";
+                    for (int t = 0; t < DS.content.paymentOptions.Count; t++)
+                    {
+                        if (DS.content.paymentOptions[t].priceChange != null)
+                        {
+                            Finalprice1 = Convert.ToDouble(DS.content.paymentOptions[t].priceChange.toAmount.amount);
+                            currency = Convert.ToString(DS.content.paymentOptions[t].priceChange.toAmount.currency);
+                        }
+                        else
+                        {
+                            Finalprice1 = Convert.ToDouble(DS.content.rooms[t].prices.net.price);
+                            currency = Convert.ToString(DS.content.rooms[t].prices.net.currency);
+                        }
+
+                        RSpriceNew = RSpriceNew + Convert.ToString(Finalprice1) + "$$$";
+                        if (currency.ToLower() != tokenData.SiteCurrency.ToLower())
+                        {
+                            CurrencyFactor = _commonMethod.GetROEByCurrency(currency, tokenData.dtROE);
+                        }
+
+
+                        ////added on 09-02-2024 #40209
+                        //if (currency.ToLower() == "ars" || currency.ToLower() == "usd" || currency.ToLower() == "eur" || currency.ToLower() == "brl")
+                        //{
+
+                        //    if (currency.ToLower() == "ars")
+                        //    {
+                        //        currency = "AR$";
+                        //    }
+                        //    DataTable dtInrCurrency = Common.GetCountryCurrency(currency);
+                        //    CurrencyFactor = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
+                        //}
+                        //else
+                        //{
+                        //    return 1;
+                        //}
+                        //end
+                        Finalprice1 = Finalprice1 * CurrencyFactor;
+
+                        FinalPrice = FinalPrice + Finalprice1;
+                    }
+                    // bool IsSuccess = Common.GetHasKeyUpdateStaus(RSpriceNew, Convert.ToInt32(userCartId));
+
+
+                    if (Math.Round(CompanyBuyingPrice, 2) < Math.Round(FinalPrice, 2))
+                    {
+                        try
+                        {
+                            ResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + ResponseData;
+                            responsetype = "GeneralError";
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);//"purchaseToken"
+                        }
+                        catch (Exception e)
+                        {
+                            _ = _exception.Error(e);
+                        }
+                        priceCheckDto.Flag = 1;
+                        return priceCheckDto;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    FinalPrice = 0;
+                    Error = ex.Message + ex.StackTrace.ToString();
+                    responsetype = "GeneralError";
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);//"purchaseToken"
+                }
+                catch (Exception e)
+                {
+                    _ = _exception.Error(ex);
+                }
+                _ = _exception.Error(ex);
+
+                priceCheckDto.FinalPrice = FinalPrice;
+                priceCheckDto.Flag = 1;
+                return priceCheckDto;
+            }
+            try
+            {
+                responsetype = "Success";
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error); //"purchaseToken"
+            }
+            catch (Exception e)
+            {
+                _ = _exception.Error(e);
+            }
+            priceCheckDto.Flag = 0;
+            return priceCheckDto;
+        }
+
         public string hyperguestPriceCheckRequest(string roomtypeid, int j, string checkIn, string checkout, DataSet dsCartDetails)
         {
             string RequestString = "";
@@ -2577,7 +2783,102 @@ namespace XConnect.Supplier.Hyperguest
             }
             return RequestString;
         }
+        public string hyperguestPriceCheckRequest_new(string roomtypeid, int j, string checkIn, string checkout, DataSet dsCartDetails)
+        {
+            string RequestString = "";
+            try
+            {
+                string[] spitid1 = roomtypeid.Split(new String[] { "###" }, StringSplitOptions.None);
+                string[] spitid2 = spitid1[3].Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string currency = spitid1[4];
 
+                if (currency == "AR$")
+                {
+                    currency = "ARS";
+                }
+
+                string RatePlanId = spitid1[7];
+                int RoomId = Convert.ToInt32(spitid1[8]);
+                string Nationality = spitid1[5];
+                StringBuilder RQ = new StringBuilder();
+
+                RQ.Append("{");
+                RQ.Append("\"search\": {");
+                RQ.Append(" \"dates\": {");
+                RQ.Append("\"from\":\"" + checkIn + "\",");
+                RQ.Append("\"to\":\"" + checkout + "\"");
+                RQ.Append("},");
+                RQ.Append("\"propertyId\":\"" + spitid1[2] + "\",");
+                RQ.Append("\"nationality\":\"" + Nationality + "\",");
+                RQ.Append("\"pax\": [");
+                for (int a = 0; a < spitid2.Length - 1; a++)
+                {
+                    int adultcount = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[a]["NoOfAdults"]);
+                    int childage1 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[a]["ChildAge1"]);
+                    int childage2 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[a]["ChildAge2"]);
+
+                    var NoOfChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[a]["NoOfChild"]);
+
+                    if (a == 0)
+                        RQ.Append("{");
+                    else
+                        RQ.Append(",{");
+
+                    RQ.Append(" \"adults\":" + adultcount + ",");
+                    if (NoOfChild > 0)
+                    {
+
+                        if (NoOfChild == 1)
+                        {
+                            RQ.Append("\"children\":[" + childage1 + "]");
+                        }
+                        if (NoOfChild == 2)
+                        {
+                            RQ.Append("\"children\":[" + childage1 + "," + childage2 + "]");
+                        }
+
+                    }
+                    else
+                    {
+                        RQ.Append("\"children\":[]");
+                    }
+                    RQ.Append("}");
+
+                }
+                RQ.Append("]");
+                RQ.Append("},");
+                RQ.Append("\"rooms\": [");
+                for (int b = 0; b < spitid2.Length - 1; b++)
+                {
+                    if (b == 0)
+                        RQ.Append("{");
+                    else
+                        RQ.Append(",{");
+
+                    RQ.Append("\"roomCode\":\"" + spitid1[0] + "\",");
+                    RQ.Append("\"roomId\":\"" + RoomId + "\",");
+                    RQ.Append("\"rateCode\":\"" + spitid1[1] + "\",");
+                    RQ.Append("\"ratePlanId\":\"" + RatePlanId + "\",");
+                    RQ.Append("\"expectedPrice\": {");
+                    RQ.Append("\"amount\":" + spitid2[b] + ",");
+                    RQ.Append("\"currency\":\"" + currency + "\"");
+                    RQ.Append("}");
+                    RQ.Append("}");
+                }
+
+                RQ.Append("]");
+                RQ.Append("}");
+
+                RequestString = RQ.ToString();
+
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+
+            }
+            return RequestString;
+        }
         public string hyperguestBookingRequest(DataSet dsCartDetails, DataRow[] hyperguestDetails, int i, int j, double resPrice, DataTable dtPassengers, ref string AgtRef, string CheckIn, string CheckOut, int UniqueNo, String AgentCode, bool IsPruvo)
         {
             string RequestString = "";

@@ -156,6 +156,9 @@ using XConnect.Supplier.AkbarTravel.Interface;
 using static XConnect.Models.SpeedCategory;
 using System.Buffers.Text;
 using XConnect.Supplier.Dingus.Interface;
+using XConnect.Supplier.Welcomebeds;
+using XConnect.Supplier.Welcomebeds.Interface;
+using XConnect.Supplier.Dingus;
 //using static XConnect.Supplier.Omnibees.OmnibeesCancelRQ;
 //using System.Text.Json;
 
@@ -232,6 +235,7 @@ namespace Xconnect.BLL
         private readonly ILetsfly _letsfly;
         private readonly IAkbartravel _akbartravel;
         private readonly IDingus _dingus;
+        private readonly IWelcomebeds _welcomebeds;
 
 
         private readonly ISiteMinder _siteMinder;
@@ -247,7 +251,7 @@ namespace Xconnect.BLL
 
 
 
-        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices)
+        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices, IWelcomebeds welcomebeds)
         {
             _dlConnection = dlConnection;
             _cache = cache;
@@ -318,6 +322,7 @@ namespace Xconnect.BLL
             _akbartravel = akbartravel;
             _dingus = dingus;
             _remoteServices = remoteServices.Value;
+            _welcomebeds = welcomebeds;
         }
 
         #region Static Data - used
@@ -1587,6 +1592,8 @@ namespace Xconnect.BLL
                 List<SupplierDetails> Letsfly_Details = new List<SupplierDetails>();
                 List<SupplierDetails> akbartravel_details = new List<SupplierDetails>();
                 List<SupplierDetails> Dingus_details = new List<SupplierDetails>();
+                List<SupplierDetails> WelcomebedsDetails = new List<SupplierDetails>();
+
                 //-----------------------------------------------------------------------------------
 
                 List<SupplierSearchConfig> EAN_B2BSearchConfig = new List<SupplierSearchConfig>();
@@ -1660,7 +1667,7 @@ namespace Xconnect.BLL
                 List<SupplierSearchConfig> Letsfly_SearchConfig = new List<SupplierSearchConfig>();
                 List<SupplierSearchConfig> akbartravel_SearchConfig = new List<SupplierSearchConfig>();
                 List<SupplierSearchConfig> Dingus_SearchConfig = new List<SupplierSearchConfig>();
-
+                List<SupplierSearchConfig> WelcomebedsSearchConfig = new List<SupplierSearchConfig>();
 
 
                 int degreeOfParallelism = Environment.ProcessorCount;
@@ -2017,6 +2024,11 @@ namespace Xconnect.BLL
                                         Dingus_details.Add(item);
                                         Dingus_SearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
                                         break;
+                                    case "welcomebeds":
+                                        WelcomebedsDetails.Add(item);
+                                        WelcomebedsSearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
+                                        break;
+
                                     default:
                                         break;
 
@@ -2065,7 +2077,15 @@ namespace Xconnect.BLL
 
                 }
 
-                Parallel.For(1, 56, workerId =>
+                #region Common Parameter Convert Once                
+                SearchPara.ParseCheckInDate = DateTime.ParseExact(SearchPara.CheckInDate, "dd/MM/yyyy", null);
+                SearchPara.ParseCheckOutDate = DateTime.ParseExact(SearchPara.CheckOutDate, "dd/MM/yyyy", null);
+                SearchPara.CheckInDateSubstring = SearchPara.CheckInDate.Substring(6, 4) + "-" + SearchPara.CheckInDate.Substring(3, 2) + "-" + SearchPara.CheckInDate.Substring(0, 2);
+                SearchPara.CheckOutDateSubstring = SearchPara.CheckOutDate.Substring(6, 4) + "-" + SearchPara.CheckOutDate.Substring(3, 2) + "-" + SearchPara.CheckOutDate.Substring(0, 2);
+                string SearchParaCheck = SearchPara.IsSearchFor.ToLower();
+                #endregion
+
+                Parallel.For(1, 57, workerId =>
                 {
                     switch (workerId)
                     {
@@ -2508,14 +2528,11 @@ namespace Xconnect.BLL
                                 if ((SearchPara.IsSearchFor.ToLower().IndexOf("omnibees") >= 0 || SearchPara.IsSearchFor.ToLower().IndexOf("multi") >= 0) && HitFromAll)
                                 {
                                     DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchTechwise(SearchPara.Nationality, dtXMLCity, "omnibees", "omnibees");
-                                    if (dataForSearch.XmlNationality != "")
-                                    {
-                                        if (OmnibeesSearchConfig != null && OmnibeesSearchConfig.Count > 0 && OmnibeesSearchConfig.Count > 0)
-                                        {
+                                      if (OmnibeesSearchConfig != null && OmnibeesSearchConfig.Count > 0 && OmnibeesSearchConfig.Count > 0)
+                                      {
                                             _omnibees.GetOmnibeesRequestOnly_async_new(commonSearchList.commonHotelCodes.Omnibees_Codes, lstRating, SearchPara, OmnibeesDetails, OmnibeesSearchConfig, dtPreferredDataHotel, ref AllTask, dataForSearch.xmlCity, dataForSearch.XmlNationality, hit, dtXMLCity, dtROE, tokenData);
 
-                                        }
-                                    }
+                                      }
                                 }
                             }
                             #endregion
@@ -2962,7 +2979,19 @@ namespace Xconnect.BLL
 
                             #endregion
                             break;
+                        case 56:
+                            #region Welcomebeds
+                            if (WelcomebedsDetails != null && WelcomebedsDetails.Count > 0 && WelcomebedsSearchConfig != null && WelcomebedsSearchConfig.Count > 0 && HitFromAll)
+                            {
+                                DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchNew(SearchPara.Nationality, dtXMLCity, "welcomebeds");
 
+                                if (commonSearchList.commonHotelCodes.Welcomebeds_Codes != null)
+                                {
+                                    _welcomebeds.GetwelcomebedsRequestOnly_Async(commonSearchList.commonHotelCodes.Welcomebeds_Codes, lstRating, SearchPara, WelcomebedsDetails, WelcomebedsSearchConfig, dtPreferredDataHotel, ref AllTask, hit, dtROE, dtXMLCity, tokenData);
+                                }
+                            }
+                            #endregion
+                            break;
                     }
                 });
 
@@ -4948,6 +4977,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                                             case "etg":
                                                             case "rezlive":
                                                             case "hotelstrack":
+                                                            case "welcomebeds":
                                                                 response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL, item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType, "", (Supplier.ToLower() == "hotelspro")).ConfigureAwait(false);
                                                                 break;
                                                             case "dida":
@@ -5389,24 +5419,24 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     }));
                                     break;
                                 case "hotelbeds":
-                                    if (Supplier != "hotelbedsv1_new")
-                                    {
-                                        dataTable.Add(Task.Run(async () =>
-                                        {
-                                            var result = await _hotelbeds.HotelbedsV1_HotelSearchWithRooms(SearchByOneID, item, commonSearch, item.RQRS, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, withcancellation, StoreSupplierResErrorLog);
-                                            item.dtHotelRoom = result;
-                                            return result;
-                                        }));
-                                    }
-                                    else/* if (Supplier == "hotelbedsv1_new")*/
-                                    {
+                                    //if (Supplier != "hotelbedsv1_new")
+                                    //{
+                                    //    dataTable.Add(Task.Run(async () =>
+                                    //    {
+                                    //        var result = await _hotelbeds.HotelbedsV1_HotelSearchWithRooms(SearchByOneID, item, commonSearch, item.RQRS, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, withcancellation, StoreSupplierResErrorLog);
+                                    //        item.dtHotelRoom = result;
+                                    //        return result;
+                                    //    }));
+                                    //}
+                                    //else/* if (Supplier == "hotelbedsv1_new")*/
+                                    //{
                                         dataTable.Add(Task.Run(async () =>
                                         {
                                             var result = await _hotelbeds.hotelbedsv1_new_HotelSearchWithRooms(SearchByOneID, item, commonSearch, item.RQRS, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, withcancellation, StoreSupplierResErrorLog);
                                             item.dtHotelRoom = result;
                                             return result;
                                         }));
-                                    }
+                                   // }
                                     break;
                                 case "qtech":
                                     dataTable.Add(Task.Run(async () =>
@@ -5473,24 +5503,24 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     }));
                                     break;
                                 case "hyperguest":
-                                    if (SearchPara.Rooms.Count == 1)
-                                    {
+                                    //if (SearchPara.Rooms.Count == 1)
+                                    //{
+                                    //    dataTable.Add(Task.Run(async () =>
+                                    //    {
+                                    //        var result = await _hyperguest.hyperguestHotelSearchWithRooms_Multiroom(item, commonSearch, item.RQRS[0].Response, item.XmlCity, SearchPara, item.CurrencyFactor, item.Supplier, dsAgentDetails, dtMarkupDetails, item.CurrencyCode, dtROE, item.XmlNationality, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
+                                    //        item.dtHotelRoom = result;
+                                    //        return result;
+                                    //    }));
+                                    //}
+                                    //else
+                                    //{
                                         dataTable.Add(Task.Run(async () =>
                                         {
                                             var result = await _hyperguest.hyperguestHotelSearchWithRooms_Multiroom(item, commonSearch, item.RQRS[0].Response, item.XmlCity, SearchPara, item.CurrencyFactor, item.Supplier, dsAgentDetails, dtMarkupDetails, item.CurrencyCode, dtROE, item.XmlNationality, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
                                             item.dtHotelRoom = result;
                                             return result;
                                         }));
-                                    }
-                                    else
-                                    {
-                                        dataTable.Add(Task.Run(async () =>
-                                        {
-                                            var result = await _hyperguest.hyperguestHotelSearchWithRooms_Multiroom(item, commonSearch, item.RQRS[0].Response, item.XmlCity, SearchPara, item.CurrencyFactor, item.Supplier, dsAgentDetails, dtMarkupDetails, item.CurrencyCode, dtROE, item.XmlNationality, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
-                                            item.dtHotelRoom = result;
-                                            return result;
-                                        }));
-                                    }
+                                   // }
 
                                     break;
                                 case "booking.com":
@@ -5749,6 +5779,14 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     {
                                         var result = await _dingus.XMLDingusPriceOnly_Async(item, commonSearch, item.RQRS[0].Response, SearchPara, item.XmlCity, item.XmlCountry, item.CurrencyCode, item.CurrencyFactor, item.XmlNationality,
                                       dtAgentDetail, item.Supplier, dsAgentDetails, dtVatHotelList, item.SupplierID, item.GIATACode, dtROE);
+                                        item.dtHotelRoom = result;
+                                        return result;
+                                    }));
+                                    break;
+                                case "welcomebeds":
+                                    dataTable.Add(Task.Run(async () =>
+                                    {
+                                        var result = await _welcomebeds.Welcomebeds_HotelSearchWithRooms(item, commonSearch, item.RQRS[0].Response, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, dsAgentDetails, item.Supplier, dtCountryCityMarkup, AgentId, TariffID, item.AgentWiseMarkup, item.IsShowSupplier, item.SupplierID, item.MasterSupplierID, processTimeout, ProccessCutOffTime, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog, dtROE, dsAgentDetails.Tables[1], item.xmlhotelcode);
                                         item.dtHotelRoom = result;
                                         return result;
                                     }));
@@ -6808,6 +6846,16 @@ new SqlParameter("@AgentId", AgentId),
                             Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "text/xml");
                             Request.Content.Headers.ContentType.CharSet = "utf-8";
 
+                            break;
+                        case "welcomebeds":
+                            Request = new HttpRequestMessage(HttpMethod.Post, strHost);
+                            key = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserName + ":" + Password));
+                            //var request = new HttpRequestMessage(HttpMethod.Post, url);
+                            //Request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
+                            Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
+                            Request.Headers.Accept.Clear();
+                            Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                            Request.Headers.Authorization = new AuthenticationHeaderValue("Basic", key);
                             break;
                         default:
                             //Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
@@ -9359,6 +9407,7 @@ new SqlParameter("@AgentId", AgentId),
             list.Price_Travel_Codes = null;
             list.LetsFly_Codes = null;
             list.Dingus_codes = null;
+            list.Elevateholidays_codes = null;
 
 
             try
@@ -9745,6 +9794,11 @@ new SqlParameter("@AgentId", AgentId),
                                         list.Dingus_codes = FilterHotelCodesTechWise(lstdtHotelCommon, SuppplierCheck);
                                         break;
 
+                                    #endregion
+                                    #region"ElevateHolidays"
+                                    case "elevateholidays":
+                                        list.Elevateholidays_codes = FilterHotelCodes(lstdtHotelCommon, SuppplierCheck);
+                                        break;
                                     #endregion
                                     default:
                                         break;
@@ -12148,6 +12202,7 @@ new SqlParameter("@AgentId", AgentId),
                     && TechName.ToLower() != "infinitehotelsfrance"//added on 16-07-25 //only when call availabilitywithcancellation call 
                     && TechName.ToLower() != "hotelstrack"//added on 17-11-25 //only when call availabilitywithcancellation call 
                     && TechName.ToLower() != "rezlive"
+                    && TechName.ToLower() != "hotelbeds"
 
                     )//added on 01-12-25 //only when call availabilitywithcancellation call 
                 //if (selectedRoom.CancellationPolicy.Count > 0 && roomex.SupplierName.ToLower() != "iwtx" && !(roomex.SupplierName.ToLower().Contains("_xtg")))//added on 01-APR-2025
@@ -13093,6 +13148,10 @@ new SqlParameter("@AgentId", AgentId),
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion
+                    case "hotelbeds":
+                        cancellationDto = await _hotelbeds.HotelBedsV1_cancellation_new(ToeknData, roomtypecode, dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, GiataId, 0, SearchKey, Companybuy, Mealid);
+                        dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
+                        break;
                     #region"Travellanda"
                     case "travellanda":
                         cancellationDto = await _travellanda.GetCancellationPollicyTravellanda(provider, Convert.ToInt32(roomno), dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, shortname, Convert.ToInt32(AgentId), SearchKey, GiataId, hotelRating);
@@ -13100,6 +13159,7 @@ new SqlParameter("@AgentId", AgentId),
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion
+
                     #region AlphaTours - juniper
                     case "alphatours":
                         dsHotelData = null;// Common.Get_AlphaTours_CancellationPolicy(dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, GiataId, hotelRating);
@@ -30357,6 +30417,121 @@ new SqlParameter("@AgentId", AgentId),
                                                     }
                                                     break;
                                                 #endregion
+                                                #region "HotelBedsV1_new"
+                                                case "hotelbeds":
+                                                    try
+                                                    {
+                                                        bool FtroomError = false;
+                                                        dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
+                                                        dtCartUpdateTable = _commonMethod.getCardUpdateTable();
+
+                                                        DataRow[] HotelBedsV1Details = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        for (int j = 0; j < 1; j++)
+                                                        //for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
+                                                        {
+                                                            double CompanyBuyPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
+                                                            bool IsErrors = false;
+                                                            double itemprice = CompanyBuyPrice;
+                                                            UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
+
+                                                            //bool IsPriceUpdates = Common.PriceUpdateHotelBedsV1(RoomCode, dtCheckPriceReqStructure, dsCartDetails, HotelBedsV1Details, UniqueNo, AgentUniqueNo, j, "P", CompanyBuyPrice, ref IsErrors, ref itemprice, Searchkey, AgentId);
+                                                            bool IsPriceUpdates = false;
+                                                            bool IsBookable = false;
+                                                            if (dsCartDetails.Tables[1].DefaultView[j]["purchaseToken"].ToString().ToLower().Contains("true"))
+                                                            {
+                                                                IsBookable = Convert.ToBoolean(dsCartDetails.Tables[1].DefaultView[j]["purchaseToken"]);
+
+                                                            }
+
+                                                            if (IsBookable == false)
+                                                            {
+                                                                itemprice = 0;
+                                                                responsetype = "GeneralError";
+                                                                ReponseSPR = "IsBookable= " + IsBookable;
+                                                            }
+                                                            if (itemprice == 0)
+                                                            {
+                                                                await ProcessPricePoupTable(IsActivePopUp, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, 0, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, j);
+                                                            }
+                                                            else
+                                                            {
+                                                                if (false)//IsPriceUpdates && itemprice > 0
+                                                                {
+                                                                    responsetype = "GeneralError";
+                                                                    FtroomError = true;
+                                                                    #region "Price update logic with markup"
+                                                                    double UpdatedPrice = Convert.ToDouble(itemprice);
+                                                                    #region "Markup Logic Supplierwise"
+                                                                    //double AgentPercentage = 0.0;
+                                                                    //Boolean blnIsShowSupplier = false;
+                                                                    int SupplierID = 0;
+                                                                    if (dsAgentDetails.Tables[1] != null)
+                                                                    {
+                                                                        DataRow[] drSupRow = null;
+                                                                        foreach (DataRow row in dsAgentDetails.Tables[1].Rows)
+                                                                        {
+                                                                            if (Convert.ToString(row["SupplierName"]).ToLower().Replace(" ", "") == Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower())
+                                                                            {
+                                                                                drSupRow = new DataRow[1];
+                                                                                drSupRow[0] = row;
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                        if (drSupRow != null)
+                                                                        {
+                                                                            //AgentPercentage = Convert.ToDouble(drSupRow[0]["AgentWiseMarkup"]);
+                                                                            blnIsShowSupplier = (Convert.ToInt16(drSupRow[0]["IsShowSupplier"]) == 1 ? true : false);
+                                                                            SupplierID = Convert.ToInt32(drSupRow[0]["SupplierID"]);
+                                                                        }
+                                                                    }
+
+                                                                    #endregion
+                                                                    #region "Price update logic with markup"
+                                                                    dtPriceDetail = await ProcessPricePoupTable(false, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, UpdatedPrice, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, j);
+                                                                    #endregion
+                                                                    #endregion
+                                                                    #region "Logic for update cart data "
+                                                                    double CurerntPrice = Convert.ToDouble(itemprice);
+                                                                    ProcessPriceTable(1 * BookNight, CityId, CountryId, ref dtPriceUpdateTable, ref serviceTot, CurerntPrice, isPerce, AgentMarkupAmount, AgentPercentage, SubAgentMarkup, IsParentId, B2CMarkup, dsCartDetails, j, Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]).ToLower(), TokenData);
+                                                                    #endregion
+
+                                                                }
+                                                                else
+                                                                    serviceTot = serviceTot + ((TokenData.Type.ToLower() == "subagent") ? Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["SubAgentBuyingPice"]) : Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["AgentBuyingPrice"]));
+                                                            }
+
+                                                        }
+
+
+                                                        if (dtPriceUpdateTable.Rows.Count > 0)
+                                                        {
+                                                            DataRow drCartUpdate = dtCartUpdateTable.NewRow();
+                                                            drCartUpdate["UserCartId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["UserCartID"]);
+                                                            drCartUpdate["ServiceTotal"] = serviceTot;
+                                                            dtCartUpdateTable.Rows.Add(drCartUpdate);
+                                                            DsPriceUpdate.Tables[0].Merge(dtCartUpdateTable);
+                                                            DsPriceUpdate.Tables[1].Merge(dtPriceUpdateTable);
+                                                        }
+
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        _ = _exception.Error(ex, Searchkey);
+                                                        #region SupplierPerformanceReport Catch
+                                                        try
+                                                        {
+                                                            Error = ex.Message + ex.StackTrace.ToString();
+                                                            responsetype = "GeneralError";
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                        }
+                                                        catch (Exception e)
+                                                        {
+                                                            _ = _exception.ErrorBooking(e, AgentId.ToString(), "", "");
+                                                        }
+                                                        #endregion
+                                                    }
+                                                    break;
+                                                #endregion
                                                 #region "XTG" 
                                                 case "xtg": // added on 01-APR-2025
                                                     try
@@ -34083,17 +34258,10 @@ new SqlParameter("@AgentId", AgentId),
                                                     {
                                                         DataRow[] hyperguestDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
 
-
                                                         string hyperguestrCurrency = Convert.ToString(hyperguestDetails[0]["CurrencyShortName"]);
-                                                        double CurrencyFactorhyperguest = 1;
 
-                                                        if (hyperguestrCurrency.ToLower() != TokenData.SiteCurrency.ToLower())
-                                                        {
-                                                            CurrencyFactorhyperguest = _commonMethod.GetROEByCurrency(hyperguestrCurrency, TokenData.dtROE);
-
-                                                        }
-
-                                                        for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
+                                                        int j = 0;
+                                                        //for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
                                                         {
                                                             string Provider_hyperguest = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]).ToLower();
                                                             UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
@@ -34102,7 +34270,8 @@ new SqlParameter("@AgentId", AgentId),
                                                             double Rate = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
                                                             double FinalPrice = 0;
                                                             double ResPrice = 0;
-                                                            PriceCheckDto priceCheckDto = await _hyperguest.hyperguestPriceCheck(dsCartDetails, hyperguestDetails, j, FinalPrice, CurrencyFactorhyperguest, UniqueNo, AgentUniqueNo, ResPrice, Supplier, i, Rate, AgentId, TokenData);
+                                                            //PriceCheckDto priceCheckDto = await _hyperguest.hyperguestPriceCheck(dsCartDetails, hyperguestDetails, j, FinalPrice, CurrencyFactorhyperguest, UniqueNo, AgentUniqueNo, ResPrice, Supplier, i, Rate, AgentId, TokenData);
+                                                            PriceCheckDto priceCheckDto = await _hyperguest.hyperguestPriceCheck_new(dsCartDetails, hyperguestDetails, j, FinalPrice, UniqueNo, AgentUniqueNo, ResPrice, Supplier, i, Rate, AgentId, TokenData, Searchkey);
                                                             int Flag = priceCheckDto.Flag;
                                                             FinalPrice = priceCheckDto.FinalPrice;
 
@@ -35244,6 +35413,237 @@ new SqlParameter("@AgentId", AgentId),
                                                         }
                                                         #endregion
                                                         _ = _exception.ErrorNew(ex, _LogAPI.Prebook);
+                                                    }
+                                                    break;
+                                                #endregion
+                                                #region Welcombeds
+                                                case "welcomebeds"://3011
+                                                    try
+                                                    {
+                                                        DataRow[] WelcomebedsDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+
+
+                                                        int j = 0;
+                                                        string Provider = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]).ToLower();
+                                                        UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
+                                                        int UserCartId = Convert.ToInt32(dsCartDetails.Tables[0].DefaultView[i]["UserCartID"]);
+                                                        int SupplierID = 0;
+                                                        string HasKey = "";
+
+                                                        double Rate = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
+                                                        double FinalPrice = 0;
+                                                        double CurrencyFactorwelcomebeds = 1;
+                                                        PriceCheckWelcomebedsDto priceCheckWelcomebedsDto = await _welcomebeds.welcomebedsPriceCheck(dsCartDetails, WelcomebedsDetails, j, FinalPrice, CurrencyFactorwelcomebeds, UniqueNo, AgentUniqueNo, Supplier, i, Rate, TokenData.dtROE, AgentId, TokenData, Searchkey);
+                                                        bool ispriceupdate = priceCheckWelcomebedsDto.Flag;
+                                                        FinalPrice = priceCheckWelcomebedsDto.FinalPrice;
+                                                        HasKey = priceCheckWelcomebedsDto.HasKey_IntCode;
+
+                                                        if (Convert.ToDouble((FinalPrice).TruncateDecimalPlaces(0)) > (Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"])).TruncateDecimalPlaces(0))
+                                                        {
+                                                            #region "Price update logic with markup"
+                                                            double UpdatedPrice = Convert.ToDouble(FinalPrice);
+                                                            #region "Markup Logic Supplierwise"
+
+                                                            SupplierID = 0;
+                                                            if (dsAgentDetails.Tables[1] != null)
+                                                            {
+                                                                DataRow[] drSupRow = null;
+                                                                foreach (DataRow row in dsAgentDetails.Tables[1].Rows)
+                                                                {
+                                                                    if (Convert.ToString(row["SupplierName"]).ToLower().Replace(" ", "") == Convert.ToString(Provider).ToLower())
+                                                                    {
+                                                                        drSupRow = new DataRow[1];
+                                                                        drSupRow[0] = row;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                if (drSupRow != null)
+                                                                {
+
+                                                                    blnIsShowSupplier = (Convert.ToInt16(drSupRow[0]["IsShowSupplier"]) == 1 ? true : false);
+                                                                    SupplierID = Convert.ToInt32(drSupRow[0]["SupplierID"]);
+                                                                }
+                                                            }
+
+                                                            #endregion
+                                                            #region "Price update logic with markup"
+                                                            dtPriceDetail = await ProcessPricePoupTable(false, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, UpdatedPrice, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, 0);
+                                                            #endregion
+                                                            #endregion
+                                                            #region "Logic for update cart data "
+                                                            double CurerntPrice = Convert.ToDouble(FinalPrice);
+                                                            ProcessPriceTable(1 * BookNight, CityId, CountryId, ref dtPriceUpdateTable, ref serviceTot, CurerntPrice, isPerce, AgentMarkupAmount, AgentPercentage, SubAgentMarkup, IsParentId, B2CMarkup, dsCartDetails, 0, Provider, TokenData);
+                                                            #endregion
+                                                        }
+                                                        else
+                                                            serviceTot = serviceTot + ((TokenData.Type.ToLower() == "subagent") ? Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["SubAgentBuyingPice"]) : Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["AgentBuyingPrice"]));
+
+
+                                                        if (FinalPrice == 0)
+                                                        {
+                                                            dtPriceDetail = await ProcessPricePoupTable(IsActivePopUp, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, 0, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, 0);
+                                                        }
+                                                        if (dtPriceUpdateTable.Rows.Count > 0)
+                                                        {
+                                                            DataRow drCartUpdate = dtCartUpdateTable.NewRow();
+                                                            drCartUpdate["UserCartId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["UserCartID"]);
+                                                            drCartUpdate["ServiceTotal"] = serviceTot;
+                                                            dtCartUpdateTable.Rows.Add(drCartUpdate);
+                                                            DsPriceUpdate.Tables[0].Merge(dtCartUpdateTable);
+                                                            DsPriceUpdate.Tables[1].Merge(dtPriceUpdateTable);
+
+                                                        }
+                                                        #region SupplierPR Price Check 
+                                                        try
+                                                        {
+                                                            //string abc = Common.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                        }
+                                                        catch (Exception e)
+                                                        {
+                                                            //Common.ErrorBooking(e, AgentId.ToString(), "", "");
+                                                            _ = _exception.ErrorNew(e, _LogAPI.Prebook);
+                                                        }
+                                                        #endregion
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        #region SupplierPerformanceReport Catch
+                                                        try
+                                                        {
+                                                            Error = ex.Message.ToString() + "#=" + ex.StackTrace.ToString();
+                                                            responsetype = "GeneralError";
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                        }
+                                                        catch (Exception e)
+                                                        {
+                                                            _ = _exception.ErrorNew(e, _LogAPI.Prebook);
+                                                        }
+                                                        #endregion
+                                                        _ = _exception.ErrorNew(ex, _LogAPI.Prebook);
+                                                    }
+                                                    break;
+                                                #endregion
+                                                #region "Dingus"
+                                                case "dingus":
+
+                                                    try
+                                                    {
+
+                                                        dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
+                                                        dtCartUpdateTable = _commonMethod.getCardUpdateTable();
+                                                        List<DingusClass.DingusRoom> ListDR = new List<DingusClass.DingusRoom>();
+                                                        for (int d = 0; d < dsCartDetails.Tables[1].DefaultView.Count; d++)
+                                                        {
+                                                            DingusClass.DingusRoom DR = new DingusClass.DingusRoom();
+                                                            DR.NoofAdults = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["NoofAdults"]);
+                                                            DR.NoofChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["NoofChild"]);
+                                                            DR.Child1Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge1"]);
+                                                            DR.Child2Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge2"]);
+                                                            //DR.Child3Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge3"]);
+                                                            // DR.Child4Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge4"]);
+                                                            ListDR.Add(DR);
+                                                        }
+
+                                                        for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
+                                                        {
+                                                            string[] HBArray = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                                            string RoomTypeCode = HBArray[1];
+                                                            string MealPlanCodes = HBArray[2];
+                                                            string RatePlanID = HBArray[3];
+                                                            string RatePlanCode = HBArray[4];
+
+                                                            double CompanyBuyPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
+                                                            bool IsErrors = false;
+                                                            double itemprice = 0;
+                                                            UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
+
+                                                            DataRow[] SupplierDetail1 = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+
+
+                                                            PriceCheckCMDto priceCheckDingus = await _dingus.PriceUpdateDingus(ListDR, Supplier.ToLower(), RoomTypeCode, MealPlanCodes, RatePlanID, RatePlanCode, dtCheckPriceReqStructure, dsCartDetails, SupplierDetail1, UniqueNo, AgentUniqueNo, i, j, "P", CompanyBuyPrice, IsErrors, itemprice, TokenData, Searchkey, AgentId);
+                                                            bool IsPriceUpdates = priceCheckDingus.Flag;
+                                                            itemprice = priceCheckDingus.ItemPrice;
+                                                            IsErrors = priceCheckDingus.IsError;
+                                                            if (itemprice == 0)
+                                                            {
+                                                                dtPriceDetail = await ProcessPricePoupTable(IsActivePopUp, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, 0, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, j);
+                                                            }
+
+                                                            else
+                                                            {
+
+                                                                if (IsPriceUpdates && itemprice > 0)
+                                                                {
+                                                                    #region "Price update logic with markup"
+                                                                    double UpdatedPrice = Convert.ToDouble(itemprice);
+                                                                    int SupplierID = 0;
+                                                                    #region "Markup Logic Supplierwise"
+                                                                    //double AgentPercentage = 0.0;
+                                                                    //Boolean blnIsShowSupplier = false;
+                                                                    //int SupplierID = 0;
+                                                                    if (dsAgentDetails.Tables[1] != null)
+                                                                    {
+                                                                        DataRow[] drSupRow = null;
+                                                                        foreach (DataRow row in dsAgentDetails.Tables[1].Rows)
+                                                                        {
+                                                                            if (Convert.ToString(row["SupplierName"]).ToLower().Replace(" ", "") == Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower())
+                                                                            {
+                                                                                drSupRow = new DataRow[1];
+                                                                                drSupRow[0] = row;
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                        if (drSupRow != null)
+                                                                        {
+                                                                            //AgentPercentage = Convert.ToDouble(drSupRow[0]["AgentWiseMarkup"]);
+                                                                            blnIsShowSupplier = (Convert.ToInt16(drSupRow[0]["IsShowSupplier"]) == 1 ? true : false);
+                                                                            SupplierID = Convert.ToInt32(drSupRow[0]["SupplierID"]);
+                                                                        }
+                                                                    }
+
+                                                                    #endregion
+                                                                    #region "Price update logic with markup"
+                                                                    dtPriceDetail = await ProcessPricePoupTable(false, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, UpdatedPrice, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, j);
+                                                                    #endregion
+                                                                    #endregion
+                                                                    #region "Logic for update cart data "
+                                                                    double CurerntPrice = Convert.ToDouble(itemprice);
+                                                                    ProcessPriceTable(1 * BookNight, CityId, CountryId, ref dtPriceUpdateTable, ref serviceTot, CurerntPrice, isPerce, AgentMarkupAmount, AgentPercentage, SubAgentMarkup, IsParentId, B2CMarkup, dsCartDetails, j, Supplier.ToLower(), TokenData);
+
+                                                                    #endregion
+
+                                                                }
+                                                                else
+                                                                    serviceTot = serviceTot + ((TokenData.Type.ToLower() == "SubAgent") ? Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["SubAgentBuyingPice"]) : Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["AgentBuyingPrice"]));
+                                                            }
+                                                        }
+                                                        if (dtPriceUpdateTable.Rows.Count > 0)
+                                                        {
+                                                            DataRow drCartUpdate = dtCartUpdateTable.NewRow();
+                                                            drCartUpdate["UserCartId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["UserCartID"]);
+                                                            drCartUpdate["ServiceTotal"] = serviceTot;
+                                                            dtCartUpdateTable.Rows.Add(drCartUpdate);
+                                                            DsPriceUpdate.Tables[0].Merge(dtCartUpdateTable);
+                                                            DsPriceUpdate.Tables[1].Merge(dtPriceUpdateTable);
+                                                        }
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        Error = ex.Message.ToString();
+                                                        #region SupplierPerformanceReportForPrebook
+                                                        try
+                                                        {
+                                                            string GiataId = Convert.ToString(dsCartDetails.Tables[0].Rows[0]["GiataId"]); //added 
+                                                            responsetype = "GeneralError";
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                        }
+                                                        catch (Exception e)
+                                                        {
+                                                            _ = _exception.ErrorBooking(e, AgentId.ToString(), "", "");
+                                                        }
+                                                        #endregion
+                                                        _ = _exception.ErrorBooking(ex, AgentId.ToString(), "", "");
                                                     }
                                                     break;
                                                     #endregion
@@ -40391,6 +40791,11 @@ new SqlParameter("@AgentId", AgentId),
                                                                                         Action = QtechInfo.Mercan_hotelListAction;
                                                                                         QTechDetails = SupplierDetailsCommon;
                                                                                         break;
+                                                                                    case "elevateholidays":
+                                                                                        //QTechCurrency = XMLHotelBookingCommon.NirvanaCurrency;
+                                                                                        Action = _supplierConfig.Qtech.Mercan_hotelListAction;  //22042026
+                                                                                        QTechDetails = SupplierDetailsCommon;
+                                                                                        break;
                                                                                 }
                                                                                 UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
                                                                                 string JsonResponse = "";
@@ -40408,8 +40813,9 @@ new SqlParameter("@AgentId", AgentId),
 
 
                                                                                 bookingStatus = 6;
-                                                                                string BookUrl = Convert.ToString(QTechDetails[0]["WebSiteURL"]) + "HotelBookingV7RequestService?wsdl";
+                                                                                string BookUrl = Convert.ToString(QTechDetails[0]["WebSiteURL"]) + _supplierConfig.Qtech.BookURL;// "HotelBookingV7RequestService?wsdl";
                                                                                 //Allocation Enqiry
+
                                                                                 string WebSiteURL = Convert.ToString(QTechDetails[0]["WebSiteURL"]);
                                                                                 double Rate = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["Rate"]);
                                                                                 int UserCartId1 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartID"]);

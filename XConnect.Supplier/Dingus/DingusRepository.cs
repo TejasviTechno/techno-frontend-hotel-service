@@ -1576,7 +1576,7 @@ namespace XConnect.Supplier.Dingus
                 return 0;
             }
         }
-        public async Task<PriceCheckCMDto> PriceUpdateDingus(List<DingusRoom> DRList, string supplierName, string RoomTypeCode, string MealPlanCodes, string RatePlanID, string RatePlanCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] DingusDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, HotelSearchParameter SearchPara, TokenData tokenData, string Searchkey, int AgentId = 0)
+        public async Task<PriceCheckCMDto> PriceUpdateDingus(List<DingusClass.DingusRoom> DRList, string supplierName, string RoomTypeCode, string MealPlanCodes, string RatePlanID, string RatePlanCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] DingusDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, TokenData tokenData, string Searchkey, int AgentId = 0)
         {
             PriceCheckCMDto priceCheckDingus = new PriceCheckCMDto();
             string RequestSPR = "";
@@ -1799,7 +1799,7 @@ namespace XConnect.Supplier.Dingus
         }
 
 
-        public string DingusPriceCheckRequest(List<DingusRoom> DR, string checkIn, string checkOut, string HotelId, string Username, string Password, string DingusUrl, string SupplierName, string language)
+        public string DingusPriceCheckRequest(List<DingusClass.DingusRoom> DR, string checkIn, string checkOut, string HotelId, string Username, string Password, string DingusUrl, string SupplierName, string language)
         {
             //PriceCheckCMDto priceCheckDingusR = new PriceCheckCMDto();
             string HotelRequest = "";

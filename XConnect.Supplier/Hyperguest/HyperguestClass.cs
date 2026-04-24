@@ -560,6 +560,149 @@ namespace XConnect.Supplier.Hyperguest
             }
 
             #endregion
+            #region pricecheck resp_newversion2
+            public class PriceCheckRespNew
+            {
+                // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+                public class Bar
+                {
+                    public double price { get; set; }
+                    public string currency { get; set; }
+                    public List<Taxis> taxes { get; set; }
+                }
+
+                public class CancellationPolicy
+                {
+                    public int daysBefore { get; set; }
+                    public string penaltyType { get; set; }
+                    public double amount { get; set; }
+                    public TimeSetting timeSetting { get; set; }
+                    public string cancellationDeadlineHour { get; set; }
+                }
+
+                public class ChargeAmount
+                {
+                    public double price { get; set; }
+                    public string currency { get; set; }
+                }
+
+                public class Commission
+                {
+                    public double price { get; set; }
+                    public string currency { get; set; }
+                }
+
+                public class Content
+                {
+                    public List<PaymentOption> paymentOptions { get; set; }
+                    public List<Room> rooms { get; set; }
+                }
+
+                public class FromAmount
+                {
+                    public double amount { get; set; }
+                    public string currency { get; set; }
+                }
+
+                public class Net
+                {
+                    public double price { get; set; }
+                    public string currency { get; set; }
+                    public List<Taxis> taxes { get; set; }
+                }
+
+                public class NightlyRate
+                {
+                    public string date { get; set; }
+                    public Prices prices { get; set; }
+                }
+
+                public class Payment
+                {
+                    public string charge { get; set; }
+                    public string chargeType { get; set; }
+                    public ChargeAmount chargeAmount { get; set; }
+                }
+
+                public class PaymentAmount
+                {
+                    public double amount { get; set; }
+                    public string currency { get; set; }
+                }
+
+                public class PaymentOption
+                {
+                    public string type { get; set; }
+                    public PaymentAmount paymentAmount { get; set; }
+                    public PriceChange priceChange { get; set; }
+                }
+
+
+                public class PriceChange
+                {
+                    public FromAmount fromAmount { get; set; }
+                    public ToAmount toAmount { get; set; }
+                }
+
+                public class Prices
+                {
+                    public Net net { get; set; }
+                    public Sell sell { get; set; }
+                    public Commission commission { get; set; }
+                    public Bar bar { get; set; }
+                    public List<object> fees { get; set; }
+                }
+
+                public class Room
+                {
+                    public Payment payment { get; set; }
+                    public Prices prices { get; set; }
+                    public List<CancellationPolicy> cancellationPolicies { get; set; }
+                    public List<object> remarks { get; set; }
+                    public string roomTypeCode { get; set; }
+                    public int roomId { get; set; }
+                    public string ratePlanCode { get; set; }
+                    public string ratePlanId { get; set; }
+                    public List<NightlyRate> nightlyRates { get; set; }
+                }
+
+                public class Root
+                {
+                    public Content content { get; set; }
+                    public DateTime timestamp { get; set; }
+                }
+
+                public class Sell
+                {
+                    public double price { get; set; }
+                    public string currency { get; set; }
+                    public List<Taxis> taxes { get; set; }
+                }
+
+                public class Taxis
+                {
+                    public string description { get; set; }
+                    public double amount { get; set; }
+                    public string currency { get; set; }
+                    public string relation { get; set; }
+                    public string scope { get; set; }
+                    public string frequency { get; set; }
+                }
+
+                public class TimeSetting
+                {
+                    public int timeFromCheckIn { get; set; }
+                    public string timeFromCheckInType { get; set; }
+                }
+
+                public class ToAmount
+                {
+                    public double amount { get; set; }
+                    public string currency { get; set; }
+                }
+
+            }
+            #endregion
             #region pricechek req_new
             public class Pricecheck
             {

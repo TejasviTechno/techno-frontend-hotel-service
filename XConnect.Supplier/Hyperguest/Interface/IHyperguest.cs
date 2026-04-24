@@ -21,6 +21,7 @@ namespace XConnect.Supplier.Hyperguest.Interface
         //prebook - 22-07-25
        Task<PriceCheckDto> hyperguestPriceCheck(DataSet dsCartDetails, DataRow[] hyperguestDetails, int j, double FinalPrice, double CurrencyFactorhyperguest, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int i, double CompanyBuyingPrice, int AgentId, TokenData tokenData);
 
+        Task<PriceCheckDto> hyperguestPriceCheck_new(DataSet dsCartDetails, DataRow[] hyperguestDetails, int j, double FinalPrice, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int i, double CompanyBuyingPrice, int AgentId, TokenData tokenData, string Searchkey = "");
         string Gethyperguest_BookingCancelRQ(string AgentVoucherNo, DataRow[] hyperguestDetails);
 
         Task<ResponseDto> GethyperguestResponse(string Request, string url, string Password, Int32 TimeOut = 180000);

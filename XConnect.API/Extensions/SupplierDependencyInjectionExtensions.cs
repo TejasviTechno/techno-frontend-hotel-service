@@ -104,6 +104,8 @@ using XConnect.Supplier.AkbarTravel.Interface;
 using XConnect.Supplier.AkbarTravel;
 using XConnect.Supplier.Dingus.Interface;
 using XConnect.Supplier.Dingus;
+using XConnect.Supplier.Welcomebeds.Interface;
+using XConnect.Supplier.Welcomebeds;
 
 
 
@@ -167,6 +169,7 @@ namespace XConnect.API.Extensions
             services.AddScoped<ILetsfly, LetsflyRepo>();
             services.AddScoped<IAkbartravel, AkbartravelRepo>();
             services.AddScoped<IDingus, DingusRepository>();
+            services.AddScoped<IWelcomebeds, WelcomebedsRepository>();
 
             return services;
         }

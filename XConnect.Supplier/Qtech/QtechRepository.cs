@@ -927,6 +927,8 @@ namespace XConnect.Supplier.Qtech
                             commonCode = commonSearchList.commonHotelCodes.Nirvana_Codes;
                         else if (Supplier.ToLower() == "worldavenues")
                             commonCode = commonSearchList.commonHotelCodes.WorldAvenues_Codes;
+                        else if (Supplier.ToLower() == "elevateholidays")
+                            commonCode = commonSearchList.commonHotelCodes.Elevateholidays_codes;  //added 22042026
                         #endregion
 
                         #region not use
@@ -1022,7 +1024,7 @@ namespace XConnect.Supplier.Qtech
                                                                     //if (Hit > 0)
                                                                     xhotel.ProcessTimeout = Convert.ToInt32(QtechSearchConfig[k].HotelSearchTimeOut2);
 
-                                                                    xhotel.URL = Convert.ToString(QtechChild[x].WebSiteURL) + QtechInfo.HotelAvail;
+                                                                    xhotel.URL = Convert.ToString(QtechChild[x].WebSiteURL) + _supplierConfig.Qtech.HotelAvail; //QtechInfo.HotelAvail;
                                                                     xhotel.UserId = Convert.ToString(QtechChild[x].UserID);
                                                                     xhotel.UserName = Convert.ToString(QtechChild[x].UserName);
                                                                     xhotel.PassWord = Convert.ToString(QtechChild[x].Password);
@@ -1051,8 +1053,8 @@ namespace XConnect.Supplier.Qtech
                                                                         objrq.Response = ""; RQRS.Add(objrq);
                                                                     }
                                                                     xhotel.RQRS = RQRS;
-                                                                    xhotel.ReturnRooms = 5; // Convert.ToInt32(QtechChild[x].ReturnRooms);
-                                                                    xhotel.TechName = "Qtech"; // Convert.ToString(QtechChild[x].TechName);
+                                                                    xhotel.ReturnRooms = Convert.ToInt32(QtechChild[x].ReturnRooms); //5; // Convert.ToInt32(QtechChild[x].ReturnRooms);
+                                                                    xhotel.TechName = Convert.ToString(QtechChild[x].TechName); //"Qtech"; // Convert.ToString(QtechChild[x].TechName);
                                                                     #endregion
                                                                     AllTask.Add(xhotel);
                                                                 }
@@ -1077,7 +1079,7 @@ namespace XConnect.Supplier.Qtech
                                                                     //if (Hit > 0)
                                                                     xhotel.ProcessTimeout = Convert.ToInt32(QtechSearchConfig[k].HotelSearchTimeOut2);
 
-                                                                    xhotel.URL = Convert.ToString(QtechChild[x].WebSiteURL) + QtechInfo.HotelAvail;
+                                                                    xhotel.URL = Convert.ToString(QtechChild[x].WebSiteURL) + _supplierConfig.Qtech.HotelAvail; //QtechInfo.HotelAvail;
                                                                     xhotel.UserId = Convert.ToString(QtechChild[x].UserID);
                                                                     xhotel.UserName = Convert.ToString(QtechChild[x].UserName);
                                                                     xhotel.PassWord = Convert.ToString(QtechChild[x].Password);
@@ -1106,8 +1108,8 @@ namespace XConnect.Supplier.Qtech
                                                                         objrq.Response = ""; RQRS.Add(objrq);
                                                                     }
                                                                     xhotel.RQRS = RQRS;
-                                                                    xhotel.ReturnRooms = 5; // Convert.ToInt32(QtechChild[x].ReturnRooms);
-                                                                    xhotel.TechName = "Qtech"; // Convert.ToString(QtechChild[x].TechName);
+                                                                    xhotel.ReturnRooms = Convert.ToInt32(QtechChild[x].ReturnRooms);//5; // Convert.ToInt32(QtechChild[x].ReturnRooms);
+                                                                    xhotel.TechName = Convert.ToString(QtechChild[x].TechName); //"Qtech"; // Convert.ToString(QtechChild[x].TechName);
                                                                     #endregion
                                                                     AllTask.Add(xhotel);
                                                                 }
@@ -1135,7 +1137,7 @@ namespace XConnect.Supplier.Qtech
                                                                     //if (Hit > 0)
                                                                     xhotel.ProcessTimeout = Convert.ToInt32(QtechSearchConfig[k].HotelSearchTimeOut2);
 
-                                                                    xhotel.URL = Convert.ToString(QtechChild[x].WebSiteURL) + QtechInfo.HotelAvail;
+                                                                    xhotel.URL = Convert.ToString(QtechChild[x].WebSiteURL) + _supplierConfig.Qtech.HotelAvail; //QtechInfo.HotelAvail;
                                                                     xhotel.UserId = Convert.ToString(QtechChild[x].UserID);
                                                                     xhotel.UserName = Convert.ToString(QtechChild[x].UserName);
                                                                     xhotel.PassWord = Convert.ToString(QtechChild[x].Password);
@@ -1164,8 +1166,8 @@ namespace XConnect.Supplier.Qtech
                                                                         objrq.Response = ""; RQRS.Add(objrq);
                                                                     }
                                                                     xhotel.RQRS = RQRS;
-                                                                    xhotel.ReturnRooms = 5; // Convert.ToInt32(QtechChild[x].ReturnRooms);
-                                                                    xhotel.TechName = "Qtech"; // Convert.ToString(QtechChild[x].TechName);
+                                                                    xhotel.ReturnRooms = Convert.ToInt32(QtechChild[x].ReturnRooms); //5; // Convert.ToInt32(QtechChild[x].ReturnRooms);
+                                                                    xhotel.TechName = Convert.ToString(QtechChild[x].TechName); //"Qtech"; // Convert.ToString(QtechChild[x].TechName);
                                                                     #endregion
                                                                     AllTask.Add(xhotel);
                                                                 }
@@ -1190,7 +1192,7 @@ namespace XConnect.Supplier.Qtech
                                                                     //if (Hit > 0)
                                                                     xhotel.ProcessTimeout = Convert.ToInt32(QtechSearchConfig[k].HotelSearchTimeOut2);
 
-                                                                    xhotel.URL = Convert.ToString(QtechChild[x].WebSiteURL) + QtechInfo.HotelAvail;
+                                                                    xhotel.URL = Convert.ToString(QtechChild[x].WebSiteURL) + _supplierConfig.Qtech.HotelAvail; //QtechInfo.HotelAvail;
                                                                     xhotel.UserId = Convert.ToString(QtechChild[x].UserID);
                                                                     xhotel.UserName = Convert.ToString(QtechChild[x].UserName);
                                                                     xhotel.PassWord = Convert.ToString(QtechChild[x].Password);
@@ -1219,8 +1221,8 @@ namespace XConnect.Supplier.Qtech
                                                                         objrq.Response = ""; RQRS.Add(objrq);
                                                                     }
                                                                     xhotel.RQRS = RQRS;
-                                                                    xhotel.ReturnRooms = 5; // Convert.ToInt32(QtechChild[x].ReturnRooms);
-                                                                    xhotel.TechName = "Qtech"; // Convert.ToString(QtechChild[x].TechName);
+                                                                    xhotel.ReturnRooms = Convert.ToInt32(QtechChild[x].ReturnRooms); //5; // Convert.ToInt32(QtechChild[x].ReturnRooms);
+                                                                    xhotel.TechName = Convert.ToString(QtechChild[x].TechName);  //"Qtech"; // Convert.ToString(QtechChild[x].TechName);
                                                                     #endregion
                                                                     AllTask.Add(xhotel);
                                                                 }
@@ -1303,7 +1305,8 @@ namespace XConnect.Supplier.Qtech
                                 if (QtechSearchConfig != null && QtechSearchConfig.Count > 0)
                                 {
                                     //DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchNew(SearchPara.Nationality, dtXMLCity, Supplier);
-                                    DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchTechwise(SearchPara.Nationality, dtXMLCity, Supplier, "qtech");
+                                    //DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchTechwise(SearchPara.Nationality, dtXMLCity, Supplier, "qtech");
+                                    DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchTechwise(SearchPara.Nationality, dtXMLCity, Supplier, QtechChild.TechName);
 
 
                                     #region new
@@ -2394,6 +2397,9 @@ namespace XConnect.Supplier.Qtech
                 case "nirvana":
                     Currency = QtechInfo.NirvanaCurrency;
                     break;
+                case "elevateholidays":
+                    Currency = _supplierConfig.Qtech.ElevateCurrency;   //22042026
+                    break;
             }
             return Currency;
         }
@@ -2872,7 +2878,8 @@ namespace XConnect.Supplier.Qtech
                 #endregion
 
                 StringBuilder Sb_CanPolicyRQ = new StringBuilder();
-                Sb_CanPolicyRQ.Append("" + Url + QtechInfo.Mercan_BookingAction);
+                //Sb_CanPolicyRQ.Append("" + Url + QtechInfo.Mercan_BookingAction);
+                Sb_CanPolicyRQ.Append("" + Url + _supplierConfig.Qtech.Mercan_BookingAction);// QtechInfo.Mercan_BookingAction);
                 Sb_CanPolicyRQ.Append("&username=" + username + "");
                 Sb_CanPolicyRQ.Append("&password=" + password + "");
                 Sb_CanPolicyRQ.Append("&unique_id=" + unique_id + "");
@@ -2939,7 +2946,8 @@ namespace XConnect.Supplier.Qtech
             {
                 string msg = ""; string Message = ""; string Status = ""; string AllowCancel = "";
                 StringBuilder SbRequest = new StringBuilder();
-                SbRequest.Append("" + url + QtechInfo.get_cancellation_charges);
+                //SbRequest.Append("" + url + QtechInfo.get_cancellation_charges);
+                SbRequest.Append("" + url + _supplierConfig.Qtech.get_cancellation_charges); //QtechInfo.get_cancellation_charges);
                 SbRequest.Append("&username=" + username + "&password=" + password + "&booking_id=" + bookingid + "&gzip=yes");
                 Request = SbRequest.ToString();
 
@@ -2990,7 +2998,8 @@ namespace XConnect.Supplier.Qtech
             try
             {
                 StringBuilder SBCancellationRQ = new StringBuilder();
-                SBCancellationRQ.Append("" + url + "cancel_the_booking");
+                //SBCancellationRQ.Append("" + url + "cancel_the_booking");
+                SBCancellationRQ.Append("" + url + _supplierConfig.Qtech.Mercan_CancelAction);// "cancel_the_booking");
                 SBCancellationRQ.Append("&username=" + username + "");
                 SBCancellationRQ.Append("&password=" + password + "");
                 SBCancellationRQ.Append("&booking_id=" + BookingRef + "");

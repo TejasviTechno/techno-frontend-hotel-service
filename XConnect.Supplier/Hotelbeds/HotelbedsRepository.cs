@@ -2547,6 +2547,257 @@ namespace Xconnect.Hotelbeds
             return cancellationDto;
         }
 
+        public async Task<CancellationDto> HotelBedsV1_cancellation_new(TokenData tokenData, string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, string GiataId = "0", int hotelRating = 0, string SearchKey = "", string CompanyBuyPrice = "", string Mealid = "")
+        {
+            //string language = "CAS";
+            //if (SearchPara.Language != 0)
+            //{
+            //    language = "CAS"; //CAS=Spanish
+            //}
+            //else
+            //{
+            //    language = "ENG"; //ENG= English
+            //}
+            CancellationDto cancellationDto = new CancellationDto();
+            string Error = "";
+            string time = "";
+            string ResponseData = "";
+            string Request = "";
+            string responsetype = "";
+            DateTime FinalTodate = DateTime.Now;
+            string Essen = " ";
+            double itemprice = 0;
+            try
+            {
+                bool ISBookable = true;
+                DataTable dtHotelBedsV1RoomCacelationPolicy = _commonMethod.GenerateCancellationDataTableNewV2();
+                int CutOffDays = XMLHotelBookingCommon.CutOffDays;
+                CutOffDays = _commonMethod.GetCutOffDays(dtSuplierMarkup, provider);
+
+                DataRow[] drSuplierMarkup = (dtSuplierMarkup.Select("SupplierName='" + provider + "'"));
+                int SupplierId = Convert.ToInt32(drSuplierMarkup[0]["SupplierID"]);
+                DataRow[] drSearchConfig = (dtSearchConfig.Select("SupplierID='" + SupplierId + "'"));
+                string[] HBRoomCount = roomtypeid.Split(new String[] { "##$$" }, StringSplitOptions.None);
+                double Factor = 1;
+
+
+                for (int Ro = 0; Ro < HBRoomCount.Length; Ro++)
+                {
+                    string[] roomCode = HBRoomCount[Ro].Split(new String[] { "$$$" }, StringSplitOptions.None);
+
+                    string rateKey = roomCode[1];
+                    Request = HotelsBedV1PolicyRequest(rateKey);
+
+                    System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+                    timerroomprocess.Start();
+
+                    ResponseDto responseDto = await GetHotelBedsSupplierResponse(Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + "/1.0/checkrates", Convert.ToString(drSuplierMarkup[0]["UserName"]), Convert.ToString(drSuplierMarkup[0]["Password"]), 60000, Request, "", Error);
+                    ResponseData = responseDto.Response;
+                    Error = responseDto.Error;
+
+                    timerroomprocess.Stop();
+                    time = timerroomprocess.Elapsed.ToString();
+
+                    _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(roomtypeid), Convert.ToString(ownsystemid), Request, Convert.ToString(ResponseData), "After Get Policy", provider, "Response", SearchKey, "");
+
+
+                    if (ResponseData.ToLower().Contains("error") || ResponseData.Trim() == "" || Error != "")
+                    {
+                        cancellationDto.dsHotelData = dsHotel;
+                        cancellationDto.ISBooking = "NotAvailable";
+
+                        return cancellationDto;
+
+                    }
+                    string ConvertXml = Newtonsoft.Json.JsonConvert.DeserializeXmlNode("{\"Row\":" + ResponseData + "}", "root").InnerXml;
+                    DataSet dsHotelBeds = new DataSet();
+                    dsHotelBeds = _commonMethod.GetDataSetFromXMLString(ConvertXml);
+                    if (dsHotelBeds.Tables["cancellationPolicies"] != null)
+                    {
+                        if (!dsHotelBeds.Tables["cancellationPolicies"].Columns.Contains("Date"))
+                            dsHotelBeds.Tables["cancellationPolicies"].Columns.Add("Date", typeof(DateTime));
+
+                        for (int dt = 0; dt < dsHotelBeds.Tables["cancellationPolicies"].Rows.Count; dt++)
+                        {
+                            dsHotelBeds.Tables["cancellationPolicies"].Rows[dt]["Date"] = Convert.ToDateTime(dsHotelBeds.Tables["cancellationPolicies"].Rows[dt]["from"]).Date;
+                        }
+                    }
+                    for (int i = 0; i < dsHotelBeds.Tables["rates"].Rows.Count; i++)
+                    {
+                        int rates_id = Convert.ToInt32(dsHotelBeds.Tables["rates"].Rows[i]["rates_Id"]);
+                        string rateKeyRoom = Convert.ToString(dsHotelBeds.Tables["rates"].Rows[i]["rateKey"]);
+                        string rateType = Convert.ToString(dsHotelBeds.Tables["rates"].Rows[i]["rateType"]);
+                        int Adult = Convert.ToInt32(dsHotelBeds.Tables["rates"].Rows[i]["adults"]);
+                        int Child = Convert.ToInt32(dsHotelBeds.Tables["rates"].Rows[i]["children"]);
+                        int RoomNo = Convert.ToInt32(roomno); //Common.AdultChildwiseRoomNo(Adult, Child, SearchPara);
+                        string currency = Convert.ToString(dsHotelBeds.Tables["hotel"].Rows[i]["currency"]);
+
+                        if (currency.ToLower() != tokenData.SiteCurrency.ToLower())
+                        {
+                            Factor = _commonMethod.GetROEByCurrency(currency, tokenData.dtROE);
+                        }
+
+
+                        if (rateType.ToLower() == "bookable")
+                        {
+                            int allotment = Convert.ToInt16(dsHotelBeds.Tables["rates"].Rows[i]["allotment"]);  // added on 30-07-2024 # 49944
+                                                                                                                //ISBooking = "Available";
+                            string Mealcode = Convert.ToString(dsHotelBeds.Tables["rates"].Rows[i]["boardCode"]);
+                            double ItemPriceNew = Convert.ToDouble(dsHotelBeds.Tables["rates"].Rows[i]["net"]);
+                            string Essen1 = " ";
+                            if (dsHotelBeds.Tables["rates"].Columns.Contains("rateComments") == true)
+                            {
+                                Essen1 = Convert.ToString(dsHotelBeds.Tables["rates"].Rows[i]["rateComments"]);
+                                Essen = Essen + "<br>" + Essen1;
+                            }
+
+                            string[] Array = Convert.ToString(HBRoomCount[Ro]).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                            string SearchRoomName = Array[3];
+                            string RoomName = "";
+
+                            if (ResponseData.Contains("rooms"))
+                            {
+                                for (int j = 0; j < dsHotelBeds.Tables["rooms"].Rows.Count; j++)
+                                {
+                                    RoomName = Convert.ToString(dsHotelBeds.Tables["rooms"].Rows[j]["name"]);
+                                    RoomName = RoomName.Replace("'", "");
+                                    break;
+                                }
+                            }
+                            if (SearchRoomName.ToLower() == RoomName.ToLower())
+                            {
+                                for (int j = 0; j < dsHotelBeds.Tables["rates"].Rows.Count; j++)
+                                {
+                                    ItemPriceNew = Convert.ToDouble(dsHotelBeds.Tables["rates"].Rows[j]["net"]) * Factor;
+                                    itemprice = ItemPriceNew + itemprice;
+                                    break;
+                                }
+                                if (Convert.ToDouble((itemprice).TruncateDecimalPlaces(0)) > (Convert.ToDouble(CompanyBuyPrice)).TruncateDecimalPlaces(0))
+                                {
+                                    ISBookable = false;
+                                }
+                            }
+                            else
+                            {
+                                for (int j = 0; j < dsHotelBeds.Tables["rates"].Rows.Count; j++)
+                                {
+                                    ItemPriceNew = Convert.ToDouble(dsHotelBeds.Tables["rates"].Rows[j]["net"]) * Factor;
+                                    itemprice = ItemPriceNew + itemprice;
+                                    break;
+                                }
+                                ISBookable = false;
+                            }
+                            //added on 30-07-2024 # 49944
+
+                            int NoOfRoomSearch = Convert.ToInt32(SearchPara.Rooms.Count());
+                            if (allotment >= NoOfRoomSearch)
+                            {
+
+                            }
+                            else
+                            {
+                                ISBookable = false;
+                            }
+                            //end
+                            if (ISBookable)
+                                responsetype = "Success";
+                            else
+                                responsetype = "GeneralError";
+
+                            if (dsHotelBeds.Tables["cancellationPolicies"] != null)
+                            {
+                                bool chechk = false;
+
+                                dsHotelBeds.Tables["cancellationPolicies"].DefaultView.RowFilter = "rates_Id='" + rates_id + "'";
+                                dsHotelBeds.Tables["cancellationPolicies"].DefaultView.Sort = "Date Asc";
+
+                                if (dsHotelBeds.Tables["cancellationPolicies"].DefaultView.Count > 0)
+                                {
+                                    double cancellationAmount = itemprice;// Convert.ToDouble(dsHotelBeds[q].Tables["cancellationPolicies"].DefaultView[0]["amount"]);
+                                    double VatOnPolicy = 0;
+                                    #region Vat
+                                    Boolean isPerce = true;
+                                    double AgentCompanyPercentage = Convert.ToDouble(SearchPara.AgentCompanyPercentage);
+                                    bool IsB2C = Convert.ToBoolean(Convert.ToByte(SearchPara.IsB2BOrB2C));
+                                    double B2CMarkup = (IsB2C == false ? AgentCompanyPercentage : XMLHotelBookingCommon.B2CMarkup);
+                                    double AgentPercentage = 0.0;
+                                    double AgentMarkupAmount = 0.0;
+                                    double SubAgentMarkup = 0;
+                                    int IsParentId = 1;
+                                    Boolean blnIsShowSupplier = false;
+
+                                    _markup.getAgetMarkupSetting("hotelbedsv1_new", GiataId, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, AgentId, hotelRating, SearchPara.CityID, SearchPara.CountryID.ToString(), Convert.ToString(SearchPara.CheckInDate));
+                                    if (dtAgentDetail != null)
+                                    {
+                                        IsParentId = Convert.ToInt32(dtAgentDetail.Rows[0]["IsParentId"]);
+                                        SubAgentMarkup = Convert.ToDouble(dtAgentDetail.Rows[0]["B2CMarkupPer"]);
+                                    }
+                                    double MainAgentCharge = cancellationAmount;
+                                    double CompanyChargeAmount = cancellationAmount;
+                                    cancellationAmount = _markup.ProcessHotelCancelationPrice_WithMarkup(ref MainAgentCharge, SearchPara.NoofNights, SearchPara.CityID, SearchPara.CountryID.ToString(), cancellationAmount, isPerce, B2CMarkup, AgentPercentage, AgentMarkupAmount, IsParentId, SubAgentMarkup, ref VatOnPolicy);
+                                    #endregion
+                                    DateTime ToDate = Convert.ToDateTime(dsHotelBeds.Tables["cancellationPolicies"].DefaultView[0]["from"]).Date;
+                                    DateTime FromDate = DateTime.Now.Date;
+                                    if (ToDate.AddDays(CutOffDays).Date.AddDays(-1).Date > DateTime.Now.Date)
+                                        ToDate = ToDate.AddDays(CutOffDays).Date;
+                                    else
+                                        ToDate = DateTime.Now.Date;
+
+                                    if (Ro == 0)
+                                    {
+                                        FinalTodate = ToDate;
+                                    }
+                                    else
+                                    {
+                                        if (FinalTodate > ToDate)
+                                        {
+                                            FinalTodate = ToDate;
+                                        }
+                                    }
+
+                                    if (Ro == HBRoomCount.Length - 1)
+                                    {
+                                        ToDate = FinalTodate;
+                                        if (ToDate > FromDate && chechk == false)
+                                        {
+                                            double zero = 0;
+
+                                            dtHotelBedsV1RoomCacelationPolicy.Rows.Add(_commonMethod.setCancellationPolicyRow(ref zero, dtHotelBedsV1RoomCacelationPolicy.NewRow(), 1, "USD", provider, Convert.ToString(ownsystemid), Convert.ToString(RoomNo), roomtypeid, "", Convert.ToString(Mealid), DateTime.Now.Date, ToDate.AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59), 0, 0, Mealid, 0, "", "", Convert.ToString(ISBookable), Essen, "", ""));
+                                            dtHotelBedsV1RoomCacelationPolicy.AcceptChanges();
+                                            chechk = true;
+                                        }
+                                        if (ToDate < FromDate)
+                                            ToDate = DateTime.Now.Date;
+                                        dtHotelBedsV1RoomCacelationPolicy.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtHotelBedsV1RoomCacelationPolicy.NewRow(), 1, "USD", provider, Convert.ToString(ownsystemid), Convert.ToString(RoomNo), roomtypeid, "", Convert.ToString(Mealid), ToDate, DateTime.ParseExact(SearchPara.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, cancellationAmount, Mealid, 0, "", "", Convert.ToString(ISBookable), Essen, "", ""));
+                                        dtHotelBedsV1RoomCacelationPolicy.AcceptChanges();
+                                    }
+                                }
+                            }
+                        }
+                        dsHotel.Tables[2].Merge(dtHotelBedsV1RoomCacelationPolicy);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    responsetype = "GeneralError";
+                    //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
+                    // string abc = Common.SupplierPerformanceReportForPrebookAndBook("HotelBedsV1_new", "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                }
+                catch (Exception e)
+                {
+                    _ = _exception.ErrorNew(ex, _LogAPI.Recheck, SearchKey);
+                }
+                _ = _exception.ErrorNew(ex, _LogAPI.Recheck, SearchKey);
+                return null;
+            }
+            cancellationDto.dsHotelData = dsHotel;
+            cancellationDto.ISBooking = "Available";
+            return cancellationDto;
+        }
+
         public async Task<ResponseDto> GetHotelBedsSupplierResponse(string strHost, string Username, string Password, Int32 TimeOut, string strxmlRQRS, string methodtype, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "",bool fromCancel=false)
         {
             ResponseDto responseDto = new ResponseDto();

@@ -4468,6 +4468,7 @@ namespace XConnect.CommonUtilities
                         case "agoda_chain":
                         case "hotelbedsv1_new":
                         case "dingus":
+                        case "elevateholidays":
 
                             dataFor.XmlNationality = Convert.ToString(GetThirdPartyStaticData_New(dtXMLCity.Tables[1], "Desc", Convert.ToString(Natinality), "XmlNationality", "Agoda"));
 
@@ -4628,6 +4629,7 @@ namespace XConnect.CommonUtilities
                         case "etg":
                         case "pkfair":
                         case "letsfly":
+                        case "elevateholidays":
                             dataFor.XmlNationality = Convert.ToString(GetThirdPartyStaticData_New(dtXMLCity.Tables[1], "Desc", Convert.ToString(Natinality), "XmlNationality", "Agoda"));
 
                             break;
