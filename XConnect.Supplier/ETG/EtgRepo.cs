@@ -2369,8 +2369,10 @@ namespace XConnect.Supplier.ETG
                                 }
 
 
-                                if (free_cancellation_beforeroom.Date != CancelDate.Date)
-                                {
+                                //if (free_cancellation_beforeroom.Date != CancelDate.Date)
+                                    if (free_cancellation_beforeroom.Date.ToString("yyyy-MM-dd")
+    != CancelDate.ToString("yyyy-MM-dd"))
+                                    {
                                     FinalPrice = 0;
                                     _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UserCartDetailId), PrebookRQ, "-", "(After Price Check BookingTime) Cancellation Policy Change", SupplierName, "Request Confirm", " - ", "Withinearth");
                                     PrebookResponseData = "#Policy Changed " + "#Main Policy = " + free_cancellation_beforeroom + " #New Policy = " + CancelDate + " #Response= " + PrebookResponseData;
