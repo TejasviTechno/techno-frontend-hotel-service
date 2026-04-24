@@ -580,8 +580,10 @@ namespace XConnect.Analytics
 
             return new RequestInformationAndTiming
             {
-                Request = isDebugMode ? JsonSerializer.Serialize(_analyticsData.Payload) : string.Empty,  // request 
-                Response = isDebugMode ? JsonSerializer.Serialize(_analyticsData.Result) : string.Empty,  //response
+                // Request = isDebugMode ? JsonSerializer.Serialize(_analyticsData.Payload) : string.Empty,  // request 
+                //  Response = isDebugMode ? JsonSerializer.Serialize(_analyticsData.Result) : string.Empty,  //response
+                Request = string.Empty,  // request 
+                Response = string.Empty,  //response
                 CoRelationId = _userContextAccessor.CorelationId,
                 CheckIn = (_searchPayload == null || string.IsNullOrEmpty(_searchPayload.CheckInDate)) ? DateTime.MinValue : DateTime.ParseExact(_searchPayload.CheckInDate, new[] { "dd/MM/yyyy", "MM-dd-yyyy" }, CultureInfo.InvariantCulture, DateTimeStyles.None),
                 CheckOut = (_searchPayload == null || string.IsNullOrEmpty(_searchPayload.CheckOutDate)) ? DateTime.MinValue : DateTime.ParseExact(_searchPayload.CheckOutDate, new[] { "dd/MM/yyyy", "MM-dd-yyyy" }, CultureInfo.InvariantCulture, DateTimeStyles.None),
