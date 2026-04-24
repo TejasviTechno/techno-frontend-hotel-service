@@ -20,9 +20,11 @@ namespace XConnect.Models
         public JuniperConfig Juniper { get; set; }
         public IBoosyConfig IBoosy { get; set; }
         public GoGlobalConfig GoGlobal { get; set; }
-        public OmnibeesConfig Omnibees { get; set; }
-        public QtechConfig Qtech { get; set; }
+        public OmnibeesConfig Omnibees { get; set; }        
         public MGBedBankConfig MGBedBank { get; set; }
+        public QtechConfig Qtech { get; set; }
+        public HyperguestConfig Hyperguest { get; set; }
+        public WelcomebedsConfig Welcomebeds { get; set; }
     }
 
     public class ExpediaConfig
@@ -194,14 +196,7 @@ namespace XConnect.Models
         public string OmnibeesCancel { get; set; }
         public string Version { get; set; }
     }
-    public  class QtechConfig
-    {
-        public string HotelAvail { get; set; }
-        public string Nirvana_url { get; set; }
-        public string CancelltionPolicyAction { get; set; }
-
-
-    }
+    
     public class MGBedBankConfig
     {
         public string WebSiteURL { get; set; }
@@ -219,5 +214,36 @@ namespace XConnect.Models
         public string GetDestinationLists { get; set; }
         public string GetPromotionTypes { get; set; }
         public string GetMealPlanLists { get; set; }
+    }
+
+    public class QtechConfig
+    {
+        
+        public string HotelAvail { get; set; }
+        public string ElevateCurrency { get; set; }
+        
+        public string Mercan_hotelListAction { get; set; } //= "hotel_search";
+        public string BookURL { get; set; }
+        public string Mercan_BookingAction { get; set; }
+        public string Mercan_CancelAction { get; set; }
+        public string get_cancellation_charges { get; set; }
+        public string Mercan_CancelltionPolicyAction { get; set; }        
+        public string Nirvana_url { get; set; }
+        public string CancelltionPolicyAction { get; set; }
+
+    }
+    public class HyperguestConfig
+    {
+        public string HyperguestBookingURL { get; set; }
+        public string Prebook_book { get; set; }
+    }
+
+    public class WelcomebedsConfig
+    {
+        public string Welcomebeds_HotelSearch { get; set; }
+        public string Welcomebeds_PreBookingURL { get; set; }
+        public string Welcomebeds_BookingURL { get; set; }
+        public string Welcomebeds_CancelURL { get; set; }
+
     }
 }

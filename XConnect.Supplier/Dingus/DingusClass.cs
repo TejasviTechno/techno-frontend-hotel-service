@@ -8,15 +8,15 @@ namespace XConnect.Supplier.Dingus
 {
     public class DingusClass
     {
-
+        public class DingusRoom
+        {
+            public int NoofAdults { get; set; }
+            public int NoofChild { get; set; }
+            public int Child1Age { get; set; }
+            public int Child2Age { get; set; }
+            public int Child3Age { get; set; }
+            public int Child4Age { get; set; }
+        }
     }
-    public class DingusRoom
-    {
-        public int NoofAdults { get; set; }
-        public int NoofChild { get; set; }
-        public int Child1Age { get; set; }
-        public int Child2Age { get; set; }
-        public int Child3Age { get; set; }
-        public int Child4Age { get; set; }
-    }
+    
 }

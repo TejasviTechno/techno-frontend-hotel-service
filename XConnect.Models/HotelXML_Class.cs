@@ -301,6 +301,17 @@ namespace XConnect.Models
         public string time { get; set; } = "";
         public string responsetype { get; set; } = "";
     }
+    public class PriceCheckWelcomebedsDto //02-12-25
+
+    {
+        public double FinalPrice { get; set; } = 0;
+
+        public string HasKey_IntCode { get; set; } = "";
+
+        public bool Flag { get; set; }
+
+    }
+
 
     public class PriceCheckBDCDto //30-06-25
     {
@@ -950,6 +961,7 @@ namespace XConnect.Models
         public DataRow[] Akbartravel_codes { get; set; }//tjp
 
         public DataRow[] Dingus_codes { get; set; }//tjp
+        public DataRow[] Elevateholidays_codes { get; set; }//tjp
     }
 
     public class SupplierDetails

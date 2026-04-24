@@ -10,6 +10,8 @@ namespace XConnect.Models
     {
         public enum _LogAPI
         {
+
+            Availability = 1,
             Recheck = 2,
             Prebook = 3,
             Book = 4,

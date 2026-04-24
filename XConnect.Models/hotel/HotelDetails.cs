@@ -99,6 +99,14 @@ namespace XConnect.Models.Hotel
         public string SuppilerId { get; set; }
 
 
+
+        //
+        public DateTime ParseCheckInDate { get; set; } 
+        public DateTime ParseCheckOutDate { get; set; } 
+        public string CheckInDateSubstring { get; set; } 
+        public string CheckOutDateSubstring { get; set; } 
+
+
     }
 
     public class RoomDetails

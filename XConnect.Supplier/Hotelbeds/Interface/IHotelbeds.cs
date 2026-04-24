@@ -26,6 +26,8 @@ namespace Xconnect.Hotelbeds.Interface
 
         Task<CancellationDto> HotelBedsV1_cancellation(string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, string GiataId = "0", int hotelRating = 0, string SearchKey = "");
 
+        Task<CancellationDto> HotelBedsV1_cancellation_new(TokenData tokenData, string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, string GiataId = "0", int hotelRating = 0, string SearchKey = "", string CompanyBuyPrice = "", string Mealid = "");
+
         #endregion
 
         //prebook - 24-06-25
