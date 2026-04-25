@@ -1772,6 +1772,650 @@ namespace XConnect.Supplier.Omnibees
             }
             return string.Empty;
         }
+        public string Get_Omnibees_BookingRequest_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] OmnibeesDetails, string UniqueNo, bool IsPriceUpdate, int i, int jj, string PreBookingToken, string UserID, string Password, string ExternalReference, string Bookingtokan, string referenceNumber, string AgentUniqueNo, ref string errorinrq, bool IsPruvo=false)
+        {
+            string Error = "";
+            try
+            {
+                string OmnibeesUserName = Convert.ToString(OmnibeesDetails[0]["UserName"]);
+                string OmnibeesPassword = Convert.ToString(OmnibeesDetails[0]["Password"]);
+                string version = Convert.ToString(OmnibeesDetails[0]["Version"]);
+                string xmlhotelid = "";//Convert.ToString(dsCartDetails.Tables[0].Rows[i]["XMLHotelId"]);//need
+                string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[jj].CheckInDate);//"20180327"
+                string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[jj].CheckOutDate);
+                //CheckOut = CheckOut.Substring(6, 2) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(0, 4);
+                CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                int NoOfNights = Convert.ToInt32(0);//need
+                int NoOfRoom = Convert.ToInt32(bookRequest.userCart.UserCartDetails.Count);
+                int adultcount = 0;//Convert.ToInt32(bookRequest.userCart.UserCartDetails[jj].NoofAdult);
+                int childage1 = 0;//Convert.ToInt32(bookRequest.userCart.UserCartDetails[jj].ChildAge);
+                int childage2 = 0; //Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[jj]["ChildAge2"]);
+                var NoOfChild = Convert.ToInt32(bookRequest.userCart.UserCartDetails[jj].NoofChild);
+                string SupplierName = Convert.ToString(bookRequest.userCart.UserCartDetails[jj].SupplierName);
+
+                #region Room RQ RS
+                string jsonString = "";
+                try
+                {
+                    //string CheckIn = SearchParam.CheckInDate;
+                    //CheckIn = CheckIn.Substring(6, 4) + "-" + CheckIn.Substring(3, 2) + "-" + CheckIn.Substring(0, 2);
+                    //string CheckOut = SearchParam.CheckOutDate;
+                    //CheckOut = CheckOut.Substring(6, 4) + "-" + CheckOut.Substring(3, 2) + "-" + CheckOut.Substring(0, 2);
+                    Ominibees.HotelSearchRQ Request = new Ominibees.HotelSearchRQ();
+                    Ominibees.HotelSearchCriteria HotelSearchCriteria = new Ominibees.HotelSearchCriteria();
+                    Ominibees.Criterion Criterion = new Ominibees.Criterion();
+                    Ominibees.Address Address = new Ominibees.Address();
+                    List<Ominibees.HotelRef> HotelRef = new List<Ominibees.HotelRef>();
+                    List<Ominibees.RoomStayCandidate> RoomStayCandidate = new List<Ominibees.RoomStayCandidate>();
+                    Ominibees.RoomStayCandidatesType RoomStayCandidatesType = new Ominibees.RoomStayCandidatesType();
+                    Ominibees.StayDateRange StayDateRange = new Ominibees.StayDateRange();
+                    Ominibees.MultimediaObjects MultimediaObjects = new Ominibees.MultimediaObjects();
+                    Ominibees.TPAExtensions TPAExtensions = new Ominibees.TPAExtensions();
+                    Request.AvailRatesOnly = true;
+                    Request.BestOnly = false;
+                    Request.EchoToken = "technoheavenpull_" + Guid.NewGuid().ToString();
+
+                    //Request.HotelSearchCriteria.Criterion.Address.CountryCode = 40;
+                    //Request.HotelSearchCriteria.AvailableOnlyIndicator = null;
+
+                    if (xmlhotelid != null)
+                    {
+                        Ominibees.HotelRef HotelId = new Ominibees.HotelRef();
+                        HotelId.HotelCode = Convert.ToInt32(xmlhotelid);
+                        HotelRef.Add(HotelId);
+                    }
+                    else
+                    {
+                        errorinrq = "HotelId i not available";
+                        return "";
+                    }
+                    Criterion.HotelRefs = HotelRef;
+                    //Request.HotelSearchCriteria.Criterion.Address.CountryCode = 40;
+                    //Request.HotelSearchCriteria.Criterion.RoomStayCandidatesType.RoomStayCandidates[0].GuestCountsType.GuestCounts[0].AgeQualifyCode = 10;
+                    //Request.HotelSearchCriteria.Criterion.RoomStayCandidatesType.RoomStayCandidates[0].GuestCountsType.GuestCounts[0].Count = 2;
+                    for (int x = 0; x < NoOfRoom; x++)
+                    {
+                        //int NoOfRoom = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView.Count);
+                        adultcount = Convert.ToInt32(bookRequest.userCart.UserCartDetails[x].NoofAdult);
+                        childage1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[jj].ChildAge);
+                        //childage2 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[x]["ChildAge2"]);
+                        NoOfChild = Convert.ToInt32(bookRequest.userCart.UserCartDetails[jj].NoofChild);
+
+                        Ominibees.GuestCount GuestCount_obj = new Ominibees.GuestCount();
+                        Ominibees.RoomStayCandidate RoomStayCandidate_obj = new Ominibees.RoomStayCandidate();
+                        Ominibees.GuestCountsType GuestCountsType = new Ominibees.GuestCountsType();
+                        List<Ominibees.GuestCount> GuestCount = new List<Ominibees.GuestCount>();
+                        GuestCount_obj.AgeQualifyCode = 10;
+                        GuestCount_obj.Count = adultcount;
+                        GuestCount.Add(GuestCount_obj);
+                        if (NoOfChild > 0)
+                        {
+                            if (NoOfChild == 1)
+                            {
+                                Ominibees.GuestCount Child1GuestCount_obj = new Ominibees.GuestCount();
+                                Child1GuestCount_obj.Age = childage1;
+                                Child1GuestCount_obj.AgeQualifyCode = 8;
+                                Child1GuestCount_obj.Count = 1;
+                                GuestCount.Add(Child1GuestCount_obj);
+                            }
+                            else
+                            {
+                                Ominibees.GuestCount Child1GuestCount_obj = new Ominibees.GuestCount();
+                                Child1GuestCount_obj.Age = childage1;
+                                Child1GuestCount_obj.AgeQualifyCode = 8;
+                                Child1GuestCount_obj.Count = 1;
+                                GuestCount.Add(Child1GuestCount_obj);
+
+                                Ominibees.GuestCount Child2GuestCount_obj = new Ominibees.GuestCount();
+                                Child2GuestCount_obj.Age = childage2;
+                                Child2GuestCount_obj.AgeQualifyCode = 8;
+                                Child2GuestCount_obj.Count = 1;
+                                GuestCount.Add(Child2GuestCount_obj);
+                            }
+                        }
+                        GuestCountsType.GuestCounts = GuestCount;
+                        //RoomStayCandidate.GuestCountsType = GuestCount;
+                        //Request.HotelSearchCriteria.Criterion.RoomStayCandidatesType.RoomStayCandidates[0].Quantity = 1;
+                        RoomStayCandidate_obj.Quantity = 1;
+                        RoomStayCandidate_obj.RPH = x;
+                        RoomStayCandidate_obj.GuestCountsType = GuestCountsType;
+                        RoomStayCandidate.Add(RoomStayCandidate_obj);
+                    }
+                    //Request.HotelSearchCriteria.Criterion.StayDateRange.End = Convert.ToDateTime("2021-03-24T00:00:00");
+                    //Request.HotelSearchCriteria.Criterion.StayDateRange.Start = Convert.ToDateTime("2021-03-23T00:00:00");
+                    //Criterion.RatePlanCandidatesType = RoomStayCandidatesType;
+                    RoomStayCandidatesType.RoomStayCandidates = RoomStayCandidate;
+                    Criterion.RoomStayCandidatesType = RoomStayCandidatesType;
+
+                    //StayDateRange.End = Convert.ToDateTime("2021-03-24T00:00:00");
+                    //StayDateRange.Start = Convert.ToDateTime("2021-03-23T00:00:00");
+
+                    StayDateRange.End = Convert.ToDateTime(CheckOut);
+                    StayDateRange.Start = Convert.ToDateTime(CheckIn);
+
+                    Criterion.StayDateRange = StayDateRange;
+
+                    //Request.HotelSearchCriteria.Criterion.TPA_Extensions.IsForMobile = false;
+                    //Request.HotelSearchCriteria.Criterion.TPA_Extensions.MultimediaObjects.SendData = false;
+
+                    TPAExtensions.IsForMobile = false;
+                    MultimediaObjects.SendData = false;
+
+                    TPAExtensions.MultimediaObjects = MultimediaObjects;
+
+                    Criterion.TPA_Extensions = TPAExtensions;
+
+                    HotelSearchCriteria.Criterion = Criterion;
+
+                    Request.HotelSearchCriteria = HotelSearchCriteria;
+
+                    Request.OnRequestInd = false;
+                    Request.PrimaryLangID = 1;
+                    Request.Target = Convert.ToInt32(_supplierConfig.Omnibees.Target);
+                    //Request.RequestedCurrency = Convert.ToInt32(ConfigurationManager.AppSettings["RequestedCurrency"]);
+                    //Request.RequestedCurrency = 34;
+                    string timeStamp = GetTimestamp(DateTime.UtcNow);
+                    Request.TimeStamp = Convert.ToDateTime(DateTime.UtcNow); //Convert.ToDateTime("2021-03-19T06:00:37.2687519+00:00");
+                    Request.Version = Convert.ToDouble(version);
+                    jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(Request);
+                }
+                catch (Exception ex)
+                {
+                    _ = _exception.ErrorBooking(ex, "");
+                    errorinrq = "Issue in room request";
+                    return "";
+                }
+                #endregion
+
+                string OmnibeesUrl = Convert.ToString(OmnibeesDetails[0]["WebSiteURL"] + _supplierConfig.Omnibees.OmnibessHotelAvai);
+                string GetRoomResponse = GetOmnibeesResponse(ref Error, jsonString, OmnibeesUrl, 180000, OmnibeesUserName, OmnibeesPassword, SupplierName);
+
+
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), jsonString, GetRoomResponse + Error, "Before Request hit Room request", Convert.ToString(bookRequest.userCart.UserCartDetails[jj].SupplierName), "Request Confirm", "-", "TechnoHub");
+
+                List<OmnibeesBookRQ.RatePlan> RatePlanJsonJ = null;
+                List<OmnibeesBookRQ.RoomType> RoomTypeJson = null;
+                List<OmnibeesBookRQ.RoomRate> RoomRateJson = null;
+                List<HotelSearchResponse.RoomType> RoomFilter = null;
+                List<HotelSearchResponse.RatePlan> RatePlanFilter = null;
+                List<HotelSearchResponse.RoomRate> RoomRateFilter = null;
+                double AmountAfterTax = 0;
+                double AmountBeforeTax = 0;
+                int CurrencyCode = 0;
+                bool AmountIncludingMarkup = true;
+                bool AmountIsPackage = false;
+                int RoomStayCandidateRPH = 0;
+                string GuaranteeTypeCode = "";
+
+                for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
+                {
+
+                    string RoomTypeId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
+                    string[] spitidtoken = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+
+                    int RoomId = Convert.ToInt32(spitidtoken[0]);
+                    int RatePlanId = Convert.ToInt32(spitidtoken[1]);
+                    double RoomPrice = Convert.ToDouble(spitidtoken[2]);
+                    AmountAfterTax = RoomPrice + AmountAfterTax;
+                    double RoomPrice1 = Convert.ToDouble(spitidtoken[3]);
+                    AmountBeforeTax = RoomPrice1 + AmountBeforeTax;
+                    CurrencyCode = Convert.ToInt32(spitidtoken[4]);
+                    double CurrencyFactorOmnibees = Convert.ToDouble(spitidtoken[5]);
+
+                    AmountIncludingMarkup = Convert.ToBoolean(spitidtoken[6]);
+                    AmountIsPackage = Convert.ToBoolean(spitidtoken[7]);
+                    RoomStayCandidateRPH = Convert.ToInt32(spitidtoken[8]);
+
+                    RoomPrice = RoomPrice * CurrencyFactorOmnibees;
+
+                    HotelSearchResponse.HotelSearchRS OmnibeesResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<HotelSearchResponse.HotelSearchRS>(GetRoomResponse);
+
+                    RoomFilter = OmnibeesResponse.RoomStaysType.RoomStays[0].RoomTypes.Where(item => item.RoomID == RoomId).ToList();
+                    RatePlanFilter = OmnibeesResponse.RoomStaysType.RoomStays[0].RatePlans.Where(item => item.RatePlanID == RatePlanId).ToList();
+                    RoomRateFilter = OmnibeesResponse.RoomStaysType.RoomStays[0].RoomRates.Where(item => item.RoomID == RoomId && item.RatePlanID == RatePlanId && item.Total.AmountIncludingMarkup == AmountIncludingMarkup && item.Total.AmountIsPackage == AmountIsPackage && item.RoomStayCandidateRPH == RoomStayCandidateRPH).ToList();
+
+
+                    //bool isshow = false;
+
+                    //for (int v = 0; v < RatePlanFilter[0].PaymentPolicies.AcceptedPayments.Count; v++)
+                    //{
+                    //    if (RatePlanFilter[0].PaymentPolicies.AcceptedPayments[v].GuaranteeTypeCode == 3 || RatePlanFilter[0].PaymentPolicies.AcceptedPayments[v].GuaranteeTypeCode == 4)
+                    //    {
+                    //        int GuaranteeTypeCode1 = RatePlanFilter[0].PaymentPolicies.AcceptedPayments[v].GuaranteeTypeCode;
+                    //        GuaranteeTypeCode = GuaranteeTypeCode + "," + GuaranteeTypeCode1;
+                    //        isshow = true;
+                    //    }
+                    //}
+                    //if (isshow == false)
+                    //{
+                    //    ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), jsonString, GetRoomResponse, "PayMent Not Supported", Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Request Confirm", "-", "TechnoHub");
+                    //    return "";
+                    //}
+
+                    string RatePlanJ = Newtonsoft.Json.JsonConvert.SerializeObject(RatePlanFilter);
+                    RatePlanJsonJ = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OmnibeesBookRQ.RatePlan>>(RatePlanJ);
+
+                    string RoomJ = Newtonsoft.Json.JsonConvert.SerializeObject(RoomFilter);
+                    RoomTypeJson = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OmnibeesBookRQ.RoomType>>(RoomJ);
+
+                    string RoomRateF = Newtonsoft.Json.JsonConvert.SerializeObject(RoomRateFilter);
+                    RoomRateJson = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OmnibeesBookRQ.RoomRate>>(RoomRateF);
+
+                    string RoomType = Newtonsoft.Json.JsonConvert.SerializeObject(RoomFilter);
+
+                    string RoomName = RoomFilter[0].RoomName;
+                    string RatePlan = RatePlanFilter[0].RatePlanName;
+                    int RoomNo = RoomRateFilter[0].RoomStayCandidateRPH + 1;
+                    //double AmountAfterTax = RoomRateFilter[0].Total.AmountAfterTax;
+                    double Price = RoomRateFilter[0].Total.AmountAfterTax;
+
+                    //double CurrencyFactorOmnibees = 0;
+                    CurrencyCode = RoomRateFilter[0].Total.CurrencyCode;
+                    string OmnibeesCurrency = ReturnOmnibeesCurrency(CurrencyCode);
+
+                    if (OmnibeesCurrency != "")
+                    {
+                        DataTable dtInrCurrency = _commonMethod.GetCountryCurrency(OmnibeesCurrency);
+                        CurrencyFactorOmnibees = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
+                    }
+                    else
+                    {
+                        errorinrq = "Issue in Currency " + OmnibeesCurrency;
+                        return "";
+                    }
+
+                    Price = Price * CurrencyFactorOmnibees;
+                    string roomAvailability = RoomRateFilter[0].Availability[0].AvailabilityStatus;
+                    string mealName = "Room Only";
+
+                    if (RatePlanFilter[0].MealsIncluded != null)
+                    {
+                        mealName = RatePlanFilter[0].MealsIncluded.Name;
+                    }
+                    if (roomAvailability == "AvailableForSale")
+                        roomAvailability = "Available";
+                    else
+                    {
+                        errorinrq = "Room is not available";
+                        return "";
+                    }
+                    if (RoomPrice.TruncateDecimalPlaces(0) < Price.TruncateDecimalPlaces(0))
+                    {
+                        errorinrq = "Price has been changed";
+                        return "";
+                    }
+                }
+                #region HotelReservationsType
+                List<OmnibeesBookRQ.HotelReservation> ListhotelReservation = new List<OmnibeesBookRQ.HotelReservation>();
+                for (int r = 0; r < 1; r++)
+                {
+                    #region TPA_Extensions
+                    OmnibeesBookRQ.TPAExtensions TPAExtensions = new OmnibeesBookRQ.TPAExtensions();
+                    TPAExtensions.SupplierCode = referenceNumber;
+                    #endregion
+                    RoomRateJson[0].TPA_Extensions = TPAExtensions;
+                    #region ResGlobalInfo
+                    OmnibeesBookRQ.CommentsType commentsType = new OmnibeesBookRQ.CommentsType();
+                    List<OmnibeesBookRQ.Comment> lstComment = new List<OmnibeesBookRQ.Comment>();
+                    for (int p = 0; p < 1; p++)
+                    {
+                        OmnibeesBookRQ.Comment comment = new OmnibeesBookRQ.Comment();
+                        comment.Description = "Our internal reservation number " + referenceNumber;
+                        comment.Language = null;
+                        comment.Name = null;
+                        lstComment.Add(comment);
+                    }
+                    commentsType.Comments = lstComment;
+
+                    List<OmnibeesBookRQ.GuaranteesAccepted> lstGuaranteesAccepted = new List<OmnibeesBookRQ.GuaranteesAccepted>();
+                    OmnibeesBookRQ.GuaranteesAccepted guaranteesAccepted = new OmnibeesBookRQ.GuaranteesAccepted();
+                    guaranteesAccepted.GuaranteeID = null;
+
+                    //if (GuaranteeTypeCode.Contains("3"))
+                    //    guaranteesAccepted.GuaranteeTypeCode = 3;
+                    //else
+                    //    guaranteesAccepted.GuaranteeTypeCode = 4;
+
+                    //guaranteesAccepted.PaymentCard = null;
+
+
+                    #region APISO VC
+                    int usercartdetailsid = Convert.ToInt32(bookRequest.userCart.UserCartDetails[jj].UserCartDetailId);
+                    string Pan = "";
+                    string CVV = "0", Expiry = "0";
+                    DataTable dtbookingdata = _commonMethod.GetApisoBookingData(usercartdetailsid);
+                    _vcn.GetApisoServiceDatatoCreateVCN("", Convert.ToInt32(dtbookingdata.Rows[0]["OnlineBookingMasterId"]), Convert.ToInt32(dtbookingdata.Rows[0]["OnlineBookingDetailsId"]), ref Pan, ref CVV, ref Expiry, IsPruvo);
+                    #endregion
+
+
+                    string ExpiryRegex = Convert.ToString(Expiry).Substring(2, 2);
+                    string ExpiryRegexFisrt = Convert.ToString(Expiry).Substring(0, 2);
+
+                    //string datestring = "01-" + ExpiryRegex + "-20" + ExpiryRegexFisrt;
+                    string datestring = ExpiryRegex + "-01-20" + ExpiryRegexFisrt;
+                    guaranteesAccepted.GuaranteeTypeCode = 5;
+
+
+                    OmnibeesBookRQ.PaymentCard PaymentCard1 = new OmnibeesBookRQ.PaymentCard();
+                    PaymentCard1.CardCode = 2;
+                    PaymentCard1.CardHolderName = "With Earth";
+                    PaymentCard1.CardNumber = Pan;
+                    PaymentCard1.EffectiveDate = Convert.ToDateTime(CheckIn);
+                    PaymentCard1.ExpireDate = Convert.ToDateTime(datestring);
+                    PaymentCard1.SeriesCode = CVV;
+
+                    //PaymentCard1.CardCode = 2;
+                    //PaymentCard1.CardHolderName = "Test Card";
+                    //PaymentCard1.CardNumber = "4111111111111111";
+                    //PaymentCard1.EffectiveDate = Convert.ToDateTime("2021-12-14T00:00:00"); ;
+                    //PaymentCard1.ExpireDate = Convert.ToDateTime("2023-07-27T00:00:00");
+                    //PaymentCard1.SeriesCode = "123";
+
+                    guaranteesAccepted.PaymentCard = PaymentCard1;
+                    guaranteesAccepted.RPH = 0;
+                    lstGuaranteesAccepted.Add(guaranteesAccepted);
+
+                    OmnibeesBookRQ.GuaranteesAcceptedType guaranteesAcceptedType = new OmnibeesBookRQ.GuaranteesAcceptedType();
+                    guaranteesAcceptedType.GuaranteesAccepted = lstGuaranteesAccepted;
+
+                    OmnibeesBookRQ.Guarantee gaurantee = new OmnibeesBookRQ.Guarantee();
+                    gaurantee.AmountPercent = null;
+                    gaurantee.DeadLine = null;
+                    gaurantee.Duration = null;
+                    gaurantee.End = null;
+                    gaurantee.GuaranteeCode = null;
+                    gaurantee.GuaranteeDescription = null;
+                    gaurantee.GuaranteesAcceptedType = guaranteesAcceptedType;
+                    gaurantee.Start = null;
+
+                    OmnibeesBookRQ.Total Total1 = new OmnibeesBookRQ.Total();
+
+                    Total1.AmountAfterTax = AmountAfterTax;
+                    Total1.AmountBeforeTax = AmountBeforeTax;
+                    Total1.AmountIncludingMarkup = AmountIncludingMarkup;
+                    Total1.AmountIsPackage = AmountIsPackage;
+                    Total1.ChargeType = 12;
+                    Total1.CurrencyCode = CurrencyCode;
+
+                    OmnibeesBookRQ.POS POS = new OmnibeesBookRQ.POS();
+                    List<OmnibeesBookRQ.Source> listSource = new List<OmnibeesBookRQ.Source>();
+                    OmnibeesBookRQ.Source Source = new OmnibeesBookRQ.Source();
+                    Source.ISOCountry = "IND";
+                    listSource.Add(Source);
+                    POS.Sources = listSource;
+
+                    OmnibeesBookRQ.ResGlobalInfo resGlobalInfo = new OmnibeesBookRQ.ResGlobalInfo();
+                    resGlobalInfo.CommentsType = commentsType;
+                    resGlobalInfo.Guarantee = gaurantee;
+                    resGlobalInfo.Total = Total1;
+                    #endregion
+
+                    #region ResGuestsType
+                    OmnibeesBookRQ.ResGuestsType resGuestsType = new OmnibeesBookRQ.ResGuestsType();
+                    List<OmnibeesBookRQ.ResGuest> lstResGuest = new List<OmnibeesBookRQ.ResGuest>();
+                    //var RoomNumber = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[jj]["RoomNumber"]);
+                    var RoomNumber = Convert.ToInt32(0);//need
+                    //dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["RoomTypeId"]) + "' and UserCartID=" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["UserCartID"]);
+                    dtPassengers.DefaultView.RowFilter = "UserCartID=" + Convert.ToString(bookRequest.userCart.UserCartDetails[jj].UserCartId);
+                    for (int k = 0; k < dtPassengers.DefaultView.Count; k++)
+                    {
+                        List<OmnibeesBookRQ.ProfileInfo> lstProfileInfos = new List<OmnibeesBookRQ.ProfileInfo>();
+                        for (int l = 0; l < 1; l++)
+                        {
+                            string firstName = Convert.ToString(dtPassengers.DefaultView[k]["FirstName"]);
+                            //string SurName = Convert.ToString(dtPassengers.DefaultView[p]["LastName"]);
+                            string lastName = Convert.ToString(dtPassengers.DefaultView[k]["LastName"]);
+                            OmnibeesBookRQ.PersonName personName = new OmnibeesBookRQ.PersonName();
+                            personName.GivenName = firstName;// "OmnibeesAdult00";
+                                                             //personName.MiddleName = "Omn";
+                                                             //personName.NamePrefix = 0;
+                            personName.Surname = lastName;//"Mebee";                        
+                            OmnibeesBookRQ.Customer customer = new OmnibeesBookRQ.Customer();
+                            customer.PersonName = personName;
+                            OmnibeesBookRQ.Profile profile = new OmnibeesBookRQ.Profile();
+                            profile.Customer = customer;
+                            OmnibeesBookRQ.ProfileInfo profileInfo = new OmnibeesBookRQ.ProfileInfo();
+                            profileInfo.Profile = profile;
+                            profileInfo.UniqueID = null;
+                            lstProfileInfos.Add(profileInfo);
+                        }
+                        OmnibeesBookRQ.Profiles profiles = new OmnibeesBookRQ.Profiles();
+                        profiles.ProfileInfos = lstProfileInfos;
+                        OmnibeesBookRQ.ResGuest resGuest = new OmnibeesBookRQ.ResGuest();
+                        if (Convert.ToString(dtPassengers.DefaultView[k]["PaxType"]).Trim().ToLower() == "adult")
+                        {
+                            resGuest.Age = 0;
+                            resGuest.AgeQualifyingCode = 10;
+                        }
+                        else
+                        {
+                            resGuest.Age = Convert.ToInt32(dtPassengers.DefaultView[k]["ChildAge"]);
+                            resGuest.AgeQualifyingCode = 8;
+                        }
+                        if (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1)
+                            resGuest.PrimaryIndicator = true;
+                        else
+                            resGuest.PrimaryIndicator = false;
+
+                        resGuest.Profiles = profiles;
+                        resGuest.ResGuestRPH = k + 1;
+                        resGuest.SpecialRequests = null;
+                        lstResGuest.Add(resGuest);
+                    }
+                    resGuestsType.ResGuests = lstResGuest;
+                    #endregion
+
+                    #region ResStatus
+                    OmnibeesBookRQ.ResStatus resStatus = new OmnibeesBookRQ.ResStatus();
+                    resStatus.PMS_ResStatusType = null;
+                    resStatus.TransactionActionType = 1;
+                    #endregion
+
+                    #region RoomStaysType
+
+                    int RPHCount = 0;
+                    List<OmnibeesBookRQ.RoomStay> lstRoomStays = new List<OmnibeesBookRQ.RoomStay>();
+                    OmnibeesBookRQ.RoomStaysType roomStaysType = new OmnibeesBookRQ.RoomStaysType();
+                    for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
+                    {
+
+                        string RoomTypeId = Convert.ToString(bookRequest.userCart.UserCartDetails[jj].RoomTypeId);
+                        string[] spitidtoken = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+
+                        int RoomId = Convert.ToInt32(spitidtoken[0]);
+                        int RatePlanId = Convert.ToInt32(spitidtoken[1]);
+
+                        double AmountAfterTaxForSingelRoom = Convert.ToDouble(spitidtoken[2]);
+                        double AmountBeforeTaxForSingelRoom = Convert.ToDouble(spitidtoken[3]);
+
+                        AmountIncludingMarkup = Convert.ToBoolean(spitidtoken[6]);
+                        AmountIsPackage = Convert.ToBoolean(spitidtoken[7]);
+                        RoomStayCandidateRPH = Convert.ToInt32(spitidtoken[8]);
+
+                        HotelSearchResponse.HotelSearchRS OmnibeesResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<HotelSearchResponse.HotelSearchRS>(GetRoomResponse);
+
+                        RoomFilter = OmnibeesResponse.RoomStaysType.RoomStays[0].RoomTypes.Where(item => item.RoomID == RoomId).ToList();
+                        RatePlanFilter = OmnibeesResponse.RoomStaysType.RoomStays[0].RatePlans.Where(item => item.RatePlanID == RatePlanId).ToList();
+                        RoomRateFilter = OmnibeesResponse.RoomStaysType.RoomStays[0].RoomRates.Where(item => item.RoomID == RoomId && item.RatePlanID == RatePlanId && item.Total.AmountIncludingMarkup == AmountIncludingMarkup && item.Total.AmountIsPackage == AmountIsPackage && item.RoomStayCandidateRPH == RoomStayCandidateRPH).ToList();
+
+                        string RatePlanJ = Newtonsoft.Json.JsonConvert.SerializeObject(RatePlanFilter);
+                        RatePlanJsonJ = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OmnibeesBookRQ.RatePlan>>(RatePlanJ);
+
+                        string RoomJ = Newtonsoft.Json.JsonConvert.SerializeObject(RoomFilter);
+                        RoomTypeJson = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OmnibeesBookRQ.RoomType>>(RoomJ);
+
+                        string RoomRateF = Newtonsoft.Json.JsonConvert.SerializeObject(RoomRateFilter);
+                        RoomRateJson = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OmnibeesBookRQ.RoomRate>>(RoomRateF);
+
+                        string RoomType = Newtonsoft.Json.JsonConvert.SerializeObject(RoomFilter);
+                        OmnibeesBookRQ.RoomStay roomStay = new OmnibeesBookRQ.RoomStay();
+                        roomStay.AvailabilityStatus = null;
+                        #region BasicPropertyInf
+                        OmnibeesBookRQ.HotelRef hotelRef = new OmnibeesBookRQ.HotelRef();
+                        hotelRef.BrandName = null;
+                        hotelRef.ChainCode = null;
+                        hotelRef.ChainName = null;
+                        hotelRef.HotelCode = Convert.ToInt32(xmlhotelid);
+                        hotelRef.HotelName = null;
+                        OmnibeesBookRQ.BasicPropertyInfo basicPropertyInfo = new OmnibeesBookRQ.BasicPropertyInfo();
+                        basicPropertyInfo.Address = null;
+                        basicPropertyInfo.Award = null;
+                        basicPropertyInfo.ContactNumbersType = null;
+                        basicPropertyInfo.CurrencyCode = null;
+                        basicPropertyInfo.HotelAmenities = null;
+                        basicPropertyInfo.HotelRef = hotelRef;
+                        basicPropertyInfo.ImageURL = null;
+                        basicPropertyInfo.Policy = null;
+                        basicPropertyInfo.Position = null;
+                        basicPropertyInfo.VendorMessagesType = null;
+                        #endregion
+                        roomStay.BasicPropertyInfo = basicPropertyInfo;
+                        #region CommentsType
+                        List<OmnibeesBookRQ.Comment> lstcomment = new List<OmnibeesBookRQ.Comment>();
+                        OmnibeesBookRQ.Comment comment = new OmnibeesBookRQ.Comment();
+                        comment.Description = "Our internal reservation number " + referenceNumber;
+                        comment.Language = null;
+                        comment.Language = null;
+                        lstcomment.Add(comment);
+                        OmnibeesBookRQ.CommentsType commentsTypes = new OmnibeesBookRQ.CommentsType();
+                        commentsTypes.Comments = lstcomment;
+                        #endregion
+                        roomStay.CommentsType = commentsTypes;
+                        roomStay.Guarantees = null;
+                        #region GuestCountsType
+
+                        adultcount = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofAdult);
+                        childage1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].ChildAge);
+                        //childage2 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["ChildAge2"]);
+                        NoOfChild = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofChild);
+
+                        OmnibeesBookRQ.GuestCountsType guestCountsType = new OmnibeesBookRQ.GuestCountsType();
+                        List<OmnibeesBookRQ.GuestCount> lstGuestCount = new List<OmnibeesBookRQ.GuestCount>();
+                        OmnibeesBookRQ.GuestCount guestCount = new OmnibeesBookRQ.GuestCount();
+                        guestCount.Age = null;
+                        guestCount.AgeQualifyCode = 10;
+                        guestCount.Count = adultcount;
+                        List<int> lstResGuestRPH = new List<int>();
+                        for (int A = 0; A < adultcount; A++)
+                        {
+                            RPHCount = RPHCount + 1;
+                            lstResGuestRPH.Add(RPHCount);
+                        }
+                        //guestCount.ResGuestRPH = lstResGuestRPH;
+                        //lstGuestCount.Add(guestCount);
+                        guestCount.ResGuestRPH = lstResGuestRPH;
+                        lstGuestCount.Add(guestCount);
+
+                        if (NoOfChild > 0)
+                        {
+                            if (NoOfChild == 1)
+                            {
+                                RPHCount = RPHCount + 1;
+                                OmnibeesBookRQ.GuestCount Child1GuestCount_obj = new OmnibeesBookRQ.GuestCount();
+                                Child1GuestCount_obj.Age = childage1;
+                                Child1GuestCount_obj.AgeQualifyCode = 8;
+                                Child1GuestCount_obj.Count = 1;
+
+                                List<int> lstResGuestRPHChild1 = new List<int>();
+                                lstResGuestRPHChild1.Add(RPHCount);
+                                Child1GuestCount_obj.ResGuestRPH = lstResGuestRPHChild1;
+                                lstGuestCount.Add(Child1GuestCount_obj);
+                            }
+                            else
+                            {
+                                RPHCount = RPHCount + 1;
+                                OmnibeesBookRQ.GuestCount Child1GuestCount_obj = new OmnibeesBookRQ.GuestCount();
+                                Child1GuestCount_obj.Age = childage1;
+                                Child1GuestCount_obj.AgeQualifyCode = 8;
+                                Child1GuestCount_obj.Count = 1;
+
+                                List<int> lstResGuestRPHChild1 = new List<int>();
+                                lstResGuestRPHChild1.Add(RPHCount);
+                                Child1GuestCount_obj.ResGuestRPH = lstResGuestRPHChild1;
+
+                                //guestCount.ResGuestRPH = lstResGuestRPHChild1;
+                                lstGuestCount.Add(Child1GuestCount_obj);
+
+                                RPHCount = RPHCount + 1;
+                                OmnibeesBookRQ.GuestCount Child2GuestCount_obj = new OmnibeesBookRQ.GuestCount();
+                                Child2GuestCount_obj.Age = childage2;
+                                Child2GuestCount_obj.AgeQualifyCode = 8;
+                                Child2GuestCount_obj.Count = 1;
+
+                                List<int> lstResGuestRPHChild2 = new List<int>();
+                                lstResGuestRPHChild2.Add(RPHCount);
+                                //Child1GuestCount_obj.ResGuestRPH = lstResGuestRPHChild2;
+                                Child2GuestCount_obj.ResGuestRPH = lstResGuestRPHChild2;//Fixed on 2-APR-2025 K2
+
+                                //guestCount.ResGuestRPH = lstResGuestRPHChild2;
+                                lstGuestCount.Add(Child2GuestCount_obj);
+                            }
+                        }
+
+                        guestCountsType.GuestCounts = lstGuestCount;
+                        #endregion
+                        roomStay.GuestCountsType = guestCountsType;
+                        roomStay.IndexNumber = null;
+                        roomStay.RPH = 0;
+                        //roomStay.RatePlans = RatePlanFilter;
+
+                        roomStay.RatePlans = RatePlanJsonJ;
+                        roomStay.RoomRates = RoomRateJson;
+                        roomStay.RoomTypes = RoomTypeJson;
+
+                        roomStay.TPA_Extensions = null;
+                        OmnibeesBookRQ.Total Total = new OmnibeesBookRQ.Total();
+                        Total.AmountAfterTax = AmountAfterTaxForSingelRoom;
+                        Total.AmountBeforeTax = AmountBeforeTaxForSingelRoom;
+                        //Total.AmountIncludingMarkup = false;
+                        Total.AmountIncludingMarkup = AmountIncludingMarkup;
+                        Total.AmountIsPackage = AmountIsPackage;
+                        Total.ChargeType = 12;
+                        Total.CurrencyCode = CurrencyCode;
+                        roomStay.Total = Total;
+                        roomStay.RoomStayLanguage = 1;
+                        lstRoomStays.Add(roomStay);
+
+                        roomStaysType.RoomStays = lstRoomStays;
+                        roomStaysType.MoreIndicator = false;
+                        // roomStaysType.RoomStays = ;
+                        #endregion
+                    }
+                    OmnibeesBookRQ.HotelReservation hotelReservation = new OmnibeesBookRQ.HotelReservation();
+                    hotelReservation.TPA_Extensions = TPAExtensions;
+                    hotelReservation.RoomStaysType = roomStaysType;
+                    hotelReservation.CreateDateTime = Convert.ToDateTime(DateTime.Now);
+                    hotelReservation.LastModifyDateTime = Convert.ToDateTime(DateTime.Now);
+                    hotelReservation.POS = POS;
+                    hotelReservation.ResGlobalInfo = resGlobalInfo;
+                    hotelReservation.ResGuestsType = resGuestsType;
+                    hotelReservation.ResStatus = resStatus;
+                    ListhotelReservation.Add(hotelReservation);
+
+                    OmnibeesBookRQ.HotelReservationsType hotelReservationsType = new OmnibeesBookRQ.HotelReservationsType();
+                    hotelReservationsType.HotelReservations = ListhotelReservation;
+                    #endregion
+                    OmnibeesBookRQ.Request BookingRQ = new OmnibeesBookRQ.Request();
+                    BookingRQ.EchoToken = "technoheavenpull_" + Guid.NewGuid().ToString();
+                    BookingRQ.HotelReservationsType = hotelReservationsType;
+                    //BookingRQ.PrimaryLangID = 1;
+                    BookingRQ.ResStatus = null;
+                    BookingRQ.RetransmissionIndicator = null;
+                    BookingRQ.TimeStamp = Convert.ToDateTime(DateTime.UtcNow);
+                    BookingRQ.Target = 0;
+                    BookingRQ.Version = Convert.ToDouble(version);
+
+                    string BookingRequest = Newtonsoft.Json.JsonConvert.SerializeObject(BookingRQ);
+                    return BookingRequest;
+                }
+            }
+            catch (Exception ex)
+            {
+                errorinrq = ex.Message;
+                _ = _exception.ErrorBooking(ex, "");
+            }
+            return string.Empty;
+        }
 
         public string GetOmnibeesResponse(ref string Error, string request, string TravcoURL, Int32 TimeOut, string UserName, string Password, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false)
         {
