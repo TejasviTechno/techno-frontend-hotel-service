@@ -3720,7 +3720,7 @@ namespace XConnect.CommonUtilities
 
         public async Task<string> SupplierPerformanceReportForPrebookAndBook(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "")
         {
-            return "";
+      
 
             try
             {
