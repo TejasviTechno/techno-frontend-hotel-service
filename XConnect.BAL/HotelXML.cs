@@ -9408,7 +9408,7 @@ new SqlParameter("@AgentId", AgentId),
             list.LetsFly_Codes = null;
             list.Dingus_codes = null;
             list.Elevateholidays_codes = null;
-
+            list.Welcomebeds_Codes = null;
 
             try
             {
@@ -9798,6 +9798,11 @@ new SqlParameter("@AgentId", AgentId),
                                     #region"ElevateHolidays"
                                     case "elevateholidays":
                                         list.Elevateholidays_codes = FilterHotelCodes(lstdtHotelCommon, SuppplierCheck);
+                                        break;
+                                    #endregion
+                                    #region Welcomebeds
+                                    case "welcomebeds":
+                                        list.Welcomebeds_Codes = FilterHotelCodes(lstdtHotelCommon, SuppplierCheck);
                                         break;
                                     #endregion
                                     default:
@@ -60634,7 +60639,7 @@ new SqlParameter("@AgentId", AgentId),
                                 string RoomTypeId = Convert.ToString(DtCancellation.Rows[p]["RoomTypeId"]);
                                 //RoomTypeId = Common.Get_JacTravel_RoomTypeID(RoomTypeId, ref Nationality);
 
-                                string CountryID = Convert.ToString(DtCancellation.Rows[p]["NationalityName"]); ;// Convert.ToString(Common.GetThirdPartyStaticData_Xml("Nationality", "Desc", Nationality, "SystemMasterId", "agoda"));
+                                //string CountryID = Convert.ToString(DtCancellation.Rows[p]["NationalityName"]); ;// Convert.ToString(Common.GetThirdPartyStaticData_Xml("Nationality", "Desc", Nationality, "SystemMasterId", "agoda"));
                                 string UserName = "";
                                 string Password = "";
                                 //bool flag = Common.Get_JacTravel_AuthFlag(CountryID, ref UserName, ref Password);
