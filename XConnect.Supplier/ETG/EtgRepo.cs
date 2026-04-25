@@ -2346,7 +2346,8 @@ namespace XConnect.Supplier.ETG
             "dd/MM/yyyy HH:mm:ss",  // e.g. 12/03/2026 16:00:00
             "dd/MM/yyyy",           // e.g. 12/03/2026
             "M/d/yyyy",              // e.g. 3/12/2026
-            "yyyy/MM/dd"              // e.g. 3/12/2026
+            "yyyy/MM/dd" ,             // e.g. 3/12/2026
+            "MM/dd/yyyy HH:mm:ss",
         };
 
                                 //DateTime free_cancellation_beforeroom = DateTime.ParseExact(purchaseToken, "dd/MM/yyyy", CultureInfo.InvariantCulture);
@@ -2369,22 +2370,33 @@ namespace XConnect.Supplier.ETG
                                     CancelDate = DateTime.Now.Date;
                                 }
 
-
-                                //if (free_cancellation_beforeroom.Date != CancelDate.Date)
+                                try
+                                {
+                                    //if (free_cancellation_beforeroom.Date != CancelDate.Date)
                                     if (free_cancellation_beforeroom.Date.ToString("yyyy-MM-dd")
     != CancelDate.ToString("yyyy-MM-dd"))
                                     {
-                                    FinalPrice = 0;
-                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UserCartDetailId), PrebookRQ, "-", "(After Price Check BookingTime) Cancellation Policy Change", SupplierName, "Request Confirm", " - ", "Withinearth");
-                                    PrebookResponseData = "#Policy Changed " + "#Main Policy = " + free_cancellation_beforeroom + " #New Policy = " + CancelDate + " #Response= " + PrebookResponseData;
-                                    responsetype = "GeneralError";
-                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
+                                        FinalPrice = 0;
+                                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UserCartDetailId), PrebookRQ, "-", "(After Price Check BookingTime) Cancellation Policy Change", SupplierName, "Request Confirm", " - ", "Withinearth");
+                                        PrebookResponseData = "#Policy Changed " + "#Main Policy = " + free_cancellation_beforeroom + " #New Policy = " + CancelDate + " #Response= " + PrebookResponseData;
+                                        responsetype = "GeneralError";
+                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error);
 
-                                    priceCheckCMDto.Flag = true;
-                                    priceCheckCMDto.ItemPrice = FinalPrice;
-                                    return priceCheckCMDto;
+                                        priceCheckCMDto.Flag = true;
+                                        priceCheckCMDto.ItemPrice = FinalPrice;
+                                        return priceCheckCMDto;
+
+                                    }
 
                                 }
+                                catch (Exception ex)
+                                {
+                                    
+                                   _logger.LogError(ex, "Error policy date format change" + free_cancellation_beforeroom + CancelDate );
+
+                                }
+
+
 
                                 //}
                             }
