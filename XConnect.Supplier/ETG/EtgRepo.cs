@@ -2342,6 +2342,7 @@ namespace XConnect.Supplier.ETG
                                 string[] formats = {
             "yyyy-MM-ddTHH:mm:ss",  // e.g. 3/12/2026 4:00:00 PM
             "M/d/yyyy h:mm:ss tt",// e.g. 03/12/2026 04:00:00 PM
+            "MM/dd/yyyy h:mm:ss tt",
             "dd/MM/yyyy HH:mm:ss",  // e.g. 12/03/2026 16:00:00
             "dd/MM/yyyy",           // e.g. 12/03/2026
             "M/d/yyyy",              // e.g. 3/12/2026
