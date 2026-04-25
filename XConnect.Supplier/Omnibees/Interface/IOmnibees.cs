@@ -21,6 +21,8 @@ namespace XConnect.Supplier.Omnibees.Interface
 
         string Get_Omnibees_BookingRequest(DataSet dsCartDetails, DataTable dtPassengers, DataRow[] OmnibeesDetails, string UniqueNo, bool IsPriceUpdate, int i, int jj, string PreBookingToken, string UserID, string Password, string ExternalReference, string Bookingtokan, string referenceNumber, string AgentUniqueNo, ref string errorinrq, bool IsPruvo);
 
+        string Get_Omnibees_BookingRequest_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] OmnibeesDetails, string UniqueNo, bool IsPriceUpdate, int i, int jj, string PreBookingToken, string UserID, string Password, string ExternalReference, string Bookingtokan, string referenceNumber, string AgentUniqueNo, ref string errorinrq, bool IsPruvo=false);
+
         string GetOmnibeesResponse(ref string Error, string request, string TravcoURL, Int32 TimeOut, string UserName, string Password, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false);
 
         string Get_Omnibees_BookingCancelRQ(string AgentVoucherNo, DataRow[] SupplierDetails, string RoomTypeId, string CheckIn, string CheckOut);

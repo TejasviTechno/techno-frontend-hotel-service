@@ -2947,7 +2947,7 @@ namespace XConnect.Supplier.ETG
                 #endregion
                 xslRequest = Convert.ToString(OSTVPriceCheckRequest(Order_Booking_Id, FinalBookHash, language, UserIP));
                 eTGPriceCheck.xslRequest = xslRequest;
-                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), xslRequest, "-", "After Hit Price Check Request", "ratehawk", "Price Check Response Pending", "-", "WithinEarth");
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), xslRequest, "-", "After Hit order booking form Request", "ratehawk", "order booking form  Response Pending", "-", "WithinEarth");
                 #endregion
 
                 if (xslRequest != "")
@@ -2965,11 +2965,11 @@ namespace XConnect.Supplier.ETG
                     eTGPriceCheck.RatehawkResponse = ResponseData;
                     timerroomprocess.Stop();
                     time = timerroomprocess.Elapsed.ToString();
-                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), xslRequest, ResponseData + Error, "After Hit Price Check Response", "ratehawk", "Price Check Response Confirm", "-", "WithinEarth");
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), xslRequest, ResponseData + Error, "After Hit order booking form Response", "ratehawk", "order booking formResponse Confirm", "-", "WithinEarth");
 
                     if (Error != "")
                     {
-                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), xslRequest, ResponseData + Error, "After Hit Price Check Response", "ratehawk", "Price Check  Response Not Confirm", "-", "WithinEarth");
+                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), xslRequest, ResponseData + Error, "After Hit order booking form Response", "ratehawk", "order booking form Response Not Confirm", "-", "WithinEarth");
 
                     }
                     if (ResponseData == string.Empty || ResponseData == "" || ResponseData == null)
