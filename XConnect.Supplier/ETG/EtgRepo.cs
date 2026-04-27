@@ -1163,6 +1163,7 @@ namespace XConnect.Supplier.ETG
                                                     DateTime free_cancellation_before = Convert.ToDateTime(ETGResponse.data.hotels[i].rates[room].payment_options.payment_types[0].cancellation_penalties.free_cancellation_before);
                                                     CancelDate = free_cancellation_before;// DateTime.ParseExact(free_cancellation_before, "dd/MM/yyyy", null);
                                                     cancellation = Convert.ToString(free_cancellation_before);
+                                                    cancellation = free_cancellation_before.ToString("dd/MM/yyyy"); //added on 27,06
                                                 }
 
                                                 if (CancelDate.AddDays(CutOffDays).Date > curDate)
