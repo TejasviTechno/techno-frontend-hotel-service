@@ -176,6 +176,7 @@ namespace XConnect.Models
         public string Methabook_BookStatus { get; set; }
         public string Bookingurl { get; set; }
         public string Cancel { get; set; }
+        public string PriceCheck { get; set; }
     }
     public class GoGlobalConfig
     {

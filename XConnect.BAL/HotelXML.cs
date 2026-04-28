@@ -5362,7 +5362,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     }));
                                     break;
                                 case "iboosy":
-                                    dataTable.Add(await Task.Factory.StartNew(async () => item.dtHotelRoom = await _iboosy.Methabook_HotelSearchWithRooms(item, commonSearch, item.CurrencyCode, item.RQRS[0].Response, item.XmlCity, SearchPara, item.CurrencyFactor, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, item.Supplier, IBoosyInfo.Methabook_BookStatus, IBoosyInfo.RS_NoCount, tokenData, IBoosyInfo.RS_Success)));
+                                    dataTable.Add(await Task.Factory.StartNew(async () => item.dtHotelRoom = await _iboosy.Methabook_HotelSearchWithRooms(item, commonSearch, dtROE, item.CurrencyCode, item.RQRS[0].Response, item.XmlCity, SearchPara, item.CurrencyFactor, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, item.Supplier, IBoosyInfo.Methabook_BookStatus, IBoosyInfo.RS_NoCount, tokenData, IBoosyInfo.RS_Success)));
                                     break;
                                 case "expedia":
                                     DataRow[] ExpDetails = null;
@@ -22356,7 +22356,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     bool IsErrors1 = false;
                                                     double itemprice = 0;
                                                     string BookingCode = "";
-                                                    PriceCheckCMDto priceCheckCMDto = await _iboosy.MethaBookPriceCheck(AvailabilityCode, dtCheckPriceReqStructure, dsCartDetails, MethaBookDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice1, IsErrors1, itemprice, BookingCode, MealCode, Searchkey, AgentId);
+                                                    PriceCheckCMDto priceCheckCMDto = await _iboosy.MethaBookPriceCheck(AvailabilityCode, dtCheckPriceReqStructure, dsCartDetails, MethaBookDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice1, IsErrors1, itemprice, BookingCode, MealCode, TokenData,Searchkey, AgentId);
                                                     bool IsPriceUpdates1 = priceCheckCMDto.Flag;
                                                     itemprice = priceCheckCMDto.ItemPrice;
                                                     IsErrors1 = priceCheckCMDto.IsError;
@@ -31517,7 +31517,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         bool IsErrors1 = false;
                                                         double itemprice = 0;
                                                         string BookingCode = "";
-                                                        PriceCheckCMDto priceCheckCMDto = await _iboosy.MethaBookPriceCheck(AvailabilityCode, dtCheckPriceReqStructure, dsCartDetails, MethaBookDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice1, IsErrors1, itemprice, BookingCode, MealCode, Searchkey, AgentId);
+                                                        PriceCheckCMDto priceCheckCMDto = await _iboosy.MethaBookPriceCheck(AvailabilityCode, dtCheckPriceReqStructure, dsCartDetails, MethaBookDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice1, IsErrors1, itemprice, BookingCode, MealCode, TokenData,Searchkey, AgentId);
                                                         bool IsPriceUpdates1 = priceCheckCMDto.Flag;
                                                         itemprice = priceCheckCMDto.ItemPrice;
                                                         IsErrors1 = priceCheckCMDto.IsError;
