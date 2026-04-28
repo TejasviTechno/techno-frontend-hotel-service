@@ -105,7 +105,7 @@ namespace XConnect.Supplier
                                         //{
                                         xhotel.ProcessTimeout = Convert.ToInt32(MethaBookSearchConfig[i].HotelSearchTimeOut2);
                                         //}
-                                        xhotel.URL = WebsiteUrl + IBoosyInfo.Metha_URL;
+                                        xhotel.URL = WebsiteUrl + _supplierConfig.IBoosy.Metha_URL;
                                         xhotel.UserId = UserId;
                                         xhotel.UserName = UserName;
                                         xhotel.PassWord = PassWord;
@@ -242,7 +242,7 @@ namespace XConnect.Supplier
                                                                 //{
                                                                 xhotel.ProcessTimeout = Convert.ToInt32(IBoosySearchConfig[i].HotelSearchTimeOut2);
                                                                 //}
-                                                                xhotel.URL = WebsiteUrl + IBoosyInfo.Metha_URL;
+                                                                xhotel.URL = WebsiteUrl + _supplierConfig.IBoosy.Metha_URL;
                                                                 xhotel.UserId = UserId;
                                                                 xhotel.UserName = UserName;
                                                                 xhotel.PassWord = PassWord;
@@ -354,10 +354,6 @@ namespace XConnect.Supplier
                                         List<HotelCodeByCity> filter = new List<HotelCodeByCity>();
                                         filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
 
-
-
-
-                                        #region "MethaBook"
                                         if (IBoosySearchConfig != null)
                                         {
                                             double CurrencyFactorMethaBook = 1;
@@ -404,7 +400,7 @@ namespace XConnect.Supplier
                                                                 //{
                                                                 xhotel.ProcessTimeout = Convert.ToInt32(IBoosySearchConfig[i].HotelSearchTimeOut2);
                                                                 //}
-                                                                xhotel.URL = WebsiteUrl + IBoosyInfo.Metha_URL;
+                                                                xhotel.URL = WebsiteUrl + _supplierConfig.IBoosy.Metha_URL;
                                                                 xhotel.UserId = UserId;
                                                                 xhotel.UserName = UserName;
                                                                 xhotel.PassWord = PassWord;
@@ -442,7 +438,7 @@ namespace XConnect.Supplier
                                                 }
                                             }
                                         }
-                                        #endregion
+                                        
                                     }
                                 }
 
@@ -553,7 +549,7 @@ namespace XConnect.Supplier
             }
             return MethaBookReq;
         }
-        public async Task<List<Options>> Methabook_HotelSearchWithRooms(HotelX Item, CommonSearch commonSearch, string Currency, string ResponseData, string CityCode, HotelSearchParameter SearchParam, double CurrencyFactorMethaBook, string ProccessCutOffTime, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string Suppliername, string BookingStatus, string NoCount, TokenData tokenData, string RS_Success)
+        public async Task<List<Options>> Methabook_HotelSearchWithRooms(HotelX Item, CommonSearch commonSearch, DataTable dtROE,string Currency, string ResponseData, string CityCode, HotelSearchParameter SearchParam, double CurrencyFactorMethaBook, string ProccessCutOffTime, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string Suppliername, string BookingStatus, string NoCount, TokenData tokenData, string RS_Success)
         {
             System.Diagnostics.Stopwatch timer_room_Methabook = new System.Diagnostics.Stopwatch();
             timer_room_Methabook.Start();
@@ -771,13 +767,22 @@ namespace XConnect.Supplier
                                         string NonRefundable = Convert.ToString(drhotel.availabilities[j].nonRefundable);
                                         string MealCode = Convert.ToString(drhotel.availabilities[j].mealPlan.code);
                                         string MealName = Convert.ToString(drhotel.availabilities[j].mealPlan.name);
-                                        double ItemPrice = Convert.ToDouble(drhotel.availabilities[j].price.net) * CurrencyFactorMethaBook;
-                                        double BuyingPrice = Convert.ToDouble(drhotel.availabilities[j].price.net) * CurrencyFactorMethaBook;
-                                        string CurrencyCode = Convert.ToString(drhotel.availabilities[j].price.currencyCode);
+                                        double ItemPrice = Convert.ToDouble(drhotel.availabilities[j].price.net);
+                                        double BuyingPrice = Convert.ToDouble(drhotel.availabilities[j].price.net);
+                                        Currency = Convert.ToString(drhotel.availabilities[j].price.currencyCode);
                                         double NightPrice = Convert.ToDouble(ItemPrice / SearchParam.NoofNights);
                                         string RoomCode = "", RoomName = "";
                                         int rooms = drhotel.availabilities[j].rooms.Count;
 
+                                         CurrencyFactorMethaBook = 1;
+                                      
+
+                                        if (Currency.ToLower() != tokenData.SiteCurrency.ToLower())
+                                        {
+                                            CurrencyFactorMethaBook = _commonMethod.GetROEByCurrency(Currency, dtROE);
+                                        }
+                                        ItemPrice = ItemPrice * CurrencyFactorMethaBook;
+                                        BuyingPrice = BuyingPrice * CurrencyFactorMethaBook;
                                         //#methachange
 
                                         DataRow drMethaBookRoom = dtHotelRoom.NewRow();
@@ -1067,9 +1072,10 @@ namespace XConnect.Supplier
                 string PriceCheckRequest = MethaBookPriceCheckRequest(AvailabilityCode, CheckIn, CheckOut, hotelcode, MealCode);
                 string Error = "";
                 //string ResponseData = MethaBookResponseNew(ref Error, PriceCheckRequest, Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + "/Accommodation/v1.0/Valuation", Convert.ToString(drSuplierMarkup[0]["UserName"]), Convert.ToString(drSuplierMarkup[0]["PassWord"]), 120000, "GET");
-                ResponseDto responseDto = await MethaBookResponseNew(PriceCheckRequest, Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + "/Accommodation/v1.0/Valuation", Convert.ToString(drSuplierMarkup[0]["UserName"]), Convert.ToString(drSuplierMarkup[0]["PassWord"]), 120000, "GET");
+                ResponseDto responseDto = await MethaBookResponseNew(PriceCheckRequest, Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + _supplierConfig.IBoosy.PriceCheck, Convert.ToString(drSuplierMarkup[0]["UserName"]), Convert.ToString(drSuplierMarkup[0]["PassWord"]), 120000, "GET");
                 string ResponseData = responseDto.Response;
                 Error = responseDto.Error;
+                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(roomtypeid), Convert.ToString(ownsystemid), PriceCheckRequest, Convert.ToString(ResponseData), "After Get Policy", provider, Error + "Response", SearchKey, "API");
 
 
                 if (ResponseData == "")
@@ -1153,10 +1159,6 @@ namespace XConnect.Supplier
                         {
                             List<MethaBook.PenaltyRule> Paneltyrule = new List<MethaBook.PenaltyRule>(MethaBookResponse.valuationRS.availability.cancellationPolicy.penaltyRules);
 
-                            ////DateTime Todate = DateTime.Now.Date;
-                            //DateTime Todate = dtCheckin1; //added by anu new 14-07-25
-                            //int loop = 1;
-
                             DateTime Todate = DateTime.Now.Date;
                             int loop = 1;
                             string checkin2 = Convert.ToString(SearchPara.CheckInDate);
@@ -1181,9 +1183,6 @@ namespace XConnect.Supplier
                                             cancellationamt = ItemPrice;
                                         else
                                         {
-                                            ////int night1 = Convert.ToInt32(Paneltyrule[m].nights);
-                                            //cancellationamt = Convert.ToDouble(ItemPrice);
-
                                             int night1 = Convert.ToInt32(Paneltyrule[m].nights);
                                             if (night1 == 0)
                                                 night1 = 1;
@@ -1223,8 +1222,7 @@ namespace XConnect.Supplier
                                 }
                                 if (canceldate < currentdate)
                                     canceldate = DateTime.Now.Date;
-                                //if (canceldate.AddDays(CutOffDays).Date > DateTime.Now.Date)
-
+                               
                                 canceldate = canceldate.AddDays(CutOffDays).Date;
 
                                 if (canceldate > currentdate)
@@ -1353,7 +1351,7 @@ namespace XConnect.Supplier
             return responseDto;
         }
 
-        public async Task<PriceCheckCMDto> MethaBookPriceCheck(string AvailabilityCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] MethaBookDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string BookingCode, string MealCode, string Searchkey = "", int AgentId = 0)
+        public async Task<PriceCheckCMDto> MethaBookPriceCheck(string AvailabilityCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] MethaBookDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string BookingCode, string MealCode, TokenData tokenData, string Searchkey = "", int AgentId = 0)
         {
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
 
@@ -1363,6 +1361,7 @@ namespace XConnect.Supplier
             string Error = "";
             string PriceCheckRequest = "";
             string ResponseData = "";
+             double CurrencyFactorMethabook = 1;
             try
             {
                 string CheckIn = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]);
@@ -1381,7 +1380,7 @@ namespace XConnect.Supplier
                 System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                 timerroomprocess.Start();
 
-                ResponseDto responseDto = await MethaBookResponseNew(PriceCheckRequest, Url + "/Accommodation/v1.0/Valuation", Convert.ToString(MethaBookDetails[0]["UserName"]), Convert.ToString(MethaBookDetails[0]["PassWord"]), 120000, "GET", Searchkey);
+                ResponseDto responseDto = await MethaBookResponseNew(PriceCheckRequest, Url + _supplierConfig.IBoosy.PriceCheck, Convert.ToString(MethaBookDetails[0]["UserName"]), Convert.ToString(MethaBookDetails[0]["PassWord"]), 120000, "GET", Searchkey);
                 ResponseData = responseDto.Response;
                 Error = responseDto.Error;
 
@@ -1421,6 +1420,14 @@ namespace XConnect.Supplier
                 }
                 BookingCode = Convert.ToString(MethaBookResponse.valuationRS.availability.booking.bookingCode);
                 double Price = Convert.ToDouble(MethaBookResponse.valuationRS.availability.price.net);
+                String MethabookCurrency = Convert.ToString(MethaBookResponse.valuationRS.availability.price.currencyCode);
+                if (MethabookCurrency.ToLower() != tokenData.SiteCurrency.ToLower())
+                {
+                    CurrencyFactorMethabook = _commonMethod.GetROEByCurrency(MethabookCurrency, tokenData.dtROE);
+                }
+                Price = Price * CurrencyFactorMethabook;
+
+
                 itemprice = Convert.ToDouble(Price);
                 bool IsSuccess = await _commonMethod.GetBookingCodeUpdateStatus(BookingCode, UserCartId);
                 if (IsFor == "P")
@@ -1717,7 +1724,7 @@ namespace XConnect.Supplier
             MethaBookBookingDetail methaBookBookingDetail = new MethaBookBookingDetail();
             try
             {
-                string Url = Convert.ToString(MethaBookDetails[0]["WebSiteURL"]) + "/Bookings/v1.0/";
+                string Url = Convert.ToString(MethaBookDetails[0]["WebSiteURL"]) + _supplierConfig.IBoosy.Bookingurl;
                 string UserName = Convert.ToString(MethaBookDetails[0]["UserName"]);
                 string Password = Convert.ToString(MethaBookDetails[0]["PassWord"]);
                 bookingStatus = 1;
@@ -1818,7 +1825,7 @@ namespace XConnect.Supplier
 
         public async Task<int> MethaBookCancellationProcess(string AgentVoucheNo, DataRow[] MethaBookDetails, string rerefenceNo, DataSet dsCartDetails, int bookingStatus)
         {
-            string CancelUrl = "/Bookings/v1.0/Cancel/" + AgentVoucheNo;
+            string CancelUrl = _supplierConfig.IBoosy.Cancel + AgentVoucheNo;
             _commonMethod.ThirdPartyCancellationHistory(AgentVoucheNo, ""/*Convert.ToString(HttpContext.Current.Session["UserName"])*/, Convert.ToString(MethaBookDetails[0]["WebSiteURL"]) + Convert.ToString(CancelUrl), "-", "Before Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Request Confirm", rerefenceNo, "WithinEarth");
             string Error = "";
             ResponseDto responseDto = await MethaBookResponseNew(CancelUrl, Convert.ToString(MethaBookDetails[0]["WebSiteURL"]), Convert.ToString(MethaBookDetails[0]["UserName"]), Convert.ToString(MethaBookDetails[0]["Password"]), 60000, "PUT", "", false);

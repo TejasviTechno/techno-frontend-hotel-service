@@ -1734,8 +1734,12 @@ namespace XConnect.Supplier.Hyperguest
                                         //    continue;
                                         //}
                                         //end
+                                        if (currency.ToLower() != commonSearch.tokenData.SiteCurrency.ToLower())
+                                        {
+                                            CurrencyFactor = _commonMethod.GetROEByCurrency(currency, dtROE);
+                                        }
 
-                                        CurrencyFactor = _commonMethod.GetROEByCurrency(currency, dtROE);
+                                       
 
                                         foreach (var roomTypeCode1 in distinctRoomTypeCodes)
                                         {
@@ -2035,7 +2039,11 @@ namespace XConnect.Supplier.Hyperguest
                                                                 //    continue;
                                                                 //}
                                                                 //end
-                                                                CurrencyFactorhyperguest = _commonMethod.GetROEByCurrency(currency, dtROE);
+                                                                if (currency.ToLower() != commonSearch.tokenData.SiteCurrency.ToLower())
+                                                                {
+                                                                    CurrencyFactorhyperguest = _commonMethod.GetROEByCurrency(currency, dtROE);
+                                                                }
+                                                                
                                                                 for (int x = 0; x < SearchParam.Rooms.Count; x++)
                                                                 {
                                                                     List<HyperguestClass.hyperguest.HotelList1.RatePlan> roomlist = filteredRooms[roomlist1[x]].ratePlans.Where(rp1 => rp1.ratePlanCode == rateplancode).ToList();

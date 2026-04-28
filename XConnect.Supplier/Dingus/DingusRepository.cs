@@ -133,8 +133,8 @@ namespace XConnect.Supplier.Dingus
                                                         }
                                                         Xhotel.RQRS = RQRS;
                                                         #endregion
-                                                        Xhotel.ReturnRooms = 5; // IWTXDetails[0].ReturnRooms; //190225
-                                                        Xhotel.TechName = DingusDetails[0].TechName; //190225
+                                                        Xhotel.ReturnRooms = DingusDetails[0].ReturnRooms; 
+                                                        Xhotel.TechName = DingusDetails[0].TechName;
                                                         AllTask.Add(Xhotel);
                                                     }
                                                 }
@@ -694,8 +694,8 @@ namespace XConnect.Supplier.Dingus
                                                     string Dingus_Currency = Convert.ToString(drTotal[0]["CurrencyCode"]);
                                                     //added on 19-02-2025 #40209
                                                     double CurrencyFactor1 = 1;
-                                                    if (Dingus_Currency.ToLower() == "ars" || Dingus_Currency.ToLower() == "usd" || Dingus_Currency.ToLower() == "eur" || Dingus_Currency.ToLower() == "brl")
-                                                    {
+                                                  //  if (Dingus_Currency.ToLower() == "ars" || Dingus_Currency.ToLower() == "usd" || Dingus_Currency.ToLower() == "eur" || Dingus_Currency.ToLower() == "brl")
+                                                   // {
                                                         if (Dingus_Currency.ToLower() != commonSearch.tokenData.SiteCurrency.ToLower())
                                                         {
                                                             if (Dingus_Currency.ToLower() == "ars")
@@ -708,11 +708,11 @@ namespace XConnect.Supplier.Dingus
                                                         }
                                                         else
                                                             itemprice = itemprice * CurrencyFactor1;
-                                                    }
-                                                    else
-                                                    {
-                                                        continue;
-                                                    }
+                                                  //  }
+                                                    //else
+                                                    //{
+                                                    //    continue;
+                                                    //}
                                                     //end
                                                     //int Adult = Convert.ToInt32(SearchParam.Rooms[x].NoofAdults);
                                                     //int Child = Convert.ToInt32(SearchParam.Rooms[x].NoofChild);
@@ -722,62 +722,62 @@ namespace XConnect.Supplier.Dingus
                                                     string roomTypeId = Convert.ToString(10 + "$$$" + RoomTypeCode + "$$$" + MealPlanCodes + "$$$" + RatePlanID + "$$$" + RatePlanCode + "$$$" + HotelCode + "$$$" + PromotionCode + "$$$" + ChainCode);
                                                     string uniqid = Guid.NewGuid().ToString();
                                                     #region RateBrekUp
-                                                    double Night_Price = 0.0;
+                                                    //double Night_Price = 0.0;
 
-                                                    for (int m = 0; m < SearchParam.NoofNights; m++)
-                                                    {
-                                                        Night_Price = itemprice / SearchParam.NoofNights;
-                                                        string newCheckInDate = Convert.ToString(SearchParam.CheckInDate);
-                                                        string newCheckOutDate = Convert.ToString(SearchParam.CheckOutDate);
-                                                        DateTime dtCheckInDate = DateTime.ParseExact(newCheckInDate, "dd/MM/yyyy", null);
-                                                        DateTime dtCheckOutDate = DateTime.ParseExact(newCheckOutDate, "dd/MM/yyyy", null);
-                                                        TimeSpan t = dtCheckOutDate - dtCheckInDate;
-                                                        #region Vat
-                                                        Double VatOnRateBrackUp = 0;
-                                                        double Pricenew_wl = 0;
+                                                    //for (int m = 0; m < SearchParam.NoofNights; m++)
+                                                    //{
+                                                    //    Night_Price = itemprice / SearchParam.NoofNights;
+                                                    //    string newCheckInDate = Convert.ToString(SearchParam.CheckInDate);
+                                                    //    string newCheckOutDate = Convert.ToString(SearchParam.CheckOutDate);
+                                                    //    DateTime dtCheckInDate = DateTime.ParseExact(newCheckInDate, "dd/MM/yyyy", null);
+                                                    //    DateTime dtCheckOutDate = DateTime.ParseExact(newCheckOutDate, "dd/MM/yyyy", null);
+                                                    //    TimeSpan t = dtCheckOutDate - dtCheckInDate;
+                                                    //    #region Vat
+                                                    //    Double VatOnRateBrackUp = 0;
+                                                    //    double Pricenew_wl = 0;
 
-                                                        double VatOnPerNight = 0;
-                                                        double VatonfirstnightPrice = 0;
-                                                        double ratePerNight = 0;
+                                                    //    double VatOnPerNight = 0;
+                                                    //    double VatonfirstnightPrice = 0;
+                                                    //    double ratePerNight = 0;
 
-                                                        if (TaxPer != 0)
-                                                            Night_Price = CalculateAmountWithTax(Night_Price, TaxPer);
+                                                    //    if (TaxPer != 0)
+                                                    //        Night_Price = CalculateAmountWithTax(Night_Price, TaxPer);
 
-                                                        ratePerNight = _markup.ProcessHotelRateBreakupPrice_WithMarkup(1, SearchParam.CityID, SearchParam.CountryID.ToString(), Night_Price, B2CMarkup, IsParentId, isPerce, AgentPercentage, AgentMarkupAmount, SubAgentMarkup, ref VatOnPerNight);
-                                                        #endregion
-
-
+                                                    //    ratePerNight = _markup.ProcessHotelRateBreakupPrice_WithMarkup(1, SearchParam.CityID, SearchParam.CountryID.ToString(), Night_Price, B2CMarkup, IsParentId, isPerce, AgentPercentage, AgentMarkupAmount, SubAgentMarkup, ref VatOnPerNight);
+                                                    //    #endregion
 
 
-                                                        VatonfirstnightPrice += VatOnPerNight;
-                                                        DataRow drHotelBedsV1RoomRateBreackUp = dtHotelBedsV1RoomRateBreakup.NewRow();
-                                                        drHotelBedsV1RoomRateBreackUp["SupplierName"] = Provider;
-                                                        drHotelBedsV1RoomRateBreackUp["OwnsystemHotelId"] = ownsystemhotelId;
-                                                        drHotelBedsV1RoomRateBreackUp["ContractID"] = 0;
-                                                        drHotelBedsV1RoomRateBreackUp["RoomNo"] = RoomNo;
-                                                        drHotelBedsV1RoomRateBreackUp["RoomTypeId"] = roomTypeId;
-                                                        drHotelBedsV1RoomRateBreackUp["MealId"] = MealPlanDescription;
-                                                        drHotelBedsV1RoomRateBreackUp["Meal"] = MealPlanDescription;
-                                                        string rateWeekColumn = Convert.ToString(dtCheckInDate.Date.AddDays(m).DayOfWeek).Substring(0, 3);
-                                                        drHotelBedsV1RoomRateBreackUp["DateOfWeek"] = rateWeekColumn;
-                                                        DateTime rateDate = dtCheckInDate.Date.AddDays(m);
-                                                        drHotelBedsV1RoomRateBreackUp["Date"] = rateDate;
-                                                        drHotelBedsV1RoomRateBreackUp["Rate"] = ratePerNight;
-                                                        drHotelBedsV1RoomRateBreackUp["Rate"] = Pricenew_wl;
-                                                        drHotelBedsV1RoomRateBreackUp["OrderNo"] = 1;
-                                                        drHotelBedsV1RoomRateBreackUp["RoomTypeName"] = RoomName;
-                                                        drHotelBedsV1RoomRateBreackUp["RoomSequenceNo"] = uniqid;
-                                                        drHotelBedsV1RoomRateBreackUp["DateOfWeek"] = rateWeekColumn;
-                                                        drHotelBedsV1RoomRateBreackUp["Date"] = rateDate;
-                                                        drHotelBedsV1RoomRateBreackUp["BookingStatus"] = "Available";
-                                                        drHotelBedsV1RoomRateBreackUp["BoardTypeID"] = "";
-                                                        drHotelBedsV1RoomRateBreackUp["VatdiffAmount"] = VatOnPerNight;
-                                                        drHotelBedsV1RoomRateBreackUp["RateType"] = "A Rate";
-                                                        drHotelBedsV1RoomRateBreackUp["SupplierCurrency"] = Currency;
-                                                        drHotelBedsV1RoomRateBreackUp["BuyingPrice"] = ratePerNight / CurrencyFactor;
-                                                        //drHotelBedsV1RoomRateBreackUp["BuyingPrice_wl"] = ratePerNight / CurrencyFactor;
-                                                        dtHotelBedsV1RoomRateBreakup.Rows.Add(drHotelBedsV1RoomRateBreackUp);
-                                                    }
+
+
+                                                    //    VatonfirstnightPrice += VatOnPerNight;
+                                                    //    DataRow drHotelBedsV1RoomRateBreackUp = dtHotelBedsV1RoomRateBreakup.NewRow();
+                                                    //    drHotelBedsV1RoomRateBreackUp["SupplierName"] = Provider;
+                                                    //    drHotelBedsV1RoomRateBreackUp["OwnsystemHotelId"] = ownsystemhotelId;
+                                                    //    drHotelBedsV1RoomRateBreackUp["ContractID"] = 0;
+                                                    //    drHotelBedsV1RoomRateBreackUp["RoomNo"] = RoomNo;
+                                                    //    drHotelBedsV1RoomRateBreackUp["RoomTypeId"] = roomTypeId;
+                                                    //    drHotelBedsV1RoomRateBreackUp["MealId"] = MealPlanDescription;
+                                                    //    drHotelBedsV1RoomRateBreackUp["Meal"] = MealPlanDescription;
+                                                    //    string rateWeekColumn = Convert.ToString(dtCheckInDate.Date.AddDays(m).DayOfWeek).Substring(0, 3);
+                                                    //    drHotelBedsV1RoomRateBreackUp["DateOfWeek"] = rateWeekColumn;
+                                                    //    DateTime rateDate = dtCheckInDate.Date.AddDays(m);
+                                                    //    drHotelBedsV1RoomRateBreackUp["Date"] = rateDate;
+                                                    //    drHotelBedsV1RoomRateBreackUp["Rate"] = ratePerNight;
+                                                    //    drHotelBedsV1RoomRateBreackUp["Rate"] = Pricenew_wl;
+                                                    //    drHotelBedsV1RoomRateBreackUp["OrderNo"] = 1;
+                                                    //    drHotelBedsV1RoomRateBreackUp["RoomTypeName"] = RoomName;
+                                                    //    drHotelBedsV1RoomRateBreackUp["RoomSequenceNo"] = uniqid;
+                                                    //    drHotelBedsV1RoomRateBreackUp["DateOfWeek"] = rateWeekColumn;
+                                                    //    drHotelBedsV1RoomRateBreackUp["Date"] = rateDate;
+                                                    //    drHotelBedsV1RoomRateBreackUp["BookingStatus"] = "Available";
+                                                    //    drHotelBedsV1RoomRateBreackUp["BoardTypeID"] = "";
+                                                    //    drHotelBedsV1RoomRateBreackUp["VatdiffAmount"] = VatOnPerNight;
+                                                    //    drHotelBedsV1RoomRateBreackUp["RateType"] = "A Rate";
+                                                    //    drHotelBedsV1RoomRateBreackUp["SupplierCurrency"] = Currency;
+                                                    //    drHotelBedsV1RoomRateBreackUp["BuyingPrice"] = ratePerNight / CurrencyFactor;
+                                                    //    //drHotelBedsV1RoomRateBreackUp["BuyingPrice_wl"] = ratePerNight / CurrencyFactor;
+                                                    //    dtHotelBedsV1RoomRateBreakup.Rows.Add(drHotelBedsV1RoomRateBreackUp);
+                                                    //}
 
                                                     #endregion
 
@@ -792,7 +792,7 @@ namespace XConnect.Supplier.Dingus
                                                     double mainbuy = itemprice;
 
 
-                                                    _markup.ProcessHotelRoom_WithMarkup_nites(CurrencyFactor, Currency, false, false, SearchParam.NoofNights, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref itemprice, ref drHotelBedsV1Room, isPerce, AgentPercentage, AgentMarkupAmount, SubAgentMarkup, B2CMarkup, IsParentId, SupplierID, GiataId, dsAgentDetails, dtVatHotelList);
+                                                    _markup.ProcessHotelRoom_WithMarkup(CurrencyFactor, Currency, false, false, SearchParam.NoofNights, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref itemprice, ref drHotelBedsV1Room, isPerce, AgentPercentage, AgentMarkupAmount, SubAgentMarkup, B2CMarkup, IsParentId);
 
                                                     #endregion
 
@@ -817,7 +817,7 @@ namespace XConnect.Supplier.Dingus
                                                     drHotelBedsV1Room["OfferDescription"] = PromotionName;
                                                     drHotelBedsV1Room["RoomTypeName"] = RoomName;
                                                     drHotelBedsV1Room["RoomTypeId"] = roomTypeId;
-                                                    drHotelBedsV1Room["FinalSellingPrice"] = mainbuy; //03042026
+                                                  //  drHotelBedsV1Room["FinalSellingPrice"] = mainbuy; //03042026
                                                     //drHotelBedsV1Room["CompanyBuyingPrice"] = TotalCharges;
                                                     dtHotelBedsV1Room.Rows.Add(drHotelBedsV1Room);
 
@@ -985,18 +985,18 @@ namespace XConnect.Supplier.Dingus
                     //    room1Price = room1Price * CurrencyFactor1;
                     //}
                     //added on 19-02-2024 #40209
-                    if (Dingus_Currency1.ToLower() == "ars" || Dingus_Currency1.ToLower() == "usd" || Dingus_Currency1.ToLower() == "eur" || Dingus_Currency1.ToLower() == "brl")
-                    {
+                   // if (Dingus_Currency1.ToLower() == "ars" || Dingus_Currency1.ToLower() == "usd" || Dingus_Currency1.ToLower() == "eur" || Dingus_Currency1.ToLower() == "brl")
+                    //{
                         if (Dingus_Currency1.ToLower() != commonSearch.tokenData.SiteCurrency.ToLower())
                         {
                             double CurrencyFactor1 = _commonMethod.GetROEByCurrency(Dingus_Currency1, dtROE);
                             room1Price = room1Price * CurrencyFactor1;
                         }
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                   // }
+                   // else
+                   // {
+                   //     continue;
+                    //}
                     //end
 
                     if (j == 0)
@@ -1603,12 +1603,7 @@ namespace XConnect.Supplier.Dingus
 
                 GiataId = Convert.ToString(dsCartDetails.Tables[0].Rows[0]["GiataId"]); //added 
 
-                string DingusCurrency = Convert.ToString(DingusDetails[0]["CurrencyShortName"]);
-                double CurrencyFactorDingus = 1;
-                if (DingusCurrency.ToLower() != tokenData.SiteCurrency.ToLower())
-                {
-                    CurrencyFactorDingus = _commonMethod.GetROEByCurrency(DingusCurrency, tokenData.dtROE);
-                }
+               
 
                 DataSet dsTemp = new DataSet();
                 string DingusUrl = Convert.ToString(DingusDetails[0]["WebSiteURL"]);
@@ -1616,10 +1611,7 @@ namespace XConnect.Supplier.Dingus
                 string UserName = Convert.ToString(DingusDetails[0]["UserName"]);
                 string Password = Convert.ToString(DingusDetails[0]["Password"]);
                 string RoomId = "";
-                //DateTime CheckInDate = Convert.ToDateTime(dsCartDetails.Tables[0].Rows[0]["StrCheckInDate"]);
-                //DateTime CheckOutDate = Convert.ToDateTime(dsCartDetails.Tables[0].Rows[0]["StrCheckOutDate"]);
-                //string checkIn = String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(CheckInDate, "dd/MM/yyyy", null));
-                //string checkOut = String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(CheckOutDate, "dd/MM/yyyy", null));
+               
                 string HotelCode = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["XMLHotelId"]);
 
                 string CheckIn = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]);
@@ -1639,12 +1631,12 @@ namespace XConnect.Supplier.Dingus
 
                 ResponseDto responseDto = await Get_Dingus_Response(DingusUrl, Request, supplierName, Error);
 
-                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), Request, ResponseData + Error, "After Request hit Price Check" + IsFor, Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Response Confirm", "-", "WithInEarth");
-
+                
                 RequestSPR = Request;
                 ResponseData = responseDto.Response;
                 Error = responseDto.Error;
 
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), Request, ResponseData + Error, "After Request hit Price Check" + IsFor, Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Response Confirm", "-", "WithInEarth");
 
                 if (ResponseData.ToLower().Contains("errors") || ResponseData.Trim() == "")
                 {
@@ -1659,6 +1651,7 @@ namespace XConnect.Supplier.Dingus
                         _ = _exception.Error(e, Searchkey);
                     }
                     #endregion
+                    priceCheckDingus.Flag = true;
                     return priceCheckDingus;
                 }
 
@@ -1677,6 +1670,7 @@ namespace XConnect.Supplier.Dingus
                         _ = _exception.Error(e, Searchkey);
                     }
                     #endregion
+                    priceCheckDingus.Flag = true;
                     return priceCheckDingus;
                 }
 
@@ -1694,24 +1688,32 @@ namespace XConnect.Supplier.Dingus
                         {
                             double FinalPriceMain = 0;
                             double FinalPriceTemp = Convert.ToDouble(drTotal[0]["AmountAfterTax"]);
-                            string Currency = Convert.ToString(drTotal[0]["CurrencyCode"]);
+                            string DingusCurrency = Convert.ToString(drTotal[0]["CurrencyCode"]);
 
 
-                            if (Currency.ToLower() != "usd")
+                            //if (Currency.ToLower() != "usd")
+                            //{
+                            //    DataTable dtInrCurrency1 = _commonMethod.GetCountryCurrency(Currency);
+                            //    double CurrencyFactorAdonis1 = Convert.ToDouble(dtInrCurrency1.Rows[0]["AmtToExch"]);
+                            //    FinalPriceMain = FinalPriceTemp * CurrencyFactorAdonis1;
+
+                            //}
+                            //else
+                            //{
+                            //    FinalPriceMain = FinalPriceTemp * CurrencyFactorDingus;
+                            //}
+
+                           
+                            double CurrencyFactorDingus = 1;
+                            if (DingusCurrency.ToLower() != tokenData.SiteCurrency.ToLower())
                             {
-                                DataTable dtInrCurrency1 = _commonMethod.GetCountryCurrency(Currency);
-                                double CurrencyFactorAdonis1 = Convert.ToDouble(dtInrCurrency1.Rows[0]["AmtToExch"]);
-                                FinalPriceMain = FinalPriceTemp * CurrencyFactorAdonis1;
-
+                                CurrencyFactorDingus = _commonMethod.GetROEByCurrency(DingusCurrency, tokenData.dtROE);
                             }
-                            else
-                            {
-                                FinalPriceMain = FinalPriceTemp * CurrencyFactorDingus;
-                            }
-
+                            FinalPriceMain= FinalPriceTemp * CurrencyFactorDingus;
                             itemprice = Convert.ToDouble(FinalPriceMain);
 
                             itemprice = Convert.ToDouble(Math.Round(itemprice, 2));
+                            priceCheckDingus.ItemPrice = itemprice;
                             if (Convert.ToDouble(Math.Round(itemprice.TruncateDecimalPlaces(0))) > Math.Round(CompanyBuyPrice.TruncateDecimalPlaces(0)))
                             {
                                 #region SupplierPerformanceReportForPrebook
@@ -1726,6 +1728,7 @@ namespace XConnect.Supplier.Dingus
                                     _ = _exception.Error(e, Searchkey);
                                 }
                                 #endregion
+                                priceCheckDingus.Flag = true;
                                 return priceCheckDingus;
                             }
                         }
@@ -1742,6 +1745,7 @@ namespace XConnect.Supplier.Dingus
                                 _ = _exception.Error(e, Searchkey);
                             }
                             #endregion
+                            priceCheckDingus.Flag = true;
                             return priceCheckDingus;
                         }
                     }
@@ -1758,6 +1762,7 @@ namespace XConnect.Supplier.Dingus
                             _ = _exception.Error(e, Searchkey);
                         }
                         #endregion
+                        priceCheckDingus.Flag = true;
                         return priceCheckDingus;
                     }
 
@@ -1775,6 +1780,7 @@ namespace XConnect.Supplier.Dingus
                         _ = _exception.Error(e, Searchkey);
                     }
                     #endregion
+                    priceCheckDingus.Flag = true;
                     return priceCheckDingus;
                 }
                 #region SupplierPerformanceReportForPrebook
@@ -1795,6 +1801,7 @@ namespace XConnect.Supplier.Dingus
                 _ = _exception.Error(e, Searchkey);
                 IsError = true;
             }
+            priceCheckDingus.Flag = false;
             return priceCheckDingus;
         }
 
@@ -2099,8 +2106,6 @@ namespace XConnect.Supplier.Dingus
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
 
-
-
             string strOutput = "";
             try
             {
@@ -2117,6 +2122,8 @@ namespace XConnect.Supplier.Dingus
                 Request.ContentLength = data.Length;
                 newStream = Request.GetRequestStream();
                 newStream.Write(data, 0, data.Length);
+
+
                 try
                 {
                     HttpWebResponse Response = (HttpWebResponse)Request.GetResponse();
@@ -2131,6 +2138,8 @@ namespace XConnect.Supplier.Dingus
                     Reader.Close();
                     Response.Close();
                 }
+
+
                 catch (WebException we)
                 {
                     HttpWebResponse httpResponse = (HttpWebResponse)we.Response;
@@ -2144,15 +2153,19 @@ namespace XConnect.Supplier.Dingus
                     Error = result1;
                    
                 }
+
             }
             catch (Exception ex)
             {
                 Error = ex.Message.ToString();
             }
-
+            responseDto.Response = strOutput;
+            responseDto.Error = Error;
             return responseDto;
 
         }
+
+      
 
 
     }
