@@ -421,6 +421,8 @@ namespace XConnect.Markup
                     // if (Supplier.ToLower() == "etg_b2b_tp" || Supplier.ToLower() == "etg_b2b_dc")
                     if (Supplier.IndexOf("etg_") >= 0)
                             Supplier = "ratehawk";
+                    if (Supplier.IndexOf("GoGlobal") >= 0)
+                        Supplier = "GoGlobal";
                     //need 
                     double AgentMarkupAmount = 0.0;
                     Boolean isPerce = true;
