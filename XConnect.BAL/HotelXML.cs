@@ -16216,7 +16216,6 @@ new SqlParameter("@AgentId", AgentId),
                     drUserCart["PackageId"] = objdata.PackageId == null ? "0" : Convert.ToString(objdata.PackageId);
                     drUserCart["IsVouchered"] = Convert.ToString(objdata.IsVouchered);
                     drUserCart["Percentage"] = Convert.ToDouble(objdata.Percentage);
-                    drUserCart["ISPricechangeActive"] = objdata.ISPricechangeActive;
                     dtUserCart.Rows.Add(drUserCart);
 
                     DataTable dtUserCartDetails = _commonMethod.UserCartDetailsTableStructure();
