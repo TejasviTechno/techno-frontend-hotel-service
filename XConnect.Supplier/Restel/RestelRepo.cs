@@ -194,8 +194,9 @@ namespace XConnect.Supplier.Restel
         {
             try
             {
-                string checkIn = String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(searchParam.CheckInDate, "dd/MM/yyyy", null));
-                string checkOut = String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(searchParam.CheckOutDate, "dd/MM/yyyy", null));
+                string checkIn = searchParam.CheckInDateSubstring;//String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(searchParam.CheckInDate, "dd/MM/yyyy", null));
+                string checkOut = searchParam.CheckOutDateSubstring;//String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(searchParam.CheckOutDate, "dd/MM/yyyy", null));
+
                 StringBuilder roomstring = new StringBuilder();
 
                 //IdsForSearch = "889954,415813,270988,138925,416317,365541,370310,323382,271620,100450,889952,100485,908568,477200,367467,453789,306586,150209,120026,120198,416241,889959,959633,906918,272777,068085,889900,342824,306674,067139,962985,272771,387976,889221,423630,444539,959632,436798,416409,120199,356711,907568,270393,305960,444534,904648,109420,270975,404896,805555";
