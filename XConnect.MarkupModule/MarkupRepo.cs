@@ -413,8 +413,10 @@ namespace XConnect.Markup
                         Supplier = "getaroom";
                     if (Supplier.Contains("iolv2"))
                         Supplier = "IWTX2";
-                    else if (Supplier.Contains("iol"))
+                     if (Supplier.Contains("iol"))
                         Supplier = "IWTX";
+                     if (Supplier.ToLower() == "bedsopia")
+                        Supplier = "PrimeTravel";
                     if (Supplier.IndexOf("hotelbeds") >= 0)
                         Supplier = "hotelbedsv1";
                     // if (Supplier.ToLower() == "iol_b2c" || Supplier.ToLower() == "iolx3_b2b" || Supplier.ToLower() == "iol_cug" || Supplier.ToLower() == "iol_b2b")
@@ -426,6 +428,7 @@ namespace XConnect.Markup
                     {
                         Supplier = "GoGlobal";
                     }
+                    
                     //need 
                     double AgentMarkupAmount = 0.0;
                     Boolean isPerce = true;

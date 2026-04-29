@@ -456,9 +456,9 @@ namespace XConnect.Supplier.IWTX
             {
 
                 string CheckIn = searchParam.CheckInDate;
-                CheckIn = DateTime.ParseExact(searchParam.CheckInDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyyMMdd");
+                CheckIn = searchParam.CheckInDateSubstring; //DateTime.ParseExact(searchParam.CheckInDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyyMMdd");
                 string CheckOut = searchParam.CheckOutDate;
-                CheckOut = DateTime.ParseExact(searchParam.CheckOutDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyyMMdd");
+                CheckOut = searchParam.CheckOutDateSubstring; //DateTime.ParseExact(searchParam.CheckOutDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyyMMdd");
                 string Request = "";
                 StringBuilder HSreq = new StringBuilder();
                 HSreq.Append("<HotelSearchRequest>");

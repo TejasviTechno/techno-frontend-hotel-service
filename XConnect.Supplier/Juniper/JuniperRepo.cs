@@ -93,7 +93,7 @@ namespace XConnect.Supplier.Juniper
                                             _commonMethod.GetPrefferedHotelCodes(ref Ids, ref xmlbase, ref JuniperSearchConfig, Supplier, dtPreferredDataHotel, SearchPara.IsSearchFor);
 
                                             List<HotelCodeByCity> filter = new List<HotelCodeByCity>();
-                                            filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
+                                            filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, JuniperChild.HotelSupplier);
 
 
                                             string Currency = JuniperChild.CurrencyShortName;
