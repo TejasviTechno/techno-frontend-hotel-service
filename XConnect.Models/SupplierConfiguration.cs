@@ -25,6 +25,7 @@ namespace XConnect.Models
         public QtechConfig Qtech { get; set; }
         public HyperguestConfig Hyperguest { get; set; }
         public WelcomebedsConfig Welcomebeds { get; set; }
+        public ExelyConfig Exely { get; set; }
     }
 
     public class ExpediaConfig
@@ -245,5 +246,19 @@ namespace XConnect.Models
         public string Welcomebeds_BookingURL { get; set; }
         public string Welcomebeds_CancelURL { get; set; }
 
+    }
+
+    public class ExelyConfig
+    {
+        public string BaseUrl { get; set; }
+        public string SearchRoomStays { get; set; }
+        public string VerifyBooking { get; set; }
+        public string CreateBooking { get; set; }
+        public string GetBooking { get; set; }
+        public string CalculateCancellationPenalty { get; set; }
+        public string CancelBooking { get; set; }
+        public string GetCancellationRulesByProperty { get; set; }
+        public string GetRoomStaysByProperty { get; set; }
+        public string? PropertyContent { get; set; }
     }
 }
