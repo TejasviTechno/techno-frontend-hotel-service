@@ -159,6 +159,8 @@ using XConnect.Supplier.Dingus.Interface;
 using XConnect.Supplier.Welcomebeds;
 using XConnect.Supplier.Welcomebeds.Interface;
 using XConnect.Supplier.Dingus;
+using XConnect.Supplier.Exely;
+using XConnect.Supplier.Exely.Interface;
 //using static XConnect.Supplier.Omnibees.OmnibeesCancelRQ;
 //using System.Text.Json;
 
@@ -183,6 +185,7 @@ namespace Xconnect.BLL
         private static ConnectionMultiplexer? _redis;
 
         private readonly IVCN _vcn;
+        private readonly IConfiguration _configuration;
 
         private readonly SupplierConfiguration _supplierConfig;
         private readonly IAnalytics _analytic;
@@ -236,6 +239,7 @@ namespace Xconnect.BLL
         private readonly IAkbartravel _akbartravel;
         private readonly IDingus _dingus;
         private readonly IWelcomebeds _welcomebeds;
+        private readonly IExely _iExely;
 
 
         private readonly ISiteMinder _siteMinder;
@@ -251,7 +255,7 @@ namespace Xconnect.BLL
 
 
 
-        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices, IWelcomebeds welcomebeds)
+        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices, IWelcomebeds welcomebeds, IExely iExely, IConfiguration configuration)
         {
             _dlConnection = dlConnection;
             _cache = cache;
@@ -323,6 +327,8 @@ namespace Xconnect.BLL
             _dingus = dingus;
             _remoteServices = remoteServices.Value;
             _welcomebeds = welcomebeds;
+            _iExely = iExely;
+            _configuration = configuration;
         }
 
         #region Static Data - used
@@ -1593,6 +1599,7 @@ namespace Xconnect.BLL
                 List<SupplierDetails> akbartravel_details = new List<SupplierDetails>();
                 List<SupplierDetails> Dingus_details = new List<SupplierDetails>();
                 List<SupplierDetails> WelcomebedsDetails = new List<SupplierDetails>();
+                List<SupplierDetails> Exely_Details = new List<SupplierDetails>();
 
                 //-----------------------------------------------------------------------------------
 
@@ -1668,6 +1675,7 @@ namespace Xconnect.BLL
                 List<SupplierSearchConfig> akbartravel_SearchConfig = new List<SupplierSearchConfig>();
                 List<SupplierSearchConfig> Dingus_SearchConfig = new List<SupplierSearchConfig>();
                 List<SupplierSearchConfig> WelcomebedsSearchConfig = new List<SupplierSearchConfig>();
+                List<SupplierSearchConfig> Exely_SearchConfig = new List<SupplierSearchConfig>();
 
 
                 int degreeOfParallelism = Environment.ProcessorCount;
@@ -2028,7 +2036,10 @@ namespace Xconnect.BLL
                                         WelcomebedsDetails.Add(item);
                                         WelcomebedsSearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
                                         break;
-
+                                    case "exely":
+                                        Exely_Details.Add(item);
+                                        Exely_SearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
+                                        break;
                                     default:
                                         break;
 
@@ -2085,7 +2096,7 @@ namespace Xconnect.BLL
                 string SearchParaCheck = SearchPara.IsSearchFor.ToLower();
                 #endregion
 
-                Parallel.For(1, 57, workerId =>
+                Parallel.For(1, 58, workerId =>
                 {
                     switch (workerId)
                     {
@@ -2528,11 +2539,11 @@ namespace Xconnect.BLL
                                 if ((SearchPara.IsSearchFor.ToLower().IndexOf("omnibees") >= 0 || SearchPara.IsSearchFor.ToLower().IndexOf("multi") >= 0) && HitFromAll)
                                 {
                                     DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchTechwise(SearchPara.Nationality, dtXMLCity, "omnibees", "omnibees");
-                                      if (OmnibeesSearchConfig != null && OmnibeesSearchConfig.Count > 0 && OmnibeesSearchConfig.Count > 0)
-                                      {
-                                            _omnibees.GetOmnibeesRequestOnly_async_new(commonSearchList.commonHotelCodes.Omnibees_Codes, lstRating, SearchPara, OmnibeesDetails, OmnibeesSearchConfig, dtPreferredDataHotel, ref AllTask, dataForSearch.xmlCity, dataForSearch.XmlNationality, hit, dtXMLCity, dtROE, tokenData);
+                                    if (OmnibeesSearchConfig != null && OmnibeesSearchConfig.Count > 0 && OmnibeesSearchConfig.Count > 0)
+                                    {
+                                        _omnibees.GetOmnibeesRequestOnly_async_new(commonSearchList.commonHotelCodes.Omnibees_Codes, lstRating, SearchPara, OmnibeesDetails, OmnibeesSearchConfig, dtPreferredDataHotel, ref AllTask, dataForSearch.xmlCity, dataForSearch.XmlNationality, hit, dtXMLCity, dtROE, tokenData);
 
-                                      }
+                                    }
                                 }
                             }
                             #endregion
@@ -2988,6 +2999,17 @@ namespace Xconnect.BLL
                                 if (commonSearchList.commonHotelCodes.Welcomebeds_Codes != null)
                                 {
                                     _welcomebeds.GetwelcomebedsRequestOnly_Async(commonSearchList.commonHotelCodes.Welcomebeds_Codes, lstRating, SearchPara, WelcomebedsDetails, WelcomebedsSearchConfig, dtPreferredDataHotel, ref AllTask, hit, dtROE, dtXMLCity, tokenData);
+                                }
+                            }
+                            #endregion
+                            break;
+                        case 57:
+                            #region "Exely"
+                            if (Exely_Details != null)
+                            {
+                                if (commonSearchList.commonHotelCodes != null && commonSearchList.commonHotelCodes.Exely_Codes != null)
+                                {
+                                    _iExely.GetExelyRequestOnly_Async(commonSearchList.commonHotelCodes.Exely_Codes, lstRating, dtPreferredDataHotel, SearchPara, Exely_SearchConfig, Exely_Details, ref AllTask, AgentCode, hit, tokenData, dtXMLCity, advancedOptions);
                                 }
                             }
                             #endregion
@@ -5107,6 +5129,9 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                                             case "dingus":
                                                                 response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL, item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType, item.UserId).ConfigureAwait(false);
                                                                 break;
+                                                            case "exely":
+                                                                response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL, item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType, "", (Supplier.ToLower() == "exely")).ConfigureAwait(false);
+                                                                break;
                                                             #endregion
                                                             default:
                                                                 break;
@@ -5430,13 +5455,13 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     //}
                                     //else/* if (Supplier == "hotelbedsv1_new")*/
                                     //{
-                                        dataTable.Add(Task.Run(async () =>
-                                        {
-                                            var result = await _hotelbeds.hotelbedsv1_new_HotelSearchWithRooms(SearchByOneID, item, commonSearch, item.RQRS, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, withcancellation, StoreSupplierResErrorLog);
-                                            item.dtHotelRoom = result;
-                                            return result;
-                                        }));
-                                   // }
+                                    dataTable.Add(Task.Run(async () =>
+                                    {
+                                        var result = await _hotelbeds.hotelbedsv1_new_HotelSearchWithRooms(SearchByOneID, item, commonSearch, item.RQRS, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, withcancellation, StoreSupplierResErrorLog);
+                                        item.dtHotelRoom = result;
+                                        return result;
+                                    }));
+                                    // }
                                     break;
                                 case "qtech":
                                     dataTable.Add(Task.Run(async () =>
@@ -5514,13 +5539,13 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     //}
                                     //else
                                     //{
-                                        dataTable.Add(Task.Run(async () =>
-                                        {
-                                            var result = await _hyperguest.hyperguestHotelSearchWithRooms_Multiroom(item, commonSearch, item.RQRS[0].Response, item.XmlCity, SearchPara, item.CurrencyFactor, item.Supplier, dsAgentDetails, dtMarkupDetails, item.CurrencyCode, dtROE, item.XmlNationality, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
-                                            item.dtHotelRoom = result;
-                                            return result;
-                                        }));
-                                   // }
+                                    dataTable.Add(Task.Run(async () =>
+                                    {
+                                        var result = await _hyperguest.hyperguestHotelSearchWithRooms_Multiroom(item, commonSearch, item.RQRS[0].Response, item.XmlCity, SearchPara, item.CurrencyFactor, item.Supplier, dsAgentDetails, dtMarkupDetails, item.CurrencyCode, dtROE, item.XmlNationality, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
+                                        item.dtHotelRoom = result;
+                                        return result;
+                                    }));
+                                    // }
 
                                     break;
                                 case "booking.com":
@@ -5791,6 +5816,14 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                         return result;
                                     }));
                                     break;
+                                case "exely":
+                                    dataTable.Add(Task.Run(async () =>
+                                    {
+                                        var result = await _iExely.Exely_HotelSearchWithRooms(item, commonSearch, item.RQRS[0].Response, SearchPara, item.XmlCity, item.XmlCountry, item.XmlNationality, item.CurrencyCode, item.CurrencyFactor, dtROE, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
+                                        item.dtHotelRoom = result;
+                                        return result;
+                                    }));
+                                    break;
                                 default:
                                     break;
                             }
@@ -5800,7 +5833,8 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
 
                             throw;
                         }
-                    };
+                    }
+                    ;
 
                     //Check Time If High then return NoCount
                     if (IsTimeCutOffActive == "1" && MainTimer.ElapsedMilliseconds > 7900)
@@ -6344,7 +6378,22 @@ new SqlParameter("@AgentId", AgentId),
                         ProviderNew = "expedia";
                     if (ProviderNew.IndexOf("ean") >= 0)
                         ProviderNew = "ean";
+                    if (Provider.ToLower() == "exely")
+                    {
+                        var request = new HttpRequestMessage(HttpMethod.Post, _supplierConfig.Exely.BaseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.SearchRoomStays);
 
+                        request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
+
+                        request.Headers.Clear();
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        request.Headers.Add("X-API-KEY", Password);
+
+                        using (var response = await client.SendAsync(request, cts.Token))
+                        {
+                            var result = await response.Content.ReadAsStringAsync();
+                            return result;
+                        }
+                    }
 
 
 
@@ -6856,6 +6905,16 @@ new SqlParameter("@AgentId", AgentId),
                             Request.Headers.Accept.Clear();
                             Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                             Request.Headers.Authorization = new AuthenticationHeaderValue("Basic", key);
+                            break;
+                        case "exely":
+                            Request = new HttpRequestMessage(HttpMethod.Post, strHost);
+                            Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
+                            Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                            Request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                            Request.Content.Headers.ContentType.CharSet = "utf-8";
+                            Request.Headers.Add("X-Api-Key", Password);
+                            Request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+                            Request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("br"));
                             break;
                         default:
                             //Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
@@ -7650,6 +7709,16 @@ new SqlParameter("@AgentId", AgentId),
                             Request = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, strHost);
                             Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/xml");
                             Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
+                            break;
+                        case "exely":
+                            Request = new HttpRequestMessage(HttpMethod.Post, strHost);
+                            Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
+                            Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                            Request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                            Request.Content.Headers.ContentType.CharSet = "utf-8";
+                            Request.Headers.Add("X-Api-Key", Password);
+                            Request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+                            Request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("br"));
                             break;
                         default:
                             //Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
@@ -8739,6 +8808,7 @@ new SqlParameter("@AgentId", AgentId),
             list.ElevateDMC_Codes = null;
             list.Agoda_Chian_Codes = null;
             list.HotelBeds_new_Codes = null;
+            list.Exely_Codes = null;
 
 
             try
@@ -9320,6 +9390,11 @@ new SqlParameter("@AgentId", AgentId),
                                         list.HotelBeds_new_Codes = FilterHotelCodes(lstdtHotelCommon, SuppplierCheck);
                                         break;
                                     #endregion
+                                    #region Exely
+                                    case "exely":
+                                        list.Exely_Codes = FilterHotelCodes(lstdtHotelCommon, SuppplierCheck);
+                                        break;
+                                    #endregion
                                     default:
                                         break;
 
@@ -9409,6 +9484,7 @@ new SqlParameter("@AgentId", AgentId),
             list.Dingus_codes = null;
             list.Elevateholidays_codes = null;
             list.Welcomebeds_Codes = null;
+            list.Exely_Codes = null;
 
             try
             {
@@ -9803,6 +9879,11 @@ new SqlParameter("@AgentId", AgentId),
                                     #region Welcomebeds
                                     case "welcomebeds":
                                         list.Welcomebeds_Codes = FilterHotelCodes(lstdtHotelCommon, SuppplierCheck);
+                                        break;
+                                    #endregion
+                                    #region Exely
+                                    case "exely":
+                                        list.Exely_Codes = FilterHotelCodesTechWise(lstdtHotelCommon, SuppplierCheck);
                                         break;
                                     #endregion
                                     default:
@@ -11769,26 +11850,26 @@ new SqlParameter("@AgentId", AgentId),
                     // Choose compression method
                     string compressionMethod = "deflate"; // Or "gzip" if needed
 
-                // Serialize the value into a JSON string
-                //var jsonString = System.Text.Json.JsonSerializer.Serialize<T>(value);
+                    // Serialize the value into a JSON string
+                    //var jsonString = System.Text.Json.JsonSerializer.Serialize<T>(value);
 
-                // Compress the content
-                var compressedContent = Compress(bytes, compressionMethod);
+                    // Compress the content
+                    var compressedContent = Compress(bytes, compressionMethod);
 
-                // Set headers manually using the passed HttpContext
-                context.Response.Headers["Content-Encoding"] = compressionMethod;
-                context.Response.Headers["Content-Type"] = mediaType;
-                context.Response.Headers["Custom-ElapsedTime"] = ElapsedTime;
-                context.Response.Headers["ErrorCode"] = ErrorCode;
-                context.Response.Headers["CityId"] = CityId;
-                context.Response.StatusCode = StatusCode;
+                    // Set headers manually using the passed HttpContext
+                    context.Response.Headers["Content-Encoding"] = compressionMethod;
+                    context.Response.Headers["Content-Type"] = mediaType;
+                    context.Response.Headers["Custom-ElapsedTime"] = ElapsedTime;
+                    context.Response.Headers["ErrorCode"] = ErrorCode;
+                    context.Response.Headers["CityId"] = CityId;
+                    context.Response.StatusCode = StatusCode;
 
-                if (!string.IsNullOrWhiteSpace(IP))
-                {
-                    context.Response.Headers["Client-IP"] = IP;
-                }
+                    if (!string.IsNullOrWhiteSpace(IP))
+                    {
+                        context.Response.Headers["Client-IP"] = IP;
+                    }
 
-                
+
                     return new FileContentResult(compressedContent, mediaType)
                     {
                         FileDownloadName = $"{APIName}.json"
@@ -11800,7 +11881,7 @@ new SqlParameter("@AgentId", AgentId),
                     // return new FileContentResult(compressedContent, mediaType);
 
                     string acceptEncoding = context.Request.Headers["Accept-Encoding"].ToString();
-                      string compressionMethod = "none";
+                    string compressionMethod = "none";
                     if (!string.IsNullOrEmpty(acceptEncoding))
                     {
                         if (acceptEncoding.Contains("gzip", StringComparison.OrdinalIgnoreCase))
@@ -11820,7 +11901,7 @@ new SqlParameter("@AgentId", AgentId),
 
 
                     // Compress if needed
-                   byte[]  compressedContent = bytes;
+                    byte[] compressedContent = bytes;
                     if (compressionMethod != "none")
                     {
                         compressedContent = CompressNew(bytes, compressionMethod); //ZLIB-wrapped DEFLATE (RFC 1950)
@@ -12226,7 +12307,8 @@ new SqlParameter("@AgentId", AgentId),
                             || TechName.ToLower() == "juniper"
                             || TechName.ToLower() == "etg"
                             || TechName.ToLower() == "pkfare" || TechName.ToLower() == "fitruums" || TechName.ToLower() == "hotelspro"
-                            || TechName.ToLower() == "infinitehotelsfrance")
+                            || TechName.ToLower() == "infinitehotelsfrance"
+                            || TechName.ToLower() == "exely")
 
                         //if ((pls == 0 && roomex.SupplierName.IndexOf("ean_") >= 0) || (pls == 0 && (roomex.SupplierName.ToLower().IndexOf("hotelbedsv1") >= 0 || roomex.SupplierName.ToLower().IndexOf("hotelbedsv1_b2c") >= 0)) || roomex.SupplierName.ToLower() == "tbo_api" || roomex.SupplierName.ToLower() == "iwtx" || roomex.SupplierName.ToLower() == "hoteldo" || roomex.SupplierName.ToLower() == "agoda" || roomex.SupplierName.ToLower() == "pricetravel" || roomex.SupplierName.ToLower() == "agoda_v1" || roomex.SupplierName.ToLower() == "booking.com" || roomex.SupplierName.ToLower() == "webhotelier" || roomex.SupplierName.ToLower() == "teamamerica" || roomex.SupplierName.ToLower().IndexOf("xtg") >= 0 || roomex.SupplierName.ToLower() == "agoda_chain" || roomex.SupplierName.ToLower() == "robios" || IsJuniper)
                         //if ((pls == 0 && roomex.SupplierName.IndexOf("ean_") >= 0) || (pls == 0 && (roomex.SupplierName.ToLower().IndexOf("hotelbedsv1") >= 0 || roomex.SupplierName.ToLower().IndexOf("hotelbedsv1_b2c") >= 0)) || roomex.SupplierName.ToLower() == "tbo_api" || roomex.SupplierName.ToLower() == "iwtx" || roomex.SupplierName.ToLower() == "hoteldo" || roomex.SupplierName.ToLower() == "agoda" || roomex.SupplierName.ToLower() == "pricetravel" || roomex.SupplierName.ToLower() == "agoda_v1" || roomex.SupplierName.ToLower() == "booking.com" || roomex.SupplierName.ToLower() == "webhotelier" || roomex.SupplierName.ToLower() == "teamamerica" || roomex.SupplierName.ToLower().IndexOf("xtg") >= 0 || roomex.SupplierName.ToLower() == "agoda_chain")
@@ -12738,6 +12820,10 @@ new SqlParameter("@AgentId", AgentId),
                                 if (TechName.ToLower() == "infinitehotelsfrance")
                                 {
                                     essential = await _infinitehotelsfrance.Get_Infinitehotelsfrance_EInfo(hotelListx.XMLHotelCode, OwnsystemHotelId, roomex.RoomTypeId, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, Provider, SearchKey);
+                                }
+                                if (TechName.ToLower() == "exely")
+                                {
+                                    essential = await _iExely.Get_Exely_EInfo(ItemCode, dtSuplierMarkup, dsAgentDetails.Tables[2], Provider, SearchKey, roomex.RoomTypeId);
                                 }
                                 //if (selectedRoom.EssentialInformation == "N/A" && roomex.SupplierName.ToLower().IndexOf("hotelbedsv1") >= 0)//Due to Recheck api this method only read EssentialInfo
                                 //{
@@ -13294,7 +13380,7 @@ new SqlParameter("@AgentId", AgentId),
                     #endregion
                     #region"Restel"
                     case "restel":
-                        cancellationDto = await _restel.Get_Restel_CancellationPolicy(Convert.ToString(hotelRating), ContractId, type, dsHotelData, hotelcode, hotelid, roomtypeid, shortname, boardtype, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, "", "", Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, SearchKey, GiataId, hotelRating, roomprice,TechName);
+                        cancellationDto = await _restel.Get_Restel_CancellationPolicy(Convert.ToString(hotelRating), ContractId, type, dsHotelData, hotelcode, hotelid, roomtypeid, shortname, boardtype, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, "", "", Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, SearchKey, GiataId, hotelRating, roomprice, TechName);
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion
@@ -13421,7 +13507,12 @@ new SqlParameter("@AgentId", AgentId),
                         dtReturn = dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion
-
+                    #region "Exely"
+                    case "exely":
+                        cancellationDto = await _iExely.Get_Exely_CancellationPolicy(Convert.ToInt32(roomno), hotelcode, dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, shortname, Convert.ToInt32(AgentId), roomprice, Convert.ToDouble(Companybuy), SearchKey, Supplier, GiataId, hotelRating);
+                        dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
+                        break;
+                    #endregion
                     default:
                         break;
                 }
@@ -15072,8 +15163,8 @@ new SqlParameter("@AgentId", AgentId),
                 // add new HotelName    & rating
                 objdata.GIITACode = Convert.ToInt32(BookOption.Hotel.GIITACode);
                 objdata.BoardType = BookOption.Rooms[0].HotelRooms.BoardType;
-                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
-                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
+                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
                 // objdata.BookingStatus = Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]);//Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]==""?"0": BookOption.Rooms[i].HotelRooms[18]);
                 objdata.ServiceTotal = Total;
                 objdata.AdultRate = Total;
@@ -15873,8 +15964,8 @@ new SqlParameter("@AgentId", AgentId),
                 // add new HotelName    & rating
                 objdata.GIITACode = Convert.ToInt32(BookOption.Hotel.GIITACode);
                 objdata.BoardType = BookOption.Rooms[0].HotelRooms.BoardType;
-                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
-                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
+                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
                 // objdata.BookingStatus = Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]);//Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]==""?"0": BookOption.Rooms[i].HotelRooms[18]);
                 objdata.ServiceTotal = Total;
                 objdata.AdultRate = Total;
@@ -16125,6 +16216,7 @@ new SqlParameter("@AgentId", AgentId),
                     drUserCart["PackageId"] = objdata.PackageId == null ? "0" : Convert.ToString(objdata.PackageId);
                     drUserCart["IsVouchered"] = Convert.ToString(objdata.IsVouchered);
                     drUserCart["Percentage"] = Convert.ToDouble(objdata.Percentage);
+                    drUserCart["ISPricechangeActive"] = objdata.ISPricechangeActive;
                     dtUserCart.Rows.Add(drUserCart);
 
                     DataTable dtUserCartDetails = _commonMethod.UserCartDetailsTableStructure();
@@ -16911,7 +17003,7 @@ new SqlParameter("@AgentId", AgentId),
                                     _ = _exception.Error(ex);
                                 }
                                 #endregion
-
+                                #region "Rezlive"
                             }
                         }
                     }
@@ -16938,7 +17030,8 @@ new SqlParameter("@AgentId", AgentId),
                         string IsCombineRoom = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["IsCombineRoom"]);
 
                         HotelRoomPreBook room = new HotelRoomPreBook();
-                        room.MealName = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["RoomType"]).Split('-')[1];
+                        var _rtSplit = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["RoomType"]).Split('-');
+                        room.MealName = _rtSplit.Length > 1 ? _rtSplit[1] : "";
                         room.MappedMealName = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["MappedMeal"]);
                         room.Price = Convert.ToDecimal(dsCartDetails.Tables[1].Rows[j]["FinalSellingPrice"]);
                         if (IsCombineRoom.ToLower() == "true")
@@ -17181,7 +17274,8 @@ new SqlParameter("@AgentId", AgentId),
                         string IsCombineRoom = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["IsCombineRoom"]);
 
                         HotelRoomPreBook room = new HotelRoomPreBook();
-                        room.MealName = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["RoomType"]).Split('-')[1];
+                        var _rtSplit = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["RoomType"]).Split('-');
+                        room.MealName = _rtSplit.Length > 1 ? _rtSplit[1] : "";
                         room.MappedMealName = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["MappedMeal"]);
                         room.Price = Convert.ToDecimal(dsCartDetails.Tables[1].Rows[j]["FinalSellingPrice"]);
                         if (IsCombineRoom.ToLower() == "true")
@@ -26233,7 +26327,116 @@ new SqlParameter("@AgentId", AgentId),
                                                     _ = _exception.ErrorNew(ex, _LogAPI.Prebook);
                                                 }
                                                 break;
-                                                #endregion
+                                            #endregion
+                                            #region "Exely"
+                                            case "exely":
+
+                                                DataRow[] ExelyDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+
+
+                                                string HotelcodeE = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["XMLHotelId"]);
+                                                string ExelyURL = Convert.ToString(ExelyDetails[0]["WebSiteURL"]) + "hotels/details/get";
+                                                bool IsErrorE = false;
+                                                double itempriceE = 0;
+                                                double CompanyBuyPriceE = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]);
+                                                dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
+                                                try
+                                                {
+                                                    PriceCheckCMDto priceCheckCMDto = await _iExely.Get_Exely_PriceCheckRQRS(dsCartDetails, ExelyDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, false, CompanyBuyPriceE, HotelcodeE, "P", IsErrorE, itempriceE, Searchkey, AgentId, TokenData);
+                                                    bool IsPriceUpdatesE = priceCheckCMDto.Flag;
+                                                    itempriceE = priceCheckCMDto.ItemPrice;
+                                                    IsErrorE = priceCheckCMDto.IsError;
+
+
+                                                    if (IsPriceUpdatesE && itempriceE > 0)
+                                                    {
+                                                        responsetype = "GeneralError";
+                                                        #region "Price update logic with markup"
+                                                        double UpdatedPrice = Convert.ToDouble(itempriceE);
+                                                        #region "Markup Logic Supplierwise"
+                                                        //double AgentPercentage = 0.0;
+                                                        //Boolean blnIsShowSupplier = false;
+                                                        int SupplierID = 0;
+                                                        if (dsAgentDetails.Tables[1] != null)
+                                                        {
+                                                            DataRow[] drSupRow = null;
+                                                            foreach (DataRow row in dsAgentDetails.Tables[1].Rows)
+                                                            {
+                                                                if (Convert.ToString(row["SupplierName"]).ToLower().Replace(" ", "") == Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower())
+                                                                {
+                                                                    drSupRow = new DataRow[1];
+                                                                    drSupRow[0] = row;
+                                                                    break;
+                                                                }
+                                                            }
+                                                            if (drSupRow != null)
+                                                            {
+                                                                //AgentPercentage = Convert.ToDouble(drSupRow[0]["AgentWiseMarkup"]);
+                                                                blnIsShowSupplier = (Convert.ToInt16(drSupRow[0]["IsShowSupplier"]) == 1 ? true : false);
+                                                                SupplierID = Convert.ToInt32(drSupRow[0]["SupplierID"]);
+                                                            }
+                                                        }
+
+                                                        #endregion
+                                                        #region "Price update logic with markup"
+                                                        dtPriceDetail = await ProcessPricePoupTable(false, PackageId, UserCartID, SupplierCurrency, BookRoomCount * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, UpdatedPrice, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, 0);
+                                                        #endregion
+                                                        #endregion
+                                                        #region "Logic for update cart data "
+                                                        double CurerntPrice = Convert.ToDouble(itempriceE);
+                                                        ProcessPriceTable(BookRoomCount * BookNight, CityId, CountryId, ref dtPriceUpdateTable, ref serviceTot, CurerntPrice, isPerce, AgentMarkupAmount, AgentPercentage, SubAgentMarkup, IsParentId, B2CMarkup, dsCartDetails, 0, "Yalago", TokenData);
+                                                        #endregion
+                                                    }
+                                                    else
+                                                    {
+                                                        serviceTot = serviceTot + Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["AgentBuyingPrice"]);
+                                                    }
+
+                                                    if (itempriceE == 0)
+                                                    {
+                                                        responsetype = "GeneralError";
+                                                        dtPriceDetail = await ProcessPricePoupTable(IsActivePopUp, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, 0, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, 0);
+                                                    }
+
+                                                    if (dtPriceUpdateTable.Rows.Count > 0)
+                                                    {
+                                                        DataRow drCartUpdate = dtCartUpdateTable.NewRow();
+                                                        drCartUpdate["UserCartId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["UserCartID"]);
+                                                        drCartUpdate["ServiceTotal"] = serviceTot;
+                                                        dtCartUpdateTable.Rows.Add(drCartUpdate);
+                                                        DsPriceUpdate.Tables[0].Merge(dtCartUpdateTable);
+                                                        DsPriceUpdate.Tables[1].Merge(dtPriceUpdateTable);
+                                                    }
+                                                    #region SupplierPR PreBook
+                                                    try
+                                                    {
+                                                        _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        _ = _exception.ErrorBooking(e, AgentId.ToString(), "", "");
+                                                    }
+                                                    #endregion
+
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    _ = _exception.Error(ex, Searchkey);
+                                                    #region SupplierPerformanceReport Catch
+                                                    try
+                                                    {
+                                                        Error = ex.Message + ex.StackTrace.ToString();
+                                                        responsetype = "GeneralError";
+                                                        _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        _ = _exception.ErrorBooking(e, AgentId.ToString(), "", "");
+                                                    }
+                                                    #endregion
+                                                }
+                                                break;
+                                            #endregion
                                         }
 
                                         #region Comment Code
@@ -26885,13 +27088,18 @@ new SqlParameter("@AgentId", AgentId),
                                             Supplier = "xpedia";
                                         if (Supplier.IndexOf("_xtg") >= 0)
                                             Supplier = "xtg";
-                                        if (IsVervoActive == false
-                                            || ((_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier)) ||
-                                            giataId == UnicaId
-                                            && Convert.ToString(dsCartDetails.Tables[0].DefaultView[0]["xmlhotelid"]) == XMLHotelCode
+                                        //if (IsVervoActive == false
+                                        //    || ((_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier)) ||
+                                        //    giataId == UnicaId
+                                        //    && Convert.ToString(dsCartDetails.Tables[0].DefaultView[0]["xmlhotelid"]) == XMLHotelCode
+                                        //    && ProvideFmly.ToLower() == MapSupplierName.ToLower()
+                                        //   ))
+                                        if (IsVervoActive == false || (_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier) ||
+                                            (Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]) == UnicaId
+                                            && Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]) == XMLHotelCode
                                             && ProvideFmly.ToLower() == MapSupplierName.ToLower()
-                                           ))
-                                        {
+                                            )))
+                                            {
                                             switch (TechName.ToLower())
                                             {
                                                 #region "Withinearth"
@@ -35651,7 +35859,117 @@ new SqlParameter("@AgentId", AgentId),
                                                         _ = _exception.ErrorBooking(ex, AgentId.ToString(), "", "");
                                                     }
                                                     break;
-                                                    #endregion
+                                                #endregion
+                                                #region "Exely"
+                                                case "exely":
+
+                                                    DataRow[] ExelyDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+
+
+                                                    string HotelcodeE = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["XMLHotelId"]);
+                                                    // string ExelyURL = Convert.ToString(ExelyDetails[0]["WebSiteURL"]) + "hotels/details/get";
+                                                    string ExelyURL = _configuration["Exely:BaseUrl"] + _configuration["Exely:VerifyBooking"];
+                                                    bool IsErrorE = false;
+                                                    double itempriceE = 0;
+                                                    double CompanyBuyPriceE = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]);
+                                                    dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
+                                                    try
+                                                    {
+                                                        PriceCheckCMDto priceCheckCMDto = await _iExely.Get_Exely_PriceCheckRQRS(dsCartDetails, ExelyDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, false, CompanyBuyPriceE, HotelcodeE, "P", IsErrorE, itempriceE, Searchkey, AgentId, TokenData);
+                                                        bool IsPriceUpdatesE = priceCheckCMDto.Flag;
+                                                        itempriceE = priceCheckCMDto.ItemPrice;
+                                                        IsErrorE = priceCheckCMDto.IsError;
+
+
+                                                        if (IsPriceUpdatesE && itempriceE > 0)
+                                                        {
+                                                            responsetype = "GeneralError";
+                                                            #region "Price update logic with markup"
+                                                            double UpdatedPrice = Convert.ToDouble(itempriceE);
+                                                            #region "Markup Logic Supplierwise"
+                                                            //double AgentPercentage = 0.0;
+                                                            //Boolean blnIsShowSupplier = false;
+                                                            int SupplierID = 0;
+                                                            if (dsAgentDetails.Tables[1] != null)
+                                                            {
+                                                                DataRow[] drSupRow = null;
+                                                                foreach (DataRow row in dsAgentDetails.Tables[1].Rows)
+                                                                {
+                                                                    if (Convert.ToString(row["SupplierName"]).ToLower().Replace(" ", "") == Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower())
+                                                                    {
+                                                                        drSupRow = new DataRow[1];
+                                                                        drSupRow[0] = row;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                if (drSupRow != null)
+                                                                {
+                                                                    //AgentPercentage = Convert.ToDouble(drSupRow[0]["AgentWiseMarkup"]);
+                                                                    blnIsShowSupplier = (Convert.ToInt16(drSupRow[0]["IsShowSupplier"]) == 1 ? true : false);
+                                                                    SupplierID = Convert.ToInt32(drSupRow[0]["SupplierID"]);
+                                                                }
+                                                            }
+
+                                                            #endregion
+                                                            #region "Price update logic with markup"
+                                                            dtPriceDetail = await ProcessPricePoupTable(false, PackageId, UserCartID, SupplierCurrency, BookRoomCount * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, UpdatedPrice, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, 0);
+                                                            #endregion
+                                                            #endregion
+                                                            #region "Logic for update cart data "
+                                                            double CurerntPrice = Convert.ToDouble(itempriceE);
+                                                            ProcessPriceTable(BookRoomCount * BookNight, CityId, CountryId, ref dtPriceUpdateTable, ref serviceTot, CurerntPrice, isPerce, AgentMarkupAmount, AgentPercentage, SubAgentMarkup, IsParentId, B2CMarkup, dsCartDetails, 0, "Exely", TokenData);
+                                                            #endregion
+                                                        }
+                                                        else
+                                                        {
+                                                            serviceTot = serviceTot + Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["AgentBuyingPrice"]);
+                                                        }
+
+                                                        if (itempriceE == 0)
+                                                        {
+                                                            responsetype = "GeneralError";
+                                                            dtPriceDetail = await ProcessPricePoupTable(IsActivePopUp, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, 0, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, 0);
+                                                        }
+
+                                                        if (dtPriceUpdateTable.Rows.Count > 0)
+                                                        {
+                                                            DataRow drCartUpdate = dtCartUpdateTable.NewRow();
+                                                            drCartUpdate["UserCartId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["UserCartID"]);
+                                                            drCartUpdate["ServiceTotal"] = serviceTot;
+                                                            dtCartUpdateTable.Rows.Add(drCartUpdate);
+                                                            DsPriceUpdate.Tables[0].Merge(dtCartUpdateTable);
+                                                            DsPriceUpdate.Tables[1].Merge(dtPriceUpdateTable);
+                                                        }
+                                                        #region SupplierPR PreBook
+                                                        try
+                                                        {
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                        }
+                                                        catch (Exception e)
+                                                        {
+                                                            _ = _exception.ErrorBooking(e, AgentId.ToString(), "", "");
+                                                        }
+                                                        #endregion
+
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        _ = _exception.Error(ex, Searchkey);
+                                                        #region SupplierPerformanceReport Catch
+                                                        try
+                                                        {
+                                                            Error = ex.Message + ex.StackTrace.ToString();
+                                                            responsetype = "GeneralError";
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                        }
+                                                        catch (Exception e)
+                                                        {
+                                                            _ = _exception.ErrorBooking(e, AgentId.ToString(), "", "");
+                                                        }
+                                                        #endregion
+                                                    }
+                                                    break;
+                                                #endregion
                                             }
                                         }
                                         else
@@ -35660,10 +35978,10 @@ new SqlParameter("@AgentId", AgentId),
                                         }
 
 
-                                        
 
-                                        #endregion
-                                    break;
+
+                                    #endregion
+                                        break;
 
                                 }
                             }
@@ -35755,7 +36073,7 @@ new SqlParameter("@AgentId", AgentId),
                 await SaveCartPriceCheck(dsCartDetails, j, City, UpdatedPrice, OldPrice, AgentID, AgentCode);
 
 
-                #endregion
+                # endregion DataRow newRow_Rezlive
             }
             catch (Exception ex)
             {
@@ -35991,6 +36309,8 @@ new SqlParameter("@AgentId", AgentId),
             public static string byBookingid = "bookingid";
             public static string byreference = "reference";
         }
+                                #endregion
+
 
         #endregion
 
@@ -43576,7 +43896,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 #region Booking Response
                                                                                 if (IsErrors == false && IspolicyChange == false)
                                                                                 {
-                                                                                   
+
                                                                                     timerroomprocess.Start();
 
                                                                                     ResponseDto responseDto = await _commonMethod.AbreuOnlineResponse_Supplier(GoGlobalBookingRequest, Convert.ToString(SupplierDetails[0]["WebSiteURL"]), Convert.ToInt32(180000), SearchKey, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), Convert.ToString(SupplierDetails[0]["UserId"]), "booking");
@@ -48162,8 +48482,104 @@ new SqlParameter("@AgentId", AgentId),
                                                                             _ = _exception.ErrorNew(ex, _LogAPI.Book, SearchKey);
                                                                         }
                                                                         break;
-                                                                        #endregion
-                                                                        #endregion
+                                                                    #endregion
+                                                                    #region "Exely"
+                                                                    case "exely":
+                                                                        try
+                                                                        {
+                                                                            string baseUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+                                                                            string password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                                                            string exelyCurrency = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["SupplierCurrency"]);
+                                                                            if (string.IsNullOrWhiteSpace(exelyCurrency))
+                                                                                exelyCurrency = Convert.ToString(SupplierDetailsCommon[0]["CurrencyShortName"]);
+
+                                                                            for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
+                                                                            {
+                                                                                #region Data
+
+                                                                                UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
+                                                                                string xMLHotelId = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
+                                                                                string checkIn = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["CheckInDate"]);
+                                                                                string checkOut = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["CheckOutDate"]);
+                                                                                Nationality = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["XmlNationality"]);
+                                                                                string checksum = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["Checksum"]);
+
+                                                                                #endregion
+
+                                                                                string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dsCartDetails, dtPassengers, UniqueNo, i, j, xMLHotelId, checkIn, checkOut, exelyCurrency, Nationality, tokenData.AgentCode, checksum);
+                                                                                string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _configuration["Exely:CreateBooking"].TrimStart('/');
+
+                                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Request Confirm", ReferenceNo, "WithinEarth");
+                                                                                Error = "";
+                                                                                timerroomprocess.Start();
+
+                                                                                ResponseDto responseDto = await _iExely.ExelyResponseNew(ExelyBookRequest, ExelyBookUrl, 120000, password, SearchKey);
+                                                                                string ExelyBookResponse = responseDto.Response;
+                                                                                Error = responseDto.Error;
+
+                                                                                RequestSPR = ExelyBookRequest;
+                                                                                ReponseSPR = ExelyBookResponse;
+
+                                                                                timerroomprocess.Stop();
+                                                                                time = timerroomprocess.Elapsed.ToString();
+
+                                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ExelyBookRequest, ExelyBookResponse + Error, "After Block Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Response Confirm", ReferenceNo, "WithinEarth");
+
+                                                                                #region Booking Response Handle
+                                                                                bookingStatus = 2;
+                                                                                AgentVoucherNo = "";
+
+                                                                                if (ExelyBookResponse != "")
+                                                                                {
+                                                                                    var result = JsonConvert.DeserializeObject<CreateBookingResult>(ExelyBookResponse);
+
+                                                                                    if (result != null && result.booking != null && result.booking.status == BookingStatus.Confirmed)
+                                                                                    {
+                                                                                        AgentVoucherNo = Convert.ToString(result.booking.number);
+                                                                                        bookingStatus = 6;
+                                                                                    }
+                                                                                }
+                                                                                #endregion
+
+                                                                                #region SupplierPR Booking
+                                                                                if (bookingStatus == 6)
+                                                                                    responsetype = "Success";
+                                                                                else
+                                                                                    responsetype = "GeneralError";
+
+                                                                                try
+                                                                                {
+                                                                                    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, ExelyBookRequest, ExelyBookResponse, Error);
+                                                                                }
+                                                                                catch (Exception e)
+                                                                                {
+                                                                                    _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", SearchKey);
+                                                                                }
+                                                                                #endregion
+
+                                                                                dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), AgentVoucherNo, ExelyBookRequest, ExelyBookResponse, Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), bookingStatus, voucherpackageid));
+                                                                            }
+                                                                        }
+                                                                        catch (Exception ex)
+                                                                        {
+                                                                            #region SupplierPerformanceReport Catch
+                                                                            try
+                                                                            {
+                                                                                Error = ex.Message + ex.StackTrace;
+                                                                                responsetype = "GeneralError";
+                                                                                time = "00:00:00.000000";
+                                                                                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                                            }
+                                                                            catch (Exception e)
+                                                                            {
+                                                                                _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", SearchKey);
+                                                                            }
+                                                                            #endregion
+                                                                            _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", SearchKey);
+                                                                        }
+                                                                        break;
+                                                                    #endregion
+                                                                    #endregion
                                                                 }
                                                             }
                                                             catch (Exception ex)
@@ -49629,7 +50045,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 string WebSiteURL = Convert.ToString(XPDetails[0]["WebSiteURL"]);
                                                 //double Rate = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["Rate"]);
                                                 string Order_Booking_Id = UserCartDetailId;
-                                               // Order_Booking_Id = Order_Booking_Id + "##" + bookRequest.BookRQ.InternalReference;//added 13april
+                                                // Order_Booking_Id = Order_Booking_Id + "##" + bookRequest.BookRQ.InternalReference;//added 13april
                                                 Order_Booking_Id = Order_Booking_Id;//added 13april
                                                 int NoOfRoom = Convert.ToInt32(bookRequest.userCart.UserCartDetails.Count);
                                                 string EtgUserID = Convert.ToString(XPDetails[0]["UserID"]);
@@ -52791,10 +53207,10 @@ new SqlParameter("@AgentId", AgentId),
                                                             {
                                                                 bookingStatus = await _iboosy.MethaBookCancellationProcess_newversion(Convert.ToString(drBooking.locator), XPDetails, ReferenceNo, bookRequest, bookingStatus);
                                                             }
-                                                             MethaBookBookingDetail methaBookBookingDetail = await _iboosy.MethaBookBookingDetail_newversion(ClientReference, bookingStatus, AgentVoucherNo, XPDetails, bookRequest, b, Convert.ToInt32(1800000), ReferenceNo);
+                                                            MethaBookBookingDetail methaBookBookingDetail = await _iboosy.MethaBookBookingDetail_newversion(ClientReference, bookingStatus, AgentVoucherNo, XPDetails, bookRequest, b, Convert.ToInt32(1800000), ReferenceNo);
 
-                                                             bookingStatus = methaBookBookingDetail.bookingStatus;
-                                                           AgentVoucherNo = methaBookBookingDetail.AgentVoucherNo;
+                                                            bookingStatus = methaBookBookingDetail.bookingStatus;
+                                                            AgentVoucherNo = methaBookBookingDetail.AgentVoucherNo;
                                                         }
                                                     }
                                                     #region SupplierPR Booking
@@ -52887,7 +53303,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 string Password = Convert.ToString(XPDetails[0]["Password"]);
 
                                                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), "   IsError : " + Convert.ToString(IsErrors) + "    IspolicyChange : " + Convert.ToString(IspolicyChange), "Please check IsPriceUpdate, IsError, IspolicyChange Before booking", "Just Before Request hit booking PriceCheck", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "Withinearth");
-                                                
+
                                                 string GoGlobalBookingRequest = _goglobal.GoGlobalBooking_newversion(j, dtPassengers, bookRequest, UserName, Password, UserId, UniqueNo, tokenData.AgentCode, SpecialReqToPass);
 
                                                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), GoGlobalBookingRequest, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "Withinearth");
@@ -52900,7 +53316,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                     timerroomprocess_goglobal.Start();
 
-                                                    ResponseDto responseDto = await _commonMethod.AbreuOnlineResponse_Supplier(GoGlobalBookingRequest, Convert.ToString(XPDetails[0]["WebSiteURL"]), Convert.ToInt32(180000),bookRequest.SearchKey , Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), Convert.ToString(XPDetails[0]["UserId"]), "booking");
+                                                    ResponseDto responseDto = await _commonMethod.AbreuOnlineResponse_Supplier(GoGlobalBookingRequest, Convert.ToString(XPDetails[0]["WebSiteURL"]), Convert.ToInt32(180000), bookRequest.SearchKey, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), Convert.ToString(XPDetails[0]["UserId"]), "booking");
                                                     GGResponse = responseDto.Response;
                                                     Error = responseDto.Error;
 
@@ -52910,14 +53326,14 @@ new SqlParameter("@AgentId", AgentId),
                                                     time = timerroomprocess_goglobal.Elapsed.ToString();
 
                                                     _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), GoGlobalBookingRequest, GGResponse + Error, "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "Withinearth");
-                                                   
+
                                                 }
                                                 #endregion
 
                                                 if (GGResponse == null || GGResponse.Trim() == string.Empty)
                                                 {
                                                     bookingStatus = 2;
-                                                    
+
                                                     if (isNonRefundable && Convert.ToInt32(XPDetails[0]["IsVeryNonrefundable"]) != 1)
                                                         bookingStatus = 1;
                                                     #region SupplierPR Booking
@@ -52928,7 +53344,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                     try
                                                     {
-                                                       // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, GoGlobalBookingRequest, GGResponse, Error);
+                                                        // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, GoGlobalBookingRequest, GGResponse, Error);
                                                     }
                                                     catch (Exception e)
                                                     {
@@ -52996,7 +53412,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                 {
                                                                     string VoucherRequest = _goglobal.VoucherBooking(UserName, Password, UserId, GoBookingCode);
                                                                     _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), VoucherRequest, "-", "Before Request hit Voucher booking (AfterBookingRequest)", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "RaynaB2B");
-                                                                    
+
                                                                     ResponseDto responseDto1 = await _commonMethod.AbreuOnlineResponse_Supplier(VoucherRequest, Convert.ToString(XPDetails[0]["WebSiteURL"]), Convert.ToInt32(180000), bookRequest.SearchKey, "goglobal", UserId, "voucher");
                                                                     string VoucherResponse = responseDto1.Response;
                                                                     Error = responseDto1.Error;
@@ -53033,7 +53449,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                     {
                                                                         string BookingStatusRQ = _goglobal.GOGlobalBookingStatusRequest(GoBookingCode, UserName, Password, UserId);
                                                                         _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingStatusRQ, "-", "Before Request hit BookingStatus", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "RaynaB2B");
-                                                                        
+
                                                                         ResponseDto responseDto3 = await _commonMethod.AbreuOnlineResponse_Supplier(BookingStatusRQ, Convert.ToString(XPDetails[0]["WebSiteURL"]), Convert.ToInt32(180000), bookRequest.SearchKey, "goglobal", UserId, "bookingstatus");
                                                                         string BookingStatusRS = responseDto3.Response;
                                                                         Error = responseDto3.Error;
@@ -53084,7 +53500,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                     try
                                                     {
-                                                       // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, GoGlobalBookingRequest, GGResponse, Error);
+                                                        // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, GoGlobalBookingRequest, GGResponse, Error);
                                                     }
                                                     catch (Exception e)
                                                     {
@@ -53182,13 +53598,13 @@ new SqlParameter("@AgentId", AgentId),
                                         string ExternalReference = "Book_" + Convert.ToString(tokenData.AgentCode + "_" + UniqueNo);
                                         //string ExternalReference = "B_" + Convert.ToString(AgentCode + "_" + UniqueNo);
                                         //string PreBookingUrl = Convert.ToString(OmnibeesDetails[0]["WebSiteURL"] + Convert.ToString(ConfigurationManager.AppSettings["DerbySoftPriBooking"]));
-                                       string  ResponseDatatest = "";
+                                        string ResponseDatatest = "";
                                         string errorinrq = "";
                                         BookingRequest = _omnibees.Get_Omnibees_BookingRequest_newversion(bookRequest, dtPassengers, XPDetails, UniqueNo, IsPriceUpdate, 0, j, PreBookingToken, UserName, Password, ExternalReference, "", ReferenceNo, Convert.ToString(AgentUniqueNo), ref errorinrq);
 
                                         //_commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", referenceNumber, "WithinEarth");
 
-                                       // string BookingUrl = Convert.ToString(XPDetails[0]["WebSiteURL"] + Convert.ToString(OmnibeesStaticInfo.OmnibessHotelBook));
+                                        // string BookingUrl = Convert.ToString(XPDetails[0]["WebSiteURL"] + Convert.ToString(OmnibeesStaticInfo.OmnibessHotelBook));
                                         string BookingUrl = Convert.ToString(XPDetails[0]["WebSiteURL"] + Convert.ToString(_supplierConfig.Omnibees.OmnibessHotelBook));
                                         string OmnibeesUserName = Convert.ToString(XPDetails[0]["UserName"]);
                                         string OmnibeesPassword = Convert.ToString(XPDetails[0]["Password"]);
@@ -53236,7 +53652,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     agentVouchers.Add(agentVoucher);
                                                     //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
-                                                    
+
                                                     #endregion
                                                 }
                                                 bookResponse_1.agentVouchers = agentVouchers;
@@ -53258,7 +53674,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                 AgentVoucherNo = UniqueID + "@" + XmlHotelid + "@" + TransactionIdentifier;
                                                                 bookingStatus = 6;
                                                                 responsetype = "Success";
-                                                               
+
                                                                 #region BookingData
 
                                                                 //List<AgentVoucher> agentVouchers = new List<AgentVoucher>();
@@ -53274,7 +53690,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                 agentVouchers.Add(agentVoucher);
                                                                 //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
                                                                 #endregion
-                                                               
+
                                                             }
                                                             bookResponse_1.agentVouchers = agentVouchers;
                                                         }
@@ -53448,14 +53864,14 @@ new SqlParameter("@AgentId", AgentId),
                                         AgentVoucherNo = "";
                                         bookingStatus = 6;
                                         double FinalPrices = 0;
-                                       // string MgBedBankUrl = Convert.ToString(MgBedBankDetails[0]["WebSiteURL"]) + MGBedbackStaticInfo.BookHotel;
+                                        // string MgBedBankUrl = Convert.ToString(MgBedBankDetails[0]["WebSiteURL"]) + MGBedbackStaticInfo.BookHotel;
                                         string MgBedBankUrl = Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.MGBedBank.BookHotel;
                                         string RoomTypeId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
                                         //string HotelId = Convert.ToString(dsCartDetails.Tables[0].DefaultView[j]["XMLHotelId"]);
                                         int UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
                                         double CompanyBuyingPrices = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].BaseServiceBuyingAmount);
 
-                                      //  string GroupValue = Convert.ToString(dsCartDetails.Tables[2].DefaultView[j]["GROUPVALUE"]); //(Mr. / Mrs. )
+                                        //  string GroupValue = Convert.ToString(dsCartDetails.Tables[2].DefaultView[j]["GROUPVALUE"]); //(Mr. / Mrs. )
 
                                         bool IsPriceUpdate = true;
                                         UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
@@ -53478,7 +53894,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                         string[] spitid = RoomName.Split(new String[] { "[" }, StringSplitOptions.None);
                                         string SpitIdRoomName = spitid[0].ToString();
-                                     
+
 
                                         bool IsRoomupdate = await _commonMethod.GetRoomNameUpdate(SpitIdRoomName, UserCartId);
 
@@ -53493,7 +53909,7 @@ new SqlParameter("@AgentId", AgentId),
                                         //    string HasKey1 = Convert.ToString(CartResponse[0]["Eachotoken"]);
                                         //    BookingRequestM = _mgbedbank.Get_MgBedBank_BookingRequest(dsCartDetails, dtPassengers, MgBedBankDetails, ExternalReference, false, i, j, ReqHasKey, PaxPassPort, cancallationpolicytype, RoomTypeId, RoomId, SessionId, BoardID, Nationality, IsAvail, UniqNo);
                                         //}
-                                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequestM, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm",Convert.ToString(ReferenceNo), "WithinEarth",bookRequest.SearchKey);
+                                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequestM, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", Convert.ToString(ReferenceNo), "WithinEarth", bookRequest.SearchKey);
 
                                         System.Diagnostics.Stopwatch timerroomprocess_mg = new System.Diagnostics.Stopwatch();
                                         timerroomprocess_mg.Start();
@@ -53504,7 +53920,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                         RequestSPR = BookingRequestM;
                                         ReponseSPR = ResponseDatatestM;
-                                       
+
                                         timerroomprocess_mg.Stop();
                                         time = timerroomprocess_mg.Elapsed.ToString();
 
@@ -53597,7 +54013,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     agentVoucher.XMLRequest = BookingRequestM;
                                                     agentVoucher.XMLResponse = ResponseDatatestM;
                                                     agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
-                                                    agentVoucher.SupplierName = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName); 
+                                                    agentVoucher.SupplierName = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName);
                                                     agentVouchers.Add(agentVoucher);
                                                     //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
@@ -53696,7 +54112,111 @@ new SqlParameter("@AgentId", AgentId),
                                     break;
 
                                 #endregion
+                                #region "Exely"
+                                case "exely":
+                                    try
+                                    {
+                                        string baseUrl = Convert.ToString(XPDetails[0]["WebSiteURL"]);
+                                        string password = Convert.ToString(XPDetails[0]["Password"]);
+                                        string exelyCurrency = Convert.ToString(XPDetails[0]["CurrencyShortName"]);
 
+                                        for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
+                                        {
+                                            UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                            string xMLHotelId = bookRequest.userCart.XMLHotelId;
+                                            string checkIn = bookRequest.userCart.UserCartDetails[j].CheckInDate;
+                                            string checkOut = bookRequest.userCart.UserCartDetails[j].CheckOutDate;
+                                            string roomTypeId = bookRequest.userCart.UserCartDetails[j].RoomTypeId ?? "";
+                                            string[] rtParts = roomTypeId.Split("$$$");
+                                            string checksum = rtParts.Length > 6 ? rtParts[6] : "";
+                                            int noOfAdults = bookRequest.userCart.UserCartDetails[j].NoofAdult;
+                                            int noOfChild = bookRequest.userCart.UserCartDetails[j].NoofChild;
+
+                                            // Verify booking to get createBookingToken
+                                            string verifyUrl = baseUrl.TrimEnd('/') + "/" + _configuration["Exely:VerifyBooking"].TrimStart('/');
+                                            string verifyRQ = _iExely.Get_Exely_PriceCheckRQ(noOfAdults, noOfChild, xMLHotelId, checkIn, checkOut, roomTypeId, Nationality, checksum);
+                                            ResponseDto verifyDto = await _iExely.ExelyResponseNew(verifyRQ, verifyUrl, 30000, password, bookRequest.SearchKey);
+                                            string createBookingToken = "";
+                                            if (!string.IsNullOrWhiteSpace(verifyDto.Response))
+                                            {
+                                                var verifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(verifyDto.Response);
+                                                createBookingToken = verifyResult?.booking?.createBookingToken ?? "";
+                                            }
+
+                                            string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, createBookingToken, xMLHotelId, checkIn, checkOut, exelyCurrency, Nationality, tokenData.AgentCode, checksum, roomTypeId, noOfAdults, noOfChild);
+                                            string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _configuration["Exely:CreateBooking"].TrimStart('/');
+
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "WithinEarth");
+                                            Error = "";
+                                            System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+                                            timerroomprocess.Start();
+
+                                            ResponseDto responseDto = await _iExely.ExelyResponseNew(ExelyBookRequest, ExelyBookUrl, 120000, password, bookRequest.SearchKey);
+                                            string ExelyBookResponse = responseDto.Response;
+                                            Error = responseDto.Error;
+
+                                            RequestSPR = ExelyBookRequest;
+                                            ReponseSPR = ExelyBookResponse;
+                                            timerroomprocess.Stop();
+                                            time = timerroomprocess.Elapsed.ToString();
+
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, ExelyBookResponse + Error, "After Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "WithinEarth");
+
+                                            bookingStatus = 2;
+                                            AgentVoucherNo = "";
+                                            if (!string.IsNullOrWhiteSpace(ExelyBookResponse))
+                                            {
+                                                var result = JsonConvert.DeserializeObject<CreateBookingResult>(ExelyBookResponse);
+                                                if (result?.booking != null && result.booking.status == BookingStatus.Confirmed)
+                                                {
+                                                    AgentVoucherNo = Convert.ToString(result.booking.number);
+                                                    bookingStatus = 6;
+                                                }
+                                            }
+
+                                            if (bookingStatus == 6)
+                                                responsetype = "Success";
+                                            else
+                                                responsetype = "GeneralError";
+
+                                            try
+                                            {
+                                                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, ExelyBookRequest, ExelyBookResponse, Error);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                            }
+
+                                            AgentVoucher agentVoucher = new AgentVoucher();
+                                            agentVoucher.UserCartId = bookRequest.userCart.UserCartDetails[j].UserCartId;
+                                            agentVoucher.UserCartDetailId = bookRequest.userCart.UserCartDetails[j].UserCartDetailId;
+                                            agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                            agentVoucher.XMLRequest = ExelyBookRequest;
+                                            agentVoucher.XMLResponse = ExelyBookResponse;
+                                            agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                            agentVoucher.SupplierName = suppliername;
+                                            agentVouchers.Add(agentVoucher);
+                                        }
+                                        bookResponse_1.agentVouchers = agentVouchers;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        try
+                                        {
+                                            Error = ex.Message + ex.StackTrace;
+                                            responsetype = "GeneralError";
+                                            time = "00:00:00.000000";
+                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                        }
+                                        _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                    }
+                                    break;
+                                #endregion
 
 
 
@@ -58977,6 +59497,81 @@ new SqlParameter("@AgentId", AgentId),
 
                             #endregion
                             break;
+                        case "EXELY":
+                            #region"exely"
+                            {
+                                string AgentRef = Convert.ToString(AgentVoucherNo_Cancle);
+                                string password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                string bookingNumber = AgentRef;
+                                string baseUrl = _configuration["Exely:BaseUrl"];
+
+                                //string ExelyGetCancellation_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "hotels/bookings/getcancellationcharges";
+
+                                //getcharge request
+                                string CancellationXMLcharge = _iExely.Get_Exely_GetCancellationChargesRQ(AgentRef);
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                string exelyURL = baseUrl + _configuration["Exely:CalculateCancellationPenalty"].Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=";
+                                ResponseDto responseDto = await _iExely.ExelyResponseNew(CancellationXMLcharge, exelyURL, 120000, password);
+                                ResponseData = responseDto.Response;
+                                Error = responseDto.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                /*var result = JsonConvert.DeserializeObject<BookingCancellation>(ResponseData);
+                                string currency = Convert.ToString(SupplierDetailsCommon[0]["Currency"]);
+                                double Amount = result.penaltyAmount ?? 0;*/
+
+                                var result = JsonConvert.DeserializeObject<ResultOfCalculatePenalty>(ResponseData);
+                                string currency = Convert.ToString(SupplierDetailsCommon[0]["Currency"]);
+                                double Amount = result.penaltyAmount ?? 0;
+
+                                //cancel request 
+
+                                //CancellationXML = _iExely.Get_Exely_CancelBooking(Amount, currency, AgentRef);
+                                CancellationXML = JsonConvert.SerializeObject(new BookingCancellationRq
+                                {
+                                    reason = "Cancelled by customer",
+                                    expectedPenaltyAmount = Amount
+                                });
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                string cancelexelyurl = baseUrl + _configuration["Exely:CancelBooking"].Replace("{number}", bookingNumber);
+                                //string Error = "";
+                                ResponseDto responseDto1 = await _iExely.ExelyResponseNew(CancellationXML, cancelexelyurl, 120000, password);
+                                string CancelResponseData = responseDto1.Response;
+                                Error = responseDto1.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(CancelResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                if (CancelResponseData == "")
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "RaynaB2B");
+                                    return "";
+                                }
+                                else
+                                {
+                                    var Result = JsonConvert.DeserializeObject<BookingCancellation>(CancelResponseData);
+                                    double? penalty = Result.penaltyAmount;
+                                    string Messages = Result.reason;
+                                    DateTime cancelledTime = Result.cancelledUtc;
+                                    int status = Result != null ? 1 : 0;
+                                    if (status == 1)
+                                    {
+
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "RaynaB2B");
+                                        return "";
+                                    }
+
+                                }
+                            }
+                            #endregion
+                            break;
                         default:
                             return "";
                             break;
@@ -62784,7 +63379,81 @@ new SqlParameter("@AgentId", AgentId),
 
                             #endregion
                             break;
+                        case "EXELY":
+                            #region"exely"
+                            {
+                                string AgentRef = Convert.ToString(AgentVoucherNo_Cancle);
+                                string password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                string bookingNumber = AgentRef;
+                                string baseUrl = _configuration["Exely:BaseUrl"];
 
+                                //string ExelyGetCancellation_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "hotels/bookings/getcancellationcharges";
+
+                                //getcharge request
+                                string CancellationXMLcharge = _iExely.Get_Exely_GetCancellationChargesRQ(AgentRef);
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                string exelyURL = baseUrl + _configuration["Exely:CalculateCancellationPenalty"].Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=";
+                                ResponseDto responseDto = await _iExely.ExelyResponseNew(CancellationXMLcharge, exelyURL, 120000, password);
+                                ResponseData = responseDto.Response;
+                                Error = responseDto.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                /*var result = JsonConvert.DeserializeObject<BookingCancellation>(ResponseData);
+                                string currency = Convert.ToString(SupplierDetailsCommon[0]["Currency"]);
+                                double Amount = result.penaltyAmount ?? 0;*/
+
+                                var result = JsonConvert.DeserializeObject<ResultOfCalculatePenalty>(ResponseData);
+                                string currency = Convert.ToString(SupplierDetailsCommon[0]["Currency"]);
+                                double Amount = result.penaltyAmount ?? 0;
+
+                                //cancel request 
+
+                                //CancellationXML = _iExely.Get_Exely_CancelBooking(Amount, currency, AgentRef);
+                                CancellationXML = JsonConvert.SerializeObject(new BookingCancellationRq
+                                {
+                                    reason = "Cancelled by customer",
+                                    expectedPenaltyAmount = Amount
+                                });
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                string cancelexelyurl = baseUrl + _configuration["Exely:CancelBooking"].Replace("{number}", bookingNumber);
+                                //string Error = "";
+                                ResponseDto responseDto1 = await _iExely.ExelyResponseNew(CancellationXML, cancelexelyurl, 120000, password);
+                                string CancelResponseData = responseDto1.Response;
+                                Error = responseDto1.Error;
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(CancelResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                if (CancelResponseData == "")
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "RaynaB2B");
+                                    return "";
+                                }
+                                else
+                                {
+                                    var Result = JsonConvert.DeserializeObject<BookingCancellation>(CancelResponseData);
+                                    double? penalty = Result.penaltyAmount;
+                                    string Messages = Result.reason;
+                                    DateTime cancelledTime = Result.cancelledUtc;
+                                    int status = Result != null ? 1 : 0;
+                                    if (status == 1)
+                                    {
+
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                    }
+                                    else
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "RaynaB2B");
+                                        return "";
+                                    }
+
+                                }
+                            }
+                            #endregion
+                            break;
                         default:
                             return "";
                             break;

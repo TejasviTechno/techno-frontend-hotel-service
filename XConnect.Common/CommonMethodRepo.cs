@@ -37,6 +37,7 @@ using System.Net.Http;
 using XConnect.Analytics;
 using XConnect.Analytics.Interface;
 using System.Diagnostics;
+using System.Globalization;
 
 
 
@@ -4524,7 +4525,9 @@ namespace XConnect.CommonUtilities
                             dataFor.XmlNationality = Convert.ToString(GetThirdPartyStaticData_New(dtXMLCity.Tables[1], "Desc", Convert.ToString(Natinality), "XmlNationality", "grnc"));
 
                             break;
-
+                        case "exely":
+                            dataFor.XmlNationality = Convert.ToString(GetThirdPartyStaticData_New(dtXMLCity.Tables[1], "Desc", Convert.ToString(Natinality), "XmlNationality", "Agoda"));
+                            break;
 
                         default:
                             break;
@@ -4698,6 +4701,10 @@ namespace XConnect.CommonUtilities
                             break;
                         case "hotelstrack":
                             dataFor.XmlNationality = Convert.ToString(GetThirdPartyStaticData_New(dtXMLCity.Tables[1], "Desc", Convert.ToString(Natinality), "XmlNationality", "hotelstrack"));
+
+                            break;
+                        case "exely":
+                            dataFor.XmlNationality = Convert.ToString(GetThirdPartyStaticData_New(dtXMLCity.Tables[1], "Desc", Convert.ToString(Natinality), "XmlNationality", "Agoda"));
 
                             break;
 
@@ -7897,8 +7904,17 @@ namespace XConnect.CommonUtilities
                                     for (int i = 0; i < finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].CancellationPolicy.Count; i++)
                                     {
                                         _FinalPolicy obj = new _FinalPolicy();
-                                        obj.FromDate = Convert.ToDateTime(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].CancellationPolicy[i].FromDate).ToString("MM-dd-yyyy");
-                                        obj.ToDate = Convert.ToDateTime(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].CancellationPolicy[i].ToDate).ToString("MM-dd-yyyy");
+                                        string fromDateStr = finalResponse.AvailabilityRS.HotelResult[giataSeq]
+                                                            .HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms]
+                                                            .CancellationPolicy[i].FromDate;
+
+                                        string toDateStr = finalResponse.AvailabilityRS.HotelResult[giataSeq]
+                                                           .HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms]
+                                                           .CancellationPolicy[i].ToDate;
+
+                                        obj.FromDate = FormatDateSafe(fromDateStr);
+                                        obj.ToDate = FormatDateSafe(toDateStr);
+
                                         obj.CancellationPrice = Convert.ToDecimal(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].CancellationPolicy[i].CancellationPrice);
                                         //token += finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].CancellationPolicy[i].EncryptPolicyToken();
                                         //obj.CancellationPrice = obj.CancellationPrice.CalculatePrice(tokenData, advancedOptions, room.SupplierCurrency);
@@ -7934,6 +7950,20 @@ namespace XConnect.CommonUtilities
                 await _exception.Error(ex);
             }
             return null;
+        }
+        private string FormatDateSafe(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return null;
+
+            string[] formats = { "MM-dd-yyyy", "MM/dd/yyyy", "dd-MM-yyyy", "yyyy-MM-dd" };
+
+            if (DateTime.TryParseExact(input, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+            {
+                return parsedDate.ToString("MM-dd-yyyy");
+            }
+
+            return input;
         }
 
         //Add On 17SEP2025  ConvertToFinalResponseList_Dag2
