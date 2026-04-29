@@ -19,6 +19,7 @@ using XConnect.Models.Hotel;
 using XConnect.Supplier.GoGlobal.Interface;
 using static Azure.Core.HttpHeader;
 using static XConnect.Models.ErrorLog;
+using static XConnect.Supplier.Booking.Com.preebookrs;
 using Options = XConnect.Models.Options;
 
 namespace XConnect.Supplier.GoGlobal
@@ -869,7 +870,7 @@ namespace XConnect.Supplier.GoGlobal
 
         }
 
-        public async Task<CancellationDto> GoGlobal_cancellation(string Mealid, string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, double roomprice, string GiataId = "0", int hotelRating = 0, string SearchKey = "")
+        public async Task<CancellationDto> GoGlobal_cancellation(TokenData TokenData,string Mealid, string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, double roomprice, string GiataId = "0", int hotelRating = 0, string SearchKey = "")
         {
             string Error = "";
 
@@ -915,10 +916,19 @@ namespace XConnect.Supplier.GoGlobal
                         {
                             if (j == 0)
                             {
+                                //Currency = Convert.ToString(GGData.Tables["PriceBreakdown"].Rows[j]["Currency"]);
+                                //DataTable dtInrCurrency = _commonMethod.GetCountryCurrency(Currency);
+                                //CurrencyFactor = Convert.ToDouble(dtInrCurrency.Rows[j]["AmtToExch"]);
                                 Currency = Convert.ToString(GGData.Tables["PriceBreakdown"].Rows[j]["Currency"]);
-                                DataTable dtInrCurrency = _commonMethod.GetCountryCurrency(Currency);
-                                CurrencyFactor = Convert.ToDouble(dtInrCurrency.Rows[j]["AmtToExch"]);
+                                if (Currency.ToLower() != TokenData.SiteCurrency.ToLower())
+                                {
+                                    CurrencyFactor = _commonMethod.GetROEByCurrency(Currency, TokenData.dtROE);
+                                }
+
                             }
+
+
+                            
                             double Price = Convert.ToDouble(GGData.Tables["PriceBreakdown"].Rows[j]["Price"]) * CurrencyFactor;
                             itemprice = itemprice + Price;
                         }
