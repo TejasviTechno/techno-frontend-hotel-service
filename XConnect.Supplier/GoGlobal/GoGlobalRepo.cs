@@ -1464,7 +1464,7 @@ namespace XConnect.Supplier.GoGlobal
                         string checkin = checkInDate.ToString("yyyy-MM-dd");
                         string checkout = checkOutDate.ToString("yyyy-MM-dd");
 
-                        double NumberOfNights = (EndDate - StartDate).TotalDays;
+                        double NumberOfNights = (checkOutDate - checkInDate).TotalDays;
                         string HotelSearchCode = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
                         Request.Append("<HotelSearchCode>" + HotelSearchCode + "</HotelSearchCode>");
                         Request.Append("<ArrivalDate>" + CheckIn + "</ArrivalDate>");
