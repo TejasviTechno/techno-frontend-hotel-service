@@ -50822,7 +50822,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                     {
                                                                         SupplierRef = Convert.ToString(DS.BookingDetail.ConfirmationNumber);
 
-                                                                        bookingStatus = 6;
+                                                                        //bookingStatus = 6;
+                                                                        bookingStatus = 7;
                                                                         AgentVoucherNo = ClientReferancreNo + "|" + SupplierRef;
                                                                     }
                                                                     else
@@ -50867,7 +50868,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                 //DataRow[] status = WHLBookDetails_Response.Tables["status"].Select("response_Id=" + BookingId + "");
                                                                 string ConfirmationNo = Convert.ToString(DS1.ConfirmationNumber);
                                                                 string ClientReferenceId = Convert.ToString(DS1.ClientReferenceId);
-                                                                bookingStatus = 6;
+                                                                //bookingStatus = 6;
+                                                                bookingStatus = 7;
                                                                 AgentVoucherNo = ClientReferenceId + "|" + ConfirmationNo;
 
                                                             }
@@ -50918,7 +50920,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                             {
                                                                                 SupplierRef = Convert.ToString(DS.BookingDetail.ConfirmationNumber);
 
-                                                                                bookingStatus = 6;
+                                                                                //bookingStatus = 6;
+                                                                                bookingStatus = 7;
                                                                                 AgentVoucherNo = "" + "|" + SupplierRef;
                                                                             }
                                                                             else
@@ -50957,7 +50960,8 @@ new SqlParameter("@AgentId", AgentId),
                                                     #endregion
 
                                                     #region SupplierPR Booking
-                                                    if (bookingStatus == 6)
+                                                    //if (bookingStatus == 6)
+                                                    if (bookingStatus == 7)
                                                     {
                                                         responsetype = "Success";
                                                     }
