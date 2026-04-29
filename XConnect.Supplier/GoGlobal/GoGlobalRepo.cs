@@ -363,8 +363,8 @@ namespace XConnect.Supplier.GoGlobal
         {
             try
             {
-                string checkIn = String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(searchParam.CheckInDate, "dd/MM/yyyy", null));
-                string checkOut = String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(searchParam.CheckOutDate, "dd/MM/yyyy", null));
+                string checkIn = searchParam.CheckInDateSubstring;//String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(searchParam.CheckInDate, "dd/MM/yyyy", null));
+               // string checkOut = String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(searchParam.CheckOutDate, "dd/MM/yyyy", null));
                 StringBuilder roomstring = new StringBuilder();
                 int RoomCount = 1;
                 for (int i = 0; i < searchParam.Rooms.Count; i++)
@@ -1451,11 +1451,19 @@ namespace XConnect.Supplier.GoGlobal
                     if (j == 0)
                     {
                         string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
-                        CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                        //CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
                         string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
-                        CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
-                        DateTime StartDate = DateTime.ParseExact(CheckIn, "yyyy-MM-dd", null);
-                        DateTime EndDate = DateTime.ParseExact(CheckOut, "yyyy-MM-dd", null);
+                        //CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                        //DateTime StartDate = DateTime.ParseExact(CheckIn, "yyyy-MM-dd", null);
+                        //DateTime EndDate = DateTime.ParseExact(CheckOut, "yyyy-MM-dd", null);
+
+                        DateTime checkInDate = DateTime.Parse(CheckIn);
+                        DateTime checkOutDate = DateTime.Parse(CheckOut);
+
+                        // Convert to "yyyy-MM-dd" format
+                        string checkin = checkInDate.ToString("yyyy-MM-dd");
+                        string checkout = checkOutDate.ToString("yyyy-MM-dd");
+
                         double NumberOfNights = (EndDate - StartDate).TotalDays;
                         string HotelSearchCode = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
                         Request.Append("<HotelSearchCode>" + HotelSearchCode + "</HotelSearchCode>");

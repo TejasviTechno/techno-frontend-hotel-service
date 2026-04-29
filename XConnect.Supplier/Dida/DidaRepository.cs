@@ -344,8 +344,10 @@ namespace Xconnect.Expedia
             try
             {
                 string Ids = HotelId;
-                string checkin = (SearchParam.CheckInDate).Substring(6, 4) + "-" + (SearchParam.CheckInDate).Substring(3, 2) + "-" + (SearchParam.CheckInDate).Substring(0, 2);
-                string checkout = (SearchParam.CheckOutDate).Substring(6, 4) + "-" + (SearchParam.CheckOutDate).Substring(3, 2) + "-" + (SearchParam.CheckOutDate).Substring(0, 2);
+               // string checkin = (SearchParam.CheckInDate).Substring(6, 4) + "-" + (SearchParam.CheckInDate).Substring(3, 2) + "-" + (SearchParam.CheckInDate).Substring(0, 2);
+               // string checkout = (SearchParam.CheckOutDate).Substring(6, 4) + "-" + (SearchParam.CheckOutDate).Substring(3, 2) + "-" + (SearchParam.CheckOutDate).Substring(0, 2);
+               string checkin = SearchParam.CheckInDateSubstring;
+               string checkout = SearchParam.CheckOutDateSubstring;
                 StringBuilder SearchRQ = new StringBuilder();
                 SearchRQ.Append("{\"Header\": {");
                 SearchRQ.Append("\"ClientID\": \"" + UserName + "\",");
