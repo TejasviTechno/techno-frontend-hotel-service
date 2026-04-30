@@ -518,6 +518,7 @@ namespace XConnect.Models
         public string Provider { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int Hit { get; set; } = 0;
+        public string searchKeyAgoda { get; set; } //newadded 19-march-2026
 
 
     }
@@ -758,6 +759,8 @@ namespace XConnect.Models
         public AvailabilityRS AvailabilityRS { get; set; }
         public string Search_Key { get; set; }//#MongoDB
         public DateTime Time { get; set; }//#MongoDB
+        public string checkIn { get; set; } // 23-march-2026
+        public string checkOut { get; set; } // 23-march-2026
     }
 
     public class AvailabilityRS
@@ -774,6 +777,8 @@ namespace XConnect.Models
         public Int64 HotelId { get; set; }
         public string HotelCode { get; set; }
 
+        public string HotelName { get; set; } // 24032026
+
         public List<Options> HotelOption { get; set; }
     }
     public class Options
@@ -783,6 +788,8 @@ namespace XConnect.Models
         public Int64 HotelId { get; set; }
         public decimal MinPrice { get; set; }
         public bool IsCombineRoom { get; set; }
+        public string HotelName { get; set; } // newadded 24032026
+
         public List<List<_FinalRoomList>> HotelRooms { get; set; }
     }
     public class _FinalRoomList
@@ -804,13 +811,21 @@ namespace XConnect.Models
         public string MappedMealName { get; set; }
         public string SupplierCurrency { get; set; } //Added on 4-FEB-26
         public string SupplierName { get; set; } //170326
+
+        public string Allocation { get; set; } //Added on 27-march-26
+        public string RatePlanCode { get; set; } //Added on 27-march-26
+        public string subSupplierId { get; set; } //Added on 27-march-26
+        public string RoomTypeId { get; set; } //Added on 27-march-26
+        public string channel { get; set; } //Added on 27-march-26
+        public string MealFullname { get; set; } //Added on 28-march-26
     }
     public class _FinalPolicy
     {
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public decimal CancellationPrice { get; set; }
-
+        public string daysBeforeCheckIn { get; set; } //Added on 27-march-26
+        public bool isNRF { get; set; } //Added on 27-march-26
     }
 
     public class _FinalRoom
@@ -1093,6 +1108,10 @@ namespace XConnect.Models
         public string BuyingPrice { get; set; }
         public string Hit { get; set; }
         public string BuyingCancellationPrice { get; set; } = "0";
+
+        public string RoomTypeCode { get; set; } // 27-03-2026
+        public string daysBeforeCheckIn { get; set; } // 28-03-2026
+        public string isNRF { get; set; } // 28-03-2026
     }
 
     public class X_RateBreakupDetails
@@ -1137,6 +1156,7 @@ namespace XConnect.Models
         public string Hit { get; set; }
         public string ExpediaSurcharge { get; set; }
         public string CartID { get; set; }
+        public string RoomTypeCode { get; set; }  // added on30-apr-2026
 
     }
 
@@ -1220,6 +1240,8 @@ namespace XConnect.Models
         public string MealTypeDate { get; set; }
 
         public Int32 OldBookingDetailID { get; set; } //#Pruvo added on 6-MAY-2024
+        public string channel { get; set; } // 28-march-26
+
     }
     public class RoomSearch
     {
@@ -2567,6 +2589,120 @@ namespace XConnect.Models
         public string timestamp { get; set; }
         public bool isVervo { get; set; }
     }
+
+    #region agoda
+
+    public class AgodaSearchPara
+    {
+        public List<string> hotels { get; set; }
+        public string checkIn { get; set; }
+        public string checkOut { get; set; }
+        public Occupancy occupancy { get; set; }
+        public string requestType { get; set; }
+        public string token { get; set; }
+        public TokenData TokenData { get; set; }
+        public string ratePlanCode { get; set; }
+        public string currency { get; set; }
+        public double totalPrice { get; set; }
+        public string hotel { get; set; }
+        public string metadata { get; set; }
+
+    }
+
+    public class Occupancy
+    {
+        public int rooms { get; set; }
+        public int adults { get; set; }
+        public int children { get; set; }
+        public List<int> childrenAges { get; set; }
+    }
+
+    public class FilterUsed
+    {
+        public string ratePlanCode { get; set; }
+        public double totalPrice { get; set; }
+        public bool ratePlanSearch { get; set; }
+        public string OriginalcheckOut { get; set; }
+        public string OriginalcheckIn { get; set; }
+        //public List<List<Roomarray>> rooms = new List<List<Roomarray>>();
+    }
+
+    public class AgodaSearchError
+    {
+        public string responseStatus { get; set; }
+        public string version { get; set; }
+        public string remark { get; set; }
+
+    }
+    public class AgodaVersion
+    {
+        public string Version { get; set; }
+        public AgodaVersion()
+        {
+
+            //Version = "v1.9";
+            Version = "v1.34";
+
+        }
+
+    }
+
+    public class AgodaListResponse
+    {
+
+
+        public string responseStatus { get; set; }
+        public string version { get; set; }
+        public string checkIn { get; set; }
+        public string checkOut { get; set; }
+        public string currency { get; set; }
+        public List<Hotelarraylist> hotels { get; set; }
+        public AgodaListResponse()
+        {
+            responseStatus = "SUCCESS";
+            version = new AgodaVersion().Version;
+        }
+    }
+
+    public class Hotelarraylist
+    {
+        public string code { get; set; }
+        public string name { get; set; }
+        public List<Roomarray> rooms { get; set; }
+
+        //public List<List<Roomarray>> rooms = new List<List<Roomarray>>();
+    }
+    public class Roomarray
+    {
+        public string code { get; set; }
+        public string name { get; set; }
+        public List<Ratearray> rates { get; set; }
+    }
+    public class Ratearray
+    {
+        public string subSupplierId { get; set; }
+        public string boardCode { get; set; }
+        public string ratePlanCode { get; set; }
+        public int channel { get; set; }
+        public int allotment { get; set; }
+        public decimal price { get; set; }
+        public CancellationPolicyarray cancellationPolicy { get; set; }
+        public string metadata { get; set; }
+        //public int confirmByMins { get; set; }
+
+        public class CancellationPolicyarray
+        {
+            public List<Policyarray> policies { get; set; }
+        }
+        public class Policyarray
+        {
+            public double amount { get; set; }
+            public int daysBeforeCheckIn { get; set; }
+        }
+    }
+
+
+    #endregion
 
 }
 

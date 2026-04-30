@@ -5952,6 +5952,8 @@ namespace XConnect.CommonUtilities
                 DtHotelRoom.Columns.Add("BuyingPrice");
                 DtHotelRoom.Columns.Add("OTHPromoCode");
                 DtHotelRoom.Columns.Add("FinalFromDate", typeof(DateTime));
+                DtHotelRoom.Columns.Add("channel"); //newadded //14042026
+
                 return DtHotelRoom;
             }
             catch (Exception ex)
@@ -5987,6 +5989,10 @@ namespace XConnect.CommonUtilities
 
                 dtCancellation.Columns.Add("SupplierCurrency");
                 dtCancellation.Columns.Add("BuyingPrice");
+
+                dtCancellation.Columns.Add("daysBeforeCheckIn"); // newadded 31032026
+                dtCancellation.Columns.Add("isNRF"); // newadded 31032026
+                dtCancellation.Columns.Add("RoomTypeCode"); // newadded 31032026
 
                 return dtCancellation;
             }
@@ -6036,6 +6042,8 @@ namespace XConnect.CommonUtilities
                 DtHotelRoomRateBreackUp.Columns.Add("CompanyRate");
                 DtHotelRoomRateBreackUp.Columns.Add("SupplierCurrency");
                 DtHotelRoomRateBreackUp.Columns.Add("BuyingPrice");
+                DtHotelRoomRateBreackUp.Columns.Add("RoomTypeCode"); // newadded 14042026
+
                 return DtHotelRoomRateBreackUp;
             }
             catch (Exception ex)
@@ -6152,6 +6160,34 @@ namespace XConnect.CommonUtilities
                 await _exception.Error(ex);
             }
         }
+
+        #region agoda client
+
+        public async Task XMLRequestResponseTrack_agoda(string XmlRequest, string XmlResponse, string Provider, string TypeRequest, string reqId = "")
+        {
+            try
+            {
+                //DLConnection con = new DLConnection();
+                SqlParameter[] para = new SqlParameter[]{
+            new SqlParameter("@XmlRequest",XmlRequest),
+            new SqlParameter("@XmlResponse",XmlResponse),
+            new SqlParameter("@Provider",Provider),
+            new SqlParameter("@TypeRequest",TypeRequest),
+            new SqlParameter("@ReqId",reqId)
+
+            };
+                //con.GetExecuteScalarSP("InsertXMLRequestResponseTrack", para);
+                await _dlConnection.GetExecuteScalarSP("InsertXMLRequestResponseTrack_agoda", para);
+            }
+            catch (Exception ex)
+            {
+                //Common.Error(ex);
+                await _exception.Error(ex);
+
+            }
+        }
+
+        #endregion
 
         public async Task FireAway_SQL(string Request, string Response, string Supplier, string NewSearchKey, Int32 SSTimeout, int AgentId)
         {

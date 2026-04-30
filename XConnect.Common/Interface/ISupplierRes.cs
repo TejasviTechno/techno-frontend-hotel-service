@@ -13,6 +13,8 @@ namespace XConnect.CommonUtilities.Interface
 
 
         bool SwapMealName(string AgentCode);
+        Task<Options> GetCommonRoomForSuppliers_agoda(Int64 GiataId, TokenData tokenData, AdvancedOptions advancedOptions, double LowestRate, DataRow drXmlHotel, DataTable dtHotelRoom, DataTable dt_Cancellation, DataTable dt_RateBreackUp, HotelSearchParameter SearchParam);
+
 
     }
 }

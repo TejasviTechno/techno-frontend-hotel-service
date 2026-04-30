@@ -106,6 +106,8 @@ using XConnect.Supplier.Dingus.Interface;
 using XConnect.Supplier.Dingus;
 using XConnect.Supplier.Welcomebeds.Interface;
 using XConnect.Supplier.Welcomebeds;
+using XConnect.Supplier.AgodaNew.Interface;
+using XConnect.Supplier.AgodaNew;
 
 
 
@@ -170,6 +172,7 @@ namespace XConnect.API.Extensions
             services.AddScoped<IAkbartravel, AkbartravelRepo>();
             services.AddScoped<IDingus, DingusRepository>();
             services.AddScoped<IWelcomebeds, WelcomebedsRepository>();
+            services.AddScoped<IAgodaNew, AgodaNewRepository>();
 
             return services;
         }
