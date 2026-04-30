@@ -1367,7 +1367,8 @@ namespace Xconnect.BLL
                         bool ActiveRoomMApping = false;
                         bool ActiveRoomMAppingwithException = false;
                         bool ActiveRoomId = false;
-                        int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
+                        //int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
+                        int Roommapping = 1;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
                         if (ActiveRoomMAppingwithException) //Add On 17SEP2025
                         {
                             finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping

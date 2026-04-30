@@ -363,8 +363,8 @@ namespace XConnect.Supplier.GoGlobal
         {
             try
             {
-                string checkIn = searchParam.CheckInDateSubstring;//String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(searchParam.CheckInDate, "dd/MM/yyyy", null));
-               // string checkOut = String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(searchParam.CheckOutDate, "dd/MM/yyyy", null));
+                string checkIn =String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(searchParam.CheckInDate, "dd/MM/yyyy", null));
+                string checkOut = String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(searchParam.CheckOutDate, "dd/MM/yyyy", null));
                 StringBuilder roomstring = new StringBuilder();
                 int RoomCount = 1;
                 for (int i = 0; i < searchParam.Rooms.Count; i++)

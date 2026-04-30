@@ -346,10 +346,10 @@ namespace XConnect.Supplier.Techno
                 }
                 SBreq.Append("],");
 
-                if (Provider.ToLower() == "travelbullz_techno")
+                //if (Provider.ToLower() == "travelbullz_techno")
                     SBreq.Append("\"CountryID\":\"" + CountryID + "\",");
-                else
-                    SBreq.Append("\"CityID\":\"" + CityID + "\",");
+                //else
+                  //  SBreq.Append("\"CityID\":\"" + CityID + "\",");
 
                 SBreq.Append("\"CheckInDate\":\"" + CheckInDate + "\",");
                 SBreq.Append("\"CheckOutDate\":\"" + CheckOutDate + "\",");
