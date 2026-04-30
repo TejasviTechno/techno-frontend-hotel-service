@@ -75,6 +75,9 @@ namespace XConnect.Models.Hotel
         public string ResponseError { get; set; } //190625
         public int Host { get; set; } //17-DEC-2025
         public string ActualReason { get; set; } // added 20042026
+        public double CodeProcessingTimeSupplier { get; set; } // added 30042026
+        
+        public string ListHotelId { get; set; } //190625
 
     }
 
