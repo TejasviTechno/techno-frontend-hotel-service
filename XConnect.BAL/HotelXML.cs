@@ -2091,8 +2091,8 @@ namespace Xconnect.BLL
                 #region Common Parameter Convert Once                
                 SearchPara.ParseCheckInDate = DateTime.ParseExact(SearchPara.CheckInDate, "dd/MM/yyyy", null);
                 SearchPara.ParseCheckOutDate = DateTime.ParseExact(SearchPara.CheckOutDate, "dd/MM/yyyy", null);
-                SearchPara.CheckInDateSubstring = SearchPara.CheckInDate.Substring(6, 4) + "-" + SearchPara.CheckInDate.Substring(3, 2) + "-" + SearchPara.CheckInDate.Substring(0, 2);
-                SearchPara.CheckOutDateSubstring = SearchPara.CheckOutDate.Substring(6, 4) + "-" + SearchPara.CheckOutDate.Substring(3, 2) + "-" + SearchPara.CheckOutDate.Substring(0, 2);
+                SearchPara.CheckInDateSubstring = SearchPara.CheckInDate.Substring(6, 4) + "-" + SearchPara.CheckInDate.Substring(0, 2) + "-" + SearchPara.CheckInDate.Substring(3, 2);
+                SearchPara.CheckOutDateSubstring = SearchPara.CheckOutDate.Substring(6, 4) + "-" + SearchPara.CheckOutDate.Substring(0, 2) + "-" + SearchPara.CheckOutDate.Substring(3, 2);
                 string SearchParaCheck = SearchPara.IsSearchFor.ToLower();
                 #endregion
 
@@ -15163,8 +15163,8 @@ new SqlParameter("@AgentId", AgentId),
                 // add new HotelName    & rating
                 objdata.GIITACode = Convert.ToInt32(BookOption.Hotel.GIITACode);
                 objdata.BoardType = BookOption.Rooms[0].HotelRooms.BoardType;
-                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
-                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
+                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
                 // objdata.BookingStatus = Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]);//Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]==""?"0": BookOption.Rooms[i].HotelRooms[18]);
                 objdata.ServiceTotal = Total;
                 objdata.AdultRate = Total;
@@ -15964,8 +15964,8 @@ new SqlParameter("@AgentId", AgentId),
                 // add new HotelName    & rating
                 objdata.GIITACode = Convert.ToInt32(BookOption.Hotel.GIITACode);
                 objdata.BoardType = BookOption.Rooms[0].HotelRooms.BoardType;
-                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
-                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
+                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
                 // objdata.BookingStatus = Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]);//Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]==""?"0": BookOption.Rooms[i].HotelRooms[18]);
                 objdata.ServiceTotal = Total;
                 objdata.AdultRate = Total;
@@ -17002,7 +17002,6 @@ new SqlParameter("@AgentId", AgentId),
                                     _ = _exception.Error(ex);
                                 }
                                 #endregion
-                                #region "Rezlive"
                             }
                         }
                     }
@@ -17029,8 +17028,7 @@ new SqlParameter("@AgentId", AgentId),
                         string IsCombineRoom = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["IsCombineRoom"]);
 
                         HotelRoomPreBook room = new HotelRoomPreBook();
-                        var _rtSplit = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["RoomType"]).Split('-');
-                        room.MealName = _rtSplit.Length > 1 ? _rtSplit[1] : "";
+                        room.MealName = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["RoomType"]).Split('-')[1];
                         room.MappedMealName = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["MappedMeal"]);
                         room.Price = Convert.ToDecimal(dsCartDetails.Tables[1].Rows[j]["FinalSellingPrice"]);
                         if (IsCombineRoom.ToLower() == "true")
@@ -17273,8 +17271,7 @@ new SqlParameter("@AgentId", AgentId),
                         string IsCombineRoom = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["IsCombineRoom"]);
 
                         HotelRoomPreBook room = new HotelRoomPreBook();
-                        var _rtSplit = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["RoomType"]).Split('-');
-                        room.MealName = _rtSplit.Length > 1 ? _rtSplit[1] : "";
+                        room.MealName = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["RoomType"]).Split('-')[1];
                         room.MappedMealName = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["MappedMeal"]);
                         room.Price = Convert.ToDecimal(dsCartDetails.Tables[1].Rows[j]["FinalSellingPrice"]);
                         if (IsCombineRoom.ToLower() == "true")
@@ -35866,7 +35863,6 @@ new SqlParameter("@AgentId", AgentId),
 
 
                                                     string HotelcodeE = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["XMLHotelId"]);
-                                                    // string ExelyURL = Convert.ToString(ExelyDetails[0]["WebSiteURL"]) + "hotels/details/get";
                                                     string ExelyURL = _configuration["Exely:BaseUrl"] + _configuration["Exely:VerifyBooking"];
                                                     bool IsErrorE = false;
                                                     double itempriceE = 0;
@@ -35886,8 +35882,6 @@ new SqlParameter("@AgentId", AgentId),
                                                             #region "Price update logic with markup"
                                                             double UpdatedPrice = Convert.ToDouble(itempriceE);
                                                             #region "Markup Logic Supplierwise"
-                                                            //double AgentPercentage = 0.0;
-                                                            //Boolean blnIsShowSupplier = false;
                                                             int SupplierID = 0;
                                                             if (dsAgentDetails.Tables[1] != null)
                                                             {
@@ -35903,7 +35897,6 @@ new SqlParameter("@AgentId", AgentId),
                                                                 }
                                                                 if (drSupRow != null)
                                                                 {
-                                                                    //AgentPercentage = Convert.ToDouble(drSupRow[0]["AgentWiseMarkup"]);
                                                                     blnIsShowSupplier = (Convert.ToInt16(drSupRow[0]["IsShowSupplier"]) == 1 ? true : false);
                                                                     SupplierID = Convert.ToInt32(drSupRow[0]["SupplierID"]);
                                                                 }
@@ -36072,7 +36065,7 @@ new SqlParameter("@AgentId", AgentId),
                 await SaveCartPriceCheck(dsCartDetails, j, City, UpdatedPrice, OldPrice, AgentID, AgentCode);
 
 
-                # endregion DataRow newRow_Rezlive
+                # endregion
             }
             catch (Exception ex)
             {
@@ -36311,7 +36304,6 @@ new SqlParameter("@AgentId", AgentId),
                                 #endregion
 
 
-        #endregion
 
         #region Book
         public async Task<BookResponse_newapi> Book(BookRequest bookRequest, TokenData tokenData, AdvancedOptions advancedOptions, string JsonRQ, string userAgent, string IP, string HostName)
@@ -59504,8 +59496,6 @@ new SqlParameter("@AgentId", AgentId),
                                 string bookingNumber = AgentRef;
                                 string baseUrl = _configuration["Exely:BaseUrl"];
 
-                                //string ExelyGetCancellation_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "hotels/bookings/getcancellationcharges";
-
                                 //getcharge request
                                 string CancellationXMLcharge = _iExely.Get_Exely_GetCancellationChargesRQ(AgentRef);
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
@@ -59517,17 +59507,11 @@ new SqlParameter("@AgentId", AgentId),
 
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
-                                /*var result = JsonConvert.DeserializeObject<BookingCancellation>(ResponseData);
-                                string currency = Convert.ToString(SupplierDetailsCommon[0]["Currency"]);
-                                double Amount = result.penaltyAmount ?? 0;*/
-
                                 var result = JsonConvert.DeserializeObject<ResultOfCalculatePenalty>(ResponseData);
                                 string currency = Convert.ToString(SupplierDetailsCommon[0]["Currency"]);
                                 double Amount = result.penaltyAmount ?? 0;
 
                                 //cancel request 
-
-                                //CancellationXML = _iExely.Get_Exely_CancelBooking(Amount, currency, AgentRef);
                                 CancellationXML = JsonConvert.SerializeObject(new BookingCancellationRq
                                 {
                                     reason = "Cancelled by customer",
@@ -59537,7 +59521,6 @@ new SqlParameter("@AgentId", AgentId),
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
                                 string cancelexelyurl = baseUrl + _configuration["Exely:CancelBooking"].Replace("{number}", bookingNumber);
-                                //string Error = "";
                                 ResponseDto responseDto1 = await _iExely.ExelyResponseNew(CancellationXML, cancelexelyurl, 120000, password);
                                 string CancelResponseData = responseDto1.Response;
                                 Error = responseDto1.Error;
@@ -63386,8 +63369,6 @@ new SqlParameter("@AgentId", AgentId),
                                 string bookingNumber = AgentRef;
                                 string baseUrl = _configuration["Exely:BaseUrl"];
 
-                                //string ExelyGetCancellation_URL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "hotels/bookings/getcancellationcharges";
-
                                 //getcharge request
                                 string CancellationXMLcharge = _iExely.Get_Exely_GetCancellationChargesRQ(AgentRef);
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
@@ -63399,17 +63380,11 @@ new SqlParameter("@AgentId", AgentId),
 
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
-                                /*var result = JsonConvert.DeserializeObject<BookingCancellation>(ResponseData);
-                                string currency = Convert.ToString(SupplierDetailsCommon[0]["Currency"]);
-                                double Amount = result.penaltyAmount ?? 0;*/
-
                                 var result = JsonConvert.DeserializeObject<ResultOfCalculatePenalty>(ResponseData);
                                 string currency = Convert.ToString(SupplierDetailsCommon[0]["Currency"]);
                                 double Amount = result.penaltyAmount ?? 0;
 
                                 //cancel request 
-
-                                //CancellationXML = _iExely.Get_Exely_CancelBooking(Amount, currency, AgentRef);
                                 CancellationXML = JsonConvert.SerializeObject(new BookingCancellationRq
                                 {
                                     reason = "Cancelled by customer",
@@ -63419,7 +63394,6 @@ new SqlParameter("@AgentId", AgentId),
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
                                 string cancelexelyurl = baseUrl + _configuration["Exely:CancelBooking"].Replace("{number}", bookingNumber);
-                                //string Error = "";
                                 ResponseDto responseDto1 = await _iExely.ExelyResponseNew(CancellationXML, cancelexelyurl, 120000, password);
                                 string CancelResponseData = responseDto1.Response;
                                 Error = responseDto1.Error;
