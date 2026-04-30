@@ -65712,8 +65712,8 @@ new SqlParameter("@AgentId", AgentId),
                 SearchPara.HotelType = "available";
                 //}
                 //else { SearchPara.HotelType = "available On Request"; }
-                finalResponse.checkIn = SearchPara.CheckInDate;
-                finalResponse.checkOut = SearchPara.CheckOutDate;
+                //finalResponse.checkIn = SearchPara.CheckInDate;
+                //finalResponse.checkOut = SearchPara.CheckOutDate;
                 // SearchPara.HotelID = "";// SearchPara.HotelID != "0" ? SearchPara.HotelID : "";
                 SearchPara.CheckInDate = Convert.ToDateTime(SearchPara.CheckInDate).ToString("dd/MM/yyyy");
                 SearchPara.CheckOutDate = Convert.ToDateTime(SearchPara.CheckOutDate).ToString("dd/MM/yyyy");
