@@ -2099,8 +2099,8 @@ namespace Xconnect.BLL
                 #region Common Parameter Convert Once                
                 SearchPara.ParseCheckInDate = DateTime.ParseExact(SearchPara.CheckInDate, "dd/MM/yyyy", null);
                 SearchPara.ParseCheckOutDate = DateTime.ParseExact(SearchPara.CheckOutDate, "dd/MM/yyyy", null);
-                SearchPara.CheckInDateSubstring = SearchPara.CheckInDate.Substring(6, 4) + "-" + SearchPara.CheckInDate.Substring(0, 2) + "-" + SearchPara.CheckInDate.Substring(3, 2);
-                SearchPara.CheckOutDateSubstring = SearchPara.CheckOutDate.Substring(6, 4) + "-" + SearchPara.CheckOutDate.Substring(0, 2) + "-" + SearchPara.CheckOutDate.Substring(3, 2);
+                SearchPara.CheckInDateSubstring = SearchPara.CheckInDate.Substring(6, 4) + "-" + SearchPara.CheckInDate.Substring(3, 2) + "-" + SearchPara.CheckInDate.Substring(0, 2);
+                SearchPara.CheckOutDateSubstring = SearchPara.CheckOutDate.Substring(6, 4) + "-" + SearchPara.CheckOutDate.Substring(3, 2) + "-" + SearchPara.CheckOutDate.Substring(0, 2);
                 string SearchParaCheck = SearchPara.IsSearchFor.ToLower();
                 #endregion
 
@@ -15171,8 +15171,8 @@ new SqlParameter("@AgentId", AgentId),
                 // add new HotelName    & rating
                 objdata.GIITACode = Convert.ToInt32(BookOption.Hotel.GIITACode);
                 objdata.BoardType = BookOption.Rooms[0].HotelRooms.BoardType;
-                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
-                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
+                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
                 // objdata.BookingStatus = Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]);//Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]==""?"0": BookOption.Rooms[i].HotelRooms[18]);
                 objdata.ServiceTotal = Total;
                 objdata.AdultRate = Total;
@@ -15972,8 +15972,8 @@ new SqlParameter("@AgentId", AgentId),
                 // add new HotelName    & rating
                 objdata.GIITACode = Convert.ToInt32(BookOption.Hotel.GIITACode);
                 objdata.BoardType = BookOption.Rooms[0].HotelRooms.BoardType;
-                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
-                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                objdata.CheckInDate = DateTime.ParseExact(para.CheckInDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture); ;
+                objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
                 // objdata.BookingStatus = Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]);//Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]==""?"0": BookOption.Rooms[i].HotelRooms[18]);
                 objdata.ServiceTotal = Total;
                 objdata.AdultRate = Total;
