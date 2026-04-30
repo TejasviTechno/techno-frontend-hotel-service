@@ -27,6 +27,8 @@ namespace XConnect.Analytics
         public string SupplierName { get; set; } = string.Empty; // new added
         public string TechName { get; set; } = string.Empty; // new added
         public string source { get; set; } = string.Empty; // new added
+        public double CodeProcessingTimenew { get; set; } // new added 30042026
+
         //public string ErrorCode { get; set; } = string.Empty;
         //public string CheckIn { get; set; } = string.Empty;
         //public string CheckOut { get; set; } = string.Empty;

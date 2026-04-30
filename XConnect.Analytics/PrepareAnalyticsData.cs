@@ -220,7 +220,8 @@ namespace XConnect.Analytics
                             Stage = analyticsData.Stage,
                             ElapsedTime = (long)TimeSpan.Parse(allTasks[i].RSTimeout).TotalMilliseconds,
                             Description = description,//allTasks[i].ResponseType,
-
+                            CodeProcessingTimenew = allTasks[i].CodeProcessingTimeSupplier,
+                            Search_Key = analyticsData.Search_Key,
                         };
                         
 
@@ -595,7 +596,7 @@ namespace XConnect.Analytics
                 TraceId = _userContextAccessor.TraceId,
                 SearchKey = _analyticsData.Search_Key,
                 TenantId = Convert.ToString(_userContextAccessor?.DecodedJwt?.TenantId) ?? "",
-
+                CodeProcessingTime = _analyticsData.CodeProcessingTimenew,
             };
         }
 
