@@ -42,6 +42,7 @@ namespace XConnect.API.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserContextAccessor _userContextAccessor;
         _Error error = new _Error();
+        AgodaSearchError erroragoda = new AgodaSearchError();
 
 
 
@@ -5657,6 +5658,184 @@ namespace XConnect.API.Controllers
             }
 
         }
+
+        #region agoda client
+
+        bool EnterLogs = true;
+
+        [HttpPost]
+        [Route("/v1.9/hotelSearch")]  
+        [Route("/v1.9/precheck")]  
+        public async Task<IActionResult> hotelSearch(AgodaSearchPara commonRQ)
+
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            TokenData tokenData = new TokenData();
+            CommonRequest data = new CommonRequest();
+            data.AdvancedOptions = new AdvancedOptions();
+            string requestName = "availability";
+            FilterUsed filterUsed = new FilterUsed();
+            filterUsed.ratePlanSearch = false;
+            filterUsed.OriginalcheckOut = commonRQ.checkOut;
+            filterUsed.OriginalcheckIn = commonRQ.checkIn;
+            int _NoofRoom = commonRQ.occupancy.rooms;
+            string CmName = "";
+            if (!String.IsNullOrEmpty(commonRQ.ratePlanCode))
+            {
+                requestName = "Precheck";
+                filterUsed.ratePlanCode = commonRQ.ratePlanCode;
+                filterUsed.totalPrice = commonRQ.totalPrice;
+                filterUsed.ratePlanSearch = true;
+                string[] arraysearchpra = commonRQ.ratePlanCode.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                switch (arraysearchpra[arraysearchpra.Length - 1])
+                {
+                    case "177":
+                        CmName = "rategain";
+                        break;
+                    case "182":
+                        CmName = "travelclick";
+                        break;
+                    case "112":
+                        CmName = "siteminder";
+                        break;
+                    default:
+                        break;
+                }
+            }
+            try
+            {
+                string IP = _platformService.GetIPAddress();
+                string userAgent = _platformService.GetUserPlatform(IP);
+
+                //Validation NoofNight
+                if ((Convert.ToDateTime(commonRQ.checkOut).Date - (Convert.ToDateTime(commonRQ.checkIn).Date)).TotalDays > 30)
+                {
+                    // erroragoda = HotelXML.GetAgodaErrorMsg("Request_Error", version.Version, "NoofNights between 1 and 30");
+                    // return Request.CreateResponseCompressed_agodahotelsearch(HttpStatusCode.Unauthorized, erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.RequestError, "0");
+                }
+                //--end
+                //commonRQ.token = WebConfigurationManager.AppSettings["agoda_token"];
+                commonRQ.token = _keySettings.agoda_apikey;
+                data.Request = commonRQ.ToString();
+                // if (AgodaAuthentication(ref tokenData, ref data))
+                AuthData authData = await _authenticationTokenAgent.Authenticate(tokenData, data, IP, userAgent);
+
+
+                if (Convert.ToBoolean(authData.tokenData.AgentId))
+                {
+                    HotelSearchParameter payload = new HotelSearchParameter();
+                    payload.CityID = 0;
+                    _hotelXML.PrepareForAgodaCommonSearch(ref payload, ref data, ref erroragoda, authData.tokenData, requestName, filterUsed, commonRQ);
+
+                    if (erroragoda.responseStatus != null)
+                    {
+                        // return Request.CreateResponseCompressed(HttpStatusCode.OK, erroragoda, "application/json", data, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NorecordError, payload.CityID.ToString());
+                    }
+                   
+                    //AvailHotelList finalResponse = HotelXML.HotelSearchCommon(payload, tokenData, data.AdvancedOptions, requestName, CmName, commonRQ.metadata);
+                    AvailHotelList finalResponse = await _hotelXML.HotelSearchCommon(payload, authData.tokenData, data.AdvancedOptions, requestName, CmName, commonRQ.metadata);
+
+                    if (!filterUsed.ratePlanSearch)
+                    {
+                        AgodaListResponse lstFiltOption = new AgodaListResponse();
+                        //File.WriteAllText(Path.Combine("D:\\Karnav\\Agoda API", "WriteFile_HotelResult.txt"), Convert.ToString(finalResponse.AvailabilityRS.HotelResult.Count));
+                        if (finalResponse.AvailabilityRS != null && finalResponse.AvailabilityRS.HotelResult.Count > 0)
+                        {
+
+                            //lstFiltOption = finalResponse.ConvertToFinalResponseListForAgoda(filterUsed, Convert.ToString(tokenData.apiCurrency.CurrencyShortname), requestName, _NoofRoom); //convert to final response
+                            //lstFiltOption = await _hotelXML.ConvertToFinalResponseListForAgoda(finalResponse,filterUsed, Convert.ToString(tokenData.apiCurrency.CurrencyShortname), requestName, _NoofRoom); //convert to final response
+                            lstFiltOption = await _hotelXML.ConvertToFinalResponseListForAgoda(finalResponse, filterUsed, authData.tokenData.apiCurrency.CurrencyShortname, requestName, _NoofRoom); //needtochange
+                        }
+                        timer.Stop();
+                        if (lstFiltOption != null)
+                        {
+                            if (lstFiltOption.hotels == null)
+                            {
+                                if (filterUsed.ratePlanSearch)
+                                    erroragoda = _hotelXML.GetAgodaErrorMsg("NO_ALLOTMENT", "", "Given rate/allotment is not available for booking any more.");
+                                //erroragoda = _hotelXML.GetErrorMsg("NO_ALLOTMENT", version.Version, "Given rate/allotment is not available for booking any more.");
+                                else
+                                    erroragoda = _hotelXML.GetAgodaErrorMsg("NO_AVAILABILITY", "", "no available rooms for given criteria.");
+                                // erroragoda =  _hotelXML.GetErrorMsg("NO_AVAILABILITY", version.Version, "no available rooms for given criteria.");
+                                //return Request.CreateResponseCompressed_agodahotelsearch(HttpStatusCode.OK, erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NorecordError, "0");
+                                 return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext,200, erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NorecordError, "0");
+
+                            }
+                            else
+                            {
+                                // return Request.CreateResponseCompressed_agodahotelsearch(HttpStatusCode.OK, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0");
+                                return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0"); // needtochange
+
+                            }
+                        }
+                        else
+                        {
+                            erroragoda = _hotelXML.GetAgodaErrorMsg("SUPPLIER_SERVER_ERROR", "", "Supplier service unavailable/server down. Need to escalate to supplier.");
+                             return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200 ,lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.InternalError, "0");
+                        }
+                    }
+                    else
+                    {
+                        //AgodaMainPrecheck lstFiltOption = new AgodaMainPrecheck();
+                        AgodaListResponse lstFiltOption = new AgodaListResponse();
+
+                        if (finalResponse.AvailabilityRS != null && finalResponse.AvailabilityRS.HotelResult.Count > 0)
+                        {
+                            // lstFiltOption = finalResponse.ConvertToFinalResponseListForAgoda(filterUsed, Convert.ToString(tokenData.apiCurrency.CurrencyShortname), "", _NoofRoom); //convert to final response
+                            // lstFiltOption = await _hotelXML.ConvertToFinalResponseListForAgoda(finalResponse,filterUsed, Convert.ToString(tokenData.apiCurrency.CurrencyShortname), "", _NoofRoom); //convert to final response
+                            lstFiltOption = await _hotelXML.ConvertToFinalResponseListForAgoda(finalResponse, filterUsed, authData.tokenData.apiCurrency.CurrencyShortname, requestName, _NoofRoom); //needtochange
+
+                        }
+                        timer.Stop();
+                        if (lstFiltOption != null)
+                        {
+                            if (lstFiltOption.hotels == null)// || lstFiltOption.hotel.rooms.Count == 0) //needtochange
+                            {
+                                if (filterUsed.ratePlanSearch)
+                                    erroragoda = _hotelXML.GetAgodaErrorMsg("NO_ALLOTMENT", "", "Given rate/allotment is not available for booking any more.");
+                                //error = _hotelXML.GetErrorMsg("NO_ALLOTMENT", version.Version, "Given rate/allotment is not available for booking any more.");
+
+                                else
+                                    erroragoda = _hotelXML.GetAgodaErrorMsg("NO_AVAILABILITY", "", "no available rooms for given criteria.");
+                                // error = _hotelXML.GetErrorMsg("NO_AVAILABILITY", version.Version, "no available rooms for given criteria.");
+                                return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200, erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.SomeError, "0");
+                            }
+                            else
+                            {
+                                //return Request.CreateResponseCompressed_agodahotelsearch(HttpStatusCode.OK, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0");
+                                //return _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpStatusCode.OK, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0");
+
+                                return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0");
+
+
+                            }
+                        }
+                        else
+                        {
+                            erroragoda = _hotelXML.GetAgodaErrorMsg("SUPPLIER_SERVER_ERROR", "", "Supplier service unavailable/server down. Need to escalate to supplier.");
+                            //error =  _hotelXML.GetErrorMsg("SUPPLIER_SERVER_ERROR", version.Version, "Supplier service unavailable/server down. Need to escalate to supplier.");
+                            return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.InternalError, "0");
+                        }
+                    }
+                }
+                else
+                {
+                    erroragoda = _hotelXML.GetAgodaErrorMsg("UNAUTHORIZED", "", "Access credential is incorrect");
+                    // return Request.CreateResponseCompressed_agodahotelsearch(HttpStatusCode.OK, erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "0");
+                    return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 401, erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0"); // needtochange
+                }
+
+            }
+            catch (Exception ex)
+            {
+                erroragoda = _hotelXML.GetAgodaErrorMsg("SUPPLIER_SERVER_ERROR", "", "Supplier service unavailable/server down. Need to escalate to supplier.");
+                 return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200, erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.InternalError, "0");
+            }
+            return null;
+        }
+
+        #endregion
 
     }
 }

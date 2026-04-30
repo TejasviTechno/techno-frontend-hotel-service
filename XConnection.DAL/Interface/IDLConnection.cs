@@ -105,5 +105,14 @@ namespace XConnect.DAL.Interface
 
         Task<DataTable> GetDataTableByConnectionStringAsync(string SPName, SqlParameter[] para, string connectionString);
         Task<object> GetExecuteScalarQry_new(string SPName, SqlParameter[] para);
+
+        #region adoda
+
+        //Task<DataSet> GetDataSet_cache_agoda(string SPName, SqlParameter[] para, Int32 Timeout);
+
+        // Task<DataSet> GetExecuteScalarSP_88(String SPName, SqlParameter[] para);
+        object GetExecuteScalarSP_88(String SPName, SqlParameter[] para);
+
+        #endregion
     }
 }

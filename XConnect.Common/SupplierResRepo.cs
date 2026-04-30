@@ -1842,6 +1842,403 @@ namespace XConnect.CommonUtilities
             return hotelListNew;
         }
 
+        #region agoda client
+
+        public async Task<Options> GetCommonRoomForSuppliers_agoda(Int64 GiataId, TokenData tokenData, AdvancedOptions advancedOptions, double LowestRate, DataRow drXmlHotel, DataTable dtHotelRoom, DataTable dt_Cancellation, DataTable dt_RateBreackUp, HotelSearchParameter SearchParam)
+        {
+            // Options hotelListNew = HotelXML_Suppliers.GetDataFromHotelRow(drXmlHotel);
+            Options hotelListNew = GetDataFromHotelRow(drXmlHotel);  //needtochange
+                                                                     // _FinalRoom hotelListNew = new _FinalRoom();
+            _FinalRoom _finalRoom = new _FinalRoom();
+            try
+            {
+                //Stopwatch timerroom2 = new System.Diagnostics.Stopwatch();
+                //timerroom2.Start();
+                //if (SearchParam != null)
+                //{
+                //    timerroom2.Stop();
+                //    SearchParam.SupplierTime += ",|Process GetGiata : " + Provider + "  " + "|Execution Time :" + timerroom2.Elapsed.ToString();
+                //}
+                //timerroom2.Restart();
+                hotelListNew.MinPrice = Convert.ToDecimal(LowestRate);
+                hotelListNew.HotelCode = Convert.ToString(GiataId);
+                decimal minprice = Convert.ToDecimal(LowestRate);
+                // hotelListNew.CountryId = Convert.ToInt32(drXmlHotel.Table.Rows[0]["XMLCountry"]); //needtochange
+                // hotelListNew.CityId = 0;// Convert.ToInt32(dtHotelRoom.Rows[0]["CityId"]); //needtochange
+                bool IsCombineRoom = true;
+                // hotelListNew.HotelRooms = HotelXML_Suppliers.GetHotelRoomForOptions(advancedOptions, tokenData, dtHotelRoom, dt_Cancellation, dt_RateBreackUp, SearchParam, ref minprice, ref IsCombineRoom);
+                // hotelListNew.HotelRooms = await GetHotelRoomForOptions_agoda(advancedOptions, tokenData, dtHotelRoom, dt_Cancellation, dt_RateBreackUp, SearchParam, ref minprice, ref IsCombineRoom);
+                _finalRoom = await GetHotelRoomForOptions_agoda(advancedOptions, tokenData, dtHotelRoom, dt_Cancellation, dt_RateBreackUp, SearchParam, minprice, IsCombineRoom);
+
+                hotelListNew.HotelRooms = _finalRoom._finalRoomList;//jay
+
+                //if (minprice == 0)
+                //    return null;
+                //hotelListNew.MinPrice = minprice;
+                //hotelListNew.IsCombineRoom = IsCombineRoom;
+                //return hotelListNew;
+
+                if (_finalRoom.MinPrice == 0)
+                    return null;
+                hotelListNew.MinPrice = _finalRoom.MinPrice;
+                hotelListNew.IsCombineRoom = _finalRoom.IsRoomCombine;
+                return hotelListNew;
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+                return null;
+
+            }
+        }
+
+        public async Task<_FinalRoom> GetHotelRoomForOptions_agoda(AdvancedOptions advancedOptions, TokenData tokenData, DataTable RoomRow, DataTable PolicyTable, DataTable RateBreakup, HotelSearchParameter SearchPara, decimal MinPrice, bool IsRoomCombine /* will return Min Price */)
+        {
+            _FinalRoom _finalRoom = new _FinalRoom();
+
+            List<List<_FinalRoomList>> rooms = new List<List<_FinalRoomList>>();
+
+            try
+            {
+                //if (SearchPara.Filters.IsShowRooms == 0)
+                // return rooms;
+                List<X_Roomdetails> roomDetails = HtmlExtensions.ToList<X_Roomdetails>(RoomRow);
+                if (roomDetails.Count == 0)
+                {
+                    _finalRoom.MinPrice = MinPrice; ; //jay
+                    //_finalRoom.IsRoomCombine = IsRoomCombine; //jay
+                    return _finalRoom;
+
+                }
+
+                SortRoomByPrice sortRoom = new SortRoomByPrice();
+                roomDetails.Sort(sortRoom);
+                List<X_PolicyDetails> policyDetails = HtmlExtensions.ToList<X_PolicyDetails>(PolicyTable);
+                List<X_RateBreakupDetails> rateBeckup = HtmlExtensions.ToList<X_RateBreakupDetails>(RateBreakup);
+                List<X_Roomdetails>[] roomtypearr = new List<X_Roomdetails>[SearchPara.Rooms.Count + 1];
+
+                for (int j = 1; j <= SearchPara.Rooms.Count; j++)
+                {
+                    for (int rr = 0; rr < roomDetails.Count; rr++)
+                    {
+                        //if (rr > CacheMaster.RoomLimit && (advancedOptions.SearchByOneID == false || SearchPara.Rooms.Count > 1))
+                        //    break;
+                        if (roomDetails[rr].RoomNo == j.ToString() /* && item.GIITACode == GiataIdd && item.Hit == Hit*/)
+                        {
+                            if (roomtypearr[j] == null)
+                            {
+                                roomtypearr[j] = new List<X_Roomdetails>();
+                            }
+                            roomtypearr[j].Add(roomDetails[rr]);
+                        }
+                    }
+                    //foreach (X_Roomdetails item in roomDetails)
+                    //{
+
+                    //}
+
+                }
+                IsRoomCombine = true;
+
+                if (roomtypearr.Length > 0)
+                {
+                    if (roomtypearr[1].Count > 0)
+                        IsRoomCombine = roomtypearr[1][0].IsCombineRoom;
+                }
+                List<List<X_Roomdetails>> Mainrooms = new List<List<X_Roomdetails>>();
+
+                if (IsRoomCombine)
+                {
+                    for (var co = 0; co < roomtypearr[1].Count; co++)
+                    {
+                        List<X_Roomdetails> arrcom = new List<X_Roomdetails>();
+                        arrcom.Add(roomtypearr[1][co].CastList<X_Roomdetails>());
+                        Mainrooms.Add(arrcom);
+                    }
+                }
+                else
+                {
+                    List<String> arrmeal = new List<string>();
+                    arrmeal.AddRange(roomtypearr[1].Select(s => s.MealName).Distinct().ToList());   //Destinact meal
+                                                                                                    //  test1 = new List<List<X_RoomdetailsFinal>>();
+                    #region FilterMealWise
+                    for (var m = 0; m < arrmeal.Count; m++)
+                    {
+                        var MealName = arrmeal[m];
+                        List<X_Roomdetails>[] roomtypearr1 = new List<X_Roomdetails>[SearchPara.Rooms.Count];
+                        for (int rm = 1; rm <= SearchPara.Rooms.Count; rm++)
+                        {
+                            List<X_Roomdetails> Suppliermeal = roomtypearr[rm].Where(A => A.MealName == MealName).ToList(); //list of meal + supplier
+                            foreach (X_Roomdetails item in Suppliermeal)
+                            {
+                                if (roomtypearr1[rm - 1] == null)
+                                {
+                                    roomtypearr1[rm - 1] = new List<X_Roomdetails>();
+                                }
+                                roomtypearr1[rm - 1].Add(item.CastList<X_Roomdetails>());
+                            }
+                        }
+                        List<List<X_Roomdetails>> dataV1 = MergeRooms(roomtypearr1, SearchPara);
+
+                        if (dataV1.Count > 0)
+                        {
+                            Mainrooms.AddRange(dataV1.ReturnOnly(CacheMaster.RoomLimit).ToList());
+
+                        }
+                    }
+                    #endregion
+                }
+                List<Decimal> arrMinPrice = new List<Decimal>();
+                for (int i = 0; i < Mainrooms.Count; i++)
+                {
+                    List<_FinalRoomList> list = new List<_FinalRoomList>();
+                    decimal price = 0;
+                    for (int j = 0; j < Mainrooms[i].Count; j++)
+                    {
+                        string SupplierCurrency = Mainrooms[i][j].SupplierCurrency;
+                        _FinalRoomList final = new _FinalRoomList();
+                        final.BookingStatus = Mainrooms[i][j].BookingStatus;
+                        if (final.BookingStatus == "PackageRate")
+                            final.BookingStatus = "Available";
+
+                        final.EssentialInformation = Mainrooms[i][j].EssentialInformation;
+                        final.MealName = Mainrooms[i][j].MealName.Replace("'", "");
+                        final.Price = Convert.ToDecimal(Mainrooms[i][j].FinalSellingPrice);
+                        final.Price = final.Price.CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
+
+
+                        price += Convert.ToDecimal(final.Price);
+                        final.RoomNo = Mainrooms[i][j].RoomNo;
+                        final.RoomTypeName = Mainrooms[i][j].RoomTypeName;
+                        final.Allocation = Mainrooms[i][j].allocationDetails;
+                        final.RatePlanCode = Mainrooms[i][j].RoomTypeCode;
+                        final.subSupplierId = "DC";
+                        final.RoomTypeId = Mainrooms[i][j].RoomTypeId;
+                        final.channel = Convert.ToString(Mainrooms[i][j].channel);
+                        IsRoomCombine = Mainrooms[i][j].IsCombineRoom;
+
+                        #region meal
+                        string MealName = Convert.ToString(Mainrooms[i][j].MealName);
+                        switch (MealName.ToUpper())
+                        {
+                            //case "BB":
+                            //case "BB-NF":
+                            //    MealName = "BREAK FAST IS INCLUDED";
+                            //    break;
+                            //case "HB":
+                            //case "HB-NF":
+                            //    MealName = "BREAK FAST AND LUNCH OR DINNER IS INCLUDED";
+                            //    break;
+                            //case "FB":
+                            //case "FB-NF":
+                            //    MealName = "ALL MEAL INCLUDED(BREAKFAST / LUNCH / DINNER)";
+                            //    break;
+                            //case "RO":
+                            //case "RO-NF":
+
+                            //    MealName = "NO MEALS ARE INCLUDED";
+                            //    break;
+                            //case "AI":
+                            //case "AI-NF":
+
+                            //    MealName = "ALL INCLUSIVE";
+                            //    break;
+                            //case "GD":
+                            //case "GD-NF":
+                            //    MealName = "BED AND BREAKFAST PLUS CLUB BENEFITS";
+                            //    break;
+                            //case "SAL":
+                            //case "SAL-NF":
+
+                            //    MealName = "SOFT DRINKS ONLY PLUS BREAKFAST LUNCH AND DINNER";
+                            //    break;
+                            case "BB":
+                            case "BB-NF":
+                                MealName = "BB";
+                                break;
+                            case "HB":
+                            case "HB-NF":
+                                MealName = "HB";
+                                break;
+                            case "FB":
+                            case "FB-NF":
+                                MealName = "FB";
+                                break;
+                            case "RO":
+                            case "RO-NF":
+
+                                MealName = "RO";
+                                break;
+                            case "AI":
+                            case "AI-NF":
+                                MealName = "AI";
+                                break;
+                            case "GD":
+                            case "GD-NF":
+                                MealName = "BED AND BREAKFAST PLUS CLUB BENEFITS";
+                                break;
+                            case "SAL":
+                            case "SAL-NF":
+                                MealName = "SOFT DRINKS ONLY PLUS BREAKFAST LUNCH AND DINNER";
+                                break;
+
+                            case "A LA CARTE BREAKFAST": MealName = "BB"; break;
+                            case "ALL INCLUSIVE": MealName = "AI"; break;
+                            case "ALL INCLUSIVE FOR FOUR": MealName = "AI"; break;
+                            case "ALL INCLUSIVE FOR ONE": MealName = "AI"; break;
+                            case "ALL INCLUSIVE FOR THREE": MealName = "AI"; break;
+                            case "ALL INCLUSIVE FOR TWO": MealName = "AI"; break;
+                            case "AMERICAN BREAKFAST": MealName = "BB"; break;
+                            case "BOX BREAKFAST": MealName = "BB"; break;
+                            case "BREAKFAST LUNCH AND DINNER ": MealName = "BB"; break;
+                            case "BREAKFAST AND DINNER": MealName = "BB"; break;
+                            case "BREAKFAST AND LUNCH": MealName = "BB"; break;
+                            case "BREAKFAST AND LUNCH FOR ONE": MealName = "BB"; break;
+                            case "BREAKFAST AND LUNCH FOR THREe": MealName = "BB"; break;
+                            case "BREAKFAST AND LUNCH FOR TWO": MealName = "BB"; break;
+                            case "BREAKFAST FOR FIVE": MealName = "BB"; break;
+                            case "BREAKFAST FOR FOUR": MealName = "BB"; break;
+                            case "BREAKFAST FOR ONE": MealName = "BB"; break;
+                            case "BREAKFAST FOR SIX": MealName = "BB"; break;
+                            case "BREAKFAST FOR THREE": MealName = "BB"; break;
+                            case "BREAKFAST FOR TWO": MealName = "BB"; break;
+                            case "BREAKFAST IN ROOM": MealName = "BB"; break;
+                            case "BREAKFAST INCLUDED": MealName = "BB"; break;
+                            case "BUFFET BREAKFAST": MealName = "BB"; break;
+                            case "BUFFET DINNER FOR TWO": MealName = "BB"; break;
+                            case "CHAMPAGNE BREAKFAST": MealName = "BB"; break;
+                            case "CHINESE BREAKFAST": MealName = "BB"; break;
+                            case "CONTINENTAL BKF TAKEN IN ROOM": MealName = "BB"; break;
+                            case "CONTINENTAL BREAKFAST": MealName = "BB"; break;
+                            case "DELUXE DISNEY DINING": MealName = "BB"; break;
+                            case "DINNER": MealName = "BB"; break;
+                            case "DISNEY DINING PLAN": MealName = "BB"; break;
+                            case "DISNEY QUICK SERVICE": MealName = "RO"; break;
+                            case "ENGLISH BREAKFAST": MealName = "BB"; break;
+                            case "FULL BOARD": MealName = "FB"; break;
+                            case "FULL BOARD FOR FOUR": MealName = "FB"; break;
+                            case "FULL BOARD FOR ONE": MealName = "FB"; break;
+                            case "FULL BOARD FOR THREE": MealName = "FB"; break;
+                            case "FULL BOARD FOR TWO": MealName = "FB"; break;
+                            case "FULL BOARD WITH (PRESET DRINKS)": MealName = "FB"; break;
+                            case "GRAB AND GO BREAKFAST": MealName = "FB"; break;
+                            case "HALF BOARD": MealName = "HF"; break;
+                            case "HALF BOARD FOR FOUR": MealName = "HF"; break;
+                            case "HALF BOARD FOR ONE": MealName = "HF"; break;
+                            case "HALF BOARD FOR THREE": MealName = "HF"; break;
+                            case "HALF BOARD FOR TWO": MealName = "HF"; break;
+                            case "IFTAR": MealName = "BB"; break;
+                            case "IFTAR AND SUHOOR": MealName = "HF"; break;
+                            case "IRISH BREAKFAST": MealName = "BB"; break;
+                            case "ISRAELI BREAKFAST": MealName = "BB"; break;
+                            case "JAPANESE BREAKFAST": MealName = "BB"; break;
+                            case "LUNCH": MealName = "BB"; break;
+                            case "LUNCH AND DINNER": MealName = "HF"; break;
+                            case "NEW YEAR BRUNCH": MealName = "RO"; break;
+                            case "PLATED BREAKFAST": MealName = "BB"; break;
+                            case "ROOM ONLY": MealName = "RO"; break;
+                            case "ROOM RATE AND DINNER": MealName = "RO"; break;
+                            case "ROOM RATE AND LUNCH": MealName = "RO"; break;
+                            case "ROOM SERVICE BREAKFAST": MealName = "RO"; break;
+                            case "SCOTTISH BREAKFAST": MealName = "BB"; break;
+                            case "SELF CATERING-NO FOOD PROVIDED": MealName = "RO"; break;
+                            case "SUHOOR": MealName = "RO"; break;
+                            case "VEGETARIAN BREAKFAST": MealName = "RO"; break;
+                            default:
+                                //MealName = "NO MEALS ARE INCLUDED";
+                                MealName = "RO";
+                                break;
+                        }
+                        final.MealFullname = MealName;
+                        final.MealName = MealName;
+                        #endregion
+                        //end 
+                        final.RoomToken = Mainrooms[i][j].EncryptRoomToken();
+                        List<_FinalPolicy> _FinalPolicy = new List<_FinalPolicy>();
+                        final.CancellationToken = "";
+                        for (int p = 0; p < policyDetails.Count; p++)
+                        {
+                            _FinalPolicy obj = new _FinalPolicy();
+                            #region new Changes
+                            //bool ShowPolicy = false;
+                            //if ((policyDetails[p].OwnsystemHotelId) == (Mainrooms[i][j].OwnsystemHotelId) && policyDetails[p].RoomTypeId == Mainrooms[i][j].RoomTypeId && policyDetails[p].MealId == Mainrooms[i][j].MealId && policyDetails[p].RoomNo == Mainrooms[i][j].RoomNo)
+                            //{
+                            //    for (int q = p; q < policyDetails.Count; q++)
+                            //    {
+                            //        if ((policyDetails[q].OwnsystemHotelId) == (Mainrooms[i][j].OwnsystemHotelId) && policyDetails[q].RoomTypeId == Mainrooms[i][j].RoomTypeId && policyDetails[q].MealId == Mainrooms[i][j].MealId && policyDetails[q].RoomNo == Mainrooms[i][j].RoomNo)
+                            //        {
+                            //            if (obj.CancellationPrice == 0)
+                            //            {
+                            //                ShowPolicy = true;
+                            //                break;
+                            //            }
+                            //        }
+                            //    }
+                            //}
+                            #endregion
+                            //if (ShowPolicy)
+                            {
+                                if ((policyDetails[p].RoomTypeCode) == (Mainrooms[i][j].RoomTypeCode) && (policyDetails[p].OwnsystemHotelId) == (Mainrooms[i][j].OwnsystemHotelId) && policyDetails[p].RoomTypeId == Mainrooms[i][j].RoomTypeId && policyDetails[p].MealId == Mainrooms[i][j].MealId && policyDetails[p].RoomNo == Mainrooms[i][j].RoomNo)
+                                {
+                                    obj.FromDate = Convert.ToDateTime(policyDetails[p].FromDate).ToString("MM-dd-yyyy");
+                                    obj.ToDate = Convert.ToDateTime(policyDetails[p].ToDate).ToString("MM-dd-yyyy");
+                                    obj.CancellationPrice = Convert.ToDecimal(policyDetails[p].AgentCancellationPrice);
+                                    obj.daysBeforeCheckIn = Convert.ToString(policyDetails[p].daysBeforeCheckIn);
+                                    obj.isNRF = Convert.ToBoolean(policyDetails[p].isNRF);
+                                    final.CancellationToken += policyDetails[p].EncryptPolicyToken();//add to policy token
+                                    obj.CancellationPrice = obj.CancellationPrice.CalculatePrice(tokenData, advancedOptions, SupplierCurrency);
+                                    _FinalPolicy.Add(obj);
+                                }
+                            }
+                        }
+                        if (final.CancellationToken != "")
+                            final.CancellationToken = final.CancellationToken.ToBase64StringManual(false);
+                        final.CancellationPolicy = _FinalPolicy;
+                        final.RateDetailsToken = "";
+                        for (int r = 0; r < rateBeckup.Count; r++)
+                        {
+                            if ((rateBeckup[r].RoomTypeCode) == (Mainrooms[i][j].RoomTypeCode) && (rateBeckup[r].OwnsystemHotelId) == (Mainrooms[i][j].OwnsystemHotelId) && rateBeckup[r].RoomTypeId == Mainrooms[i][j].RoomTypeId && rateBeckup[r].MealId == Mainrooms[i][j].MealId && rateBeckup[r].RoomNo == Mainrooms[i][j].RoomNo)
+                            {
+                                final.RateDetailsToken += rateBeckup[r].EncryptRateBreakUp();
+                            }
+                        }
+                        if (final.RateDetailsToken != "")
+                            final.RateDetailsToken = final.RateDetailsToken.ToBase64StringManual(false);
+                        list.Add(final);
+                    }
+                    arrMinPrice.Add(price);
+                    rooms.Add(list);
+
+                    MinPrice = arrMinPrice.Min();
+
+                    _finalRoom._finalRoomList = rooms; //newadded 14042026
+                    _finalRoom.MinPrice = MinPrice; ; //newadded 14042026
+                    _finalRoom.IsRoomCombine = IsRoomCombine; //newadded 14042026
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // Common.Error(ex);
+                _exception.Error(ex);
+            }
+            if (SearchPara.Filters.IsShowRooms == 0)
+                // return new List<List<_FinalRoomList>>();
+                return new _FinalRoom();
+            else
+                return _finalRoom;
+
+            //return null;
+
+            //if (SearchPara.Filters.IsShowRooms == 0)
+            //    return new List<List<_FinalRoomList>>();
+            //return rooms;
+
+
+        }
+
+        #endregion
+
 
     }
 }

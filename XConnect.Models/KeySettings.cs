@@ -102,6 +102,27 @@ namespace XConnect.Models
         public string? CreditCardCharges { get; set; } = String.Empty;//Added on 16 DEC 2025
         public string? siteCurrency { get; set; } = String.Empty;//Added on 26-FEB-26
         public bool IsActivejsonfile { get; set; } = false; //Added on 16-april-26
+        public string? agoda_apikey { get; set; } = String.Empty; //Added on 18-march-26
+        public string? out_agoda_token { get; set; } = String.Empty; //Added on 18-march-26  
+        public string? agoda_token { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? agoda_nationality { get; set; } = String.Empty; //Added on 19-march-26
+        public string? CheckCMActiveHotel { get; set; } = String.Empty; //Added on 20-march-26 
+        public string? IsXMLOutActive { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? EndPointXMLOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? XMLOutAvailabilityTimeOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? XMLOutPrebookTimeOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? XMLOutBookTimeOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? XMLOutBookingDetailTimeOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? CheckHotelCancellationChargesXMLOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? XMLOutCancelBookingTimeOut { get; set; } = String.Empty; //Added on 27-march-26 
+
+        public string? AvailabilitywithcancellationXMLOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? PrebookXMLOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? BookXMLOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? BookingDetailXMLOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? XMLOutCancellationChargesTimeOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? CancelBookingXMLOut { get; set; } = String.Empty; //Added on 27-march-26 
+        public string? TimeOutXMLOut { get; set; } = String.Empty; //Added on 25-march-26 
 
     }
 }

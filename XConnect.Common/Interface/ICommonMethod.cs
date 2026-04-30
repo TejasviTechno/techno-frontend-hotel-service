@@ -319,7 +319,10 @@ namespace XConnect.CommonUtilities.Interface
         string? token = null,
         Dictionary<string, string>? headers = null);
 
+        #region agoda client
+        Task XMLRequestResponseTrack_agoda(string XmlRequest, string XmlResponse, string Provider, string TypeRequest, string reqId = "");
 
+        #endregion
 
     }
 

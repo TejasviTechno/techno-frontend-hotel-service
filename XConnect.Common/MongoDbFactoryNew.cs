@@ -116,6 +116,7 @@ namespace XConnect.CommonUtilities
                         var db = _roomMappingClients[i].GetDatabase(_settings.MongoDB_DatabaseName_RoomMapping);
 
                         using var cts = new CancellationTokenSource(600); // 300ms timeout
+                        //using var cts = new CancellationTokenSource(60000); // 300ms timeout
 
 
                         await db.RunCommandAsync<BsonDocument>(

@@ -1828,7 +1828,29 @@ namespace XConnect.DAL
             return dt;
         }
 
+        #region agoda
 
 
+        public object GetExecuteScalarSP_88(String SPName, SqlParameter[] para)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionStrings.ConnectionStringforlogtrack))
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = SPName;
+                foreach (SqlParameter par in para)
+                {
+                    cmd.Parameters.Add(par);
+                }
+                cmd.Connection = con;
+                con.Open();
+                object obj = cmd.ExecuteScalar();
+                con.Close();
+                con.Dispose();
+                return obj;
+            }
+        }
+
+        #endregion
     }
 }
