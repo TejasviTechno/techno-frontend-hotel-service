@@ -194,8 +194,8 @@ namespace XConnect.Supplier.Restel
         {
             try
             {
-                string checkIn = searchParam.CheckInDateSubstring;//String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(searchParam.CheckInDate, "dd/MM/yyyy", null));
-                string checkOut = searchParam.CheckOutDateSubstring;//String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(searchParam.CheckOutDate, "dd/MM/yyyy", null));
+                string checkIn = String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(searchParam.CheckInDate, "dd/MM/yyyy", null));
+                string checkOut = String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(searchParam.CheckOutDate, "dd/MM/yyyy", null));
 
                 StringBuilder roomstring = new StringBuilder();
 
