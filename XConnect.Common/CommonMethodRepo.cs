@@ -37,7 +37,6 @@ using System.Net.Http;
 using XConnect.Analytics;
 using XConnect.Analytics.Interface;
 using System.Diagnostics;
-using System.Globalization;
 
 
 
@@ -7904,16 +7903,8 @@ namespace XConnect.CommonUtilities
                                     for (int i = 0; i < finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].CancellationPolicy.Count; i++)
                                     {
                                         _FinalPolicy obj = new _FinalPolicy();
-                                        string fromDateStr = finalResponse.AvailabilityRS.HotelResult[giataSeq]
-                                                            .HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms]
-                                                            .CancellationPolicy[i].FromDate;
-
-                                        string toDateStr = finalResponse.AvailabilityRS.HotelResult[giataSeq]
-                                                           .HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms]
-                                                           .CancellationPolicy[i].ToDate;
-
-                                        obj.FromDate = FormatDateSafe(fromDateStr);
-                                        obj.ToDate = FormatDateSafe(toDateStr);
+                                        obj.FromDate = Convert.ToDateTime(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].CancellationPolicy[i].FromDate).ToString("MM-dd-yyyy");
+                                        obj.ToDate = Convert.ToDateTime(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].CancellationPolicy[i].ToDate).ToString("MM-dd-yyyy");
 
                                         obj.CancellationPrice = Convert.ToDecimal(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].CancellationPolicy[i].CancellationPrice);
                                         //token += finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].CancellationPolicy[i].EncryptPolicyToken();
@@ -7951,21 +7942,7 @@ namespace XConnect.CommonUtilities
             }
             return null;
         }
-        private string FormatDateSafe(string input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-                return null;
-
-            string[] formats = { "MM-dd-yyyy", "MM/dd/yyyy", "dd-MM-yyyy", "yyyy-MM-dd" };
-
-            if (DateTime.TryParseExact(input, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
-            {
-                return parsedDate.ToString("MM-dd-yyyy");
-            }
-
-            return input;
-        }
-
+        
         //Add On 17SEP2025  ConvertToFinalResponseList_Dag2
         public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_Dag2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null)
         {

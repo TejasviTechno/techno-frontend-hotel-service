@@ -385,7 +385,7 @@ namespace XConnect.Supplier.Exely
                                             bool includeDetailedCancellation = SearchParam.IsAvailbilityWithCancellation == 1 || SearchParam.IsAvailbilityWithCancellationv2 == 1;
                                             int cutOffDays = _commonMethod.GetCutOffDays(commonSearch.dtSuplierMarkup, Item.Supplier);
                                             string exelyBaseUrl = GetExelyBaseUrl(Item.URL);
-                                            DateTime checkInDate = DateTime.ParseExact(SearchParam.CheckInDate, "MM-dd-yyyy", CultureInfo.InvariantCulture);
+                                            DateTime checkInDate = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
 
                                             int maxOcupancy = 0;
 
@@ -1191,7 +1191,7 @@ namespace XConnect.Supplier.Exely
             if (string.IsNullOrWhiteSpace(dateText))
                 return DateTime.Today;
 
-            string[] formats = new[] { "MM-dd-yyyy", "MM/dd/yyyy", "yyyy-MM-dd", "yyyyMMdd" };
+            string[] formats = new[] { "dd-MM-yyyy", "dd/MM/yyyy", "yyyy-MM-dd", "yyyyMMdd" };
             if (DateTime.TryParseExact(dateText, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsed))
                 return parsed;
 

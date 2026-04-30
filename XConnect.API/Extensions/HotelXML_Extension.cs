@@ -1,5 +1,4 @@
 ﻿
-using System.Globalization;
 using XConnect.Models.Hotel;
 
 namespace Xconnect.API.Extensions
@@ -83,7 +82,7 @@ namespace Xconnect.API.Extensions
                 //    return SearchError("CityID", RequiredParameter);
                 if (RQ.NoofNights == 0 || RQ.NoofNights > 30)
                     return SearchError("NoofNights", BetweenParameter + " 1 and 30");
-                var days = (DateTime.ParseExact(RQ.CheckOutDate, "MM-dd-yyyy", CultureInfo.InvariantCulture) - DateTime.ParseExact(RQ.CheckInDate, "MM-dd-yyyy", CultureInfo.InvariantCulture)).TotalDays;
+                var days = (Convert.ToDateTime(RQ.CheckOutDate) - Convert.ToDateTime(RQ.CheckInDate)).TotalDays;
 
                 if (RQ.NoofNights != Convert.ToInt32(days))
                     return SearchError("NoofNights", "Not correct");
