@@ -281,12 +281,14 @@ namespace XConnect.Supplier.Travellanda
             {
                 if (TLResponse == null || TLResponse == string.Empty || TLResponse.ToLower().Contains("error"))
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
                 DataSet TLData = _commonMethod.GetDataSetFromXMLString(TLResponse);
                 if (TLData.Tables["Hotel"] == null)
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -602,6 +604,7 @@ namespace XConnect.Supplier.Travellanda
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return options;
             }
@@ -610,9 +613,11 @@ namespace XConnect.Supplier.Travellanda
                 #region ResProcessTimer
                 try
                 {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timerroomx.Stop();
+                       
                         SearchParam.SupplierTime += ",|Finish:Travellanda Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                          _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

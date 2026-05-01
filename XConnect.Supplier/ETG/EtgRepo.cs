@@ -1226,6 +1226,17 @@ namespace XConnect.Supplier.ETG
                     }
 
                 }
+                try
+                {
+                    timer_room_Ostrovok.Stop();
+                    Item.CodeProcessingTimeSupplier = timer_room_Ostrovok.ElapsedMilliseconds;
+                }
+                catch
+                {
+
+                }
+                
+
                 return options;
             }
             catch (Exception ex)

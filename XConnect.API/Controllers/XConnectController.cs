@@ -5837,6 +5837,41 @@ namespace XConnect.API.Controllers
 
         #endregion
 
+        [Route("GetRoomMappingHotel")]
+        [HttpPost]
+        public async Task<IActionResult> GetRoomMappingHotel(CommonRequest data)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            TokenData TokenData = new TokenData();
+
+            try
+            {
+                ApiRequestRoomMapping payload = Newtonsoft.Json.JsonConvert.DeserializeObject<ApiRequestRoomMapping>(data.Request.ToString());
+                    List<RoomMappingReport> lstFiltOption = await _hotelXML.GetRoomMappingHotelReport(payload);
+                    if (lstFiltOption != null)
+                    {
+                        timer.Stop();
+                        return Ok(lstFiltOption);
+                    }
+                    else
+                    {
+                        timer.Stop();
+                        return NotFound(StatusCodes.Status500InternalServerError);
+                    }
+            
+                
+            }
+            catch (Exception ex)
+            {
+                timer.Stop();
+                await _exception.Error(ex);
+                return NotFound(StatusCodes.Status500InternalServerError);
+
+            }
+
+        }
+
     }
 }
 

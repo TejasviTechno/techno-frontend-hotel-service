@@ -268,6 +268,7 @@ namespace XConnect.Supplier.HotelsPro
             {
                 if (ResponseData.ToLower().Contains("eanwserror") || ResponseData.Trim() == "")
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -438,7 +439,11 @@ namespace XConnect.Supplier.HotelsPro
                                 {
                                     string Response = (response != null ? response : "");
                                     if (Response == "")
+                                    {
+                                        Item.ResponseStatus = 404;
                                         return options;
+                                    }
+                                        
                                     int totalAdult = 0;
                                     int totalChild = 0;
                                     for (int b = 0; b < SearchParam.Rooms.Count; b++)
@@ -614,6 +619,7 @@ namespace XConnect.Supplier.HotelsPro
             }
             catch (Exception e)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(e);
 
             }
@@ -622,9 +628,11 @@ namespace XConnect.Supplier.HotelsPro
                 #region ResProcessTimer
                 try
                 {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timerroomx.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:" + Supplier + " Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

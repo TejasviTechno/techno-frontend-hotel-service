@@ -528,6 +528,9 @@ namespace XConnect.Supplier.Webhoteliter
 
         public async Task<List<Options>> WebHotellier_HotelSearchWithRooms(HotelX item, CommonSearch commonSearch, string ResponseData, HotelSearchParameter SearchParam, string XMLCITY, string XMLCountry, string currency, string supplierURL, string Useraname, string password, string xmlhotelcode, double CurrencyFactor, string Provider, DataSet dsAgentDetail, DataTable dtCountryCityMarkup, Int32 AgentId, Int32 TariffID, double AgentPercentage, Boolean IsShowSupplier, int SupplierID, int MasterSupplierID, DataTable dtROE, string XmlNationality = "")
         {
+            System.Diagnostics.Stopwatch timer_room_Mgbedbank = new System.Diagnostics.Stopwatch();
+            timer_room_Mgbedbank.Start();
+
             List<Options> options = new List<Options>();
             DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
 
@@ -568,16 +571,19 @@ namespace XConnect.Supplier.Webhoteliter
                     }
                     if (WHResponse.error_code.ToString().ToUpper() == "NO_AVAILABILITY" || WHResponse.error_code.ToString().ToUpper() == "NO_HOTELS_FOUND")
                     {
+                        item.ResponseStatus = 404;
                         return options;
                     }
 
                     if (WHResponse.data == null)
                     {
+                        item.ResponseStatus = 404;
                         return options;
                     }
 
                     if (WHResponse.data.hotels.Count < 1)
                     {
+                        item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                     }
 
@@ -685,6 +691,7 @@ namespace XConnect.Supplier.Webhoteliter
                     string JsonResponse = ResponseData;
                     if (JsonResponse == "")
                     {
+                        item.ResponseStatus = 404;
                         return options;
                     }
                     WebHotellierRoom.WebHotelierRoomResponse.Root WebhotelierResponse = new WebHotellierRoom.WebHotelierRoomResponse.Root();
@@ -692,12 +699,21 @@ namespace XConnect.Supplier.Webhoteliter
                    // WebhotelierResponse = JsonSerializer.Deserialize<WebHotellierRoom.WebHotelierRoomResponse.Root>(JsonResponse);
                     if (WebhotelierResponse == null)
                     {
+                        item.ResponseStatus = 404;
                         return options;
                     }
                     if (WebhotelierResponse.data == null)
+                    {
+                        item.ResponseStatus = 404;
                         return options;
+                    }
+                        
                     if (WebhotelierResponse.data.hotels == null)
+                    {
+                        item.ResponseStatus = 404;
                         return options;
+                    }
+                        
 
                     for (int h = 0; h < WebhotelierResponse.data.hotels.Count; h++)
                     {
@@ -1132,6 +1148,7 @@ namespace XConnect.Supplier.Webhoteliter
                             }
                             catch (Exception ex)
                             {
+                                
                                 await _exception.Error(ex);
                             }
                             #endregion
@@ -1154,9 +1171,30 @@ namespace XConnect.Supplier.Webhoteliter
             }
             catch (Exception ex)
             {
+                item.ResponseStatus = 404;
                 await _exception.Error(ex);
 
                 //return Common.GenerateDataTableNewV2();
+            }
+            finally
+            {
+                #region ResProcessTimer
+                try
+                {
+                    timer_room_Mgbedbank.Stop();
+                    item.CodeProcessingTimeSupplier = timer_room_Mgbedbank.ElapsedMilliseconds;
+                   // if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Mgbedbank.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
+                    //{
+
+                    //    SearchParam.SupplierTime += ",|Finish:MgBedbank Process Response  " + "|Time :" + timer_room_Mgbedbank.Elapsed.ToString();
+                    //    _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Mgbedbank.Elapsed.ToString(), "MgBedbank", SearchParam.SearchKey, 1, SearchParam.AgentID));
+                    //}
+                }
+                catch (Exception x)
+                {
+                    await _exception.Error(x);
+                }
+                #endregion
             }
             return options;
         }

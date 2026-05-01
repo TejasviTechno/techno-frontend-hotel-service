@@ -397,12 +397,14 @@ namespace XConnect.Supplier.Techno
                     #region PriceOnly RS
                     if (ResponseData == string.Empty)
                     {
+                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
                     //string ResponseData2 = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(ResponseData, "root").InnerXml;
                     if (ResponseData == string.Empty || ResponseData.Contains("ErrorTxt"))
                     {
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -411,6 +413,7 @@ namespace XConnect.Supplier.Techno
                     //RoomResponse = Common.GetDataSetFromXMLString(ResponseData2);
                     if (WE_DMCResponse.AvailabilityRS == null)
                     {
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -738,6 +741,7 @@ namespace XConnect.Supplier.Techno
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return options;
             }
@@ -747,9 +751,11 @@ namespace XConnect.Supplier.Techno
                 #region ResProcessTimer
                 try
                 {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timerroomx.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:" + Provider + " Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

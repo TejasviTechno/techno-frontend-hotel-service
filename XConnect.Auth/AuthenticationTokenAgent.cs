@@ -320,6 +320,10 @@ namespace Xconnect.Auth
                             _token.agentId = Convert.ToInt32(_userContextAccessor.DecodedJwt.AgentId);
                             _token.subUserId = Convert.ToInt32(_userContextAccessor.DecodedJwt.SubUserId);
                             break;
+                        case "customer": //b2c
+                            _token.agentId = Convert.ToInt32(_userContextAccessor.DecodedJwt.AgentId);
+                            _token.parentId = 0;
+                            break;
                     }
 
                     _token.creditLimitCurrencyId = Convert.ToInt32(_userContextAccessor.DecodedJwt.CreditLimitCurrencyId);

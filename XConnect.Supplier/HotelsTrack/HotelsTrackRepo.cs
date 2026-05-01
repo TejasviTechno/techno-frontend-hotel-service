@@ -327,6 +327,9 @@ namespace XConnect.Supplier.HotelsTrack
 
         public async Task<List<Options>> HotelsTrack_HotelSearchWithRooms(HotelX item, string giitaCode, double AgentPercentage, CommonSearch commonSearch, string currency, string ResponseData, string CityCode, HotelSearchParameter SearchParam, string ContryCode, string XMLNationality, double CurrencyFactorRezlive, string Provider, DataSet dsAgentDetails, DataTable dtCountryCityMarkup, Int32 AgentId, Int32 TariffID, int SupplierID, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog)
         {
+            System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
+            timerroomx.Start();
+
             List<Options> options = new List<Options>();
             try
             {
@@ -338,12 +341,14 @@ namespace XConnect.Supplier.HotelsTrack
                     #region PriceOnly RS
                     if (ResponseData == string.Empty)
                     {
+                        item.ResponseStatus = 204;
                         item.ResponseType = "NoCount";
                         return options;
                     }
                     DataSet HotelsTrackResponse = _commonMethod.GetDataSetFromXMLString(ResponseData);
                     if (HotelsTrackResponse == null || HotelsTrackResponse.Tables["Hotel"] == null)
                     {
+                        item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                         return options;
                     }
@@ -356,6 +361,7 @@ namespace XConnect.Supplier.HotelsTrack
                     string haskey = Convert.ToString(HotelsTrackResponse.Tables["SearchHotel_Response"].Rows[0]["hasKey"]);
                     if (HotelsTrackResponse.Tables["hotel"].Rows.Count < 1)
                     {
+                        item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                         return options;
                     }
@@ -835,12 +841,37 @@ namespace XConnect.Supplier.HotelsTrack
                     }
                     #endregion
                 }
+                else
+                {
+                    item.ResponseStatus = 204;
+                }
 
             }
             catch (Exception ex)
             {
+                item.ResponseStatus = 404;
                 _ = _exception.Error(ex);
                 return options;
+            }
+            finally
+            {
+                #region ResProcessTimer
+                try
+                {
+                    timerroomx.Stop();
+                    item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
+                    if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
+                    {
+
+                        SearchParam.SupplierTime += ",|Finish:Adonis Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
+                        _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
+                    }
+                }
+                catch (Exception x)
+                {
+                    await _exception.Error(x);
+                }
+                #endregion
             }
             return options;
         }
