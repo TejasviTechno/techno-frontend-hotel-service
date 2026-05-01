@@ -13,7 +13,7 @@ namespace XConnect.Supplier.Exely.Interface
         Task<PriceCheckCMDto> Get_Exely_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] ExelyDetails, int i, int j, DataTable dtCheckPriceReqStructure, string uniqueBookingToken, string agentUniqueNo, bool isForBooking, double companyBuyingPriceA, string xmlhotelid, string isFor, bool issErrorY, double itempriceY, string searchkey, int agentId = 0, TokenData tokenData = null);
         string Get_Exely_BookingRequest(DataSet dsCartDetails, DataTable dtPassengers, string uniqueBookingToken, int i, int j, string hotelcode, string checkIn, string checkOut, string currency, string nationality, string agtCode, string checksum);
         string Get_Exely_BookingRequest(DataTable dtPassengers, string uniqueBookingToken, string hotelcode, string checkIn, string checkOut, string currency, string nationality, string agtCode, string checksum, string roomTypeId, int noOfAdults, int noOfChild);
-        string Get_Exely_PriceCheckRQ(int noofadult, int noofchild, string hotelcode, string CheckIn, string CheckOut, string RoomTypeId, string XmlNationality, string checksum = "");
+        string Get_Exely_PriceCheckRQ(int noofadult, int noofchild, string hotelcode, string CheckIn, string CheckOut, string RoomTypeId, string XmlNationality, string checksum = "", DataTable? dtPassengers = null);
         Task<ResponseDto> ExelyResponseNew(string xmlRQRS, string strHost, int searchTimeOut, string password, string searchKey = "");
         string Get_Exely_GetCancellationChargesRQ(string agentRef);
         string Get_Exely_CancelBooking(double amount, string currency, string agentRef);

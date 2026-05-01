@@ -261,5 +261,6 @@ namespace XConnect.Models
         public string GetCancellationRulesByProperty { get; set; }
         public string GetRoomStaysByProperty { get; set; }
         public string? PropertyContent { get; set; }
+        public string? PropertyContentByProperty { get; set; }
     }
 }

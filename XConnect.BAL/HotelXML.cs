@@ -35871,14 +35871,13 @@ new SqlParameter("@AgentId", AgentId),
 
 
                                                     string HotelcodeE = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["XMLHotelId"]);
-                                                    string ExelyURL = _configuration["Exely:BaseUrl"] + _configuration["Exely:VerifyBooking"];
                                                     bool IsErrorE = false;
                                                     double itempriceE = 0;
                                                     double CompanyBuyPriceE = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]);
                                                     dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
                                                     try
                                                     {
-                                                        PriceCheckCMDto priceCheckCMDto = await _iExely.Get_Exely_PriceCheckRQRS(dsCartDetails, ExelyDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, false, CompanyBuyPriceE, HotelcodeE, "P", IsErrorE, itempriceE, Searchkey, AgentId, TokenData);
+                                                        PriceCheckCMDto priceCheckCMDto = await _iExely.Get_Exely_PriceCheckRQRS(dsCartDetails, ExelyDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, true, CompanyBuyPriceE, HotelcodeE, "P", IsErrorE, itempriceE, Searchkey, AgentId, TokenData);
                                                         bool IsPriceUpdatesE = priceCheckCMDto.Flag;
                                                         itempriceE = priceCheckCMDto.ItemPrice;
                                                         IsErrorE = priceCheckCMDto.IsError;
@@ -54131,14 +54130,21 @@ new SqlParameter("@AgentId", AgentId),
                                             int noOfAdults = bookRequest.userCart.UserCartDetails[j].NoofAdult;
                                             int noOfChild = bookRequest.userCart.UserCartDetails[j].NoofChild;
 
-                                            // Verify booking to get createBookingToken
+                                            // POST /v1/bookings/verify — get createBookingToken
                                             string verifyUrl = baseUrl.TrimEnd('/') + "/" + _configuration["Exely:VerifyBooking"].TrimStart('/');
-                                            string verifyRQ = _iExely.Get_Exely_PriceCheckRQ(noOfAdults, noOfChild, xMLHotelId, checkIn, checkOut, roomTypeId, Nationality, checksum);
+                                            string verifyRQ = _iExely.Get_Exely_PriceCheckRQ(noOfAdults, noOfChild, xMLHotelId, checkIn, checkOut, roomTypeId, Nationality, checksum, dtPassengers);
+
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, verifyRQ, "-", "Before Exely Verify Booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "WithinEarth");
+
                                             ResponseDto verifyDto = await _iExely.ExelyResponseNew(verifyRQ, verifyUrl, 30000, password, bookRequest.SearchKey);
+                                            string verifyResponse = verifyDto.Response;
+
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, verifyRQ, verifyResponse + "|ERR:" + verifyDto.Error, "After Exely Verify Booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "WithinEarth");
+
                                             string createBookingToken = "";
-                                            if (!string.IsNullOrWhiteSpace(verifyDto.Response))
+                                            if (!string.IsNullOrWhiteSpace(verifyResponse))
                                             {
-                                                var verifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(verifyDto.Response);
+                                                var verifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(verifyResponse);
                                                 createBookingToken = verifyResult?.booking?.createBookingToken ?? "";
                                             }
 
