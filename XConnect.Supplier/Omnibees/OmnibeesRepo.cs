@@ -481,6 +481,7 @@ namespace XConnect.Supplier.Omnibees
             {
                 if (ResponseData == null || ResponseData == "" || ResponseData == string.Empty)
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;//Common.GenerateDataTableNewV2();
                 }
@@ -489,6 +490,7 @@ namespace XConnect.Supplier.Omnibees
 
                 if (OmnibeesResponse == null || OmnibeesResponse.HotelStaysType == null || OmnibeesResponse.HotelStaysType.HotelStays == null)
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -996,6 +998,7 @@ namespace XConnect.Supplier.Omnibees
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return options;
             }
@@ -1004,9 +1007,11 @@ namespace XConnect.Supplier.Omnibees
                 #region ResProcessTimer
                 try
                 {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timerroomx.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:Omnibees Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "Omnibees", SearchParam.SearchKey, 1, AgentId));
                     }

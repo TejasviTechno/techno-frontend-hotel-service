@@ -1649,17 +1649,20 @@ namespace XConnect.Supplier.Hyperguest
 
                 catch (Exception ex)
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     _exception.Error(ex);
                 }
                 if (DS == null)
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
 
                 if (DS.results.Count < 1)
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -2296,6 +2299,7 @@ namespace XConnect.Supplier.Hyperguest
             }
             catch (Exception e)
             {
+                Item.ResponseStatus = 404;
                 Item.ResponseType = "NoCount";
                 await _exception.Error(e);
             }
@@ -2304,9 +2308,11 @@ namespace XConnect.Supplier.Hyperguest
                 #region ResProcessTimer
                 try
                 {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     //if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timerroomx.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:hyperguest Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         //Task.Run(() => FireAway_SQL_ResPorcessTimeLog("", "", "hyperguest", SearchParam.SearchKey, Convert.ToInt32(timerroomx.Elapsed.ToString()), 1));
                     }

@@ -257,6 +257,7 @@ namespace XConnect.Supplier.Adonis
                     DataSet Adonis_Response = _commonMethod.GetDataSetFromXMLString(ResponseData);
                     if (Adonis_Response == null || !Adonis_Response.Tables.Contains("HotelDTO") ||  Adonis_Response.Tables["HotelDTO"].Rows.Count < 1)
                     {
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -839,9 +840,14 @@ namespace XConnect.Supplier.Adonis
 
 
                 }
+                else
+                {
+                    Item.ResponseStatus = 204;
+                }
             }
             catch (Exception e)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(e);
             }
             finally
@@ -849,9 +855,11 @@ namespace XConnect.Supplier.Adonis
                 #region ResProcessTimer
                 try
                 {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timerroomx.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:Adonis Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

@@ -470,6 +470,7 @@ namespace XConnect.Supplier.GoGlobal
                 {
                     if (ResponseData == "")
                     {
+                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -477,12 +478,14 @@ namespace XConnect.Supplier.GoGlobal
                     JsonResponse = rootElement.Value;
                     if (JsonResponse.Contains("<Error"))
                     {
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
                 }
                 catch (Exception ex)
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -492,6 +495,7 @@ namespace XConnect.Supplier.GoGlobal
                 GoResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<GoGlobal.GoGlobalHotel>(JsonResponse);
                 if (GoResponse == null || GoResponse.Hotels == null)
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -845,6 +849,7 @@ namespace XConnect.Supplier.GoGlobal
             }
             catch (Exception e)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(e);
             }
             finally
@@ -852,9 +857,11 @@ namespace XConnect.Supplier.GoGlobal
                 #region ResProcessTimer
                 try
                 {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timerroomx.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:" + Supplier + " Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _= Task.Run(() =>  _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

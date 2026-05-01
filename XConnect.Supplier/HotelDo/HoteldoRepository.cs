@@ -445,6 +445,7 @@ namespace XConnect.Supplier.HotelDo
             {
                 if (ResponseData == null || ResponseData == "" || ResponseData == string.Empty)
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -463,6 +464,7 @@ namespace XConnect.Supplier.HotelDo
                 //    totalChild = Convert.ToInt32(SearchParam.Rooms[b].NoofChild) + totalChild;
                 //}
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -943,11 +945,16 @@ namespace XConnect.Supplier.HotelDo
 
                     }
                 }
+                else
+                {
+                    Item.ResponseStatus = 404;
+                }
                 //}
                 return options;
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return options;
             }
@@ -956,9 +963,11 @@ namespace XConnect.Supplier.HotelDo
                 #region ResProcessTimer
                 try
                 {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timerroomx.Stop();
+                       
                         SearchParam.SupplierTime += ",|Finish:HotelDO Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "HotelDO", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

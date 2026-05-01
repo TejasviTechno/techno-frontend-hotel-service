@@ -652,12 +652,14 @@ namespace XConnect.Supplier.Traveloka
                         k = Newtonsoft.Json.JsonConvert.DeserializeObject<TravelokaListResponse.RootObject>(ResponseData); //140525
                         if (k == null || k.properties == null)
                         {
+                            Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                             return options;
                         }
 
                         if (k.properties.Count < 1)
                         {
+                            Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                             return options;
                         }
@@ -734,15 +736,27 @@ namespace XConnect.Supplier.Traveloka
                         //d = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, TravelokaRoomResponse.RootObject>>>(ResponseData);
                         d = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, TravelokaRoomResponse.RootObject>>>(ResponseData);//140525
                         if (d == null)
+                        {
+                            Item.ResponseStatus = 404;
                             return options;
+                        }
+                            
 
                         h = d.Values.ElementAt(0);
 
                         if (h == null)
+                        {
+                            Item.ResponseStatus = 404;
                             return options;
+                        }
+                            
 
                         if (h.Count < 1)
+                        {
+                            Item.ResponseStatus = 404;
                             return options;
+                        }
+                            
 
                         for (int i = 0; i < h.Count; i++)
                         {
@@ -1022,12 +1036,17 @@ namespace XConnect.Supplier.Traveloka
                     }
 
                 }
+                else
+                {
+                    Item.ResponseStatus = 204;
+                }
 
 
                 return options;
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 Item.ResponseType = "NoCount";
                 return options;
@@ -1037,9 +1056,11 @@ namespace XConnect.Supplier.Traveloka
                 #region ResProcessTimer
                 try
                 {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timerroomx.Stop();
+                       
                         SearchParam.SupplierTime += ",|Finish:Traveloka Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
 

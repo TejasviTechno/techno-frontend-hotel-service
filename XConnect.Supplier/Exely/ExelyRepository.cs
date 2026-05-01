@@ -252,11 +252,13 @@ namespace XConnect.Supplier.Exely
                 var result = JsonConvert.DeserializeObject<AggregationSearchByPropertiesResponse>(ResponseData);
                 if (result == null)
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
                 if (result.roomStays == null || result.roomStays.Count == 0)
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -566,6 +568,7 @@ namespace XConnect.Supplier.Exely
                     }
                     else
                     {
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -573,6 +576,7 @@ namespace XConnect.Supplier.Exely
             }
             catch (Exception e)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(e);
             }
             finally
@@ -580,9 +584,11 @@ namespace XConnect.Supplier.Exely
                 #region ResProcessTimer
                 try
                 {
+                    timer_room_Exely.Stop();
+                    Item.CodeProcessingTimeSupplier = timer_room_Exely.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Exely.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timer_room_Exely.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:Exely Process Response  " + "|Time :" + timer_room_Exely.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Exely.Elapsed.ToString(), Item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

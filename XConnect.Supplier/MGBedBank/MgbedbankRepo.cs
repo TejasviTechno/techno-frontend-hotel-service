@@ -1201,9 +1201,11 @@ namespace XConnect.Supplier.MGBedBank
                 #region ResProcessTimer
                 try
                 {
+                    timer_room_Mgbedbank.Stop();
+                    Item.CodeProcessingTimeSupplier = timer_room_Mgbedbank.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Mgbedbank.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timer_room_Mgbedbank.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:MgBedbank Process Response  " + "|Time :" + timer_room_Mgbedbank.Elapsed.ToString();
                         _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Mgbedbank.Elapsed.ToString(), "MgBedbank", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }
