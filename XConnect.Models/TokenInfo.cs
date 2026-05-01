@@ -132,6 +132,34 @@ namespace XConnect.Models
         public string SupplierType { get; set; }
         public string ApiName { get; set; }
     }
+    public class ApiRequestRoomMapping
+    {
+
+        public string HotelId { get; set; }
+        public string RoomName { get; set; }
+    }
+
+    public class RoomMappingReport
+    {
+        public Int64 Id { get; set; }
+        public string RoomName { get; set; }
+        public string Response { get; set; }
+        public string Provider { get; set; }
+        public string ProviderHotelId { get; set; }
+        public string BoardBasis { get; set; }
+        public string RateuaraHotelId { get; set; }
+        public string CityId { get; set; }
+        public string GVSupplierId { get; set; }
+        public string GVRoomName { get; set; }
+        public string RoomCode { get; set; }
+       
+    }
+    public class RoomMappingMongo
+    {
+        public string _id { get; set; }
+        public string s { get; set; }
+        public string r { get; set; }
+    }
 
     #endregion
 }
