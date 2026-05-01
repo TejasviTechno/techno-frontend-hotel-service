@@ -856,12 +856,14 @@ namespace XConnect.Supplier.Rezlive
                     #region PriceOnly RS
                     if (ResponseData == string.Empty)
                     {
+                        item.ResponseStatus = 204;
                         item.ResponseType = "NoCount";
                         return options;
                     }
                     DataSet Rezlive_Response = _commonMethod.GetDataSetFromXMLString(ResponseData);
                     if (Rezlive_Response == null || Rezlive_Response.Tables["Hotel"] == null)
                     {
+                        item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                         return options;
                     }
@@ -881,6 +883,7 @@ namespace XConnect.Supplier.Rezlive
                     #region Hotel List
                     if (Rezlive_Response.Tables["Hotel"].Rows.Count < 1)
                     {
+                        item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                         return options;
                     }
@@ -1310,6 +1313,7 @@ namespace XConnect.Supplier.Rezlive
                 }
                 else
                 {
+                    item.ResponseStatus = 204;
                     item.ResponseType = "NoCount";
                 }
                 //DtHotel.DefaultView.RowFilter = "FinalSellingPrice>0";
@@ -1319,8 +1323,29 @@ namespace XConnect.Supplier.Rezlive
             }
             catch (Exception ex)
             {
+                item.ResponseStatus = 404;
                 _ = _exception.Error(ex);
                 return options;
+            }
+            finally
+            {
+                #region ResProcessTimer
+                try
+                {
+                    timer_room_Rezlive.Stop();
+                    item.CodeProcessingTimeSupplier = timer_room_Rezlive.ElapsedMilliseconds;
+                    if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Rezlive.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
+                    {
+
+                        SearchParam.SupplierTime += ",|Finish:Adonis Process Response  " + "|Time :" + timer_room_Rezlive.Elapsed.ToString();
+                        _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Rezlive.Elapsed.ToString(), item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
+                    }
+                }
+                catch (Exception x)
+                {
+                    await _exception.Error(x);
+                }
+                #endregion
             }
             return options;
         }

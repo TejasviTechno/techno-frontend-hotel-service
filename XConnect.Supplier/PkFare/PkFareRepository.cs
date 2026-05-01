@@ -352,6 +352,9 @@ namespace XConnect.Supplier.PkFare
         {
             //return await Task.Run(() =>
             //{
+            System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
+            timerroomx.Start();
+
             List<Options> options = new List<Options>();
 
             DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
@@ -361,6 +364,7 @@ namespace XConnect.Supplier.PkFare
             {
                 if (ResponseData == null || ResponseData.Trim() == "")
                 {
+                    item.ResponseStatus = 204;
                     item.ResponseType = "NoCount";
                     return options;
                 }
@@ -377,6 +381,7 @@ namespace XConnect.Supplier.PkFare
 
                 if (PkFareResponse.hotels == null)
                 {
+                    item.ResponseStatus = 404;
                     item.ResponseType = "NoCount";
                     return options;
                 }
@@ -793,12 +798,37 @@ namespace XConnect.Supplier.PkFare
 
                     }
                 }
+                else
+                {
+                    item.ResponseStatus = 404;
+                }
 
             }
             catch (IOException e)
             {
+                item.ResponseStatus = 404;
                 item.ResponseType = "NoCount";
                 await _exception.Error(e);
+            }
+            finally
+            {
+                #region ResProcessTimer
+                try
+                {
+                    timerroomx.Stop();
+                    item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
+                    if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
+                    {
+
+                        SearchParam.SupplierTime += ",|Finish:Adonis Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
+                        _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
+                    }
+                }
+                catch (Exception x)
+                {
+                    await _exception.Error(x);
+                }
+                #endregion
             }
             //DtHotel.DefaultView.RowFilter = "FinalSellingPrice>0";
 

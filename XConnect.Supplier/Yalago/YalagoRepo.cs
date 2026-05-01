@@ -284,11 +284,13 @@ namespace XConnect.Supplier.Yalago
                 double FinalMinPrice = 0;
                 if (result == null)
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
                 if (result.Messages.Count > 0)
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -752,6 +754,7 @@ namespace XConnect.Supplier.Yalago
                     }
                     else
                     {
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -760,6 +763,7 @@ namespace XConnect.Supplier.Yalago
             }
             catch (Exception e)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(e);
             }
             finally
@@ -767,9 +771,11 @@ namespace XConnect.Supplier.Yalago
                 #region ResProcessTimer
                 try
                 {
+                    timer_room_Yalago.Stop();
+                    Item.CodeProcessingTimeSupplier = timer_room_Yalago.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Yalago.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timer_room_Yalago.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:Yalago Process Response  " + "|Time :" + timer_room_Yalago.Elapsed.ToString();
                         _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Yalago.Elapsed.ToString(), Item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

@@ -1394,6 +1394,7 @@ namespace Xconnect.Hotelbeds
                 //string APINAME = Convert.ToString(HttpContext.Current.Request.Url).ToLower();//.Contains("availability")
                 if (ResponseData == "")
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -1422,11 +1423,13 @@ namespace Xconnect.Hotelbeds
                     }
                     catch (Exception ex)
                     {
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
                     if (HBResponse == null || HBResponse.hotels == null || HBResponse.hotels.hotels == null || HBResponse.hotels.hotels.Count() == 0)
                     {
+                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -2021,6 +2024,7 @@ namespace Xconnect.Hotelbeds
             }
             catch (Exception e)
             {
+                Item.ResponseStatus = 404;
                 Item.ResponseType = "NoCount";
                 await _exception.Error(e);
             }
@@ -2029,9 +2033,11 @@ namespace Xconnect.Hotelbeds
                 #region ResProcessTimer
                 try
                 {
+                    timer_room_HotelbedsV1.Stop();
+                    Item.CodeProcessingTimeSupplier = timer_room_HotelbedsV1.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_HotelbedsV1.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timer_room_HotelbedsV1.Stop();
+                       
                         SearchParam.SupplierTime += ",|Finish:HotelbedsV1 Process Response  " + "|Time :" + timer_room_HotelbedsV1.Elapsed.ToString();
                         _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_HotelbedsV1.Elapsed.ToString(), "HotelbedsV1", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

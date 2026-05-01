@@ -1886,6 +1886,7 @@ namespace XConnect.Supplier.XTG
 
                 if (ResponseData == "")
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return Options;
                 }
@@ -1904,6 +1905,7 @@ namespace XConnect.Supplier.XTG
 
                 if (dsRM.data.hotelX.search.errors != null)
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return Options;
                 }
@@ -2797,6 +2799,10 @@ namespace XConnect.Supplier.XTG
                     #endregion
 
                 }
+                else
+                {
+                    Item.ResponseStatus = 404;
+                }
 
 
                 return Options;
@@ -2805,6 +2811,7 @@ namespace XConnect.Supplier.XTG
 
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return Options;
             }
@@ -2813,9 +2820,11 @@ namespace XConnect.Supplier.XTG
                 #region ResProcessTimer
                 try
                 {
+                    timer_room_Xtg.Stop();
+                    Item.CodeProcessingTimeSupplier = timer_room_Xtg.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Xtg.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timer_room_Xtg.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:" + Provider + " Process Response  " + "|Time :" + timer_room_Xtg.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Xtg.Elapsed.ToString(), Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));
                         //Task.Run(async () =>await _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Xtg.Elapsed.ToString(), Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));

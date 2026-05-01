@@ -540,6 +540,7 @@ namespace XConnect.Supplier.Darina
                 {
                     if (ResponseData == string.Empty || ResponseData.Contains("ErrorTxt"))
                     {
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -547,6 +548,7 @@ namespace XConnect.Supplier.Darina
 
                     if (DarinaResponse == null || DarinaResponse.Tables["hotels"] == null)
                     {
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -1038,6 +1040,7 @@ namespace XConnect.Supplier.Darina
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return options;
             }
@@ -1046,9 +1049,11 @@ namespace XConnect.Supplier.Darina
                 #region ResProcessTimer
                 try
                 {
+                    timer_room_Darina.Stop();
+                    Item.CodeProcessingTimeSupplier = timer_room_Darina.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Darina.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timer_room_Darina.Stop();
+                       
                         SearchParam.SupplierTime += ",|Finish:Darina Process Response  " + "|Time :" + timer_room_Darina.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Darina.Elapsed.ToString(), "Darina", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

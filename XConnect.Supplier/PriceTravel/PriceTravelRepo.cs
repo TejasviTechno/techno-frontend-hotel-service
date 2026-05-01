@@ -469,12 +469,14 @@ namespace XConnect.Supplier.PriceTravel
                 }
                 catch (Exception ex)
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     _ = _exception.Error(ex);
                     return options;
                 }
                 if (response == null || response.hotels == null)
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -1070,15 +1072,24 @@ namespace XConnect.Supplier.PriceTravel
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 Item.ResponseType = "NoCount";
                 _ = _exception.Error(ex, SearchParam.SearchKey);
                 //return Common.GenerateDataTableNewV2();
             }
             finally
             {
-                timerroomx.Stop();
-                if (Item.ResponseType == "NoCount" && StoreSupplierResErrorLog == "1")
-                    _ = _commonMethod.XMLRequestResponseTrack_Error(Item.RQRS[0].Request, Item.RQRS[0].Response, Item.Supplier, timerroomx.Elapsed.ToString(), "", SearchParam.SearchKey);
+                try
+                {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
+                    if (Item.ResponseType == "NoCount" && StoreSupplierResErrorLog == "1")
+                        _ = _commonMethod.XMLRequestResponseTrack_Error(Item.RQRS[0].Request, Item.RQRS[0].Response, Item.Supplier, timerroomx.Elapsed.ToString(), "", SearchParam.SearchKey);
+                }
+                catch (Exception x)
+                {
+                    await _exception.Error(x);
+                }
             }
             return options;
         }

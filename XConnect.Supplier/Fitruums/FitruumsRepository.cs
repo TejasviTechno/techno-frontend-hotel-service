@@ -582,6 +582,7 @@ namespace Xconnect.Expedia
             {
                 if (TLResponse == null || TLResponse == string.Empty || TLResponse.ToLower().Contains("error"))
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -1422,6 +1423,7 @@ namespace Xconnect.Expedia
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return options;
             }
@@ -1430,9 +1432,11 @@ namespace Xconnect.Expedia
                 #region ResProcessTimer
                 try
                 {
+                    timer_room_Fitruums.Stop();
+                    Item.CodeProcessingTimeSupplier = timer_room_Fitruums.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Fitruums.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timer_room_Fitruums.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:Fitrumms Process Response  " + "|Time :" + timer_room_Fitruums.Elapsed.ToString();
                         
                         _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Fitruums.Elapsed.ToString(), Item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
