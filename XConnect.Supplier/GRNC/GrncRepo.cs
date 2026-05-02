@@ -553,7 +553,8 @@ namespace XConnect.Supplier.GRNC
                                     if (SessionId != "")
                                     {
                                         string GRNCRoomReq = Convert.ToString(URL + "/" + SessionId + "?hcode=" + ItemCode + "&bundled=true");
-                                        string Response1 = GRNCResponseroom(GRNCRoomReq, URL, UserName, PassWord, 2000, "af3675c6f7819722b572fcd4bcd6598d");
+                                        string Response1 = GRNCResponseroom(GRNCRoomReq, URL, UserName, PassWord, 2000, "");
+                                        //string Response1 = GRNCResponseroom(GRNCRoomReq, URL, UserName, PassWord, 2000, "af3675c6f7819722b572fcd4bcd6598d");
                                         RootObjectgrnc GRNCResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObjectgrnc>(Response1);
                                         //Common.XMLRequestResponseTrack_SupplierRooms(URLandRequest, Response, "TBO", "RoomSearch", SessionId);
 
@@ -945,7 +946,8 @@ namespace XConnect.Supplier.GRNC
 
                 request.Method = "GET";
                 //Request.Headers.Add("Api-Key", "8d09f4f93c7d96122f41db96810f51db");//test
-                request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");//Live
+                //request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");//Live
+                request.Headers.Add("Api-Key", password);//Live
                 request.ContentType = "application/json";
                 request.Accept = "application/json";
                 //request.Headers.Add("Accept-Encoding", "application/gzip");
