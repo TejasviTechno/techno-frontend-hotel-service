@@ -561,7 +561,6 @@ namespace XConnect.Supplier
                 DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
                 if (ResponseData == null || ResponseData == "" || ResponseData == string.Empty)
                 {
-                    Item.ResponseStatus = 204;
                     Item.ResponseType = NoCount;
                     return options;
                 }
@@ -571,14 +570,12 @@ namespace XConnect.Supplier
 
                 if (MethaBookResponse == null)
                 {
-                    Item.ResponseStatus = 204;
                     Item.ResponseType = NoCount;
                     return options;
                 }
                 #region "HotelList"
                 if (MethaBookResponse.availabilityRs == null || MethaBookResponse.availabilityRs.accommodations == null)
                 {
-                    Item.ResponseStatus = 404;
                     Item.ResponseType = NoCount;
                     return options;
                 }
@@ -1012,7 +1009,6 @@ namespace XConnect.Supplier
             }
             catch (Exception ex)
             {
-                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return options;
             }
@@ -1021,11 +1017,9 @@ namespace XConnect.Supplier
                 #region ResProcessTimer
                 try
                 {
-                    timer_room_Methabook.Stop();
-                    Item.CodeProcessingTimeSupplier = timer_room_Methabook.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Methabook.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timer_room_Methabook.Stop();
                         SearchParam.SupplierTime += ",|Finish:Methabook Process Response  " + "|Time :" + timer_room_Methabook.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Methabook.Elapsed.ToString(), "Methabook", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

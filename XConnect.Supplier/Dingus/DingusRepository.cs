@@ -437,8 +437,6 @@ namespace XConnect.Supplier.Dingus
         }
         public async Task<List<Options>> XMLDingusPriceOnly_Async(HotelX Item, CommonSearch commonSearch, string ResponseData, HotelSearchParameter SearchParam, string XMLCITY, string XMLCountry, string Currency, double CurrencyFactor, string XmlNationality, DataTable dtAgentDetail, string Provider, DataSet dsAgentDetails, DataTable dtVatHotelList, int SupplierID, string GIATACode, DataTable dtROE)
         {
-            System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
-            timerroomx.Start();
             List<Options> options = new List<Options>();
             DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
             //DataTable dtHotelBedsV1RoomCacelationPolicy = Common.GenerateCancellationDataTableNewV2();
@@ -451,7 +449,6 @@ namespace XConnect.Supplier.Dingus
                 #region Response
                 if (ResponseData == string.Empty || ResponseData.Contains("ErrorTxt"))
                 {
-                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -461,7 +458,6 @@ namespace XConnect.Supplier.Dingus
                 DataSet Dingus_Response = _commonMethod.GetDataSetFromXMLString(ResponseData);
                 if (Dingus_Response == null || Dingus_Response.Tables["BasicPropertyInfo"] == null)
                 {
-                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -935,23 +931,10 @@ namespace XConnect.Supplier.Dingus
                     }
                     #endregion
                 }
-                try
-                {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
-                }
-                catch (Exception x)
-                {
-                    await _exception.Error(x);
-                }
-
                 return options;
             }
             catch (Exception ex)
             {
-                timerroomx.Stop();
-                Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
-                Item.ResponseStatus = 404;
                 Item.ResponseType = "NoCount";
                 _exception.Error(ex);
                 return options;

@@ -617,7 +617,7 @@ namespace XConnect.Supplier.IWTX
                     }
                     if (Iwtx_Response.Hotels.Hotel == null)
                     {
-                        Item.ResponseStatus = 404;
+                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -1252,10 +1252,6 @@ namespace XConnect.Supplier.IWTX
                     }
                     #endregion
                 }
-                else
-                {
-                    Item.ResponseStatus = 204;
-                }
             }
             catch (Exception e)
             {
@@ -1268,11 +1264,9 @@ namespace XConnect.Supplier.IWTX
                 #region ResProcessTimer
                 try
                 {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timerroomx.Stop();
                         SearchParam.SupplierTime += ",|Finish:IWTX Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         await Task.Run(async () => await _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "IWTX", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

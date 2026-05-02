@@ -104,7 +104,6 @@ namespace XConnect.BAL.Interface
         Task<List<Agentlistlogs>> GetAgentListApiOutLogs(ApiOutLogs apiOutLogs, int AgentId);
 
         Task<List<Supplierlogs>> GetApiOutLogs(ApiRequest apiRequest);
-        Task<List<RoomMappingReport>> GetRoomMappingHotelReport(ApiRequestRoomMapping apiRequest);
 
         #region agoda client
         void PrepareForAgodaCommonSearch(ref HotelSearchParameter payload, ref CommonRequest data, ref AgodaSearchError agodaSearchError, TokenData tokenData, string requestName, FilterUsed filterUsed, AgodaSearchPara commonRQ);

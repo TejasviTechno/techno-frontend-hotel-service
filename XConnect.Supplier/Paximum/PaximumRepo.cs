@@ -354,7 +354,6 @@ namespace XConnect.Supplier.Paximum
                 // Paximum.Root paximumResponse = null;
                 if (Response == null || Response == "")
                 {
-                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -371,7 +370,6 @@ namespace XConnect.Supplier.Paximum
                 //if (DS.results.Count < 1)
                 if (paximumResponse.hotels.Count < 1)
                 {
-                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -779,10 +777,6 @@ namespace XConnect.Supplier.Paximum
                     }
 
                 }
-                else
-                {
-                    Item.ResponseStatus = 204;
-                }
 
 
                 return options;
@@ -798,11 +792,9 @@ namespace XConnect.Supplier.Paximum
                 #region ResProcessTimer
                 try
                 {
-                    timer_room_Paximum.Stop();
-                    Item.CodeProcessingTimeSupplier = timer_room_Paximum.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Paximum.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timer_room_Paximum.Stop();
                         SearchParam.SupplierTime += ",|Finish:Paximum Process Response  " + "|Time :" + timer_room_Paximum.Elapsed.ToString();
                         _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Paximum.Elapsed.ToString(), "Paximum", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

@@ -400,7 +400,6 @@ namespace XConnect.Supplier.Saltours
 
                         if (SaltoursResponse == null || SaltoursResponse.Tables["RoomStay"] == null)
                         {
-                            item.ResponseStatus = 404;
                             item.ResponseType = "NoCount";
                             return options;
                         }
@@ -413,14 +412,12 @@ namespace XConnect.Supplier.Saltours
 
                         if (SaltoursResponse.Tables["RoomStay"].Rows.Count < 1)
                         {
-                            item.ResponseStatus = 404;
                             item.ResponseType = "NoCount";
                             return options;
                         }
                     }
                     else
                     {
-                        item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                         return options;
                     }
@@ -1019,14 +1016,9 @@ namespace XConnect.Supplier.Saltours
 
                     }
                 }
-                else
-                {
-                    item.ResponseStatus = 204;
-                }
             }
             catch (Exception ex)
             {
-                item.ResponseStatus = 404;
                 _exception.Error(ex);
                 //return options;
             }
@@ -1036,11 +1028,9 @@ namespace XConnect.Supplier.Saltours
                 #region ResProcessTimer
                 try
                 {
-                    timer_room_Saltours.Stop();
-                    item.CodeProcessingTimeSupplier = timer_room_Saltours.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Saltours.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                       
+                        timer_room_Saltours.Stop();
                         SearchParam.SupplierTime += ",|Finish:Saltours Process Response  " + "|Time :" + timer_room_Saltours.Elapsed.ToString();
                         _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Saltours.Elapsed.ToString(), item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

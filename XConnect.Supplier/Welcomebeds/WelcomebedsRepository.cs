@@ -309,7 +309,6 @@ namespace XConnect.Supplier.Welcomebeds
             {
                 if (ResponseData == null || ResponseData.Trim() == "")
                 {
-                    item.ResponseStatus = 204;
                     return options;
                 }
                 try
@@ -324,23 +323,17 @@ namespace XConnect.Supplier.Welcomebeds
 
                 if (ResponseData.ToLower().Contains("error"))
                 {
-                    item.ResponseStatus = 404;
                     item.ResponseType = "NoCount";
                     return options;
                 }
 
                 if (ResponseData == null || ResponseData == string.Empty)
-                {
-                    item.ResponseStatus = 404;
                     return options;
-                }
-                    
                 else
                 {
 
                     if (welResponse == null || welResponse.hotels == null || welResponse.hotels.Count < 1)
                     {
-                        item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                     }
                     for (int i = 0; i < welResponse.hotels.Count; i++)
@@ -688,7 +681,6 @@ namespace XConnect.Supplier.Welcomebeds
             }
             catch (Exception e)
             {
-                item.ResponseStatus = 404;
                 _ = _exception.Error(e);
                 return options;
             }
@@ -697,11 +689,9 @@ namespace XConnect.Supplier.Welcomebeds
                 #region ResProcessTimer
                 try
                 {
-                    timer_room_Welcomebeds.Stop();
-                    item.CodeProcessingTimeSupplier = timer_room_Welcomebeds.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Welcomebeds.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                       
+                        timer_room_Welcomebeds.Stop();
                         SearchParam.SupplierTime += ",|Finish:Agoda Process Response  " + "|Time :" + timer_room_Welcomebeds.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Welcomebeds.Elapsed.ToString(), Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

@@ -483,7 +483,6 @@ namespace XConnect.Supplier.UkTravco
                 #region Response
                 if (ResponseData == string.Empty || ResponseData.Contains("ErrorTxt"))
                 {
-                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -491,7 +490,6 @@ namespace XConnect.Supplier.UkTravco
                 DataSet uk_travcoResponse = _commonMethod.GetDataSetFromXMLString(ResponseData);
                 if (uk_travcoResponse == null || uk_travcoResponse.Tables["Hotel"] == null)
                 {
-                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -1475,7 +1473,6 @@ namespace XConnect.Supplier.UkTravco
             }
             catch (Exception ex)
             {
-                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return options;
             }
@@ -1484,11 +1481,9 @@ namespace XConnect.Supplier.UkTravco
                 #region ResProcessTimer
                 try
                 {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timerroomx.Stop();
                         SearchParam.SupplierTime += ",|Finish:Uk_Travco Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "Uk_Travco", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

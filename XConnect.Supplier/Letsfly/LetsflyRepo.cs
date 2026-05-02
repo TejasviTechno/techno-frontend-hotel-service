@@ -726,10 +726,6 @@ namespace XConnect.Supplier.Letsfly
 
                     }
                 }
-                else
-                {
-                    item.ResponseStatus = 204;
-                }
             }
             catch (Exception e)
             {
@@ -742,11 +738,9 @@ namespace XConnect.Supplier.Letsfly
                 #region ResProcessTimer
                 try
                 {
-                    timer_room_LetsFly.Stop();
-                    item.CodeProcessingTimeSupplier = timer_room_LetsFly.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_LetsFly.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timer_room_LetsFly.Stop();
                         SearchParam.SupplierTime += ",|Finish:Agoda Process Response  " + "|Time :" + timer_room_LetsFly.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_LetsFly.Elapsed.ToString(), Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

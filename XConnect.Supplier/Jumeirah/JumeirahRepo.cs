@@ -266,8 +266,6 @@ namespace XConnect.Supplier.Jumeirah
 
         public async Task<List<Options>> JumeirahPriceOnly_Async(HotelX Item, CommonSearch commonSearch, double AgentPercentage, int SearchTimeOut, string Supplier, DataTable dtCountryCityMarkup, int AgentId, DataSet dsAgentDetails, int SupplierID, string ResponseData, HotelSearchParameter SearchParam, string xmlcity, string xmlcountry, string xmlnationality, string JumeirahCurrency, double CurrencyFactorJumeirah, bool IsShowSupplier, string HotelID, DataTable dtROE, DataTable dtSuplierMarkup, int processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string PassWord)
         {
-            System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
-            timerroomx.Start();
             List<Options> options = new List<Options>();
             #region DataTable
             DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
@@ -277,7 +275,6 @@ namespace XConnect.Supplier.Jumeirah
                 #region PriceOnly RS 
                 if (ResponseData == string.Empty || ResponseData == null || ResponseData.Contains("Error") || ResponseData == "")
                 {
-                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -286,7 +283,6 @@ namespace XConnect.Supplier.Jumeirah
 
                 if (JumeirahResponse == null || JumeirahResponse.availablity_price == null)
                 {
-                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -771,29 +767,8 @@ namespace XConnect.Supplier.Jumeirah
             }
             catch (Exception ex)
             {
-                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return null;
-            }
-            finally
-            {
-                #region ResProcessTimer
-                try
-                {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
-                    if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
-                    {
-
-                        SearchParam.SupplierTime += ",|Finish:Adonis Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
-                        _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
-                    }
-                }
-                catch (Exception x)
-                {
-                    await _exception.Error(x);
-                }
-                #endregion
             }
             return options;
         }

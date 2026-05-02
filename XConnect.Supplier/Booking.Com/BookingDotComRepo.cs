@@ -731,7 +731,6 @@ namespace XConnect.Supplier.Booking.Com
 
             if (ResponseData == "")
             {
-                Item.ResponseStatus = 204;
                 Item.ResponseType = "NoCount";
                 return options;
             }
@@ -894,18 +893,10 @@ namespace XConnect.Supplier.Booking.Com
                     BookingDotComRoom.RootObject dsResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<BookingDotComRoom.RootObject>(ResponseData);
 
                     if (dsResponse == null)
-                    {
-                        Item.ResponseStatus = 204;
                         return options;
-                    }
-                       
 
                     if (dsResponse.result == null || dsResponse.result?.Count == 0)
-                    {
-                        Item.ResponseStatus = 404;
                         return options;
-                    }
-                        
 
 
 
@@ -1419,7 +1410,6 @@ namespace XConnect.Supplier.Booking.Com
             }
             catch (Exception e)
             {
-                Item.ResponseStatus = 404;
                 await _exception.Error(e);
             }
             finally
@@ -1427,11 +1417,9 @@ namespace XConnect.Supplier.Booking.Com
                 #region ResProcessTimer
                 try
                 {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timerroomx.Stop();
                         SearchParam.SupplierTime += ",|Finish:Booking.com Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
 
@@ -2733,8 +2721,6 @@ namespace XConnect.Supplier.Booking.Com
 
         public async Task<List<Options>> BookingDotCom_v3_HotelsearchWithRooms(HotelX item, CommonSearch commonSearch, string xmlCountry, string CityCode, string ResponseData, HotelSearchParameter SearchParam, double CurrencyFactor, DataSet dsAgentDetails, string Provider, DataTable dtCountryCityMarkup, Int32 AgentId, Int32 TariffID, double AgentPercentage, Boolean IsShowSupplier, int SupplierID, int MasterSupplierID, Int32 processTimeout, string ProccessCutOffTime, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string StoreSupplierResErrorLog, DataTable dtROE, string xmlhotelcode, string UserName, string Password, string currencycode = "USD")
         {
-            System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
-            timerroomx.Start();
             List<Options> options = new List<Options>();
 
             try
@@ -2763,7 +2749,6 @@ namespace XConnect.Supplier.Booking.Com
                 #region PriceOnly RS
                 if (ResponseData == null || ResponseData == string.Empty)
                 {
-                    item.ResponseStatus = 204;
                     item.ResponseType = "NoCount";
                     return options;
                 }
@@ -2775,7 +2760,6 @@ namespace XConnect.Supplier.Booking.Com
                 reshotelsearchnroom.Rootobject dsResponse = JsonConvert.DeserializeObject<reshotelsearchnroom.Rootobject>(ResponseData);
                 if (dsResponse.data == null || dsResponse.data.Length == 0)
                 {
-                    item.ResponseStatus = 404;
                     item.ResponseType = "NoCount";
                     return options;
                 }
@@ -3463,29 +3447,7 @@ namespace XConnect.Supplier.Booking.Com
             }
             catch (Exception ex)
             {
-                item.ResponseStatus = 404;
                 await _exception.Error(ex);
-            }
-            finally
-            {
-                #region ResProcessTimer
-                try
-                {
-                    timerroomx.Stop();
-                    item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
-                    if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
-                    {
-
-                        SearchParam.SupplierTime += ",|Finish:Travellanda Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
-                        _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
-                    }
-                }
-                catch (Exception x)
-                {
-                    await _exception.Error(x);
-                }
-                #endregion
-                //GC.Collect();
             }
             return options;
         }

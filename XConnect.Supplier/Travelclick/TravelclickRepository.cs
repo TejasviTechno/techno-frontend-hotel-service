@@ -410,7 +410,6 @@ namespace XConnect.Supplier.Travelclick
                 {
                     if (SiteminderResponse == null || SiteminderResponse.Tables.Count == 0 || SiteminderResponse.Tables[0].Rows.Count == 0)
                     {
-                        Item.ResponseStatus = 204;
                         return options;
                     }
 
@@ -1392,7 +1391,6 @@ namespace XConnect.Supplier.Travelclick
                 }
                 catch (Exception ex)
                 {
-                    Item.ResponseStatus = 404;
                     await _exception.Error(ex, SearchParam.SearchKey);
                     return options;
                 }
@@ -1401,11 +1399,9 @@ namespace XConnect.Supplier.Travelclick
                     #region ResProcessTimer
                     try
                     {
-                        timerroomx.Stop();
-                        Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                         if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                         {
-                            
+                            timerroomx.Stop();
                             SearchParam.SupplierTime += ",|Finish:travelclick Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                             _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "travelclick", SearchParam.SearchKey, 1, SearchParam.AgentID));
                         }

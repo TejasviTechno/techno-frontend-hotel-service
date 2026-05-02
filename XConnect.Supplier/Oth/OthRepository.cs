@@ -1322,7 +1322,6 @@ namespace XConnect.Supplier.Oth
             timer_room_Oth.Start();
             List<Options> options = new List<Options>();
 
-            
             if (GTAResponse != null && GTAResponse.Tables.Count > 0 && GTAResponse.Tables[0].Rows.Count > 0 || Response != "")
             {
                 DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
@@ -1370,11 +1369,7 @@ namespace XConnect.Supplier.Oth
                     if (SearchParam.Filters.IsShowRooms == 1)
                     {
                         if (GTAResponse == null || GTAResponse.Tables[0] == null || GTAResponse.Tables[0].Rows.Count == 0)
-                        {
-                            item.ResponseStatus = 204;
                             return options;
-                        }
-                            
                     }
                     double AgentPercentage = 0.0;
                     Boolean blnIsShowSupplier = false;
@@ -1421,11 +1416,7 @@ namespace XConnect.Supplier.Oth
                             ResponseOth = JsonSerializer.Deserialize<List<OthListResponse>>(Response);
 
                         if (ResponseOth == null || ResponseOth.Count == 0)
-                        {
-                            item.ResponseStatus = 404;
                             return options;
-                        }
-                            
                         if (dtSuplierMarkup != null)
                         {
                             dtSuplierMarkup.DefaultView.RowFilter = "SupplierName='withinearth'";
@@ -2355,11 +2346,9 @@ namespace XConnect.Supplier.Oth
                     #region ResProcessTimer
                     try
                     {
-                        timer_room_Oth.Stop();
-                        item.CodeProcessingTimeSupplier = timer_room_Oth.ElapsedMilliseconds;
                         if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Oth.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                         {
-                            
+                            timer_room_Oth.Stop();
                             SearchParam.SupplierTime += ",|Finish:OTH Process Response  " + "|Time :" + timer_room_Oth.Elapsed.ToString();
                             _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Oth.Elapsed.ToString(), "OTH", SearchParam.SearchKey, 1, SearchParam.AgentID));
                         }
@@ -2373,10 +2362,6 @@ namespace XConnect.Supplier.Oth
 
 
                 }
-            }
-            else
-            {
-                item.ResponseStatus = 404;
             }
             return options;
 

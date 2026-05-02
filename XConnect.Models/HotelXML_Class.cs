@@ -759,8 +759,8 @@ namespace XConnect.Models
         public AvailabilityRS AvailabilityRS { get; set; }
         public string Search_Key { get; set; }//#MongoDB
         public DateTime Time { get; set; }//#MongoDB
-        //public string checkIn { get; set; } // 23-march-2026
-        //public string checkOut { get; set; } // 23-march-2026
+        public string checkIn { get; set; } // 23-march-2026
+        public string checkOut { get; set; } // 23-march-2026
     }
 
     public class AvailabilityRS

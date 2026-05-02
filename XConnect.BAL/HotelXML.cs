@@ -2700,7 +2700,7 @@ namespace Xconnect.BLL
                             #region"GRNC"
                             if (GRNCDetails != null && GRNCSearchConfig != null && GRNCDetails.Count > 0 && GRNCSearchConfig.Count > 0)
                             {
-                                if ((SearchPara.Filters.IsShowRooms == 1 ) || SearchPara.Filters.IsShowRooms == 0)//&& SearchByOneID
+                                if ((SearchPara.Filters.IsShowRooms == 1 && SearchByOneID) || SearchPara.Filters.IsShowRooms == 0)
                                 {
                                     if (commonSearchList.commonHotelCodes.GRNC_Codes != null)
                                         _grnc.GRNCRequestOnly_async(commonSearchList.commonHotelCodes.GRNC_Codes, lstRating, SearchPara, GRNCDetails, GRNCSearchConfig, dtPreferredDataHotel, ref AllTask, hit, dtROE, tokenData, dtXMLCity);
@@ -65416,52 +65416,6 @@ new SqlParameter("@AgentId", AgentId),
                 return null;
             }
         }
-        public async Task<List<RoomMappingReport>> GetRoomMappingHotelReport(ApiRequestRoomMapping apiRequest)
-        {
-            try
-            {
-                //string hotelId = apiRequest?.HotelId?.Trim();
-                //string roomName = apiRequest?.RoomName?.Trim();
-
-                //var filterBuilder = Builders<RoomMappingMongo>.Filter;
-                //var filter = filterBuilder.Empty;
-
-                //// Filter by HotelId (prefix match instead of regex)
-                //if (!string.IsNullOrEmpty(hotelId))
-                //{
-                //    filter &= filterBuilder.Where(x => x._id.StartsWith(hotelId + "$$$"));
-                //}
-
-                //// Filter by Room Name (case-insensitive)
-                //if (!string.IsNullOrEmpty(roomName))
-                //{
-                //    filter &= filterBuilder.Regex(
-                //        x => x.s,
-                //        new BsonRegularExpression(roomName, "i")
-                //    );
-                //}
-
-                //var collection = _mongoDatabase.GetCollection<RoomMappingMongo>("RoomMapping");
-
-                //var result = await collection
-                //    .Find(filter)
-                //    .ToListAsync();
-
-                //// Map to response model
-                //return result.Select(x => new RoomMappingReport
-                //{
-                //    ProviderHotelId = x._id?.Split(new[] { "$$$" }, StringSplitOptions.None)[0], // clean HotelId
-                //    RoomName = x.s,
-                //    RoomCode = x.r
-                //}).ToList();
-                return new List<RoomMappingReport>(); // avoid returning null
-            }
-            catch (Exception ex)
-            {
-                _ = _exception.Error(ex);
-                return new List<RoomMappingReport>(); // avoid returning null
-            }
-        }
 
 
         #region agoda client
@@ -65764,8 +65718,8 @@ new SqlParameter("@AgentId", AgentId),
                 SearchPara.HotelType = "available";
                 //}
                 //else { SearchPara.HotelType = "available On Request"; }
-                //finalResponse.checkIn = SearchPara.CheckInDate;
-                //finalResponse.checkOut = SearchPara.CheckOutDate;
+                finalResponse.checkIn = SearchPara.CheckInDate;
+                finalResponse.checkOut = SearchPara.CheckOutDate;
                 // SearchPara.HotelID = "";// SearchPara.HotelID != "0" ? SearchPara.HotelID : "";
                 SearchPara.CheckInDate = Convert.ToDateTime(SearchPara.CheckInDate).ToString("dd/MM/yyyy");
                 SearchPara.CheckOutDate = Convert.ToDateTime(SearchPara.CheckOutDate).ToString("dd/MM/yyyy");

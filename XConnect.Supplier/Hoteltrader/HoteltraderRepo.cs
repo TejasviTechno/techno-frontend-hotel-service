@@ -285,7 +285,6 @@ namespace XConnect.Supplier.Hoteltrader
 
                         if (Adonis_Response == null)
                         {
-                            Item.ResponseStatus = 204;
                             Item.ResponseType = "NoCount";
                             return options;
                         }
@@ -293,13 +292,11 @@ namespace XConnect.Supplier.Hoteltrader
 
                         if (Adonis_Response.data.getPropertiesByIds.properties == null)
                         {
-                            Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                             return options;
                         }
                         if (Adonis_Response.data.getPropertiesByIds.properties.Count < 1)
                         {
-                            Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                             return options;
                         }
@@ -388,7 +385,6 @@ namespace XConnect.Supplier.Hoteltrader
 
                         if (ResponseData == string.Empty)
                         {
-                            Item.ResponseStatus = 204;
                             Item.ResponseType = "NoCount";
                             return options;
                         }
@@ -397,7 +393,6 @@ namespace XConnect.Supplier.Hoteltrader
 
                         if (RoomResponse == null)
                         {
-                            Item.ResponseStatus = 204;
                             Item.ResponseType = "NoCount";
                             return options;
                         }
@@ -405,7 +400,6 @@ namespace XConnect.Supplier.Hoteltrader
 
                         if (!RoomResponse.Tables.Contains("properties"))
                         {
-                            Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                             return options;
                         }
@@ -816,15 +810,10 @@ namespace XConnect.Supplier.Hoteltrader
 
 
                 }
-                else
-                {
-                    Item.ResponseStatus = 404;
-                }
                 return options;
             }
             catch (Exception e)
             {
-                Item.ResponseStatus = 404;
                 Item.ResponseType = "NoCount";
                 await _exception.Error(e);
             }
@@ -833,11 +822,9 @@ namespace XConnect.Supplier.Hoteltrader
                 #region ResProcessTimer
                 try
                 {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                       
+                        timerroomx.Stop();
                         SearchParam.SupplierTime += ",|Finish:HotelTrader Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "HotelTrader", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

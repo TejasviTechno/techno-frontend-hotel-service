@@ -1822,8 +1822,6 @@ namespace XConnect.Supplier.Qtech
 
         public async Task<List<Options>> QTech_HotelSearchWithRooms(HotelX Item, CommonSearch commonSearch, string ResponseData, HotelSearchParameter SearchParam, string XMLCITY, string XMLCountry, string Currency, double CurrencyFactor, string Provider, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string XmlNationality = "", string SaveNoCountSupplog = "")
         {
-            System.Diagnostics.Stopwatch timer_room = new System.Diagnostics.Stopwatch();
-            timer_room.Start();
             List<Options> options = new List<Options>();
             DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
 
@@ -1839,14 +1837,12 @@ namespace XConnect.Supplier.Qtech
 
                     if (ResponseData == string.Empty || ResponseData.Contains("ErrorTxt"))
                     {
-                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
 
                     if (Qtechres == null)
                     {
-                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -1857,7 +1853,6 @@ namespace XConnect.Supplier.Qtech
                     string Message = Convert.ToString(Qtechres.Message[0]);
                     if (Message.ToLower() == "fail")
                     {
-                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -1865,7 +1860,6 @@ namespace XConnect.Supplier.Qtech
                     int TotalCount = Convert.ToInt32(Qtechres.TotalCount);
                     if (TotalCount == 0)
                     {
-                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -2353,10 +2347,7 @@ namespace XConnect.Supplier.Qtech
                         #endregion
                     }
                 }
-                else
-                {
-                    Item.ResponseStatus = 204;
-                }
+
                 #region
                 //DtHotel.DefaultView.RowFilter = "FinalSellingPrice>0";
                 //dsTemp.Tables.Add(DtHotel.DefaultView.ToTable());
@@ -2374,8 +2365,6 @@ namespace XConnect.Supplier.Qtech
                 #region ResProcessTimer
                 try
                 {
-                    timer_room.Stop();
-                    Item.CodeProcessingTimeSupplier = timer_room.ElapsedMilliseconds;
                     if (Item.ResponseType == "NoCount" && SaveNoCountSupplog == "1")
                     {
                         //Task.Run(() => FireAway_SQL_noEncoded(Item.RQRS[0].Request, Item.RQRS[0].Response == "" ? Item.ResponseError : Item.RQRS[0].Response, Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));

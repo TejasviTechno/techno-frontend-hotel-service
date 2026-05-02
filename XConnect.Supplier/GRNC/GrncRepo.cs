@@ -342,7 +342,6 @@ namespace XConnect.Supplier.GRNC
                     //  DataSet GRNCResponse = Common.GetDataSetFromXMLString(ResponseData);
                     if (GRNCResponsedata == null)
                     {
-                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -350,14 +349,12 @@ namespace XConnect.Supplier.GRNC
                     string SessionId = Convert.ToString(GRNCResponsedata.Tables["Row"].Rows[0]["search_id"]);
                     if (SessionId != "" || SessionId != null || SessionId != string.Empty)
                     {
-                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         //Common.XMLRequestResponseTrack_SupplierHotel(URLandRequest, ResponseData, "TBO", "HotelSearch", SessionId);
                     }
                     double TotalCharges = 0;
                     if (!GRNCResponsedata.Tables.Contains("hotels"))
                     {
-                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -893,16 +890,12 @@ namespace XConnect.Supplier.GRNC
                     }
 
                 }
-                else
-                {
-                    Item.ResponseStatus = 204;
-                }
+
 
                 return options;
             }
             catch (Exception ex)
             {
-                Item.ResponseStatus = 404;
                 Item.ResponseType = "NoCount";
                 await _exception.Error(ex);
                 return options;
@@ -912,11 +905,9 @@ namespace XConnect.Supplier.GRNC
                 #region ResProcessTimer
                 try
                 {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timerroomx.Stop();
                         SearchParam.SupplierTime += ",|Finish:GRNC Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "GRNC", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

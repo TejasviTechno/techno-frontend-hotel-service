@@ -416,7 +416,6 @@ namespace XConnect.Supplier.Nuitee
 
             if (ResponseData == "")
             {
-                Item.ResponseStatus = 204;
                 Item.ResponseType = "NoCount";
                 return options;
             }
@@ -425,7 +424,6 @@ namespace XConnect.Supplier.Nuitee
                 #region PriceOnly RS
                 if (ResponseData == string.Empty)
                 {
-                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -462,14 +460,12 @@ namespace XConnect.Supplier.Nuitee
 
                 if (NuiteeResponse == null || NuiteeResponse.Tables.Contains("getCityAvailabilityRes") == false)
                 {
-                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
                 #endregion
                 if (NuiteeResponse.Tables["getCityAvailabilityRes"].Columns.Contains("currency") == false)
                 {
-                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -974,7 +970,6 @@ namespace XConnect.Supplier.Nuitee
             }
             catch (Exception e)
             {
-                Item.ResponseStatus = 404;
                 await _exception.Error(e);
             }
             finally
@@ -982,11 +977,9 @@ namespace XConnect.Supplier.Nuitee
                 #region ResProcessTimer
                 try
                 {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchPara != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timerroomx.Stop();
                         SearchPara.SupplierTime += ",|Finish:Nuitee Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _ =  Task.Run(() =>  _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), SupplierName, SearchPara.SearchKey, 1, SearchPara.AgentID));
                     }

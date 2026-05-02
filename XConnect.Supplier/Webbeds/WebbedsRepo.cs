@@ -812,7 +812,6 @@ namespace XConnect.Supplier.Webbeds
                     ResponseData = ResponseData.Replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
                     if (ResponseData == null || ResponseData == "")
                     {
-                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -832,7 +831,6 @@ namespace XConnect.Supplier.Webbeds
                     }
                     if (DOTWResponse == null || DOTWResponse.Tables["hotel"] == null)
                     {
-                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -2015,7 +2013,6 @@ namespace XConnect.Supplier.Webbeds
             }
             catch (Exception ex)
             {
-                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return options;
             }
@@ -2024,11 +2021,9 @@ namespace XConnect.Supplier.Webbeds
                 #region ResProcessTimer
                 try
                 {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timerroomx.Stop();
                         SearchParam.SupplierTime += ",|Finish:Dotw Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "Dotw", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

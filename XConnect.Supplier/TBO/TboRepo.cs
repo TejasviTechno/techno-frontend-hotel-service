@@ -398,7 +398,6 @@ namespace XConnect.Supplier.TBO
                     }
                     if (DS == null || DS.HotelResult == null)
                     {
-                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -831,7 +830,6 @@ namespace XConnect.Supplier.TBO
             }
             catch (Exception ex)
             {
-                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return options;
             }
@@ -840,11 +838,9 @@ namespace XConnect.Supplier.TBO
                 #region ResProcessTimer
                 try
                 {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timerroomx.Stop();
                         SearchParam.SupplierTime += ",|Finish:TBO Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "TBO", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

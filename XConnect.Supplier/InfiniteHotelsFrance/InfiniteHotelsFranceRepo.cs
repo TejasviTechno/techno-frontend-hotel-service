@@ -355,7 +355,6 @@ namespace XConnect.Supplier.InfiniteHotelsFrance
             {
                 if (ResponseData.ToLower() == "" || ResponseData.ToLower().Contains("error"))
                 {
-                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -377,7 +376,6 @@ namespace XConnect.Supplier.InfiniteHotelsFrance
                     DataSet IHFResponse = _commonMethod.GetDataSetFromXMLString(ResponseData);
                     if (IHFResponse == null || !IHFResponse.Tables.Contains("hotelResponse"))
                     {
-                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -526,11 +524,7 @@ namespace XConnect.Supplier.InfiniteHotelsFrance
                                     if (IHFResponse.Tables.Contains("offer"))
                                     {
                                         if (IHFResponse.Tables["offer"].Rows.Count == 0)
-                                        {
-                                            Item.ResponseStatus = 404;
                                             return options;
-                                        }
-                                            
                                         else
                                         {
                                             //for (int i = 0; i < IHFResponse.Tables["offer"].Rows.Count; i++)
@@ -601,11 +595,7 @@ namespace XConnect.Supplier.InfiniteHotelsFrance
 
                                                     //end
                                                     if (IsError == true)
-                                                    {
-                                                        Item.ResponseStatus = 404;
                                                         return options;
-                                                    }
-                                                        
                                                     #region RateBreakUp
                                                     //for (int n = 0; n < NoOfNight; n++)
                                                     //{
@@ -904,14 +894,9 @@ namespace XConnect.Supplier.InfiniteHotelsFrance
 
                     }
                 }
-                else
-                {
-                    Item.ResponseStatus = 204;
-                }
             }
             catch (Exception e)
             {
-                Item.ResponseStatus = 404;
                 _exception.Error(e);
             }
             finally
@@ -919,11 +904,9 @@ namespace XConnect.Supplier.InfiniteHotelsFrance
                 #region ResProcessTimer
                 try
                 {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timerroomx.Stop();
                         SearchParam.SupplierTime += ",|Finish:InfinitesHotelsFrance Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

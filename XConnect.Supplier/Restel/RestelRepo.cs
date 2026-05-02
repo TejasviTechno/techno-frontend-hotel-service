@@ -985,10 +985,6 @@ namespace XConnect.Supplier.Restel
                     }
                     #endregion
                 }
-                else
-                {
-                    Item.ResponseStatus = 204;
-                }
 
                 return options;
             }
@@ -1004,11 +1000,9 @@ namespace XConnect.Supplier.Restel
                 #region ResProcessTimer
                 try
                 {
-                    timerroomx.Stop();
-                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+                        timerroomx.Stop();
                         SearchParam.SupplierTime += ",|Finish:Restel Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                          _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

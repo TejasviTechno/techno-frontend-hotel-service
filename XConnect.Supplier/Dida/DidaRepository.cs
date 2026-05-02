@@ -801,7 +801,6 @@ namespace Xconnect.Expedia
                     if (Dida_Response != null && Dida_Response.Error != null)
                     {
                         //Item.ResponseStatus = Convert.ToInt32(Dida_Response.Error.Code);
-                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         Item.ActualReason = Dida_Response.Error.Message;
                         return options;
@@ -821,7 +820,7 @@ namespace Xconnect.Expedia
                 //if (DS.results.Count < 1)
                 if (Dida_Response.Success == null)
                 {
-                    Item.ResponseStatus = 404;
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }

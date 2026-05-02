@@ -1338,7 +1338,6 @@ namespace XConnect.Supplier.SiteMinder
                 {
                     if (SiteminderResponse == null || SiteminderResponse.Tables.Count == 0 || SiteminderResponse.Tables[0].Rows.Count == 0)
                     {
-                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -1367,7 +1366,6 @@ namespace XConnect.Supplier.SiteMinder
                     DateTime curDate = _commonMethod.GetTimeZoneDate(SearchParam.CurrentDate);
                     if (SiteminderResponse == null || SiteminderResponse.Tables[0] == null || SiteminderResponse.Tables[0].Rows.Count == 0)
                     {
-                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -2315,7 +2313,6 @@ namespace XConnect.Supplier.SiteMinder
                 }
                 catch (Exception ex)
                 {
-                    Item.ResponseStatus = 404;
                     await _exception.Error(ex, SearchParam.SearchKey);
                     return options;
                 }
@@ -2324,11 +2321,9 @@ namespace XConnect.Supplier.SiteMinder
                     #region ResProcessTimer
                     try
                     {
-                        timerroomx.Stop();
-                        Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                         if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                         {
-                            
+                            timerroomx.Stop();
                             SearchParam.SupplierTime += ",|Finish:Siteminder Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                             _= Task.Run(() =>  _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), "Siteminder", SearchParam.SearchKey, 1, SearchParam.AgentID));
                         }
