@@ -2781,11 +2781,15 @@ namespace XConnect.Expedia
                     }
 
                 }
+                else
+                {
+                    ItemEN.ResponseStatus = 204;
+                }
                 return options;
             }
             catch (Exception ex)
             {
-
+                ItemEN.ResponseStatus = 404;
                 await _exception.Error(ex);
                 ItemEN.ResponseType = "NoCount";
                 return options;
@@ -2795,9 +2799,11 @@ namespace XConnect.Expedia
                 #region ResProcessTimer
                 try
                 {
+                    timer_room_ean.Stop();
+                    ItemEN.CodeProcessingTimeSupplier = timer_room_ean.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_ean.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timer_room_ean.Stop();
+                       
                         SearchParam.SupplierTime += ",|Finish:" + Provider + " Process Response  " + "|Time :" + timer_room_ean.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_ean.Elapsed.ToString(), Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

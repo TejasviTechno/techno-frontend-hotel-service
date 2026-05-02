@@ -450,6 +450,7 @@ namespace XConnect.Supplier.Juniper
                     #region PriceOnly RS
                     if (ResponseData == string.Empty || ResponseData.Contains("Error"))
                     {
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
 
                         if (StoreSupplierResErrorLog == "1")
@@ -465,7 +466,8 @@ namespace XConnect.Supplier.Juniper
                     {
                         if (StoreSupplierResErrorLog == "1")
                             await _commonMethod.XMLRequestResponseTrack_Error(Item.RQRS[0].Request, ResponseData, Provider, timer_room_Juniper.Elapsed.ToString(), "", SearchParam.SearchKey);
-
+                        
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return Options;
                     }
@@ -474,6 +476,7 @@ namespace XConnect.Supplier.Juniper
                         if (StoreSupplierResErrorLog == "1")
                             await _commonMethod.XMLRequestResponseTrack_Error(Item.RQRS[0].Request, ResponseData, Provider, timer_room_Juniper.Elapsed.ToString(), "", SearchParam.SearchKey);
 
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return Options;
                     }
@@ -1035,10 +1038,15 @@ namespace XConnect.Supplier.Juniper
                         #endregion
                     }
                 }
+                else
+                {
+                    Item.ResponseStatus = 204;
+                }
                 return Options;
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 return Options;
             }
@@ -1047,9 +1055,11 @@ namespace XConnect.Supplier.Juniper
                 #region ResProcessTimer
                 try
                 {
+                    timer_room_Juniper.Stop();
+                    Item.CodeProcessingTimeSupplier = timer_room_Juniper.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Juniper.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timer_room_Juniper.Stop();
+                       
                         SearchParam.SupplierTime += ",|Finish:" + Provider + " Process Response  " + "|Time :" + timer_room_Juniper.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Juniper.Elapsed.ToString(), Provider, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

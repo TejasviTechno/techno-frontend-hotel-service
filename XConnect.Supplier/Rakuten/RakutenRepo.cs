@@ -744,12 +744,14 @@ namespace XConnect.Supplier.Rakuten
                         RakutenHotelListResponse.Root RakutenResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<RakutenHotelListResponse.Root>(ResponseData);
                         if (RakutenResponse == null)
                         {
+                            Item.ResponseStatus = 204;
                             Item.ResponseType = "NoCount";
                             return options;
                         }
 
                         if (RakutenResponse.hotels.Count < 1)
                         {
+                            Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                         }
 
@@ -824,7 +826,11 @@ namespace XConnect.Supplier.Rakuten
                         #region "When Need Rooms"
                         RakutenHotelListResponse.Root RakutenResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<RakutenHotelListResponse.Root>(ResponseData);
                         if (RakutenResponse == null)
+                        {
+                            Item.ResponseStatus = 204;
                             return options;
+                        }
+                            
 
                         if (RakutenResponse.hotels.Count < 1)
                             Item.ResponseType = "NoCount";
@@ -1066,12 +1072,17 @@ namespace XConnect.Supplier.Rakuten
                     }
 
                 }
+                else
+                {
+                    Item.ResponseStatus = 204;
+                }
 
 
                 return options;
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 Item.ResponseType = "NoCount";
                 return options;
@@ -1081,9 +1092,11 @@ namespace XConnect.Supplier.Rakuten
                 #region ResProcessTimer
                 try
                 {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timerroomx.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:Rakuten Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

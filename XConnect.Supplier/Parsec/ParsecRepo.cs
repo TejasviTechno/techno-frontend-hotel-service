@@ -353,12 +353,14 @@ namespace XConnect.Supplier.Parsec
             {
                 if (Response == null || Response == string.Empty || Response.ToLower().Contains("error"))
                 {
+                    Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
                 DataSet ResponseData = _commonMethod.GetDataSetFromXMLString(Response);
                 if (Convert.ToInt32(ResponseData.Tables["hotels"].Rows[0]["hotelCount"]) == 0)
                 {
+                    Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
                 }
@@ -958,6 +960,7 @@ namespace XConnect.Supplier.Parsec
             }
             catch (Exception ex)
             {
+                Item.ResponseStatus = 404;
                 _exception.Error(ex);
                 return options;
             }
@@ -966,9 +969,11 @@ namespace XConnect.Supplier.Parsec
                 #region ResProcessTimer
                 try
                 {
+                    timerroomx.Stop();
+                    Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timerroomx.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timerroomx.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:" + Supplier + " Process Response  " + "|Time :" + timerroomx.Elapsed.ToString();
                         Task.Run(async () => await _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timerroomx.Elapsed.ToString(), Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }

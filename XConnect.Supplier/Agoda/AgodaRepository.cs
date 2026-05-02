@@ -670,19 +670,21 @@ namespace Xconnect.Expedia
                     }
                     catch (Exception ex)
                     {
-
+                        Item.ResponseStatus = 404;
                         await _exception.Error(ex);
                         Item.ResponseType = "NoCount";
                         return options;
                     }
                     if (Agoda_NewResponse == null)
                     {
+                        Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
                     //if (DS.results.Count < 1)
                     if (Agoda_NewResponse.properties == null || Agoda_NewResponse.properties.Count < 1)
                     {
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
@@ -1408,13 +1410,17 @@ namespace Xconnect.Expedia
                     }
 
                 }
+                else
+                {
+                    Item.ResponseStatus = 204;
+                }
 
 
                 return options;
             }
             catch (Exception ex)
             {
-
+                Item.ResponseStatus = 404;
                 await _exception.Error(ex);
                 Item.ResponseType = "NoCount";
                 return options;
@@ -1425,9 +1431,11 @@ namespace Xconnect.Expedia
                 #region ResProcessTimer
                 try
                 {
+                    timer_room_Agoda.Stop();
+                    Item.CodeProcessingTimeSupplier = timer_room_Agoda.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Agoda.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        timer_room_Agoda.Stop();
+                        
                         SearchParam.SupplierTime += ",|Finish:Agoda Process Response  " + "|Time :" + timer_room_Agoda.Elapsed.ToString();
                         _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Agoda.Elapsed.ToString(), Item.Supplier, SearchParam.SearchKey, 1, SearchParam.AgentID));
 
