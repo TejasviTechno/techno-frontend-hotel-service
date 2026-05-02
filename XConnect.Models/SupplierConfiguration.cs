@@ -25,6 +25,8 @@ namespace XConnect.Models
         public QtechConfig Qtech { get; set; }
         public HyperguestConfig Hyperguest { get; set; }
         public WelcomebedsConfig Welcomebeds { get; set; }
+
+        public GRNCConfig GRNC { get; set; }
         public ExelyConfig Exely { get; set; }
     }
 
@@ -249,6 +251,12 @@ namespace XConnect.Models
 
     }
 
+    public class GRNCConfig
+    {
+        public string HotelSearch { get; set; }
+        public string Policies { get; set; }
+      
+    }
     public class ExelyConfig
     {
         public string BaseUrl { get; set; }
