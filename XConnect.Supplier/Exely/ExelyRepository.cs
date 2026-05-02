@@ -77,95 +77,95 @@ namespace XConnect.Supplier.Exely
                                 {
                                     DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchTechwise(SearchPara.Nationality, dtXMLCity, Supplier, ExelyDetails.TechName);
 
-                                    //if (dataForSearch.XmlNationality != "")
-                                    //{
-                                    double ExelyCurrencyFactor = 1;
-                                    string Exely_Currency = !string.IsNullOrWhiteSpace(advancedOptions?.Currency)
-                                        ? Convert.ToString(advancedOptions.Currency)
-                                        : Convert.ToString(ExelyDetails.CurrencyShortName);
-
-
-                                    if (!string.IsNullOrWhiteSpace(Exely_Currency) && Exely_Currency.ToLower() != tokenData.SiteCurrency.ToLower())
+                                    if (dataForSearch.XmlNationality != "")
                                     {
-                                        ExelyCurrencyFactor = _commonMethod.GetROEByCurrency(Exely_Currency, tokenData.dtROE);
-                                    }
+                                        double ExelyCurrencyFactor = 1;
+                                        string Exely_Currency = !string.IsNullOrWhiteSpace(advancedOptions?.Currency)
+                                            ? Convert.ToString(advancedOptions.Currency)
+                                            : Convert.ToString(ExelyDetails.CurrencyShortName);
 
-                                    for (int k = 0; k < ExelySearchConfig.Count; k++)
-                                    {
-                                        bool DebugMode = (Convert.ToInt32(ExelySearchConfig[k].DebugMode) == 0 ? false : true);
-                                        string UserName = Convert.ToString(ExelyDetails.UserName);
-                                        string Password = Convert.ToString(ExelyDetails.Password);
+
+                                        if (!string.IsNullOrWhiteSpace(Exely_Currency) && Exely_Currency.ToLower() != tokenData.SiteCurrency.ToLower())
                                         {
+                                            ExelyCurrencyFactor = _commonMethod.GetROEByCurrency(Exely_Currency, tokenData.dtROE);
+                                        }
+
+                                        for (int k = 0; k < ExelySearchConfig.Count; k++)
+                                        {
+                                            bool DebugMode = (Convert.ToInt32(ExelySearchConfig[k].DebugMode) == 0 ? false : true);
+                                            string UserName = Convert.ToString(ExelyDetails.UserName);
+                                            string Password = Convert.ToString(ExelyDetails.Password);
                                             {
-                                                int IsCitywisesearch = Convert.ToInt32(ExelySearchConfig[k].City);
-                                                if (IsCitywisesearch == 0)
                                                 {
-                                                    if (Convert.ToInt32(ExelySearchConfig[k].CityID) == 0 || Convert.ToInt32(ExelySearchConfig[k].CityID) == SearchPara.CityID)
+                                                    int IsCitywisesearch = Convert.ToInt32(ExelySearchConfig[k].City);
+                                                    if (IsCitywisesearch == 0)
                                                     {
+                                                        if (Convert.ToInt32(ExelySearchConfig[k].CityID) == 0 || Convert.ToInt32(ExelySearchConfig[k].CityID) == SearchPara.CityID)
                                                         {
-                                                            int Noofrecords = Convert.ToInt32(ExelySearchConfig[k].Noofrecords);
-                                                            double count = Convert.ToDouble(filter.Count);
-                                                            int NoOfDiv = Convert.ToInt32(Math.Ceiling(count / Convert.ToDouble(Noofrecords)));
-                                                            List<List<XMLID_Search>> lstxml = _commonMethod.GetXMLIDString(NoOfDiv, Noofrecords, count, filter);
-
-                                                            for (int a = 0; a < NoOfDiv; a++)
                                                             {
-                                                                string IdsForSearch = Convert.ToString(_commonMethod.GetHotelCodeByCOmma(lstxml[a]));
-                                                                HotelX Xhotel = new HotelX();
-                                                                Xhotel.Supplier = Supplier;
-                                                                Xhotel.DebugeMode = DebugMode;
-                                                                Xhotel.SearchTimeOut = Convert.ToInt32(ExelySearchConfig[k].HotelSearchTimeOut);
-                                                                //if (Hit > 0)
-                                                                Xhotel.ProcessTimeout = Convert.ToInt32(ExelySearchConfig[k].HotelSearchTimeOut2);
+                                                                int Noofrecords = Convert.ToInt32(ExelySearchConfig[k].Noofrecords);
+                                                                double count = Convert.ToDouble(filter.Count);
+                                                                int NoOfDiv = Convert.ToInt32(Math.Ceiling(count / Convert.ToDouble(Noofrecords)));
+                                                                List<List<XMLID_Search>> lstxml = _commonMethod.GetXMLIDString(NoOfDiv, Noofrecords, count, filter);
 
-                                                                if (_keySettings.SupplierProxy == "0")
-                                                                    Xhotel.URL = Convert.ToString(ExelyDetails.WebSiteURL).TrimEnd('/') + "/" + _supplierConfig.Exely.SearchRoomStays;
-                                                                else
-                                                                    Xhotel.URL = Convert.ToString(ExelyDetails.WebSiteURLforAPI) + _supplierConfig.Exely.SearchRoomStays;
-
-                                                                Xhotel.UserId = Convert.ToString(ExelyDetails.UserID);
-                                                                Xhotel.UserName = UserName;
-                                                                Xhotel.PassWord = Password;
-
-                                                                Xhotel.CurrencyCode = Exely_Currency;
-                                                                Xhotel.CurrencyFactor = ExelyCurrencyFactor;
-                                                                Xhotel.XmlCity = dataForSearch.xmlCity;
-                                                                Xhotel.XmlCountry = dataForSearch.xmlCountry;
-                                                                Xhotel.XmlNationality = dataForSearch.XmlNationality;
-                                                                Xhotel.AgentWiseMarkup = ExelyDetails.AgentWiseMarkup;
-                                                                Xhotel.IsShowSupplier = Convert.ToInt16(ExelyDetails.IsShowSupplier) == 1 ? true : false;
-                                                                Xhotel.SupplierID = ExelyDetails.SupplierID;
-                                                                Xhotel.MasterSupplierID = ExelyDetails.MasterSupplierId;
-                                                                #region "CoomonCode"
-                                                                bool IsHitSeperate = _commonMethod.IsSuppliersWithSeperateRoomRquest(Xhotel.Supplier);
-                                                                int NoOfRoomsSearch = 1;
-                                                                if (IsHitSeperate)
-                                                                    NoOfRoomsSearch = SearchPara.Rooms.Count;
-                                                                List<RQRS> RQRS = new List<RQRS>();
-                                                                Xhotel.IsSeperate = IsHitSeperate;
-                                                                for (int rr = 0; rr < NoOfRoomsSearch; rr++)
+                                                                for (int a = 0; a < NoOfDiv; a++)
                                                                 {
-                                                                    RQRS objrq = new RQRS();
-                                                                    List<RoomDetails> serchRooms = new List<RoomDetails>();
-                                                                    serchRooms.Add(SearchPara.Rooms[rr]);
-                                                                    objrq.Request = XMLExelyRequestOnly_Async(SearchPara, Xhotel.SearchTimeOut, ExelyCurrencyFactor, DebugMode, dataForSearch.xmlCity, dataForSearch.XmlNationality, dataForSearch.xmlCountry, Xhotel.UserId, Xhotel.UserName, Xhotel.PassWord, Xhotel.CurrencyCode, IdsForSearch);
-                                                                    objrq.Response = ""; RQRS.Add(objrq);
+                                                                    string IdsForSearch = Convert.ToString(_commonMethod.GetHotelCodeByCOmma(lstxml[a]));
+                                                                    HotelX Xhotel = new HotelX();
+                                                                    Xhotel.Supplier = Supplier;
+                                                                    Xhotel.DebugeMode = DebugMode;
+                                                                    Xhotel.SearchTimeOut = Convert.ToInt32(ExelySearchConfig[k].HotelSearchTimeOut);
+                                                                    //if (Hit > 0)
+                                                                    Xhotel.ProcessTimeout = Convert.ToInt32(ExelySearchConfig[k].HotelSearchTimeOut2);
+
+                                                                    if (_keySettings.SupplierProxy == "0")
+                                                                        Xhotel.URL = Convert.ToString(ExelyDetails.WebSiteURL).TrimEnd('/') + "/" + _supplierConfig.Exely.SearchRoomStays;
+                                                                    else
+                                                                        Xhotel.URL = Convert.ToString(ExelyDetails.WebSiteURLforAPI) + _supplierConfig.Exely.SearchRoomStays;
+
+                                                                    Xhotel.UserId = Convert.ToString(ExelyDetails.UserID);
+                                                                    Xhotel.UserName = UserName;
+                                                                    Xhotel.PassWord = Password;
+
+                                                                    Xhotel.CurrencyCode = Exely_Currency;
+                                                                    Xhotel.CurrencyFactor = ExelyCurrencyFactor;
+                                                                    Xhotel.XmlCity = dataForSearch.xmlCity;
+                                                                    Xhotel.XmlCountry = dataForSearch.xmlCountry;
+                                                                    Xhotel.XmlNationality = dataForSearch.XmlNationality;
+                                                                    Xhotel.AgentWiseMarkup = ExelyDetails.AgentWiseMarkup;
+                                                                    Xhotel.IsShowSupplier = Convert.ToInt16(ExelyDetails.IsShowSupplier) == 1 ? true : false;
+                                                                    Xhotel.SupplierID = ExelyDetails.SupplierID;
+                                                                    Xhotel.MasterSupplierID = ExelyDetails.MasterSupplierId;
+                                                                    #region "CoomonCode"
+                                                                    bool IsHitSeperate = _commonMethod.IsSuppliersWithSeperateRoomRquest(Xhotel.Supplier);
+                                                                    int NoOfRoomsSearch = 1;
+                                                                    if (IsHitSeperate)
+                                                                        NoOfRoomsSearch = SearchPara.Rooms.Count;
+                                                                    List<RQRS> RQRS = new List<RQRS>();
+                                                                    Xhotel.IsSeperate = IsHitSeperate;
+                                                                    for (int rr = 0; rr < NoOfRoomsSearch; rr++)
+                                                                    {
+                                                                        RQRS objrq = new RQRS();
+                                                                        List<RoomDetails> serchRooms = new List<RoomDetails>();
+                                                                        serchRooms.Add(SearchPara.Rooms[rr]);
+                                                                        objrq.Request = XMLExelyRequestOnly_Async(SearchPara, Xhotel.SearchTimeOut, ExelyCurrencyFactor, DebugMode, dataForSearch.xmlCity, dataForSearch.XmlNationality, dataForSearch.xmlCountry, Xhotel.UserId, Xhotel.UserName, Xhotel.PassWord, Xhotel.CurrencyCode, IdsForSearch);
+                                                                        objrq.Response = ""; RQRS.Add(objrq);
+                                                                    }
+                                                                    Xhotel.RQRS = RQRS;
+                                                                    Xhotel.ReturnRooms = ExelyDetails.ReturnRooms;
+                                                                    Xhotel.TechName = ExelyDetails.TechName;
+                                                                    #endregion
+                                                                    AllTask.Add(Xhotel);
                                                                 }
-                                                                Xhotel.RQRS = RQRS;
-                                                                Xhotel.ReturnRooms = ExelyDetails.ReturnRooms;
-                                                                Xhotel.TechName = ExelyDetails.TechName;
-                                                                #endregion
-                                                                AllTask.Add(Xhotel);
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
+
                                         }
 
                                     }
-
-                                    // }
 
                                 }
                             }
@@ -222,15 +222,49 @@ namespace XConnect.Supplier.Exely
                     totalAdults = SearchPara.Rooms.Sum(r => Math.Max(r.NoofAdults, 1));
                 }
 
-                // 🔹 Final minimal request
-                var exelyRequest = new
+                // 🔹 Child ages across all rooms
+                List<int> childAges = new List<int>();
+                if (SearchPara.Rooms != null)
                 {
-                    propertyIds = propertyIds,
-                    adults = totalAdults,
-                    arrivalDate = ParseSearchDate(SearchPara.CheckInDate).ToString("yyyy-MM-dd"),
-                    departureDate = ParseSearchDate(SearchPara.CheckOutDate).ToString("yyyy-MM-dd"),
-                    currencyCode = string.IsNullOrWhiteSpace(currencyCode) ? "USD" : currencyCode
-                };
+                    foreach (var room in SearchPara.Rooms)
+                    {
+                        if (room.ChildAge != null && room.ChildAge.Length > 0)
+                        {
+                            childAges.AddRange(room.ChildAge.Where(a => a > 0));
+                        }
+                        else
+                        {
+                            if (room.Child1Age > 0) childAges.Add(room.Child1Age);
+                            if (room.Child2Age > 0) childAges.Add(room.Child2Age);
+                        }
+                    }
+                }
+
+                // 🔹 Final minimal request
+                object exelyRequest;
+                if (childAges.Count > 0)
+                {
+                    exelyRequest = new
+                    {
+                        propertyIds = propertyIds,
+                        adults = totalAdults,
+                        arrivalDate = ParseSearchDate(SearchPara.CheckInDate).ToString("yyyy-MM-dd"),
+                        departureDate = ParseSearchDate(SearchPara.CheckOutDate).ToString("yyyy-MM-dd"),
+                        childAges = childAges,
+                        currencyCode = string.IsNullOrWhiteSpace(currencyCode) ? "USD" : currencyCode
+                    };
+                }
+                else
+                {
+                    exelyRequest = new
+                    {
+                        propertyIds = propertyIds,
+                        adults = totalAdults,
+                        arrivalDate = ParseSearchDate(SearchPara.CheckInDate).ToString("yyyy-MM-dd"),
+                        departureDate = ParseSearchDate(SearchPara.CheckOutDate).ToString("yyyy-MM-dd"),
+                        currencyCode = string.IsNullOrWhiteSpace(currencyCode) ? "USD" : currencyCode
+                    };
+                }
 
                 return JsonConvert.SerializeObject(exelyRequest);
             }
@@ -1137,7 +1171,7 @@ namespace XConnect.Supplier.Exely
                                 discounts = new List<BookingDiscountRq>()
                             }
                         },
-                        services = new List<Service>(),
+                        services = new List<BookingServiceRq>(),
                         customer = new Customer
                         {
                             firstName = guests[0].firstName,
@@ -1187,7 +1221,7 @@ namespace XConnect.Supplier.Exely
                     guests.Add(new BookingGuest
                     {
                         firstName = firstName,
-                        lastName =  lastName,
+                        lastName = lastName,
                         middleName = "",
                         citizenship = nationality,
                         sex = sexStr.Equals("Female", StringComparison.OrdinalIgnoreCase)
@@ -1218,7 +1252,7 @@ namespace XConnect.Supplier.Exely
                                 //discounts = new List<BookingDiscountRq>()
                             }
                         },
-                        //services = new List<Service>(),
+                        //services = new List<BookingServiceRq>(),
                         customer = new Customer
                         {
                             firstName = guests[0].firstName,
@@ -1247,6 +1281,35 @@ namespace XConnect.Supplier.Exely
             }
         }
         #endregion Request
+
+        #region Response
+        public ExelyBookRsDto Exely_ProcessBookingResponse(string responseData)
+        {
+            var dto = new ExelyBookRsDto();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(responseData))
+                    return dto;
+
+                var result = JsonConvert.DeserializeObject<CreateBookingResult>(responseData);
+                if (result?.booking == null)
+                    return dto;
+
+                if (result.booking.status == BookingStatus.Confirmed)
+                {
+                    dto.BookingStatus = 6;
+                    dto.AgentVoucherNo = result.booking.number ?? string.Empty;
+                    dto.TotalAmount = result.booking.total?.priceBeforeTax ?? 0;
+                    dto.CurrencyCode = result.booking.currencyCode ?? string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+            }
+            return dto;
+        }
+        #endregion Response
         #endregion Book
 
         public string Get_Exely_GetCancellationChargesRQ(string AgentRef)

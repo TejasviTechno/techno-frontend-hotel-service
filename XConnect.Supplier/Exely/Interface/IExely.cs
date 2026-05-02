@@ -17,6 +17,7 @@ namespace XConnect.Supplier.Exely.Interface
         Task<ResponseDto> ExelyResponseNew(string xmlRQRS, string strHost, int searchTimeOut, string password, string searchKey = "");
         string Get_Exely_GetCancellationChargesRQ(string agentRef);
         string Get_Exely_CancelBooking(double amount, string currency, string agentRef);
+        ExelyBookRsDto Exely_ProcessBookingResponse(string responseData);
         Task<string> Get_Exely_EInfo(string hotelcode, DataTable dtSuplierMarkup, DataTable dtSearchConfig, string provider, string searchKey, string roomTypeId);
     }
 }

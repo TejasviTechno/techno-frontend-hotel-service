@@ -318,7 +318,7 @@
     {
         public string propertyId { get; set; }
         public List<BookingRoomStayRq> roomStays { get; set; }
-        public List<Service>? services { get; set; }
+        public List<BookingServiceRq>? services { get; set; }
         public Customer customer { get; set; }
         public Prepayment prepayment { get; set; }
         public List<string>? bookingComments { get; set; }
@@ -344,13 +344,13 @@
 
     public class ExtraStayRequest
     {
-        public ExtraStayDetails EarlyArrival { get; set; }
-        public ExtraStayDetails LateDeparture { get; set; }
+        public ExtraStayDetails earlyArrival { get; set; }
+        public ExtraStayDetails lateDeparture { get; set; }
     }
 
     public class ExtraStayDetails
     {
-        public DateTime OverriddenDateTime { get; set; }
+        public DateTime overriddenDateTime { get; set; }
     }
 
     public class BookingDiscountRq
@@ -604,6 +604,14 @@
         public double? penaltyAmount { get; set; }
         public string? reason { get; set; }
         public DateTime cancelledUtc { get; set; }
+    }
+
+    public class ExelyBookRsDto
+    {
+        public int BookingStatus { get; set; } = 2;
+        public string AgentVoucherNo { get; set; } = string.Empty;
+        public double TotalAmount { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
     }
 
     #endregion
