@@ -31,9 +31,10 @@ namespace XConnect.Supplier.GRNC
         private readonly ISupplierRes _supplierRes;
         private readonly IMemoryCache _cache;
         private readonly KeySettings _keySettings;
+        private readonly SupplierConfiguration _supplierConfig;
 
 
-        public GrncRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception)
+        public GrncRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
@@ -41,6 +42,7 @@ namespace XConnect.Supplier.GRNC
             _cache = cache;
             _keySettings = keySettings.Value;
             _exception = exception;
+            _supplierConfig = supplierConfig.Value;
         }
 
         public void GRNCRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, HotelSearchParameter SearchPara, List<SupplierDetails> lstGRNCDetails, List<SupplierSearchConfig> lstGRNCSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, int Hit, DataTable dtROE, TokenData tokenData, DataSet dtXMLCity)
@@ -123,11 +125,12 @@ namespace XConnect.Supplier.GRNC
                                                                     
                                                                     if (_keySettings.SupplierProxy == "0")//Added on 9-APR-2025
                                                                     {
-                                                                        Xhotel.URL = Convert.ToString(GRNCDetails.WebSiteURL) + GrncStaticInfo.GRNC_HotelSearch;//Added on 13-MAR-2025;
+                                                                        //Xhotel.URL = Convert.ToString(GRNCDetails.WebSiteURL) + GrncStaticInfo.GRNC_HotelSearch;//Added on 13-MAR-2025;
+                                                                        Xhotel.URL = Convert.ToString(GRNCDetails.WebSiteURL) + _supplierConfig.GRNC.HotelSearch;
                                                                     }
                                                                     else
                                                                     {
-                                                                        Xhotel.URL = Convert.ToString(GRNCDetails.WebSiteURLforAPI) + GrncStaticInfo.GRNC_HotelSearch;//Added on 13-MAR-2025;//Added on 3-MAR-2025
+                                                                        Xhotel.URL = Convert.ToString(GRNCDetails.WebSiteURLforAPI) + _supplierConfig.GRNC.HotelSearch; 
                                                                     }
                                                                     Xhotel.UserId = Convert.ToString(GRNCDetails.UserID);
                                                                     Xhotel.UserName = UserName;
@@ -1026,12 +1029,15 @@ namespace XConnect.Supplier.GRNC
                 string essen = RoomTypeIdList[14];
                 //string essen = "";
 
+                string Password = Convert.ToString(drSuplierMarkup[0]["Password"]);
+                string Username = Convert.ToString(drSuplierMarkup[0]["Username"]);
 
                 //  SessionID = Convert.ToString(drRoom[0]["Type"]);
 
                 // string cancellation_policy_code = RoomTypeIdList[1];
                 DataTable dtgrncRoomCacelationPolicy = _commonMethod.GenerateCancellationDataTableNewV2();
-                string Urls = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + "/api/v3/hotels/availability/" + sid + "/rates/?action=" + rate_type;
+                //string Urls = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + "/api/v3/hotels/availability/" + sid + "/rates/?action=" + rate_type;
+                string Urls = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + _supplierConfig.GRNC.HotelSearch + sid + "/rates/?action=" + rate_type;
 
                 string RecheckRQ = GRNCrecheckRequest(HotelId, type, rate_type, rate_key, group_code, cancellation_policycode1);
                 xslRequest = RecheckRQ;
@@ -1043,7 +1049,8 @@ namespace XConnect.Supplier.GRNC
                 timerroomprocess.Start();
 
                 //ResponseData = GetSupplierResponseGRNCForReport(ref Error, sid, RecheckRQ, Urls, "");
-                ResponseDto responseDto = await GetSupplierResponseGRNCForReport(sid, RecheckRQ, Urls, "");
+                //ResponseDto responseDto = await GetSupplierResponseGRNCForReport(sid, RecheckRQ, Urls, "");
+                ResponseDto responseDto = await GetSupplierResponseGRNCForReport(sid, RecheckRQ, Urls, Password);
                 ResponseData = responseDto.Response;
                 Error = responseDto.Error; 
 
@@ -1241,7 +1248,8 @@ namespace XConnect.Supplier.GRNC
                     string WBEKey = Convert.ToBase64String(Encoding.ASCII.GetBytes(username + ":" + password));
                     string CheckIn = objSearPera.CheckInDate;
                     string CheckOut = objSearPera.CheckOutDate;
-                    string Url = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + "/api/v3/hotels/availability/" + sid + "/rates/cancellation_policies";
+                    //string Url = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + "/api/v3/hotels/availability/" + sid + "/rates/cancellation_policies";
+                    string Url = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]) + _supplierConfig.GRNC.HotelSearch + sid + _supplierConfig.GRNC.Policies;
 
                     
 
@@ -1255,7 +1263,8 @@ namespace XConnect.Supplier.GRNC
                     if (cancellation_policy_Code != null)
                     {
                         string CancellationPolicyRQ = GRNCCancelltionPolicyRequests(HotelId, type, roomtypecode, rate_key/*, CurrencyCode, amount_type*/, checkin, checkout, cancellation_policy_Code, rate_key);
-                        ResponseData = GetSupplierResponseGRNC(sid, CancellationPolicyRQ, Url, WBEKey);
+                        //ResponseData = GetSupplierResponseGRNC(sid, CancellationPolicyRQ, Url, WBEKey);
+                        ResponseData = GetSupplierResponseGRNC(sid, CancellationPolicyRQ, Url, password);
 
                         GRNCsearch.RoomCancellationPolicyv1 grncResponseCancelltionPolicy =  Newtonsoft.Json.JsonConvert.DeserializeObject<GRNCsearch.RoomCancellationPolicyv1>(ResponseData);
                         if (grncResponseCancelltionPolicy == null)/*|| grncResponseCancelltionPolicy.under_cancellation == false)*/
@@ -1446,7 +1455,8 @@ namespace XConnect.Supplier.GRNC
                 Request.Method = "POST";
                 //Request.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; MS Web Services Client Protocol 1.1.4322.2300)";
                 //Request.Headers.Add("Api-Key", "8d09f4f93c7d96122f41db96810f51db");//test
-                Request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");//live
+                //Request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");//live
+                Request.Headers.Add("Api-Key", Key);//live
 
                 Request.ContentType = "application/json";
                 Request.Accept = "application/json";
@@ -1551,7 +1561,8 @@ namespace XConnect.Supplier.GRNC
                 Request.Method = "POST";
                 //Request.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; MS Web Services Client Protocol 1.1.4322.2300)";
                 //Request.Headers.Add("Api-Key", "8d09f4f93c7d96122f41db96810f51db");//test
-                Request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");//live
+                //Request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");//live
+                Request.Headers.Add("Api-Key", Key);//live
 
                 Request.ContentType = "application/json";
                 Request.Accept = "application/json";

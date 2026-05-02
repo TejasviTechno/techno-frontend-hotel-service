@@ -2681,7 +2681,7 @@ namespace Xconnect.BLL
                             #region"GRNC"
                             if (GRNCDetails != null && GRNCSearchConfig != null && GRNCDetails.Count > 0 && GRNCSearchConfig.Count > 0)
                             {
-                                if ((SearchPara.Filters.IsShowRooms == 1 && SearchByOneID) || SearchPara.Filters.IsShowRooms == 0)
+                                if ((SearchPara.Filters.IsShowRooms == 1) || SearchPara.Filters.IsShowRooms == 0)  // && SearchByOneID
                                 {
                                     if (commonSearchList.commonHotelCodes.GRNC_Codes != null)
                                         _grnc.GRNCRequestOnly_async(commonSearchList.commonHotelCodes.GRNC_Codes, lstRating, SearchPara, GRNCDetails, GRNCSearchConfig, dtPreferredDataHotel, ref AllTask, hit, dtROE, tokenData, dtXMLCity);
@@ -6693,7 +6693,7 @@ new SqlParameter("@AgentId", AgentId),
                             Request = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, strHost);
                             Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
                             //Request.Headers.Add("Api-Key", "8d09f4f93c7d96122f41db96810f51db");//Test
-                            Request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");//Live
+                            Request.Headers.Add("Api-Key", Password);//Live
                             Request.Headers.Add("UserName", UserName);
                             Request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
                             Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -33692,8 +33692,10 @@ new SqlParameter("@AgentId", AgentId),
                                                         string sid = Array2[3];
                                                         string hcode = Array2[6];
                                                         string rate_type = Array2[5];
-                                                        string Urls = Convert.ToString(GRNCDetails[0]["WebSiteURL"] + "/api/v3/hotels/availability/" + sid + "/rates/?action=" + rate_type);
-                                                        string Urll = Convert.ToString(GRNCDetails[0]["WebSiteURL"] + "/api/v3/hotels/availability/" + sid + "?/hcode/=" + hcode + "&bundled=true");
+                                                        //string Urls = Convert.ToString(GRNCDetails[0]["WebSiteURL"] + "/api/v3/hotels/availability/" + sid + "/rates/?action=" + rate_type);
+                                                        string Urls = Convert.ToString(GRNCDetails[0]["WebSiteURL"] + _supplierConfig.GRNC.HotelSearch + sid + "/rates/?action=" + rate_type);
+                                                        //string Urll = Convert.ToString(GRNCDetails[0]["WebSiteURL"] + "/api/v3/hotels/availability/" + sid + "?/hcode/=" + hcode + "&bundled=true");
+                                                        string Urll = Convert.ToString(GRNCDetails[0]["WebSiteURL"] + _supplierConfig.GRNC.HotelSearch + sid + "?/hcode/=" + hcode + "&bundled=true");
                                                         //string Urls = Convert.ToString(GRNCDetails[0]["WebSiteURL"] + "api/v3/hotels/availability/"+sid+"/rates/"+ rate_type=recheck);
                                                         UniqueNo = "";
                                                         UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]);
