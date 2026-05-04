@@ -606,14 +606,6 @@
         public DateTime cancelledUtc { get; set; }
     }
 
-    public class ExelyBookRsDto
-    {
-        public int BookingStatus { get; set; } = 2;
-        public string AgentVoucherNo { get; set; } = string.Empty;
-        public double TotalAmount { get; set; }
-        public string CurrencyCode { get; set; } = string.Empty;
-    }
-
     #endregion
 
     #region Receive Booking Response
@@ -1425,6 +1417,15 @@
         public int Status { get; set; }
         public string Message { get; set; }
         public string ReferenceNumber { get; set; }
+    }
+
+    public class ExelyCancellationSegment
+    {
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+        public double PenaltyAmount { get; set; }
+        public string Currency { get; set; } = "USD";
+        public bool IsWithinCancellationDeadline { get; set; }
     }
 
 }
