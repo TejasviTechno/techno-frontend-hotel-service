@@ -106,5 +106,6 @@ namespace XConnect.BAL.Interface
         Task<List<Supplierlogs>> GetApiOutLogs(ApiRequest apiRequest);
         Task<List<RoomMappingReport>> GetRoomMappingHotelReport(ApiRequestRoomMapping apiRequest);
 
+        Task<List<IpList>> GetAgentIps(int AgentId, string TenantId);
     }
 }
