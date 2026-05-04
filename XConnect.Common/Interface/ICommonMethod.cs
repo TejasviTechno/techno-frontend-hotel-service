@@ -2,6 +2,7 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using XConnect.Models;
 using XConnect.Models.Hotel;
 
@@ -320,7 +321,8 @@ namespace XConnect.CommonUtilities.Interface
         object? parameters = null,
         string? token = null,
         Dictionary<string, string>? headers = null);
-
+        string getMappedRoom_rlmASAL(string supplierRoomName, int hotelId, IMongoCollection<BsonDocument> collection, ref string roomNo);
+       
 
 
     }

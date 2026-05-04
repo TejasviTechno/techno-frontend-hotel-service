@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Data;
 using System.Diagnostics;
 using System.Net;
@@ -107,5 +109,7 @@ namespace XConnect.BAL.Interface
         Task<List<RoomMappingReport>> GetRoomMappingHotelReport(ApiRequestRoomMapping apiRequest);
 
         Task<List<IpList>> GetAgentIps(int AgentId, string TenantId);
+
+       
     }
 }

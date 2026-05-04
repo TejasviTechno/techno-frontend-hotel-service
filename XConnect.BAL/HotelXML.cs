@@ -159,6 +159,7 @@ using XConnect.Supplier.Dingus.Interface;
 using XConnect.Supplier.Welcomebeds;
 using XConnect.Supplier.Welcomebeds.Interface;
 using XConnect.Supplier.Dingus;
+using System.Collections;
 //using static XConnect.Supplier.Omnibees.OmnibeesCancelRQ;
 //using System.Text.Json;
 
@@ -13103,13 +13104,22 @@ new SqlParameter("@AgentId", AgentId),
                 {
                     //HotelId
                     string MappRoomName = "";
-                    string S_RoomID = ""; //ADD on 29-JAN-2025
-                    string processedRoomTypeName = _commonMethod.getMappedRoom_rlm(finalPolicyResponse.ReCheckRS[r].RoomTypeName.Trim(), DtHotelInformation, Convert.ToInt32(HotelId), ref S_RoomID);
+                    string S_RoomID = ""; 
+                     //string processedRoomTypeName = _commonMethod.getMappedRoom_rlm(finalPolicyResponse.ReCheckRS[r].RoomTypeName.Trim(), DtHotelInformation, Convert.ToInt32(HotelId), ref S_RoomID);
+                    string S_RoomNo = null;
+
+                    IMongoCollection<BsonDocument> collection = null;
+
+                  string  collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// 
+
+                    string processedRoomTypeName = _commonMethod.getMappedRoom_rlmASAL(finalPolicyResponse.ReCheckRS[0].RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(OwnsystemHotelId), collection, ref S_RoomNo);
 
                     finalPolicyResponse.ReCheckRS[r].RoomTypeName = processedRoomTypeName;
                 }
 
             }
+
+           
 
             finalPolicyResponse_1.CancellationPolicyRS_Multi_v1 = finalPolicyResponse;
             return finalPolicyResponse_1;
@@ -15046,6 +15056,7 @@ new SqlParameter("@AgentId", AgentId),
 
 
                 decimal Total = 0; int LoyaltyPointsTotal = 0;
+                decimal TotalBuyingPrice = 0; //Added on 04-may-26
                 int AdultTotal = 0, ChildTotal = 0;
 
                 List<X_PolicyDetails> policyList = new List<X_PolicyDetails>();
@@ -15847,6 +15858,7 @@ new SqlParameter("@AgentId", AgentId),
 
 
                 decimal Total = 0; int LoyaltyPointsTotal = 0;
+                decimal TotalBuyingPrice = 0; //Added on 04-may-26
                 int AdultTotal = 0, ChildTotal = 0;
 
                 List<X_PolicyDetails> policyList = new List<X_PolicyDetails>();
@@ -15943,6 +15955,7 @@ new SqlParameter("@AgentId", AgentId),
                     ShoppingCart_DetailsNew obj = (AddRoomToList(para, IsCombine ? 0 : r, r, IsCombine, BookOption, spui, dtLoyal, tokenData));
                     //ShoppingCart_DetailsNew obj = (AddRoomToList(para, IsCombine ? 0 : r, r, IsCombine, BookOption));
                     Total += obj.FinalSellingPrice;
+                    TotalBuyingPrice += obj.BuyingPrice; //Added on 24-APR-26
                     LoyaltyPointsTotal += obj.LoyaltyPoints;
                     AdultTotal += obj.NoofAdults;
                     ChildTotal += obj.NoofChild;
@@ -15965,6 +15978,7 @@ new SqlParameter("@AgentId", AgentId),
                 objdata.CheckOutDate = DateTime.ParseExact(para.CheckOutDate, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
                 // objdata.BookingStatus = Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]);//Convert.ToInt32(BookOption.Rooms[i].HotelRooms[18]==""?"0": BookOption.Rooms[i].HotelRooms[18]);
                 objdata.ServiceTotal = Total;
+                objdata.BuyingServiceTotal = TotalBuyingPrice;//Added on 24-APR-26
                 objdata.AdultRate = Total;
                 objdata.BaseAdultRate = Total;
                 objdata.NoOfAdults = AdultTotal;
@@ -16626,6 +16640,7 @@ new SqlParameter("@AgentId", AgentId),
 
                 decimal value = 0;
                 int RoomNo = roomindex + 1;
+                obj.BuyingPrice = Convert.ToDecimal(IsCombineRoom ? RoomNo == 1 ? Convert.ToDecimal(BookOption.Rooms[index].HotelRooms.BuyingPrice) : value : Convert.ToDecimal(BookOption.Rooms[index].HotelRooms.BuyingPrice));//Added on 24-APR-26 //Convert.ToDecimal(BookOption.Rooms[index].HotelRooms.AgentSellingPrice);
                 //IsCombineRoom && roomindex > 0 ? 0 : data[index].FinalSellingPrice == null ? 0 : data[index].FinalSellingPrice
                 obj.AgentBuyingPrice = Convert.ToDecimal(IsCombineRoom ? RoomNo == 1 ? Convert.ToDecimal(BookOption.Rooms[index].HotelRooms.AgentBuyingPrice) : value : Convert.ToDecimal(BookOption.Rooms[index].HotelRooms.AgentBuyingPrice));//Convert.ToDecimal(BookOption.Rooms[index].HotelRooms.AgentSellingPrice);
                 obj.AgentSellingPrice = Convert.ToDecimal(IsCombineRoom ? RoomNo == 1 ? Convert.ToDecimal(BookOption.Rooms[index].HotelRooms.AgentSellingPrice) : value : Convert.ToDecimal(BookOption.Rooms[index].HotelRooms.AgentSellingPrice)); //Convert.ToDecimal(BookOption.Rooms[index].HotelRooms[7]);
@@ -64890,6 +64905,7 @@ new SqlParameter("@AgentId", AgentId),
                 return new List<RoomMappingReport>(); // avoid returning null
             }
         }
+
 
     }
 }
