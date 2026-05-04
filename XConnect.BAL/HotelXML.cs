@@ -26346,7 +26346,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
                                                 try
                                                 {
-                                                    PriceCheckCMDto priceCheckCMDto = await _iExely.Get_Exely_PriceCheckRQRS(dsCartDetails, ExelyDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, false, CompanyBuyPriceE, HotelcodeE, "P", IsErrorE, itempriceE, Searchkey, AgentId, TokenData);
+                                                    PriceCheckCMDto priceCheckCMDto = await _iExely.Get_Exely_RecheckPreBookRQRS(dsCartDetails, ExelyDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, false, CompanyBuyPriceE, HotelcodeE, "P", IsErrorE, itempriceE, Searchkey, AgentId, TokenData);
                                                     bool IsPriceUpdatesE = priceCheckCMDto.Flag;
                                                     itempriceE = priceCheckCMDto.ItemPrice;
                                                     IsErrorE = priceCheckCMDto.IsError;
@@ -35877,7 +35877,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
                                                     try
                                                     {
-                                                        PriceCheckCMDto priceCheckCMDto = await _iExely.Get_Exely_PriceCheckRQRS(dsCartDetails, ExelyDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, true, CompanyBuyPriceE, HotelcodeE, "P", IsErrorE, itempriceE, Searchkey, AgentId, TokenData);
+                                                        PriceCheckCMDto priceCheckCMDto = await _iExely.Get_Exely_RecheckPreBookRQRS(dsCartDetails, ExelyDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, true, CompanyBuyPriceE, HotelcodeE, "P", IsErrorE, itempriceE, Searchkey, AgentId, TokenData);
                                                         bool IsPriceUpdatesE = priceCheckCMDto.Flag;
                                                         itempriceE = priceCheckCMDto.ItemPrice;
                                                         IsErrorE = priceCheckCMDto.IsError;
@@ -54130,25 +54130,7 @@ new SqlParameter("@AgentId", AgentId),
                                             int noOfAdults = bookRequest.userCart.UserCartDetails[j].NoofAdult;
                                             int noOfChild = bookRequest.userCart.UserCartDetails[j].NoofChild;
 
-                                            // POST /v1/bookings/verify — get createBookingToken
-                                            string verifyUrl = baseUrl.TrimEnd('/') + "/" + _configuration["Exely:VerifyBooking"].TrimStart('/');
-                                            string verifyRQ = _iExely.Get_Exely_PriceCheckRQ(noOfAdults, noOfChild, xMLHotelId, checkIn, checkOut, roomTypeId, Nationality, checksum, dtPassengers);
-
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, verifyRQ, "-", "Before Exely Verify Booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "WithinEarth");
-
-                                            ResponseDto verifyDto = await _iExely.ExelyResponseNew(verifyRQ, verifyUrl, 30000, password, bookRequest.SearchKey);
-                                            string verifyResponse = verifyDto.Response;
-
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, verifyRQ, verifyResponse + "|ERR:" + verifyDto.Error, "After Exely Verify Booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "WithinEarth");
-
-                                            string createBookingToken = "";
-                                            if (!string.IsNullOrWhiteSpace(verifyResponse))
-                                            {
-                                                var verifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(verifyResponse);
-                                                createBookingToken = verifyResult?.booking?.createBookingToken ?? "";
-                                            }
-
-                                            string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, createBookingToken, xMLHotelId, checkIn, checkOut, exelyCurrency, Nationality, tokenData.AgentCode, checksum, roomTypeId, noOfAdults, noOfChild);
+                                            string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, "", xMLHotelId, checkIn, checkOut, exelyCurrency, Nationality, tokenData.AgentCode, checksum, roomTypeId, noOfAdults, noOfChild);
                                             string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _configuration["Exely:CreateBooking"].TrimStart('/');
 
                                             _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "WithinEarth");
