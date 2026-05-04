@@ -306,7 +306,8 @@ namespace XConnect.CommonUtilities
                                 /*41*/roomtypearr.XMLHotelId,
                                 /*42*/roomtypearr.OTHPromoCode,
                                 /*43*/roomtypearr.Type,
-                                  /*44*/roomtypearr.MappedMealName
+                                  /*44*/roomtypearr.MappedMealName,
+                                  /*45*/roomtypearr.BuyingPrice //Added on 24-APR-26
                                 // add item from here
 
                             };
@@ -686,6 +687,8 @@ namespace XConnect.CommonUtilities
             Type,
             //44
             MappedMealName,
+            //45
+            BuyingPrice, //Added on 04-may-26
 
 
         }
@@ -821,6 +824,8 @@ namespace XConnect.CommonUtilities
                 roomtypearr.Type = arr[Convert.ToInt32(_RoomToken.Type)];
                 //44
                 roomtypearr.MappedMealName = arr[Convert.ToInt32(_RoomToken.MappedMealName)];
+                //45
+                roomtypearr.BuyingPrice = arr[Convert.ToInt32(_RoomToken.BuyingPrice)]; //Added on 24-APR-26
                 //45
 
             }

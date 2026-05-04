@@ -2,6 +2,7 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using XConnect.Models;
 using XConnect.Models.Hotel;
 
@@ -323,6 +324,8 @@ namespace XConnect.CommonUtilities.Interface
 
         #region agoda client
         Task XMLRequestResponseTrack_agoda(string XmlRequest, string XmlResponse, string Provider, string TypeRequest, string reqId = "");
+        string getMappedRoom_rlmASAL(string supplierRoomName, int hotelId, IMongoCollection<BsonDocument> collection, ref string roomNo);
+       
 
         #endregion
 

@@ -207,6 +207,8 @@ namespace XConnect.Models.Hotel
         public string Nationality { get; set; }
         public decimal ServiceTotal { get; set; }
         public decimal BaseServiceTotal { get; set; }
+        public decimal BuyingServiceTotal { get; set; } //Added on 04-may-26
+
         public int ShoppingType { get; set; }
         public int IsGuestUser { get; set; }
         public int OTB { get; set; }
@@ -435,6 +437,7 @@ namespace XConnect.Models.Hotel
         public decimal TotalVATPayable { get; set; }
         public decimal VATAmount { get; set; }
         public int LoyaltyPoints { get; set; }
+        public decimal BuyingPrice { get; set; } //Added on 04-may-26
 
     }
 

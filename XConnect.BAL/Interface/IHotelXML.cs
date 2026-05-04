@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Data;
 using System.Diagnostics;
 using System.Net;
@@ -116,5 +118,7 @@ namespace XConnect.BAL.Interface
   AgodaSearchPara RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId);
         #endregion
 
+
+       
     }
 }
