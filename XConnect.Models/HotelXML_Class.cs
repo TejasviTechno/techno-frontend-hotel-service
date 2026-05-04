@@ -992,6 +992,7 @@ namespace XConnect.Models
 
         public string WebSiteURLforAPI { get; set; } //Added on 3-MAR-2025
         public string HotelSupplier { get; set; } //Added on 09 april 2026
+        public int AgentType { get; set; } //Added on 01-may-26
 
     }
 
@@ -1052,6 +1053,8 @@ namespace XConnect.Models
         public DataTable dtSuplierMarkup { get; set; }
         public DataTable dtSearchConfig { get; set; }
         public DataTable dtMarkupDetails { get; set; }
+
+        public DataSet dsMarkupDetails { get; set; } //Added on 01-may-26
         public decimal AgentPercent { get; set; }
         public DataSet dsAgentDetails { get; set; }
         public DataSet supplierGiataMaster { get; set; }

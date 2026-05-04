@@ -20,6 +20,7 @@ using XConnect.Supplier.Omnibees.Interface;
 using XConnect.Supplier.MGBedBank;
 using Microsoft.Extensions.Configuration;
 using System.Net;
+using Microsoft.Extensions.Logging;
 
 
 namespace XConnect.Supplier.Omnibees
@@ -666,7 +667,9 @@ namespace XConnect.Supplier.Omnibees
                                     //string ItemCode = Convert.ToString(drhotel.productCode);
                                     double AgentMarkupAmount = 0.0;
                                     Boolean isPerce = true;
-                                    _markup.getAgetMarkupSetting("Omnibees", GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), Convert.ToString(SearchParam.CheckInDate));
+                                    //_markup.getAgetMarkupSetting("Omnibees", GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), Convert.ToString(SearchParam.CheckInDate));
+
+                                    _markup.getAgetMarkupSettingNew_new("Omnibees", Convert.ToString(RaynaID), commonSearch.dtSuplierMarkup, commonSearch.dsMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate);
                                     //string InternalHotelId = Convert.ToString(h);
                                     #region NoOfRooms
                                     string EssentialInfo = "";

@@ -19,6 +19,7 @@ using XConnect.Models.Hotel;
 using XConnect.Supplier.Darina.Interface;
 using static Azure.Core.HttpHeader;
 using static XConnect.Models.ErrorLog;
+using static XConnect.Supplier.Booking.Com.detailres;
 using Options = XConnect.Models.Options;
 
 namespace XConnect.Supplier.Darina
@@ -711,7 +712,9 @@ namespace XConnect.Supplier.Darina
                                     double AgentCompanyPercentage = Convert.ToDouble(SearchParam.AgentCompanyPercentage);
                                     bool IsB2C = Convert.ToBoolean(Convert.ToByte(SearchParam.IsB2BOrB2C));
 
-                                    _markup.getAgetMarkupSetting(Provider, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate);
+                                    //_markup.getAgetMarkupSetting(Provider, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate);
+
+                                    _markup.getAgetMarkupSettingNew_new(Provider, Convert.ToString(RaynaID), commonSearch.dtSuplierMarkup, commonSearch.dsMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate);
                                     int maxOcupancy = 0;
                                     for (int i = 0; i < SearchParam.Rooms.Count; i++)
                                         maxOcupancy = maxOcupancy + SearchParam.Rooms[i].NoofChild + SearchParam.Rooms[i].NoofAdults;

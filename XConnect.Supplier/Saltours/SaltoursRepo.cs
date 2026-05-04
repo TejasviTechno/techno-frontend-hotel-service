@@ -603,7 +603,9 @@ namespace XConnect.Supplier.Saltours
                                                 double AgentMarkupAmount = 0.0;
                                                 int hotelRating = 0;
                                                 Boolean isPerce = true;
-                                                _markup.getAgetMarkupSetting(Provider, GIATACode, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, agentID, hotelRating, SearchParam.CityID,Convert.ToString(SearchParam.CountryID), Convert.ToString(SearchParam.CheckInDate));
+                                                //_markup.getAgetMarkupSetting(Provider, GIATACode, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, agentID, hotelRating, SearchParam.CityID,Convert.ToString(SearchParam.CountryID), Convert.ToString(SearchParam.CheckInDate));
+
+                                                _markup.getAgetMarkupSettingNew_new(Provider, Convert.ToString(RaynaID), commonSearch.dtSuplierMarkup, commonSearch.dsMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, hotelRating, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate);
                                                 double AgentCompanyPercentage = Convert.ToDouble(SearchParam.AgentCompanyPercentage);
                                                 bool IsB2C = Convert.ToBoolean(Convert.ToByte(SearchParam.IsB2BOrB2C));
                                                 double B2CMarkup = (IsB2C == false ? AgentCompanyPercentage : XMLHotelBookingCommon.B2CMarkup);

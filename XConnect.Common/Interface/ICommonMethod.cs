@@ -71,10 +71,12 @@ namespace XConnect.CommonUtilities.Interface
        // Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = ""); // Commnet on 30MAY2025
         Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping=1); //ADD On 30MAY2025
 
-        Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMappingv2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1);  // ADD on 29-JAN-2025
-        Task<AvailHotelList_Comp> ConvertToFinalResponseList(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, bool IsFromAPI = true);
-        Task<AvailHotelList_Comp> ConvertToFinalResponseList_Dag2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null);
+        Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMappingv2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1);
 
+        Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping_withoutEx(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1);
+        // ADD on 29-JAN-2025
+        Task<AvailHotelList_Comp> ConvertToFinalResponseList(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, bool IsFromAPI = true);
+       
         Task<int> InsertHotelSearchData(SaveParameter data, int count, bool from, string SupplierTime, int agentid, string SearchKey, string IP);
 
         Task FireAway_APILOG(string RequestId, string Request, string Response, string Token, string ApiName, string IpAddress, int AgentId,

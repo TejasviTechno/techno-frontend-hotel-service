@@ -553,7 +553,9 @@ namespace XConnect.Supplier.PkFare
                                             Boolean blnIsShowSupplier = false;
 
                                             //PkfsearchRS.Root PkFareResponse = JsonConvert.DeserializeObject<PkfsearchRS.Root>(ResponseData);
-                                            _markup.getAgetMarkupSetting(SupplierName, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, Rating, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate);
+                                            //_markup.getAgetMarkupSetting(SupplierName, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, Rating, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate);
+
+                                            _markup.getAgetMarkupSettingNew_new(SupplierName, Convert.ToString(RaynaID), commonSearch.dtSuplierMarkup, commonSearch.dsMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, Rating, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate);
 
 
                                             Currency = Convert.ToString(PkFareResponse.hotels.hotel[hotelIndex].currency);

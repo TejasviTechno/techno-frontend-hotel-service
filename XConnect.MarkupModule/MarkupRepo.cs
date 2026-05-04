@@ -849,5 +849,183 @@ namespace XConnect.Markup
                 _exception.Error(ex);
             }
         }
+        //Added on 01-may-26
+        #region New MarkupCode
+        public void getAgetMarkupSettingNew_new(string suppliername, string raynaid, DataTable dtSuplierMarkup, DataSet dsMarkupDetails, ref double AgentPercentage, ref double AgentMarkupAmount, ref Boolean blnIsShowSupplier, ref Boolean isPerce, int agentid, int hotelRating, int CityID, string CountryId, string CheckinDate1)
+        {
+            try
+            {
+                DataTable dtMarkupDetails = dsMarkupDetails.Tables[0];
+                DataTable dtCombineMarkup = dsMarkupDetails.Tables[1];
+
+                if (string.IsNullOrEmpty(CountryId))
+                    CountryId = "0";
+
+                int SupplierID = 0, TariffID = 0;
+                int agentGroupType = 0;
+                if (dtSuplierMarkup != null)
+                {
+                    DataRow[] drSuppMarkUp = dtSuplierMarkup.Select("SupplierName='" + suppliername + "'");
+                    if (drSuppMarkUp.GetLength(0) > 0)
+                    {
+                        AgentPercentage = Convert.ToDouble(drSuppMarkUp[0]["AgentWiseMarkup"]);
+                        blnIsShowSupplier = (Convert.ToInt16(drSuppMarkUp[0]["IsShowSupplier"]) == 1 ? true : false);
+                        SupplierID = Convert.ToInt32(drSuppMarkUp[0]["SupplierID"]);
+                        TariffID = Convert.ToInt32(drSuppMarkUp[0]["MarkupCategoryId"]);
+                        agentGroupType = Convert.ToInt32(drSuppMarkUp[0]["AgentType"]);
+
+                    }
+                }
+
+                if (dtMarkupDetails == null || dtMarkupDetails.Rows.Count == 0)
+                    return;
+
+                int Raynaid = string.IsNullOrEmpty(raynaid) ? -1 : Convert.ToInt32(raynaid);
+                DateTime CurDate = DateTime.Now.Date;
+                DateTime CheckinDate;
+                try
+                {
+                    CheckinDate = DateTime.ParseExact(CheckinDate1, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                }
+                catch
+                {
+                    CheckinDate = DateTime.Now.Date;
+                }
+                int DayCount = Convert.ToInt32((CheckinDate - DateTime.Now.Date).TotalDays);
+
+                foreach (DataRow row in dtMarkupDetails.Rows)
+                {
+                    DataRow matchedRow = IsRowMatched_new(row, SupplierID, TariffID, agentid,
+                                                      Raynaid, hotelRating, CityID, CountryId,
+                                                      CurDate, CheckinDate, DayCount,
+                                                      dtCombineMarkup, agentGroupType);
+
+                    if (matchedRow == null) continue;
+                    if (matchedRow["markupvalue"] == DBNull.Value) break;
+
+                    double markupVal = Convert.ToDouble(matchedRow["markupvalue"]);
+                    if (markupVal <= 0) break;
+
+                    if (Convert.ToString(matchedRow["MarkupType"]).ToLower() == "percentage")
+                    {
+                        AgentPercentage = markupVal;
+                        isPerce = true;
+                    }
+                    else
+                    {
+                        AgentMarkupAmount = markupVal;
+                        isPerce = false;
+                    }
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private DataRow IsRowMatched_new(DataRow row, int SupplierID, int TariffID, int agentid, int Raynaid, int hotelRating, int CityID, string CountryId, DateTime CurDate, DateTime CheckinDate, int DayCount, DataTable dtCombineMarkupTable, int agentGroupType)
+        {
+            bool isCombinable = row["IsCombinable"] != DBNull.Value
+                                && Convert.ToBoolean(row["IsCombinable"]);
+
+            if (isCombinable)
+            {
+                if (dtCombineMarkupTable == null || dtCombineMarkupTable.Rows.Count == 0)
+                    return null;
+
+                // Filter Table 2 by same priority as Table 1 row — once, outside loop
+                int rowPriority = Convert.ToInt32(row["Priority"]);
+                DataRow[] combineRowsForPriority = dtCombineMarkupTable.Select($"Priority = '{rowPriority}'");
+
+                if (combineRowsForPriority.Length == 0)
+                    return null;
+
+                // Clone once outside loop — reuse for each row check
+                DataTable singleRowTable = dtCombineMarkupTable.Clone();
+
+                bool allMatched = true;
+                DataRow valueRow = null;
+
+                foreach (DataRow combineRow in combineRowsForPriority)
+                {
+                    string filterString = BuildFilterString_new(combineRow, SupplierID, TariffID, agentid,
+                                                            Raynaid, hotelRating, CityID, CountryId,
+                                                            CurDate, CheckinDate, DayCount, agentGroupType);
+
+                    if (string.IsNullOrEmpty(filterString))
+                    {
+                        allMatched = false;
+                        break;
+                    }
+
+                    // Reuse cloned table — clear and reimport each iteration
+                    singleRowTable.Clear();
+                    singleRowTable.ImportRow(combineRow);
+                    DataRow[] matched = singleRowTable.Select(filterString);
+
+                    if (matched.Length == 0)
+                    {
+                        allMatched = false;
+                        break;
+                    }
+
+                    // Pick row with actual markupvalue
+                    if (matched[0]["markupvalue"] != DBNull.Value
+                        && Convert.ToDouble(matched[0]["markupvalue"]) > 0)
+                    {
+                        valueRow = matched[0];
+                    }
+                }
+
+                if (!allMatched || valueRow == null)
+                    return null;
+
+                // All matched — return result row with markupvalue
+                DataRow resultRow = dtCombineMarkupTable.NewRow();
+                resultRow.ItemArray = valueRow.ItemArray.Clone() as object[];
+                return resultRow;
+            }
+            else
+            {
+                string filterString = BuildFilterString_new(row, SupplierID, TariffID, agentid,
+                                                        Raynaid, hotelRating, CityID, CountryId,
+                                                        CurDate, CheckinDate, DayCount, agentGroupType);
+
+                if (string.IsNullOrEmpty(filterString)) return null;
+
+                // Clone once — no unnecessary array init
+                DataTable singleRowTable = row.Table.Clone();
+                singleRowTable.ImportRow(row);
+                DataRow[] matched = singleRowTable.Select(filterString);
+
+                return matched.Length > 0 ? matched[0] : null;
+            }
+        }
+
+        private string BuildFilterString_new(DataRow row, int SupplierID, int TariffID, int agentid, int Raynaid, int hotelRating, int CityID, string CountryId, DateTime CurDate, DateTime CheckinDate, int DayCount, int agentGroupType)
+        {
+            string code = row["Code"].ToString().Trim().ToUpper();
+
+            switch (code)
+            {
+                case "HOTEL": return $"refid = '{Raynaid}'";
+                case "AGENT": return $"refid = '{agentid}'";
+                case "AGENTGROUP": return $"refid = '{agentGroupType}'";
+                case "SUPPLIER": return $"refid = '{SupplierID}'";
+                case "TARIFF": return $"refid = '{TariffID}'";
+                case "STARRATING": return $"refid = '{hotelRating}'";
+                case "COUNTRY": return $"refid = '{CountryId}'";
+                case "CITY": return $"refid = '{CityID}'";
+                case "SEASON":
+                    if (row["SeasonFromDate"] == DBNull.Value || row["SeasonToDate"] == DBNull.Value)
+                        return string.Empty;
+                    return $"SeasonFromDate <= #{CheckinDate:MM/dd/yyyy}# AND SeasonToDate >= #{CheckinDate:MM/dd/yyyy}#";
+                default:
+                    return string.Empty;
+            }
+        }
+        #endregion
     }
 }

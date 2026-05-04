@@ -952,7 +952,9 @@ namespace Xconnect.Expedia
                             Boolean isPerce = true;
                             Boolean blnIsShowSupplier = false;
                             int hotelRating = 0;
-                            _markup.getAgetMarkupSetting(SupplierName, Convert.ToString(GiataId), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, agentid, hotelRating, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate);
+                            //_markup.getAgetMarkupSetting(SupplierName, Convert.ToString(GiataId), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, agentid, hotelRating, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate);
+                            //Added on 01-may-26
+                            _markup.getAgetMarkupSettingNew_new(SupplierName, Convert.ToString(GiataId), commonSearch.dtSuplierMarkup, commonSearch.dsMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, agentid, hotelRating, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate);
 
                             double AgentCompanyPercentage = Convert.ToDouble(SearchParam.AgentCompanyPercentage);
                             bool IsB2C = Convert.ToBoolean(Convert.ToByte(SearchParam.IsB2BOrB2C));

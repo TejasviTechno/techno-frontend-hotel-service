@@ -468,6 +468,7 @@ namespace Xconnect.BLL
 
 
                 DataTable dtCountryCityMarkup = new DataTable();
+                DataSet dsCountryCityMarkup = new DataSet();//Added on 01-may-26
                 bool IsB2B = true;
                 string Platform = UserPlatform; //new 261224
                 DataRow[] lstdtHotelCommon = null;
@@ -809,6 +810,12 @@ namespace Xconnect.BLL
                 SearchPara.CurrentDate = DateTime.Now.ToString("yyyy/MM/dd/HH/mm/ss");
                 if (dsAgentDetails.Tables[7] != null && dsAgentDetails.Tables[7].Rows.Count > 0)
                     dtCountryCityMarkup = dsAgentDetails.Tables[7];
+
+                if (dsAgentDetails.Tables[12] != null && dsAgentDetails.Tables[12].Rows.Count > 0) //Added on 01-may-26
+                {
+                    dsCountryCityMarkup.Tables.Add(dsAgentDetails.Tables[12].Copy());
+                    dsCountryCityMarkup.Tables.Add(dsAgentDetails.Tables[13].Copy());
+                }
                 if (dsAgentDetails.Tables[8] != null && dsAgentDetails.Tables[8].Rows.Count > 0)
                     agentPercent = Convert.ToDecimal(Convert.ToString(dsAgentDetails.Tables[8].Rows[0]["MarkupPer"]));
 
@@ -1222,7 +1229,7 @@ namespace Xconnect.BLL
                 string NewSearchKey = Search_Key;
                 SearchPara.SearchKey = NewSearchKey;
                 //advancedOptions.dtMeal = dtMealData;
-                Task<List<Options>> dsFinalDataset = NewHotelSearch(NewSearchKey, dtROE, SearchByOneID, advancedOptions, Tokendata, IsParentId, SubAgentMarkup, B2CMarkup, dsGiatadata, agentPercent, dtCountryCityMarkup, TariffID, commonSearchList, 0, IsB2B, SearchPara, AgentId, dsAgentDetails, EchoToken, SessionId, AgentCode, dtCountryCityMarkup, IdWithLocalRates_oth, IdWithLocalRates_staah, IdWithLocalRates_siteminder, IdWithLocalRates_hotelrunner, IdWithLocalRates_ratetiger, IdWithLocalRates_dedge, IdWithLocalRates_travelclick, IdWithLocalRates_rategain, Platform, true, MainTimer, withcancellation, dtVatHotelList);
+                Task<List<Options>> dsFinalDataset = NewHotelSearch(NewSearchKey, dtROE, SearchByOneID, advancedOptions, Tokendata, IsParentId, SubAgentMarkup, B2CMarkup, dsGiatadata, agentPercent, dtCountryCityMarkup, TariffID, commonSearchList, 0, IsB2B, SearchPara, AgentId, dsAgentDetails, EchoToken, SessionId, AgentCode, dtCountryCityMarkup, dsCountryCityMarkup, IdWithLocalRates_oth, IdWithLocalRates_staah, IdWithLocalRates_siteminder, IdWithLocalRates_hotelrunner, IdWithLocalRates_ratetiger, IdWithLocalRates_dedge, IdWithLocalRates_travelclick, IdWithLocalRates_rategain, Platform, true, MainTimer, withcancellation, dtVatHotelList);//01-may-2026 dsCountryCityMarkup
                 #endregion hit
 
                 #region "Prepare Response"
@@ -1359,13 +1366,15 @@ namespace Xconnect.BLL
                     if (true)
                     {
                         bool ActiveRoomMApping = false;
-                        bool ActiveRoomMAppingwithException = false;
+                        bool ActiveRoomMAppingwithoutException = false;
                         bool ActiveRoomId = false;
                         //int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
                         int Roommapping = 1;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
-                        if (ActiveRoomMAppingwithException) //Add On 17SEP2025
+                        if (ActiveRoomMAppingwithoutException) //Add On 17SEP2025 
                         {
-                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping
+                            //finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping
+                            //need to write code for inserting excetion 
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping_withoutEx(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping);
 
                         }
                         else if (ActiveRoomId)
@@ -1427,7 +1436,7 @@ namespace Xconnect.BLL
             return finalResponse_Comp;
         }
 
-        public async Task<List<Options>> NewHotelSearch(string NewSearchKey, DataTable dtROE, bool SearchByOneID, AdvancedOptions advancedOptions, TokenData tokenData, int IsParentId, double SubAgentMarkup, double B2CMarkup, DataSet dsGiatadata, decimal AgentPercent, DataTable dtCountryCityMarkup, int TariffID, CommonSearchList commonSearchList, int hit, bool IsB2B, HotelSearchParameter SearchPara, int AgentId, DataSet dsAgentDetails, string EchoToken, string SessionId, string AgentCode, DataTable dtMarkupDetails, DataTable OwnIDSList_oth, DataTable OwnIDSList_Staah, DataTable OwnIDSList_siteminder, DataTable OwnIDSList_hotelrunner, DataTable OwnIDSList_ratetiger, DataTable OwnIDSList_dedge, DataTable OwnIDSList_travelclick, DataTable OwnIDSList_rategain, string Platform, bool HitFromAll = true, Stopwatch MainTimer = null, bool withcancellation = false, DataTable dtVatHotelList = null)
+        public async Task<List<Options>> NewHotelSearch(string NewSearchKey, DataTable dtROE, bool SearchByOneID, AdvancedOptions advancedOptions, TokenData tokenData, int IsParentId, double SubAgentMarkup, double B2CMarkup, DataSet dsGiatadata, decimal AgentPercent, DataTable dtCountryCityMarkup, int TariffID, CommonSearchList commonSearchList, int hit, bool IsB2B, HotelSearchParameter SearchPara, int AgentId, DataSet dsAgentDetails, string EchoToken, string SessionId, string AgentCode, DataTable dtMarkupDetails, DataSet dsMarkupDetails, DataTable OwnIDSList_oth, DataTable OwnIDSList_Staah, DataTable OwnIDSList_siteminder, DataTable OwnIDSList_hotelrunner, DataTable OwnIDSList_ratetiger, DataTable OwnIDSList_dedge, DataTable OwnIDSList_travelclick, DataTable OwnIDSList_rategain, string Platform, bool HitFromAll = true, Stopwatch MainTimer = null, bool withcancellation = false, DataTable dtVatHotelList = null)//01-may-2026 , DataSet dsMarkupDetails
         {
             ConcurrentBag<HotelX> AllTask = new ConcurrentBag<HotelX>();
             var allTasks = new List<Task>();
@@ -5269,6 +5278,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                 commonSearch.dtAgentDetail = dtAgentDetail;
                 commonSearch.dtCountryCityMarkup = dtCountryCityMarkup;
                 commonSearch.dtMarkupDetails = dtMarkupDetails;
+                commonSearch.dsMarkupDetails = dsMarkupDetails; //Added on 01-may-26
                 commonSearch.dtSearchConfig = dtSupplierSearchConfig;
                 commonSearch.dtSuplierMarkup = dtSupplierDetails;
                 commonSearch.IsParentId = IsParentId;
@@ -10097,6 +10107,8 @@ new SqlParameter("@AgentId", AgentId),
                     dsIsSubAgent.Tables.Add(dsIsSubAgent_CityCache.Tables[9].Copy());
                     dsIsSubAgent.Tables.Add(dsIsSubAgent_CityCache.Tables[10].Copy());
                     dsIsSubAgent.Tables.Add(dsIsSubAgent_CityCache.Tables[11].Copy());
+                    dsIsSubAgent.Tables.Add(dsIsSubAgent_CityCache.Tables[12].Copy());//Added on 01-may-26
+                    dsIsSubAgent.Tables.Add(dsIsSubAgent_CityCache.Tables[13].Copy()); //Added on 01-may-26
                     return dsIsSubAgent;
                 }
                 else
@@ -10263,13 +10275,16 @@ new SqlParameter("@AgentId", AgentId),
                             };
 
                         if (_keySettings.UseLocalDatabase == "1")
-                            dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                           // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                            dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                         else
                         {
                             if (_keySettings.Use_ReplicationDB == "1")
-                                dsIsSubAgent_Agent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                                dsIsSubAgent_Agent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
+                               // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
                             else
-                                dsIsSubAgent_Agent = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                                dsIsSubAgent_Agent = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
+                               // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
                         }
 
                         if (dsIsSubAgent_Agent.Tables[0].Rows.Count > 0)
@@ -10318,13 +10333,13 @@ new SqlParameter("@AgentId", AgentId),
                             };
 
                         if (_keySettings.UseLocalDatabase == "1")
-                            dsIsSubAgent_CityCache = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                            dsIsSubAgent_CityCache = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                         else
                         {
                             if (_keySettings.Use_ReplicationDB == "1")
-                                dsIsSubAgent_CityCache = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                                dsIsSubAgent_CityCache = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                             else
-                                dsIsSubAgent_CityCache = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                                dsIsSubAgent_CityCache = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                         }
 
                         if (dsIsSubAgent_CityCache != null)
@@ -10366,13 +10381,13 @@ new SqlParameter("@AgentId", AgentId),
                             };
 
                         if (_keySettings.UseLocalDatabase == "1")
-                            dsIsSubAgent_NationalityCache = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                            dsIsSubAgent_NationalityCache = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                         else
                         {
                             if (_keySettings.Use_ReplicationDB == "1")
-                                dsIsSubAgent_NationalityCache = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                                dsIsSubAgent_NationalityCache = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                             else
-                                dsIsSubAgent_NationalityCache = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                                dsIsSubAgent_NationalityCache = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                         }
                         if (dsIsSubAgent_NationalityCache != null)
                             if (AgentId == 4440 || AgentId == 2172 || AgentId == 3049 || AgentId == 4901 || AgentId == 7657)
@@ -10401,6 +10416,8 @@ new SqlParameter("@AgentId", AgentId),
                     dsIsSubAgent.Tables.Add(dsIsSubAgent_CityCache.Tables[9].Copy());
                     dsIsSubAgent.Tables.Add(dsIsSubAgent_CityCache.Tables[10].Copy());
                     dsIsSubAgent.Tables.Add(dsIsSubAgent_CityCache.Tables[11].Copy());
+                    dsIsSubAgent.Tables.Add(dsIsSubAgent_CityCache.Tables[12].Copy());//Added on 01-may-26
+                    dsIsSubAgent.Tables.Add(dsIsSubAgent_CityCache.Tables[13].Copy()); //Added on 01-may-26
                     return dsIsSubAgent;
                 }
                 else
@@ -10428,13 +10445,13 @@ new SqlParameter("@AgentId", AgentId),
                             };
 
                         if (_keySettings.UseLocalDatabase == "1")
-                            dsIsSubAgent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, 60);
+                            dsIsSubAgent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, 60);
                         else
                         {
                             if (_keySettings.Use_ReplicationDB == "1")
-                                dsIsSubAgent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                                dsIsSubAgent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                             else
-                                dsIsSubAgent = await _dlConnection.GetDataSet("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para);
+                                dsIsSubAgent = await _dlConnection.GetDataSet("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para);
                         }
 
                         return dsIsSubAgent;
@@ -10462,13 +10479,13 @@ new SqlParameter("@AgentId", AgentId),
                             };
 
                         if (_keySettings.UseLocalDatabase == "1")
-                            dsIsSubAgent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                            dsIsSubAgent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                         else
                         {
                             if (_keySettings.Use_ReplicationDB == "1")
-                                dsIsSubAgent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                                dsIsSubAgent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                             else
-                                dsIsSubAgent = await _dlConnection.GetDataSet("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para);
+                                dsIsSubAgent = await _dlConnection.GetDataSet("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para);
 
                         }
                         //string json = JsonConvert.SerializeObject(dsIsSubAgent);
