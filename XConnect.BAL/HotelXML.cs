@@ -339,6 +339,76 @@ namespace Xconnect.BLL
         }
 
         #region Static Data - used
+
+        public async Task<List<IpList>> GetAgentIps(int AgentId, string TenantId)
+
+        {
+
+            try
+
+            {
+
+                DataSet ds = new DataSet();
+
+                string keydata = "WhiteListAgentIps_" + Convert.ToString(AgentId);
+
+
+                if (!_cache.TryGetValue(keydata, out ds))
+
+                {
+
+                    SqlParameter[] para = new SqlParameter[] {
+
+            new SqlParameter("@agentid",AgentId),
+
+            new SqlParameter("@TenantId",TenantId),
+
+            new SqlParameter("@IsSearch",1),
+
+            new SqlParameter("@IsLive",Convert.ToInt32(_keySettings.IsLive))
+
+        };
+
+                    ds = await _dlConnection.GetDataSet_Limit("GetWhiteListIP", para, 2);
+
+                    if (ds.Tables[0].Rows.Count > 0)
+
+                    {
+
+                        // Set cache with expiration (example: 12 hours)
+
+                        var cacheEntryOptions = new MemoryCacheEntryOptions()
+
+                            .SetAbsoluteExpiration(DateTime.Now.AddHours(1));  // Set cache to expire in 12 hours
+
+                        _cache.Set(keydata, ds, cacheEntryOptions);
+
+                    }
+
+                }
+
+                //string json = JsonConvert.SerializeObject(ds);
+
+                //ds = JsonConvert.DeserializeObject<DataSet>(json);
+
+                List<IpList> lst = HtmlExtensions.ToList<IpList>(ds.Tables[0]);
+
+                return lst;
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                await _exception.Error(ex);
+
+                return null;
+
+            }
+
+        }
+
         public async Task<List<Countries>> GetCountries()
         {
             try
@@ -13093,29 +13163,29 @@ new SqlParameter("@AgentId", AgentId),
 
             #region GetDataFromCache //RoomMapping
             bool ActiveRoomMApping = false;
-            try
-            {
-                string keydata = "GetActiveRoomMApping_AgentID_" + Convert.ToString(tokenData.AgentId);
-                DataSet dsActiveRoomMApping = new DataSet();
-                if (!_cache.TryGetValue(keydata, out dsActiveRoomMApping) || advancedOptions.CustomerIpAddress == "777")
-                {
-                    SqlParameter[] para = new SqlParameter[] {
-                                            new SqlParameter("@AgentId",tokenData.AgentId),
-                                            };
-                    dsActiveRoomMApping = await _dlConnection.GetDataSet_Limit("GetActiveRoomMapping_Agent", para, 5);//@HID
-                    if (dsActiveRoomMApping.Tables[0].Rows.Count > 0)
-                    {
-                        _cache.Set(keydata, dsActiveRoomMApping, new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(5)));
-                    }
-                }
+            //try
+            //{
+            //    string keydata = "GetActiveRoomMApping_AgentID_" + Convert.ToString(tokenData.AgentId);
+            //    DataSet dsActiveRoomMApping = new DataSet();
+            //    if (!_cache.TryGetValue(keydata, out dsActiveRoomMApping) || advancedOptions.CustomerIpAddress == "777")
+            //    {
+            //        SqlParameter[] para = new SqlParameter[] {
+            //                                new SqlParameter("@AgentId",tokenData.AgentId),
+            //                                };
+            //        dsActiveRoomMApping = await _dlConnection.GetDataSet_Limit("GetActiveRoomMapping_Agent", para, 5);//@HID
+            //        if (dsActiveRoomMApping.Tables[0].Rows.Count > 0)
+            //        {
+            //            _cache.Set(keydata, dsActiveRoomMApping, new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(5)));
+            //        }
+            //    }
 
-                ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]);
-            }
-            catch (Exception EA)
-            {
-                await _exception.ErrorNew(EA, _LogAPI.Recheck, SearchKey);
-                ActiveRoomMApping = false;
-            }
+            //    ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]);
+            //}
+            //catch (Exception EA)
+            //{
+            //    await _exception.ErrorNew(EA, _LogAPI.Recheck, SearchKey);
+            //    ActiveRoomMApping = false;
+            //}
             #endregion
 
             if (ActiveRoomMApping) //Added on 22-NOV-2024

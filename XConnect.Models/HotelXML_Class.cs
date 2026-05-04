@@ -523,6 +523,10 @@ namespace XConnect.Models
 
     }
 
+    public class IpList //Added on 04-MAY-26
+    {
+        public string IP { get; set; }
+    }
     public class IPWhitelistRQ
     {
         public int AgentId { get; set; }

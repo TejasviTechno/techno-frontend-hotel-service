@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Data;
@@ -5840,6 +5841,7 @@ namespace XConnect.API.Controllers
         [Route("GetRoomMappingHotel")]
         [HttpPost]
         public async Task<IActionResult> GetRoomMappingHotel(CommonRequest data)
+
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
@@ -5871,6 +5873,95 @@ namespace XConnect.API.Controllers
             }
 
         }
+
+        [Route("GetWhiteListIP")]
+
+        [HttpGet]
+        public async Task<IActionResult> GetWhiteListIP()
+
+        {
+
+            Stopwatch timer = new Stopwatch();
+
+            timer.Start();
+
+            TokenData TokenData = new TokenData();
+
+            CommonRequest data = new CommonRequest();
+
+            data.IsSearch = 1;
+
+            try
+
+            {
+
+                //string IP = HttpContext.Items["ClientIp"]?.ToString();
+
+                //var userAgent = HttpContext.Items["User-Agent"]?.ToString();
+
+                string IP = _platformService.GetIPAddress();
+
+                string userAgent = _platformService.GetBrowserInfo(_platformService.GetRequest());
+
+
+                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+
+                if (Convert.ToBoolean(authData.tokenData.AgentId))
+
+                {
+
+                    List<IpList> lstFiltOption = await _hotelXML.GetAgentIps(Convert.ToInt32(authData.tokenData.AgentId), Convert.ToString(authData.tokenData.TanentId));
+
+                    if (lstFiltOption != null)
+
+                    {
+
+                        timer.Stop();
+
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, TokenData, "GetWhiteListIP", true, timer.Elapsed.ToString(), ErrorCode.NoError, "", IP, "", "", "", 0, 0, 0, "", null);
+
+                    }
+
+                    else
+
+                    {
+
+                        timer.Stop();
+
+                        error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
+
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetWhiteListIP", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "", IP, "", "", "", 0, 0, 0, "", null);
+
+                    }
+
+                }
+
+                else
+
+                {
+
+                    timer.Stop();
+
+                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, 401, "application/json", data, "", authData.tokenData, "GetWhiteListIP", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "", IP, "", "", "", 0, 0, 0, "", null);
+
+                }
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                timer.Stop();
+
+                error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
+
+                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetWhiteListIP", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "", "", "", "", "", 0, 0, 0, "", null);
+
+            }
+
+        }
+
 
     }
 }
