@@ -21,6 +21,7 @@ using XConnect.Supplier.Dingus.Interface;
 using Microsoft.Extensions.Options;
 using Options = XConnect.Models.Options;
 using System.Net;
+using static XConnect.Supplier.Booking.Com.detailres;
 
 
 
@@ -601,7 +602,9 @@ namespace XConnect.Supplier.Dingus
                             Boolean isPerce = true;
                             Boolean blnIsShowSupplier = false;
                             int hotelRating = 0;
-                            _markup.getAgetMarkupSetting(Provider, Convert.ToString(GiataId), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, agentid, hotelRating, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate);
+                            //_markup.getAgetMarkupSetting(Provider, Convert.ToString(GiataId), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, agentid, hotelRating, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate);
+
+                            _markup.getAgetMarkupSettingNew_new(Provider, Convert.ToString(RaynaID), commonSearch.dtSuplierMarkup, commonSearch.dsMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, hotelRating, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate);
 
                             double AgentCompanyPercentage = Convert.ToDouble(SearchParam.AgentCompanyPercentage);
                             bool IsB2C = Convert.ToBoolean(Convert.ToByte(SearchParam.IsB2BOrB2C));

@@ -624,41 +624,14 @@ namespace XConnect.Supplier.Nuitee
                                 double Factor = 1;
                                 //Currency = "USD";
                                 Currency = Item.CurrencyCode;
-                                _markup.getAgetMarkupSetting(Provider, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, Rating, SearchPara.CityID, SearchPara.CountryID.ToString(), SearchPara.CheckInDate);
-                                //Common.getAgetMarkupSetting(Provider, GIITACode, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, agentID, hotelRating, SearchParam.CityID, SearchParam.CountryId, CheckinDate);
+                                //_markup.getAgetMarkupSetting(Provider, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, Rating, SearchPara.CityID, SearchPara.CountryID.ToString(), SearchPara.CheckInDate);
+
+                                _markup.getAgetMarkupSettingNew_new(Provider, Convert.ToString(RaynaID), commonSearch.dtSuplierMarkup, commonSearch.dsMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, Rating, SearchPara.CityID, Convert.ToString(SearchPara.CountryID), SearchPara.CheckInDate);
+                                
                                 #endregion
                                 //  string Response = "NA";
                                 {
-                                    //if (ResponseData == string.Empty || ResponseData == "")
-                                    //    return options;
-
-
-                                    //ResponseData = XElement.Parse(ResponseData).ToString(SaveOptions.DisableFormatting);
-
-                                    //ResponseData = ResponseData.Replace("<hotelResults><hotelResults>", "<hotelResults1><hotelResults>");
-                                    //ResponseData = ResponseData.Replace("</hotelResults></hotelResults>", "</hotelResults></hotelResults1>");
-
-                                    //ResponseData = ResponseData.Replace("<roomGuests><roomGuests>", "<roomGuests1><roomGuests>");
-                                    //ResponseData = ResponseData.Replace("</roomGuests></roomGuests>", "</roomGuests></roomGuests1>");
-
-
-
-                                    //ResponseData = ResponseData.Replace("<cancelPoliciesInfos><cancelPolicyInfos>", "<cancelPoliciesInfos1><cancelPolicyInfos>");
-                                    //ResponseData = ResponseData.Replace("</refundableTag></cancelPoliciesInfos>", "</refundableTag></cancelPoliciesInfos1>");
-
-                                    //ResponseData = ResponseData.Replace("<rateDetails><cancelPoliciesInfos>", "<rateDetails><cancelPoliciesInfos1>");
-
-                                    //ResponseData = ResponseData.Replace("<rooms><rooms>", "<rooms1><rooms>");
-                                    //ResponseData = ResponseData.Replace("</rooms></rooms>", "</rooms></rooms1>");
-
-                                    //ResponseData = ResponseData.Replace("</tax><taxesAndFees>", "</tax><taxesAndFees1>");
-                                    //ResponseData = ResponseData.Replace("</rooms1><taxesAndFees>", "</rooms1><taxesAndFees1>");
-                                    //ResponseData = ResponseData.Replace("</taxesAndFees><totalPrice>", "</taxesAndFees1><totalPrice>");
-
-                                    //ResponseData = ResponseData.Replace("<rateDetails><maxRate>", "<rateDetails1><maxRate>");
-                                    //ResponseData = ResponseData.Replace("</rateDetails></hotelResults>", "</rateDetails1></hotelResults>");
-
-                                    //DataSet DsResponse = Common.GetDataSetFromXMLString(ResponseData);
+                                    
                                     string SessionId = Convert.ToString(NuiteeResponse.Tables["getCityAvailabilityRes"].Rows[0]["sessionId"]);
                                     string roomcode = "";
                                     roomcode1 = "";

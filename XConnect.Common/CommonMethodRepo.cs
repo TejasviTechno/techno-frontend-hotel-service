@@ -3622,100 +3622,52 @@ namespace XConnect.CommonUtilities
 
         }
 
-        public string getMappedRoom_rlm(string originalRoomName, DataTable DtHotelInformation, int HotelId, ref string S_RoomNo)
+        public string getMappedRoom_rlmASAL(string supplierRoomName, int hotelId, IMongoCollection<BsonDocument> collection, ref string roomNo)
         {
             try
             {
-                if (DtHotelInformation != null && DtHotelInformation.Rows.Count > 0)
-                {
+                var key = string.Concat(hotelId, "$$$", supplierRoomName.ToLower());
 
-                    DataRow[] dtr = DtHotelInformation.Select("SupplierRoomName='" + originalRoomName + "' and HotelId='" + HotelId + "'");
-                    if (dtr.Length > 0)
-                    {
-                        originalRoomName = Convert.ToString(dtr[0]["standardName"]) /*+ "|" + " AMapped" + "(" + originalRoomName + ")"*/;
-                        S_RoomNo = Convert.ToString(dtr[0]["RoomId"]) /*+ "|" + " AMapped" + "(" + originalRoomName + ")"*/;  // ADD ON 29-JAN-2025 
-                        return originalRoomName;
-                    }
-                    else
-                    {
-                        S_RoomNo = ""; // ADD ON 29-JAN-2025
-                        return originalRoomName /*+ "|" + " Not"*/;
-                    }
-                }
-                else
+                //if (_cache.TryGetValue(key, out (string standardRoomName, string roomCode) val))
+                //{
+                //    roomNo = val.roomCode;
+                //    return val.standardRoomName;
+                //}
+
+                var doc = collection
+                    .Find(new BsonDocument("_id", key))
+                    .Project(new BsonDocument { { "s", 1 }, { "r", 1 } })
+                    .Limit(1)
+                    .FirstOrDefault();
+
+                if (doc == null)
                 {
-                    S_RoomNo = ""; // ADD ON 29-JAN-2025
-                    return originalRoomName /*+ "|" + " Not"*/;
+                    roomNo = ""; //Added on 17-APR-26
+                    return supplierRoomName;
                 }
+
+                var standardRoomName = doc["s"].AsString;
+                var roomCode = doc["r"].AsString;
+
+                //_cache.Set(
+                //    key,
+                //    (s, r),
+                //    new MemoryCacheEntryOptions
+                //    {
+                //        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
+                //        Size = 1
+                //    });
+
+                roomNo = roomCode;
+                return standardRoomName;
             }
             catch (Exception ex)
             {
-                // Log the exception
-                //ExceptionManager.LogException(ex);
-
-                // Return the original room name in case of an exception
-                S_RoomNo = ""; // ADD ON 29-JAN-2025
-                return originalRoomName;
+                _ = _exception.Error(ex);
+                roomNo = "";
+                return supplierRoomName;
             }
-
         }
-        public string getMappedRoom_rlmOLDD(string originalRoomName, DataTable DtHotelInformation, int HotelId, ref string S_RoomNo)
-        {
-            try
-            {
-                DataRow[] dtr = DtHotelInformation.Select("SupplierRoomName='" + originalRoomName + "' and HotelId='" + HotelId + "'");
-                if (dtr.Length > 0)
-                {
-                    originalRoomName = Convert.ToString(dtr[0]["standardName"]) /*+ "|" + " AMapped" + "(" + originalRoomName + ")"*/;
-                    S_RoomNo = Convert.ToString(dtr[0]["RoomId"]) /*+ "|" + " AMapped" + "(" + originalRoomName + ")"*/;  // ADD ON 29-JAN-2025 
-                    return originalRoomName;
-                }
-                else
-                {
-                    S_RoomNo = ""; // ADD ON 29-JAN-2025
-                    return originalRoomName /*+ "|" + " Not"*/;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                //ExceptionManager.LogException(ex);
-
-                // Return the original room name in case of an exception
-                S_RoomNo = ""; // ADD ON 29-JAN-2025
-                return originalRoomName;
-            }
-
-        }
-
-        public string getMappedRoom_rlm_old(string originalRoomName, DataTable DtHotelInformation, int HotelId)
-        {
-            try
-            {
-                DataRow[] dtr = DtHotelInformation.Select("SupplierRoomName='" + originalRoomName + "' and HotelId='" + HotelId + "'");
-                if (dtr.Length > 0)
-                {
-                    originalRoomName = Convert.ToString(dtr[0]["standardName"]) /*+ "|" + " AMapped" + "(" + originalRoomName + ")"*/;
-                    return originalRoomName;
-                }
-                else
-                {
-                    return originalRoomName /*+ "|" + " Not"*/;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                //ExceptionManager.LogException(ex);
-
-                // Return the original room name in case of an exception
-                return originalRoomName;
-            }
-
-        }
-
-
-
         #endregion RoomMapping
 
         public async Task<string> SupplierPerformanceReportForPrebookAndBook(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "")
@@ -6769,272 +6721,14 @@ namespace XConnect.CommonUtilities
             }
         }
 
-        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping_old(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "")
-        {
-            AvailabilityRS_Comp availHotelList_Comp = new AvailabilityRS_Comp();
-            AvailHotelList_Comp finalResponse_Comp = new AvailHotelList_Comp();
-            availHotelList_Comp.HotelResult = new List<_HotelListNew_Comp>();
-
-            try
-            {
-                availHotelList_Comp.SearchKey = NewSearchKey;
-                int ab = 0;
-                // Global dictionary to track unique roomKeys across all HotelOptions
-                HashSet<string> globalRoomKeySet = new HashSet<string>();
-                DataTable DtHotelInformation = new DataTable();
-                System.Diagnostics.Stopwatch timerx = new System.Diagnostics.Stopwatch();
-                timerx.Start();
-                string[] sr = SearchPara.Filters.HotelIDs.Split(',');
-                if (sr.Length == 1)
-                    DtHotelInformation = await GetVervoRoomMappingdata(Convert.ToInt32(sr[0]));
-
-                if (sr.Length > 1)
-                    DtHotelInformation = await GetVervoRoomMappingdata(ab, SearchPara.Filters.HotelIDs);
-                //DataTable DtHotelInformation = Common.GetVervoRoomMappingdata(gitaid);
-                if (SearchPara != null)
-                {
-                    timerx.Stop();
-                    SearchPara.SupplierTime += ",|RoomMappingSP" + "|Time :" + timerx.Elapsed.ToString();
-                }
-
-                for (int giataSeq = 0; giataSeq < finalResponse.AvailabilityRS.HotelResult.Count; giataSeq++)
-                {
-                    _HotelListNew_Comp finallist = new _HotelListNew_Comp
-                    {
-                        HotelId = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelId,
-                        StartPrice = finalResponse.AvailabilityRS.HotelResult[giataSeq].StartPrice
-                    };
-
-                    // Dictionary to store unique options based on room configurations for the current hotel
-                    Dictionary<string, Options_Comp> uniqueOptionsMap = new Dictionary<string, Options_Comp>();
-                    string gitaid = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelCode;
-
-
-                    for (int hotelSeq = 0; hotelSeq < finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption.Count; hotelSeq++)
-                    {
-                        _HotelList hotel = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelOptionId.DecryptHotelToken();
-
-                        // Sort rooms in this HotelOption by price
-                        var sortedRoomGroups = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms
-                            .SelectMany(roomGroup => roomGroup) // Flatten the groups for sorting
-                            .OrderBy(room => room.Price)
-                            .GroupBy(room => room.RoomNo) // Regroup by RoomNo after sorting
-                            .ToList();
-
-                        // Dictionary to hold the lowest-priced unique rooms in the current HotelOption
-                        var uniqueRoomMap = new Dictionary<string, _FinalRoomList_Comp>();
-                        int totalroom = 0;
-                        foreach (var roomGroup in sortedRoomGroups)
-                        {
-                            var roomList = roomGroup.ToList(); // Convert roomGroup to a list to access indices
-                            for (int roomIndex = 0; roomIndex < roomList.Count; roomIndex++)
-                            {
-                                var currentRoom = roomList[roomIndex];
-
-                                // Process RoomTypeName and Refundability
-                                string processedRoomTypeName = getMappedRoom_rlm_old(currentRoom.RoomTypeName.Split('|')[0].Trim(), DtHotelInformation, Convert.ToInt32(hotel.OwnsystemHotelId));
-                                string refundability = "non-refundable";
-                                List<_FinalPolicy> cancellationPolicies = new List<_FinalPolicy>();
-
-                                if (withcancellation && currentRoom.CancellationPolicy != null)
-                                {
-                                    foreach (var policy in currentRoom.CancellationPolicy)
-                                    {
-                                        var cancellationPolicy = new _FinalPolicy
-                                        {
-                                            FromDate = Convert.ToDateTime(policy.FromDate).ToString("MM-dd-yyyy"),
-                                            ToDate = Convert.ToDateTime(policy.ToDate).ToString("MM-dd-yyyy"),
-                                            CancellationPrice = Convert.ToDecimal(policy.CancellationPrice)
-                                        };
-                                        cancellationPolicies.Add(cancellationPolicy);
-
-                                        if (DateTime.TryParse(policy.FromDate, out DateTime fromDate) &&
-                                            fromDate == DateTime.Today &&
-                                            policy.CancellationPrice == 0.0m)
-                                        {
-                                            refundability = "refundable";
-                                        }
-                                    }
-                                }
-                                string roomKey = "";
-                                if (SearchPara.Rooms.Count == 1)
-                                {
-                                    if (_supplierRes.SwapMealName(AgentCode.ToLower()))//Added on 17-DEC-2024
-                                                                                       // Generate roomKey based on RoomNo, RoomTypeName, MappedMealName, and Refundability
-
-                                        roomKey = $"{currentRoom.RoomNo}_{processedRoomTypeName.Split('|')[0]}_{currentRoom.MealName}_{refundability}";
-                                    else
-                                        roomKey = $"{currentRoom.RoomNo}_{processedRoomTypeName.Split('|')[0]}_{currentRoom.MappedMealName}_{refundability}";
-                                }
-                                else
-                                {
-                                    if (_supplierRes.SwapMealName(AgentCode.ToLower()))//Added on 17-DEC-2024
-                                                                                       // Generate roomKey based on RoomNo, RoomTypeName, MappedMealName, and Refundability
-
-                                        roomKey = $"{currentRoom.RoomNo}_{processedRoomTypeName.Split('|')[0]}_{currentRoom.MealName}_{refundability}_{finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom}";
-                                    else
-                                        roomKey = $"{currentRoom.RoomNo}_{processedRoomTypeName.Split('|')[0]}_{currentRoom.MappedMealName}_{refundability}_{finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom}";
-                                }
-                                // Check global map to ensure no duplicate roomKey across all HotelOptionId
-                                if (globalRoomKeySet.Contains(roomKey))
-                                {
-                                    continue; // Skip adding this room as it is a duplicate
-                                }
-
-                                // Initialize RoomList for this unique room
-                                _FinalRoomList_Comp RoomList = new _FinalRoomList_Comp
-                                {
-                                    RoomToken = new CacheRoomToken
-                                    {
-                                        giataid_Seq = giataSeq,
-                                        hotelid_Seq = hotelSeq,
-                                        Room_seqno = roomIndex,
-                                        roomno = totalroom
-                                    }.EncryptCacheRoomToken(),
-                                    RoomNo = currentRoom.RoomNo,
-                                    RoomTypeName = processedRoomTypeName,
-                                    MealName = currentRoom.MealName,
-                                    Price = currentRoom.Price,
-                                    BookingStatus = currentRoom.BookingStatus,
-                                    MappedMealName = currentRoom.MappedMealName,
-                                    CancellationPolicy = cancellationPolicies
-                                };
-
-                                // Add room to uniqueRoomMap if it’s the lowest-priced or if not already added
-                                if (!uniqueRoomMap.ContainsKey(roomKey) || currentRoom.Price < uniqueRoomMap[roomKey].Price)
-                                {
-                                    uniqueRoomMap[roomKey] = RoomList;
-                                    globalRoomKeySet.Add(roomKey); // Track globally to avoid duplicate roomKey
-                                }
-                            }
-
-                            totalroom++;
-                        }
-
-                        // Create the HotelOption with unique rooms only if uniqueRoomMap has values
-                        //if (uniqueRoomMap.Values.Any())
-                        //{
-                        //    Options_Comp option = new Options_Comp
-                        //    {
-                        //        HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
-                        //        MinPrice = uniqueRoomMap.Values.Min(r => r.Price),
-                        //        IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
-                        //        HotelRooms = new List<List<_FinalRoomList_Comp>> { uniqueRoomMap.Values.ToList() }
-                        //    };
-
-                        //    // Unique key for HotelOption based on the sorted unique rooms
-                        //    string optionKey = string.Join(",", uniqueRoomMap.Values.Select(r => $"{r.RoomNo}_{r.RoomTypeName.Split('|')[0]}_{r.MappedMealName}_{(r.CancellationPolicy.Any(p => p.CancellationPrice == 0) ? "refundable" : "non-refundable")}"));
-
-                        //    // Add the option if it’s cheaper or does not already exist in uniqueOptionsMap
-                        //    if (!uniqueOptionsMap.ContainsKey(optionKey) || option.MinPrice < uniqueOptionsMap[optionKey].MinPrice)
-                        //    {
-                        //        uniqueOptionsMap[optionKey] = option;
-                        //    }
-                        //}
-
-                        // Create the HotelOption with unique rooms only if uniqueRoomMap has values
-                        if (uniqueRoomMap.Values.Any())
-                        {
-                            if (finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom == false && SearchPara.Rooms.Count > 1)
-                            {
-                                //Options_Comp option = new Options_Comp
-                                //{
-                                //    HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
-                                //    MinPrice = uniqueRoomMap.Values.Sum(r => r.Price),
-                                //    IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
-
-                                //    // Group all rooms in a single outer array
-                                //    HotelRooms = new List<List<_FinalRoomList_Comp>>
-                                //    {
-                                //        uniqueRoomMap.Values.OrderBy(r => r.RoomNo).ToList() // Ensure rooms are sorted by RoomNo
-                                //    }
-                                //};
-
-
-                                Options_Comp option = new Options_Comp
-                                {
-                                    HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
-                                    // Set MinPrice to the sum of prices for the RoomTypeName with the cheapest RoomNo 1
-                                    MinPrice = uniqueRoomMap.Values
-                                                    .Where(r => Convert.ToInt32(r.RoomNo) == 1) // Filter RoomNo 1
-                                                    .OrderBy(r => r.Price)     // Find the cheapest RoomNo 1
-                                                    .Select(r => uniqueRoomMap.Values
-                                                        .Where(room => room.RoomTypeName == r.RoomTypeName && room.MappedMealName == r.MappedMealName) // Match the RoomTypeName
-                                                        .Sum(room => room.Price)) // Sum prices of all rooms with the same RoomTypeName
-                                                    .FirstOrDefault(), // Get the sum for the RoomTypeName with the cheapest RoomNo 1
-                                    IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
-
-                                    // Group rooms by RoomTypeName
-                                    HotelRooms = uniqueRoomMap.Values
-                                                .GroupBy(r => (r.RoomTypeName, r.MappedMealName))
-                                                .Select(group => group.OrderBy(r => r.RoomNo).ToList()) // Sort rooms by RoomNo in each group
-                                                .ToList()
-                                };
-
-
-                                // Unique key for HotelOption based on the sorted unique rooms
-                                string optionKey = string.Join(",", uniqueRoomMap.Values.Select(r => $"{r.RoomNo}_{r.RoomTypeName.Split('|')[0]}_{r.MappedMealName}_{(r.CancellationPolicy.Any(p => p.CancellationPrice == 0) ? "refundable" : "non-refundable")}"));
-
-                                // Add the option if it’s cheaper or does not already exist in uniqueOptionsMap
-                                if (!uniqueOptionsMap.ContainsKey(optionKey) || option.MinPrice < uniqueOptionsMap[optionKey].MinPrice)
-                                {
-                                    uniqueOptionsMap[optionKey] = option;
-                                }
-                            }
-                            else
-                            {
-                                if (uniqueRoomMap.Values.Any())
-                                {
-                                    Options_Comp option = new Options_Comp
-                                    {
-                                        HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
-                                        MinPrice = uniqueRoomMap.Values.Min(r => r.Price),
-                                        IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
-                                        HotelRooms = uniqueRoomMap.Values
-                                            .Select(room => new List<_FinalRoomList_Comp> { room }) // Wrap each room in its own list
-                                            .ToList()
-                                    };
-
-                                    // Unique key for HotelOption based on the sorted unique rooms
-                                    string optionKey = string.Join(",", uniqueRoomMap.Values.Select(r => $"{r.RoomNo}_{r.RoomTypeName.Split('|')[0]}_{r.MappedMealName}_{(r.CancellationPolicy.Any(p => p.CancellationPrice == 0) ? "refundable" : "non-refundable")}"));
-
-                                    // Add the option if it’s cheaper or does not already exist in uniqueOptionsMap
-                                    if (!uniqueOptionsMap.ContainsKey(optionKey) || option.MinPrice < uniqueOptionsMap[optionKey].MinPrice)
-                                    {
-                                        uniqueOptionsMap[optionKey] = option;
-                                    }
-                                }
-
-                            }
-
-                        }
-
-
-
-                    }
-
-                    // Add deduplicated options to the final list for the hotel
-                    finallist.HotelOption = uniqueOptionsMap.Values.ToList();
-                    availHotelList_Comp.HotelResult.Add(finallist);
-                }
-
-                availHotelList_Comp.Count = finalResponse.AvailabilityRS.Count;
-                availHotelList_Comp.Currency = finalResponse.AvailabilityRS.Currency;
-                finalResponse_Comp.AvailabilityRS = availHotelList_Comp;
-                return finalResponse_Comp;
-            }
-            catch (Exception ex)
-            {
-                await _exception.Error(ex);
-            }
-            return null;
-        }
+        
 
         public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1) //Add int Roommapping=0 on 30MAY2025
         {
             AvailabilityRS_Comp availHotelList_Comp = new AvailabilityRS_Comp();
             AvailHotelList_Comp finalResponse_Comp = new AvailHotelList_Comp();
             availHotelList_Comp.HotelResult = new List<_HotelListNew_Comp>();
+            List<RoomInfo> missingRoomList = new List<RoomInfo>(); //Add On 020526
 
             try
             {
@@ -7046,89 +6740,11 @@ namespace XConnect.CommonUtilities
                 System.Diagnostics.Stopwatch timerx = new System.Diagnostics.Stopwatch();
                 timerx.Start();
 
-                string mongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"];
-                string databaseName = _mongoSettings.MongoDB_DatabaseName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"];
+                //string mongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"];
+                //string databaseName = _mongoSettings.MongoDB_DatabaseName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"];
                 string collectionName = "";
-                if (Roommapping == 1) //Add ON 30MAY2025
-                {
-                    collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
-                }
-                if (Roommapping == 2) //Add ON 30MAY2025
-                {
-                    collectionName = _mongoSettings.GimmonoxMongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
-                }
-
-
-                #region NotNeed
-                //// Split the string by commas and convert to a list of integers
-                //var hotelIds = SearchPara.Filters.HotelIDs.Split(',').Select(int.Parse).ToList();
-
-                //try
-                //{
-                //    // Initialize MongoDB client and get the collection
-                //    //var client = new MongoClient(mongoConnectionString);
-                //    //var database = client.GetDatabase(databaseName);
-                //    // var collection = database.GetCollection<BsonDocument>(collectionName);
-                //    var collection = _roomMapping.GetCollection<BsonDocument>(collectionName); //200525
-
-                //    // Create filter using $in operator
-                //    var filter = Builders<BsonDocument>.Filter.In("HotelId", hotelIds);
-
-                //    // Fetch the matching records
-                //    var results = collection.Find(filter).ToList();
-
-                //    /// Insert results into a DataTable
-                //    DtHotelInformation = ConvertToDataTable(results);
-
-                //}
-                //catch (Exception ex)
-                //{
-                //    DtHotelInformation = new DataTable();
-                //    await _exception.Error(ex);
-                //}
-                #endregion NotNeed
-
-
-                var hotelIds = finalResponse.AvailabilityRS.HotelResult
-                .Select(h => h.HotelId)
-                .ToList();
-
-                try
-                {
-                    var collection = _roomMapping.GetCollection<BsonDocument>(collectionName);
-
-                    FilterDefinition<BsonDocument> filter;
-
-                    if (hotelIds.Count == 1)
-                    {
-                        // Best performance for single ID
-                        filter = Builders<BsonDocument>.Filter.Eq("HotelId", hotelIds[0]);
-                    }
-                    else
-                    {
-                        // Normal IN filter for multiple HotelIds
-                        filter = Builders<BsonDocument>.Filter.In("HotelId", hotelIds);
-                    }
-
-                    var projection = Builders<BsonDocument>.Projection
-                        .Include("HotelId")
-                        .Include("RoomId")
-                        .Include("SupplierRoomName")
-                        .Include("standardName")
-                        .Include("supplierid")
-                        .Exclude("_id");
-
-                    var results = await collection.Find(filter)
-                                                  .Project(projection)
-                                                  .ToListAsync();
-
-                    DtHotelInformation = ConvertToDataTable(results);
-                }
-                catch (Exception ex)
-                {
-                    DtHotelInformation = new DataTable();
-                    await _exception.Error(ex);
-                }
+                IMongoCollection<BsonDocument> collection = null;
+                collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
 
                 if (SearchPara != null)
                 {
@@ -7218,6 +6834,7 @@ namespace XConnect.CommonUtilities
                             // Dictionary to hold the lowest-priced unique rooms in the current HotelOption
                             var uniqueRoomMap = new Dictionary<string, _FinalRoomList_Comp>();
                             int totalroom = 0;
+                            string processedRoomTypeName = "";
                             foreach (var roomGroup in sortedRoomGroups)
                             {
                                 var roomList = roomGroup.ToList(); // Convert roomGroup to a list to access indices
@@ -7228,7 +6845,19 @@ namespace XConnect.CommonUtilities
                                     int Roomseq = roomList[roomIndex].Sequence;
                                     string S_RoomNo = null; // ADD ON 29-JAN-2025
                                                             // Process RoomTypeName and Refundability
-                                    string processedRoomTypeName = getMappedRoom_rlm(currentRoom.RoomTypeName.Split('|')[0].Trim(), DtHotelInformation, Convert.ToInt32(hotel.OwnsystemHotelId), ref S_RoomNo); // ADD ON 29-JAN-2025
+
+                                        processedRoomTypeName = getMappedRoom_rlmASAL(currentRoom.RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(hotel.OwnsystemHotelId), collection, ref S_RoomNo); // ADD ON 6FEB2026
+
+                                    if (string.IsNullOrEmpty(S_RoomNo)) //Add On 17SEP2025
+                                    {
+                                        missingRoomList.Add(new RoomInfo
+                                        {
+                                            ProcessedRoomTypeName = processedRoomTypeName,
+                                            OwnsystemHotelId = Convert.ToInt32(hotel.OwnsystemHotelId),
+                                            Time = DateTime.Now
+                                        });
+                                    }
+
                                     string refundability = "non-refundable";
                                     List<_FinalPolicy> cancellationPolicies = new List<_FinalPolicy>();
 
@@ -7428,6 +7057,406 @@ namespace XConnect.CommonUtilities
                 availHotelList_Comp.Count = finalResponse.AvailabilityRS.Count;
                 availHotelList_Comp.Currency = finalResponse.AvailabilityRS.Currency;
                 finalResponse_Comp.AvailabilityRS = availHotelList_Comp;
+
+                if (missingRoomList.Any()) //Add On 020526
+                {
+                    try
+                    {
+                        var UnMappedmongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_UmMappedRoomMapping;//  ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"]; // ADD ON 29-JAN-2025
+                        var UnMappeddatabaseName = _mongoSettings.MongoDB_DatabaseName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"]; // ADD ON 29-JAN-2025
+                        var UnMappedcollectionName = _mongoSettings.MongoDB_CollectionName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
+
+                        var collection1 = _RowroomMapping.GetCollection<RoomInfo>(UnMappedcollectionName);
+
+                        _ = InsertRoomsBulkAsync(collection1, missingRoomList);
+                    }
+                    catch (Exception ex)
+                    {
+                        await _exception.Error(ex);
+                    }
+
+                }
+
+                return finalResponse_Comp;
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+            }
+            return null;
+        }
+        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping_withoutEx(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1) //Add int Roommapping=0 on 30MAY2025
+        {
+            AvailabilityRS_Comp availHotelList_Comp = new AvailabilityRS_Comp();
+            AvailHotelList_Comp finalResponse_Comp = new AvailHotelList_Comp();
+            availHotelList_Comp.HotelResult = new List<_HotelListNew_Comp>();
+            List<RoomInfo> missingRoomList = new List<RoomInfo>(); //Add On 020526
+
+
+            try
+            {
+                availHotelList_Comp.SearchKey = NewSearchKey;
+                int ab = 0;
+                // Global dictionary to track unique roomKeys across all HotelOptions
+                HashSet<string> globalRoomKeySet = new HashSet<string>();
+                DataTable DtHotelInformation = new DataTable();
+                System.Diagnostics.Stopwatch timerx = new System.Diagnostics.Stopwatch();
+                timerx.Start();
+
+                //string mongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"];
+                //string databaseName = _mongoSettings.MongoDB_DatabaseName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"];
+                string collectionName = "";
+
+                IMongoCollection<BsonDocument> collection = null;
+
+                collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
+               
+                
+
+                if (SearchPara != null)
+                {
+                    timerx.Stop();
+                    SearchPara.SupplierTime += ",|RoomMappingSP_UsingMongo" + "|Time :" + timerx.Elapsed.ToString();
+                }
+
+                if (SearchPara != null)
+                {
+                    timerx.Stop();
+                    SearchPara.SupplierTime += ",|RoomMappingSP" + "|Time :" + timerx.Elapsed.ToString();
+                }
+
+                for (int giataSeq = 0; giataSeq < finalResponse.AvailabilityRS.HotelResult.Count; giataSeq++)
+                {
+                    _HotelListNew_Comp finallist = new _HotelListNew_Comp
+                    {
+                        HotelId = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelId,
+                        StartPrice = finalResponse.AvailabilityRS.HotelResult[giataSeq].StartPrice
+                    };
+
+                    // Dictionary to store unique options based on room configurations for the current hotel
+                    Dictionary<string, Options_Comp> uniqueOptionsMap = new Dictionary<string, Options_Comp>();
+                    string gitaid = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelCode;
+
+
+                    for (int hotelSeq = 0; hotelSeq < finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption.Count; hotelSeq++)
+                    {
+                        _HotelList hotel = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelOptionId.DecryptHotelToken();
+
+                        int sequence = 0; // Initialize a sequence counter // ADD on 29-JAN-2025
+                        if (finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms != null) // Add on 10 June 2025
+                        {
+                            foreach (var roomGroup in finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms) // ADD on 29-JAN-2025
+                            {
+                                //foreach (var room in roomGroup)
+                                //{
+
+
+                                //    room.Sequence = sequence++; // Assign a unique sequence number
+                                //}
+                                int seq = sequence;
+                                for (int ir = 0; ir < roomGroup.Count(); ir++) // Use Count(), Count, or Length based on type
+                                {
+                                    //sequence = roomGroup[ir].Sequence; // Access the room using index
+                                    if (ir == 0)
+                                    {
+                                        seq = sequence;
+                                        roomGroup[ir].Sequence = sequence++;
+                                    }
+                                    else
+                                    {
+                                        roomGroup[ir].Sequence = seq;
+                                    }
+
+                                }
+
+
+                            }
+
+                            //// Sort rooms in this HotelOption by price
+                            //var sortedRoomGroups = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms
+                            //    .SelectMany(roomGroup => roomGroup) // Flatten the groups for sorting
+                            //    .OrderBy(room => room.Price)
+                            //    .GroupBy(room => room.RoomNo) // Regroup by RoomNo after sorting
+                            //    .ToList(); //cmt on 18/July/2024
+
+                            var sortedRoomGroups = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms
+                                       .Where(roomGroup =>
+                                       {
+                                           var first = roomGroup.First();
+                                           bool isRefundable = first.CancellationPolicy.Any(p => Convert.ToDecimal(p.CancellationPrice) == 0);
+
+                                           return roomGroup.All(r =>
+                                               r.Sequence == first.Sequence &&
+                                               r.RoomTypeName == first.RoomTypeName &&
+                                               r.MealName == first.MealName &&
+                                               r.CancellationPolicy.Any(p => Convert.ToDecimal(p.CancellationPrice) == 0) == isRefundable
+                                           );
+                                       })
+                                       .SelectMany(group => group) // flatten the kept groups
+                                       .OrderBy(room => room.Price)
+                                       .GroupBy(room => room.RoomNo)
+                                       .ToList();   // Add on 18/July/2025
+
+
+                            // Dictionary to hold the lowest-priced unique rooms in the current HotelOption
+                            var uniqueRoomMap = new Dictionary<string, _FinalRoomList_Comp>();
+                            int totalroom = 0;
+                            string processedRoomTypeName = "";
+                            foreach (var roomGroup in sortedRoomGroups)
+                            {
+                                var roomList = roomGroup.ToList(); // Convert roomGroup to a list to access indices
+                                for (int roomIndex = 0; roomIndex < roomList.Count; roomIndex++)
+                                {
+                                    var currentRoom = roomList[roomIndex];
+
+                                    int Roomseq = roomList[roomIndex].Sequence;
+                                    string S_RoomNo = null; // ADD ON 29-JAN-2025
+                                   
+                                        processedRoomTypeName = getMappedRoom_rlmASAL(currentRoom.RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(hotel.OwnsystemHotelId), collection, ref S_RoomNo); // ADD ON 6FEB2026
+
+
+                                    //if (string.IsNullOrEmpty(S_RoomNo)) //Add On 02may26
+                                    //{
+                                    //    missingRoomList.Add(new RoomInfo
+                                    //    {
+                                    //        ProcessedRoomTypeName = processedRoomTypeName,
+                                    //        OwnsystemHotelId = Convert.ToInt32(hotel.OwnsystemHotelId),
+                                    //        Time = DateTime.Now
+                                    //    });
+                                    //}
+
+                                    if (string.IsNullOrEmpty(S_RoomNo))
+                                    {
+                                        missingRoomList.Add(new RoomInfo
+                                        {
+                                            ProcessedRoomTypeName = processedRoomTypeName,
+                                            OwnsystemHotelId = Convert.ToInt32(hotel.OwnsystemHotelId),
+                                            Time = DateTime.Now
+                                        });
+
+                                        continue; 
+                                    }
+
+
+                                    string refundability = "non-refundable";
+                                    List<_FinalPolicy> cancellationPolicies = new List<_FinalPolicy>();
+
+                                    if (withcancellation && currentRoom.CancellationPolicy != null)
+                                    {
+                                        foreach (var policy in currentRoom.CancellationPolicy)
+                                        {
+                                            var cancellationPolicy = new _FinalPolicy
+                                            {
+                                                FromDate = Convert.ToDateTime(policy.FromDate).ToString("MM-dd-yyyy"),
+                                                ToDate = Convert.ToDateTime(policy.ToDate).ToString("MM-dd-yyyy"),
+                                                CancellationPrice = Convert.ToDecimal(policy.CancellationPrice)
+                                            };
+                                            cancellationPolicies.Add(cancellationPolicy);
+
+                                            if (DateTime.TryParse(policy.FromDate, out DateTime fromDate) &&
+                                                fromDate == DateTime.Today &&
+                                                policy.CancellationPrice == 0.0m)
+                                            {
+                                                refundability = "refundable";
+                                            }
+                                        }
+                                    }
+                                    string roomKey = "";
+                                    if (SearchPara.Rooms.Count == 1)
+                                    {
+                                        if (_supplierRes.SwapMealName(AgentCode.ToLower()))//Added on 17-DEC-2024
+                                                                                           // Generate roomKey based on RoomNo, RoomTypeName, MappedMealName, and Refundability
+
+                                            roomKey = $"{currentRoom.RoomNo}_{processedRoomTypeName.Split('|')[0]}_{currentRoom.MealName}_{refundability}";
+                                        else
+                                            roomKey = $"{currentRoom.RoomNo}_{processedRoomTypeName.Split('|')[0]}_{currentRoom.MappedMealName}_{refundability}";
+                                    }
+                                    else
+                                    {
+                                        if (_supplierRes.SwapMealName(AgentCode.ToLower()))//Added on 17-DEC-2024
+                                                                                           // Generate roomKey based on RoomNo, RoomTypeName, MappedMealName, and Refundability
+
+                                            roomKey = $"{currentRoom.RoomNo}_{processedRoomTypeName.Split('|')[0]}_{currentRoom.MealName}_{refundability}_{finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom}";
+                                        else
+                                            roomKey = $"{currentRoom.RoomNo}_{processedRoomTypeName.Split('|')[0]}_{currentRoom.MappedMealName}_{refundability}_{finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom}";
+                                    }
+
+                                    //creating room token
+
+                                    string RoomToken_New = new CacheRoomToken // ADD ON 29-JAN-2025
+                                    {
+                                        giataid_Seq = giataSeq,
+                                        hotelid_Seq = hotelSeq,
+                                        Room_seqno = Roomseq,
+                                        roomno = Convert.ToInt32(currentRoom.RoomNo) - 1 //totalroom //ADD ON 11-FEB-2025
+                                    }.EncryptCacheRoomToken();
+
+                                    // Check global map to ensure no duplicate roomKey across all HotelOptionId
+                                    if (globalRoomKeySet.Contains(roomKey))
+                                    {
+                                        continue; // Skip adding this room as it is a duplicate
+                                    }
+
+                                    // Initialize RoomList for this unique room
+                                    _FinalRoomList_Comp RoomList = new _FinalRoomList_Comp
+                                    {
+                                        RoomToken = RoomToken_New,
+                                        RoomNo = currentRoom.RoomNo,
+                                        RoomTypeName = processedRoomTypeName,
+                                        MealName = currentRoom.MealName,
+                                        Price = currentRoom.Price,
+                                        BookingStatus = currentRoom.BookingStatus,
+                                        MappedMealName = currentRoom.MappedMealName,
+                                        CancellationPolicy = cancellationPolicies,
+                                        SEQNO = Roomseq  // ADD On 4-FEB-2025
+                                    };
+
+                                    // Add room to uniqueRoomMap if it’s the lowest-priced or if not already added
+                                    if (!uniqueRoomMap.ContainsKey(roomKey) || currentRoom.Price < uniqueRoomMap[roomKey].Price)
+                                    {
+                                        uniqueRoomMap[roomKey] = RoomList;
+                                        globalRoomKeySet.Add(roomKey); // Track globally to avoid duplicate roomKey
+                                    }
+                                }
+
+                                totalroom++;
+                            }
+
+                            // Create the HotelOption with unique rooms only if uniqueRoomMap has values
+                            if (uniqueRoomMap.Values.Any())
+                            {
+                                if (finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom == false && SearchPara.Rooms.Count > 1)
+                                {
+                                    Options_Comp option = new Options_Comp
+                                    {
+                                        HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                        // Set MinPrice to the sum of prices for the RoomTypeName with the cheapest RoomNo 1
+                                        MinPrice = uniqueRoomMap.Values
+                                                        .Where(r => Convert.ToInt32(r.RoomNo) == 1) // Filter RoomNo 1
+                                                        .OrderBy(r => r.Price)     // Find the cheapest RoomNo 1
+                                                        .Select(r => uniqueRoomMap.Values
+                                                            .Where(room => room.RoomTypeName == r.RoomTypeName && room.MappedMealName == r.MappedMealName) // Match the RoomTypeName
+                                                            .Sum(room => room.Price)) // Sum prices of all rooms with the same RoomTypeName
+                                                        .FirstOrDefault(), // Get the sum for the RoomTypeName with the cheapest RoomNo 1
+                                        IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
+
+                                        //// Group rooms by RoomTypeName
+                                        //HotelRooms = uniqueRoomMap.Values
+                                        //            .GroupBy(r => (r.RoomTypeName, r.MappedMealName))
+                                        //            .Select(group => group.OrderBy(r => r.RoomNo).ToList()) // Sort rooms by RoomNo in each group
+                                        //            .ToList()
+
+                                        //// Group rooms by RoomTypeName    //ADD ON 30-JAN-2025
+                                        //HotelRooms = uniqueRoomMap.Values
+                                        //                .GroupBy(r => (r.RoomTypeName, r.MappedMealName,
+                                        //                               r.CancellationPolicy.Any(p => p.CancellationPrice == 0) ? "refundable" : "non-refundable"))
+                                        //                .Select(group => group.OrderBy(r => r.RoomNo).ToList()) // Sort rooms by RoomNo in each group
+                                        //                .ToList()
+
+                                        //SEQNO
+
+                                        HotelRooms = uniqueRoomMap.Values
+                                                                .GroupBy(r => (r.SEQNO, r.MappedMealName
+                                                                               , r.CancellationPolicy.Any(p => p.CancellationPrice == 0) ? "refundable" : "non-refundable")
+                                                                               )
+                                                                .Select(group => group.OrderBy(r => r.RoomNo).ToList()) // Sort rooms by RoomNo in each group
+                                                                .ToList()  // //ADD ON 4-FEB-2025
+
+
+
+
+                                    };
+
+
+                                    // Unique key for HotelOption based on the sorted unique rooms
+                                    string optionKey = string.Join(",", uniqueRoomMap.Values.Select(r => $"{r.RoomNo}_{r.RoomTypeName.Split('|')[0]}_{r.MappedMealName}_{(r.CancellationPolicy.Any(p => p.CancellationPrice == 0) ? "refundable" : "non-refundable")}"));
+
+                                    // Add the option if it’s cheaper or does not already exist in uniqueOptionsMap
+                                    if (!uniqueOptionsMap.ContainsKey(optionKey) || option.MinPrice < uniqueOptionsMap[optionKey].MinPrice)
+                                    {
+                                        uniqueOptionsMap[optionKey] = option;
+                                    }
+                                }
+                                else
+                                {
+                                    if (uniqueRoomMap.Values.Any())
+                                    {
+                                        Options_Comp option = new Options_Comp
+                                        {
+                                            HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                            MinPrice = uniqueRoomMap.Values.Min(r => r.Price),
+                                            IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
+                                            HotelRooms = uniqueRoomMap.Values
+                                                .Select(room => new List<_FinalRoomList_Comp> { room }) // Wrap each room in its own list
+                                                .ToList()
+                                        };
+
+                                        // Unique key for HotelOption based on the sorted unique rooms
+                                        string optionKey = string.Join(",", uniqueRoomMap.Values.Select(r => $"{r.RoomNo}_{r.RoomTypeName.Split('|')[0]}_{r.MappedMealName}_{(r.CancellationPolicy.Any(p => p.CancellationPrice == 0) ? "refundable" : "non-refundable")}"));
+
+                                        // Add the option if it’s cheaper or does not already exist in uniqueOptionsMap
+                                        if (!uniqueOptionsMap.ContainsKey(optionKey) || option.MinPrice < uniqueOptionsMap[optionKey].MinPrice)
+                                        {
+                                            uniqueOptionsMap[optionKey] = option;
+                                        }
+                                    }
+
+                                }
+
+                            }
+
+
+                        }
+                        else // Add on 10 June 2025 
+                        {
+                            // If HotelRooms is null, we still want to return a default HotelOption entry
+                            Options_Comp option = new Options_Comp
+                            {
+                                HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                MinPrice = finalResponse.AvailabilityRS.HotelResult[giataSeq].StartPrice,
+                                IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
+                                HotelRooms = new List<List<_FinalRoomList_Comp>>() // Empty list
+                            };
+
+                            // Add default option to map (key doesn't matter much in this case)
+                            string optionKey = $"{option.HotelOptionId}_default_empty";
+                            if (!uniqueOptionsMap.ContainsKey(optionKey))
+                            {
+                                uniqueOptionsMap[optionKey] = option;
+                            }
+                        }
+
+
+                    }
+
+                    // Add deduplicated options to the final list for the hotel
+                    finallist.HotelOption = uniqueOptionsMap.Values.ToList();
+                    availHotelList_Comp.HotelResult.Add(finallist);
+                }
+
+                availHotelList_Comp.Count = finalResponse.AvailabilityRS.Count;
+                availHotelList_Comp.Currency = finalResponse.AvailabilityRS.Currency;
+                finalResponse_Comp.AvailabilityRS = availHotelList_Comp;
+
+
+                if (missingRoomList.Any()) //Add On 17SEP2025
+                {
+                    try
+                    {
+                        var UnMappedmongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_UmMappedRoomMapping;//  ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"]; // ADD ON 29-JAN-2025
+                        var UnMappeddatabaseName = _mongoSettings.MongoDB_DatabaseName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"]; // ADD ON 29-JAN-2025
+                        var UnMappedcollectionName = _mongoSettings.MongoDB_CollectionName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
+
+                        var collection1 = _RowroomMapping.GetCollection<RoomInfo>(UnMappedcollectionName);
+
+                        _ = InsertRoomsBulkAsync(collection1, missingRoomList);
+                    }
+                    catch (Exception ex)
+                    {
+                        await _exception.Error(ex);
+                    }
+
+                }
                 return finalResponse_Comp;
             }
             catch (Exception ex)
@@ -7441,6 +7470,7 @@ namespace XConnect.CommonUtilities
             AvailabilityRS_Comp availHotelList_Comp = new AvailabilityRS_Comp();
             AvailHotelList_Comp finalResponse_Comp = new AvailHotelList_Comp();
             availHotelList_Comp.HotelResult = new List<_HotelListNew_Comp>();
+            List<RoomInfo> missingRoomList = new List<RoomInfo>(); //Add On 020526
 
             try
             {
@@ -7452,90 +7482,17 @@ namespace XConnect.CommonUtilities
                 System.Diagnostics.Stopwatch timerx = new System.Diagnostics.Stopwatch();
                 timerx.Start();
 
-                string mongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_RoomMapping;//  ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"]; // ADD ON 29-JAN-2025
-                string databaseName = _mongoSettings.MongoDB_DatabaseName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"]; // ADD ON 29-JAN-2025
-                                                                                      //string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"]; // ADD ON 29-JAN-2025
+                //string mongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_RoomMapping;//  ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"]; // ADD ON 29-JAN-2025
+                //string databaseName = _mongoSettings.MongoDB_DatabaseName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"]; // ADD ON 29-JAN-2025
+                //string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"]; // ADD ON 29-JAN-2025
                 string collectionName = "";
-                if (Roommapping == 1) //Add ON 30MAY2025
-                {
-                    collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
-                }
-                if (Roommapping == 0 || Roommapping == 2) //Add ON 30MAY2025
-                {
-                    collectionName = _mongoSettings.GimmonoxMongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
-                }
+                IMongoCollection<BsonDocument> collection = null;
+                collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
+                
 
-                #region NotNeed
-                //// Split the string by commas and convert to a list of integers
-                //var hotelIds = SearchPara.Filters.HotelIDs.Split(',').Select(int.Parse).ToList();
+               
 
-                //try
-                //{
-                //    // Initialize MongoDB client and get the collection
-                //    //var client = new MongoClient(mongoConnectionString);
-                //    //var database = client.GetDatabase(databaseName);
-                //    // var collection = database.GetCollection<BsonDocument>(collectionName);
-                //    var collection = _roomMapping.GetCollection<BsonDocument>(collectionName); //200525
-
-                //    // Create filter using $in operator
-                //    var filter = Builders<BsonDocument>.Filter.In("HotelId", hotelIds);
-
-                //    // Fetch the matching records
-                //    var results = collection.Find(filter).ToList();
-
-                //    /// Insert results into a DataTable
-                //    DtHotelInformation = ConvertToDataTable(results);
-
-                //}
-                //catch (Exception ex)
-                //{
-                //    DtHotelInformation = new DataTable();
-                //    await _exception.Error(ex);
-                //}
-                #endregion NotNeed
-
-
-                var hotelIds = finalResponse.AvailabilityRS.HotelResult
-                .Select(h => h.HotelId)
-                .ToList();
-
-                try
-                {
-                    var collection = _roomMapping.GetCollection<BsonDocument>(collectionName);
-
-                    FilterDefinition<BsonDocument> filter;
-
-                    if (hotelIds.Count == 1)
-                    {
-                        // Best performance for single ID
-                        filter = Builders<BsonDocument>.Filter.Eq("HotelId", hotelIds[0]);
-                    }
-                    else
-                    {
-                        // Normal IN filter for multiple HotelIds
-                        filter = Builders<BsonDocument>.Filter.In("HotelId", hotelIds);
-                    }
-
-                    var projection = Builders<BsonDocument>.Projection
-                        .Include("HotelId")
-                        .Include("RoomId")
-                        .Include("SupplierRoomName")
-                        .Include("standardName")
-                        .Include("supplierid")
-                        .Exclude("_id");
-
-                    var results = await collection.Find(filter)
-                                                  .Project(projection)
-                                                  .ToListAsync();
-
-                    DtHotelInformation = ConvertToDataTable(results);
-                }
-                catch (Exception ex)
-                {
-                    DtHotelInformation = new DataTable();
-                    await _exception.Error(ex);
-                }
-
+               
 
                 if (SearchPara != null)
                 {
@@ -7624,7 +7581,7 @@ namespace XConnect.CommonUtilities
 
                             // Dictionary to hold the lowest-priced unique rooms in the current HotelOption
                             var uniqueRoomMap = new Dictionary<string, _FinalRoomList_Comp>();
-                            int totalroom = 0;
+                            int totalroom = 0; string processedRoomTypeName = "";
                             foreach (var roomGroup in sortedRoomGroups)
                             {
                                 var roomList = roomGroup.ToList(); // Convert roomGroup to a list to access indices
@@ -7635,8 +7592,22 @@ namespace XConnect.CommonUtilities
                                     int Roomseq = roomList[roomIndex].Sequence;  // ADD ON 29-JAN-2025
 
                                     string S_RoomNo = null; // ADD ON 29-JAN-2025
-                                                            // Process RoomTypeName and Refundability
-                                    string processedRoomTypeName = getMappedRoom_rlm(currentRoom.RoomTypeName.Split('|')[0].Trim(), DtHotelInformation, Convert.ToInt32(hotel.OwnsystemHotelId), ref S_RoomNo); // ADD ON 29-JAN-2025
+                                    //                        // Process RoomTypeName and Refundability
+                                    //if (!NewRoomMappingEnable)
+                                    //    processedRoomTypeName = getMappedRoom_rlm(currentRoom.RoomTypeName.Split('|')[0].Trim(), DtHotelInformation, Convert.ToInt32(hotel.OwnsystemHotelId), ref S_RoomNo); // ADD ON 29-JAN-2025 //CMT on 10FEB2026
+                                    //else
+                                        processedRoomTypeName = getMappedRoom_rlmASAL(currentRoom.RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(hotel.OwnsystemHotelId), collection, ref S_RoomNo); // Add 10FEB2026
+
+                                    if (string.IsNullOrEmpty(S_RoomNo)) //Add On 17SEP2025
+                                    {
+                                        missingRoomList.Add(new RoomInfo
+                                        {
+                                            ProcessedRoomTypeName = processedRoomTypeName,
+                                            OwnsystemHotelId = Convert.ToInt32(hotel.OwnsystemHotelId),
+                                            Time = DateTime.Now
+                                        });
+                                    }
+
                                     string refundability = "non-refundable";
                                     List<_FinalPolicy> cancellationPolicies = new List<_FinalPolicy>();
 
@@ -7826,6 +7797,26 @@ namespace XConnect.CommonUtilities
                 availHotelList_Comp.Count = finalResponse.AvailabilityRS.Count;
                 availHotelList_Comp.Currency = finalResponse.AvailabilityRS.Currency;
                 finalResponse_Comp.AvailabilityRS = availHotelList_Comp;
+
+                if (missingRoomList.Any()) //Add On 17SEP2025
+                {
+                    try
+                    {
+                        var UnMappedmongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_UmMappedRoomMapping;//  ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"]; // ADD ON 29-JAN-2025
+                        var UnMappeddatabaseName = _mongoSettings.MongoDB_DatabaseName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"]; // ADD ON 29-JAN-2025
+                        var UnMappedcollectionName = _mongoSettings.MongoDB_CollectionName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
+
+                        var collection1 = _RowroomMapping.GetCollection<RoomInfo>(UnMappedcollectionName);
+
+                        _ = InsertRoomsBulkAsync(collection1, missingRoomList);
+                    }
+                    catch (Exception ex)
+                    {
+                        await _exception.Error(ex);
+                    }
+
+                }
+
                 return finalResponse_Comp;
             }
             catch (Exception ex)
@@ -7978,7 +7969,7 @@ namespace XConnect.CommonUtilities
             }
             return null;
         }
-        
+
         //Add On 17SEP2025  ConvertToFinalResponseList_Dag2
         public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_Dag2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null)
         {
@@ -10481,6 +10472,43 @@ new SqlParameter("@timeoutMs", timeoutMs)
             }
 
             return strOutput;
+        }
+        public string getMappedRoom_rlm(string originalRoomName, DataTable DtHotelInformation, int HotelId, ref string S_RoomNo)
+        {
+            try
+            {
+                if (DtHotelInformation != null && DtHotelInformation.Rows.Count > 0)
+                {
+
+                    DataRow[] dtr = DtHotelInformation.Select("SupplierRoomName='" + originalRoomName + "' and HotelId='" + HotelId + "'");
+                    if (dtr.Length > 0)
+                    {
+                        originalRoomName = Convert.ToString(dtr[0]["standardName"]) /*+ "|" + " AMapped" + "(" + originalRoomName + ")"*/;
+                        S_RoomNo = Convert.ToString(dtr[0]["RoomId"]) /*+ "|" + " AMapped" + "(" + originalRoomName + ")"*/;  // ADD ON 29-JAN-2025 
+                        return originalRoomName;
+                    }
+                    else
+                    {
+                        S_RoomNo = ""; // ADD ON 29-JAN-2025
+                        return originalRoomName /*+ "|" + " Not"*/;
+                    }
+                }
+                else
+                {
+                    S_RoomNo = ""; // ADD ON 29-JAN-2025
+                    return originalRoomName /*+ "|" + " Not"*/;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                //ExceptionManager.LogException(ex);
+
+                // Return the original room name in case of an exception
+                S_RoomNo = ""; // ADD ON 29-JAN-2025
+                return originalRoomName;
+            }
+
         }
 
         public async Task InsertVervoTechLogs(int AgentId, int GiataId, string Req, string Response, string Searchkey, string Status, string timer)

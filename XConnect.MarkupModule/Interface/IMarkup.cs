@@ -21,5 +21,8 @@ namespace XConnect.Markup.Interface
 
         //Recheck - 270525
         Task<DataTable> GetCommonMarkup(int CountryId, int CityID, int MarkupCategaryID, int AgentID = 0);
+        //Added on 01-may-26
+        void getAgetMarkupSettingNew_new(string suppliername, string raynaid, DataTable dtSuplierMarkup, DataSet dsMarkupDetails, ref double AgentPercentage, ref double AgentMarkupAmount, ref Boolean blnIsShowSupplier, ref Boolean isPerce, int agentid, int hotelRating, int CityID, string CountryId, string CheckinDate1);
+
     }
 }
