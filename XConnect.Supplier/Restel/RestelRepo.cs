@@ -325,6 +325,7 @@ namespace XConnect.Supplier.Restel
                     DataSet Restel_Response = _commonMethod.GetDataSetFromXMLString(ResponseData);
                     if (Restel_Response == null || Restel_Response.Tables["hot"] == null)
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;

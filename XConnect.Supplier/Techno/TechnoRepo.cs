@@ -398,6 +398,7 @@ namespace XConnect.Supplier.Techno
                     #region PriceOnly RS
                     if (ResponseData == string.Empty)
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
@@ -405,6 +406,7 @@ namespace XConnect.Supplier.Techno
                     //string ResponseData2 = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(ResponseData, "root").InnerXml;
                     if (ResponseData == string.Empty || ResponseData.Contains("ErrorTxt"))
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
@@ -414,6 +416,7 @@ namespace XConnect.Supplier.Techno
                     //RoomResponse = Common.GetDataSetFromXMLString(ResponseData2);
                     if (WE_DMCResponse.AvailabilityRS == null)
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
