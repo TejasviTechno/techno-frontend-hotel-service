@@ -6466,22 +6466,6 @@ new SqlParameter("@AgentId", AgentId),
                         ProviderNew = "expedia";
                     if (ProviderNew.IndexOf("ean") >= 0)
                         ProviderNew = "ean";
-                    if (Provider.ToLower() == "exely")
-                    {
-                        var request = new HttpRequestMessage(HttpMethod.Post, _supplierConfig.Exely.BaseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.SearchRoomStays);
-
-                        request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
-
-                        request.Headers.Clear();
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        request.Headers.Add("X-API-KEY", Password);
-
-                        using (var response = await client.SendAsync(request, cts.Token))
-                        {
-                            var result = await response.Content.ReadAsStringAsync();
-                            return result;
-                        }
-                    }
 
 
 
@@ -6996,13 +6980,10 @@ new SqlParameter("@AgentId", AgentId),
                             break;
                         case "exely":
                             Request = new HttpRequestMessage(HttpMethod.Post, strHost);
+                            Request.Headers.Clear();
                             Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
                             Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                            Request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                            Request.Content.Headers.ContentType.CharSet = "utf-8";
                             Request.Headers.Add("X-Api-Key", Password);
-                            Request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-                            Request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("br"));
                             break;
                         default:
                             //Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
