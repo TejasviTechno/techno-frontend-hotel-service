@@ -4655,7 +4655,7 @@ namespace XConnect.CommonUtilities
 
                             break;
                         case "exely":
-                            dataFor.XmlNationality = Convert.ToString(GetThirdPartyStaticData_New(dtXMLCity.Tables[1], "Desc", Convert.ToString(Natinality), "XmlNationality", "Agoda"));
+                            dataFor.XmlNationality = Convert.ToString(GetThirdPartyStaticData_New(dtXMLCity.Tables[1], "Desc", Convert.ToString(Natinality), "XmlBaseNationality", "Agoda"));
 
                             break;
 

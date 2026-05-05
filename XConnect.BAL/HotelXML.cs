@@ -48588,7 +48588,11 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 string xMLHotelId = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
                                                                                 string checkIn = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["CheckInDate"]);
                                                                                 string checkOut = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["CheckOutDate"]);
-                                                                                Nationality = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["XmlNationality"]);
+                                                                                string exelyRoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]);
+                                                                                string[] exelyRtParts = exelyRoomTypeId.Split("$$$");
+                                                                                Nationality = exelyRtParts.Length > 5 && !string.IsNullOrWhiteSpace(exelyRtParts[5])
+                                                                                    ? exelyRtParts[5]
+                                                                                    : Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["XmlNationality"]);
                                                                                 string checksum = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["Checksum"]);
 
                                                                                 #endregion
@@ -54218,8 +54222,9 @@ new SqlParameter("@AgentId", AgentId),
                                             string checksum = rtParts.Length > 6 ? rtParts[6] : "";
                                             int noOfAdults = bookRequest.userCart.UserCartDetails[j].NoofAdult;
                                             int noOfChild = bookRequest.userCart.UserCartDetails[j].NoofChild;
+                                            string exelyNationality = rtParts.Length > 5 && !string.IsNullOrWhiteSpace(rtParts[5]) ? rtParts[5] : Nationality;
 
-                                            string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, "", xMLHotelId, checkIn, checkOut, exelyCurrency, Nationality, tokenData.AgentCode, checksum, roomTypeId, noOfAdults, noOfChild);
+                                            string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, "", xMLHotelId, checkIn, checkOut, exelyCurrency, exelyNationality, tokenData.AgentCode, checksum, roomTypeId, noOfAdults, noOfChild);
                                             string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _configuration["Exely:CreateBooking"].TrimStart('/');
 
                                             _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "WithinEarth");
