@@ -222,6 +222,7 @@ namespace XConnect.Analytics
                             Description = description,//allTasks[i].ResponseType,
                             CodeProcessingTimenew = allTasks[i].CodeProcessingTimeSupplier,
                             Search_Key = analyticsData.Search_Key,
+                            SuppliersearchResponseError = allTasks[i].SupplierResponseError,
                         };
                         
 
@@ -597,6 +598,7 @@ namespace XConnect.Analytics
                 SearchKey = _analyticsData.Search_Key,
                 TenantId = Convert.ToString(_userContextAccessor?.DecodedJwt?.TenantId) ?? "",
                 CodeProcessingTime = _analyticsData.CodeProcessingTimenew,
+                ResponseErrorLog = _analyticsData.SuppliersearchResponseError,
             };
         }
 

@@ -470,6 +470,7 @@ namespace XConnect.Supplier.GoGlobal
                 {
                     if (ResponseData == "")
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;
@@ -478,6 +479,7 @@ namespace XConnect.Supplier.GoGlobal
                     JsonResponse = rootElement.Value;
                     if (JsonResponse.Contains("<Error"))
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
@@ -485,6 +487,7 @@ namespace XConnect.Supplier.GoGlobal
                 }
                 catch (Exception ex)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -495,6 +498,7 @@ namespace XConnect.Supplier.GoGlobal
                 GoResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<GoGlobal.GoGlobalHotel>(JsonResponse);
                 if (GoResponse == null || GoResponse.Hotels == null)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;

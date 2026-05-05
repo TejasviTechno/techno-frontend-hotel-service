@@ -78,7 +78,7 @@ namespace XConnect.Models.Hotel
         public double CodeProcessingTimeSupplier { get; set; } // added 30042026
         
         public string ListHotelId { get; set; } //190625
-
+        public string SupplierResponseError { get; set; } //added 05052026
     }
 
     public class RQRS

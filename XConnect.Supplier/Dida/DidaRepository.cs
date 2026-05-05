@@ -773,6 +773,7 @@ namespace Xconnect.Expedia
                 #region Response    
                 if (ResponseData == string.Empty || ResponseData.Contains("ErrorTxt"))
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -789,7 +790,7 @@ namespace Xconnect.Expedia
                 {
 
 
-
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
 
                     _ = _exception.Error(ex);
@@ -801,6 +802,7 @@ namespace Xconnect.Expedia
                     if (Dida_Response != null && Dida_Response.Error != null)
                     {
                         //Item.ResponseStatus = Convert.ToInt32(Dida_Response.Error.Code);
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         Item.ActualReason = Dida_Response.Error.Message;
@@ -814,6 +816,7 @@ namespace Xconnect.Expedia
                 
                 if (Dida_Response == null)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -821,6 +824,7 @@ namespace Xconnect.Expedia
                 //if (DS.results.Count < 1)
                 if (Dida_Response.Success == null)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;

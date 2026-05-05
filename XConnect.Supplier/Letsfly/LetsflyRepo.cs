@@ -324,6 +324,7 @@ namespace XConnect.Supplier.Letsfly
 
                 if (letsflyResponse.hotellist == null)
                 {
+                    item.SupplierResponseError = ResponseData;
                     item.ResponseStatus = 204;
                     item.ResponseType = "NoCount";
                     return options;
@@ -734,7 +735,7 @@ namespace XConnect.Supplier.Letsfly
                 }
             }
             catch (Exception e)
-            {
+            { 
                 item.ResponseStatus = 404;
                 _ = _exception.Error(e);
                 return options;
