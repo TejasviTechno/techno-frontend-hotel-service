@@ -995,7 +995,6 @@ namespace XConnect.Supplier.Exely
                     // PREBOOK: POST /v1/bookings/verify
                     string verifyCheckIn = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]) ?? string.Empty;
                     string verifyCheckOut = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckOutDate"]) ?? string.Empty;
-                    string verifyNationality = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["NationalityName"]) ?? string.Empty;
                     int verifyAdults = 1;
                     int verifyChildren = 0;
                     string verifyRoomTypeId = string.Empty;
@@ -1007,6 +1006,9 @@ namespace XConnect.Supplier.Exely
                     }
                     string[] rtParts = verifyRoomTypeId.Split("$$$");
                     string verifyChecksum = rtParts.Length > 6 ? rtParts[6] : "";
+                    string verifyNationality = rtParts.Length > 5 && !string.IsNullOrWhiteSpace(rtParts[5])
+                        ? rtParts[5]
+                        : (Convert.ToString(dsCartDetails.Tables[0].Rows[i]["NationalityName"]) ?? string.Empty);
 
                     string verifyRQ = Get_Exely_VerifyBookingRQ(verifyAdults, verifyChildren, hotelId, verifyCheckIn, verifyCheckOut, verifyRoomTypeId, verifyNationality, verifyChecksum);
                     string verifyUrlPath = (_supplierConfig.Exely.VerifyBooking ?? string.Empty).TrimStart('/');
