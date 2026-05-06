@@ -457,7 +457,7 @@ namespace XConnect.Supplier.Exely
                                                 double companyBuyingPrice = FinalTotal;
                                                 FinalPrice = roomStay.total.priceBeforeTax + roomStay.total.taxAmount;
 
-                                                string RoomTypeId = roomStay.roomType.id + "$$$" + roomStay.ratePlan.id + "$$$" + FinalPrice.ToString(System.Globalization.CultureInfo.InvariantCulture) + "$$$" + roomCurrency + "$$$" + uniqno + "$$$" + XmlNationality + "$$$" + (roomStay.checksum ?? "");
+                                                string RoomTypeId = roomStay.roomType.id + "$$$" + roomStay.ratePlan.id + "$$$" + FinalPrice.ToString(System.Globalization.CultureInfo.InvariantCulture) + "$$$" + roomCurrency + "$$$" + uniqno + "$$$" + XmlNationality + "$$$" + (roomStay.checksum ?? "") + "$$$" + (roomStay.propertyId ?? "");
 
                                                 #region "Room"
                                                 DataRow drHotelRoom = dt_HotelRoom.NewRow();
