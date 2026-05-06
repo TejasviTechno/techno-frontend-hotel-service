@@ -67604,6 +67604,39 @@ new SqlParameter("@AgentId", AgentId),
                     SearchPara.SupplierTime += ",|Finish:Process Response  " + "|Time :" + timerroom2.Elapsed.ToString();
                 }
 
+                // added on 02052026
+                try
+                {
+                    if (_keySettings.SupplierPerformanceReport == "1")//&& IsErrorCountHigh == 0)//IsErrorCountHigh added on 22-AUG-2024 for disable SuppPerfLog is Sp take time
+                    {
+                        System.Diagnostics.Stopwatch timerroom3 = new System.Diagnostics.Stopwatch();
+                        timerroom3.Start();
+
+                        // if (Convert.ToInt16(AgentId) == 4)
+                        {
+                            //string searchkey1 = AllTask.
+
+                            //_ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
+                            _ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
+                            //SupplierPerformancereport(AllTask, AgentId);
+                        }
+                        timerroom3.Stop();
+                        SearchPara.SupplierTime += ",Finish:Supplier Perfomance Report " + "Execution Time :" + timerroom3.Elapsed.ToString();
+                    }
+                    else
+                    {
+                        //if (IsErrorCountHigh == 1)//Need to save history logs in table and send email
+                        //{
+
+                        //}
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await _exception.Error(ex);
+                }
+
+
                 #endregion
 
                 #endregion
@@ -67832,7 +67865,7 @@ new SqlParameter("@AgentId", AgentId),
         }
 
         public async Task<IActionResult> CreateResponseCompressed_agodahotelsearch<T>(HttpContext context, int statusCode, T value, string mediaType,
-  AgodaSearchPara RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId)
+  AgodaSearchPara RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, string Search_Key = "", long elapsedMilliseconds = 0)
         {
             try
             {
@@ -67851,7 +67884,108 @@ new SqlParameter("@AgentId", AgentId),
                             //Website = Convert.ToString(System.Web.HttpContext.Current.Request.Url.Host);
                             Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
                             hostName = System.Net.Dns.GetHostName();
-                            Task.Run(() => EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), RQ.token, APIName, "", tokendata.AgentId, ElapsedTime, ErrorCode, CityId, "", hostName, "")); //MainURL
+
+                            #region Elastic
+                            try
+                            {
+                                //if (APIName.ToLower() == "hotelsearch"
+                                //     || APIName.ToLower() == "precheck"
+                                //     || APIName.ToLower() == "booking"
+                                //     || APIName.ToLower() == "bookingids"
+                                //     || APIName.ToLower() == "bookingdetail"
+                                //     || APIName.ToLower() == "cancel")
+
+                                if (APIName.ToLower() == "availability"
+                            || APIName.ToLower() == "availabilitywithcancellation"
+                            || APIName.ToLower() == "availabilitywithcancellationv2"
+                            || APIName.ToLower() == "recheck"
+                            || APIName.ToLower() == "prebook"
+                            || APIName.ToLower() == "book"
+                            || APIName.ToLower() == "book_newversion"
+                            || APIName.ToLower() == "cancelbooking")
+                                {
+                                    string stage = APIName;
+                                    switch (APIName.ToLower())
+                                    {
+                                        //case "hotelsearch":
+                                        case "availabilitywithcancellation":
+                                        case "availability":
+                                        case "availabilitywithcancellationv2":
+                                            bool isapi = tokendata.IsFromAPI;
+                                            if (isapi)
+                                            {
+                                                stage = "Search";
+                                            }
+                                            else
+                                            {
+                                                stage = "SearchById";
+                                            }
+                                            break;
+
+                                        //case "recheck":
+                                        //    stage = "Recheck";
+                                        //    break;
+
+                                        //case "precheck":
+                                        case "prebook":
+
+                                            stage = "Prebook";
+                                            break;
+
+                                        case "cancel":
+                                            stage = "Cancel";
+                                            break;
+                                        case "booking":
+                                            stage = "Book";
+                                            break;
+
+                                        default:
+                                            stage = APIName;
+                                            break;
+                                    }
+                                    bool isapi1 = tokendata.IsFromAPI;
+                                    //bool isfromagoda = tokendata.IsFromAgoda;
+
+                                    string source = "";
+                                    if (isapi1)
+                                    {
+                                        source = "APIOut";
+                                    }
+                                    else
+                                    {
+                                        source = "Web";
+                                    }
+                                    //else
+                                    //{
+                                    //    source = "Agoda";
+                                    //}
+
+                                    _analytic.PushHotelDetailsClientDataForAnalyticsAsyc(new AnalyticsData
+                                    {
+                                        Result = value,
+                                        Action = APIName,
+                                        HttpStatusCode = Convert.ToInt32(statusCode),
+                                        Stage = stage,
+                                        // Payload = payload,
+                                        Payload = RQ,
+                                        ElapsedTime = elapsedMilliseconds,
+                                        Description = ErrorCode,
+                                        Errorcode = ErrorCode,
+                                        //Search_Key = searchKeyRP,
+                                        Search_Key = Search_Key,
+                                        source = source
+
+                                    });
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                await _exception.Error(ex);
+                            }
+
+                            #endregion
+
+
 
 
 
@@ -67875,6 +68009,8 @@ new SqlParameter("@AgentId", AgentId),
                                 };
 
                                 jsonString = System.Text.Json.JsonSerializer.Serialize(value, options);
+                                Task.Run(() => EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), RQ.token, APIName, Search_Key, "", tokendata.AgentId, ElapsedTime, ErrorCode, CityId, "", hostName, "")); //MainURL
+
                             }
                             else
                             {
@@ -67962,7 +68098,9 @@ new SqlParameter("@AgentId", AgentId),
             }
         }
 
-        public void EnterApiLogs(string RequestId, string Request, string Response, string Token, string ApiName, string IpAddress, int AgentId,
+        
+
+            public void EnterApiLogs(string RequestId, string Request, string Response, string Token, string ApiName, string Search_Key, string IpAddress, int AgentId,
             string ElapsedTime, string ErrorCode, string CityId, string CustomerIpAddress, string hostName = "", string MainURL = "", string RefNo = "", string IntRefNo = "")
         {
             try
@@ -67984,7 +68122,9 @@ new SqlParameter("@AgentId", AgentId),
                    new SqlParameter("@hostName",hostName),
                   new SqlParameter("@MainURL",MainURL),
                   new SqlParameter("@RefNo",RefNo),
-                   new SqlParameter("@IntRefNo",IntRefNo)
+                   new SqlParameter("@IntRefNo",IntRefNo),
+                   new SqlParameter("@Searchkey",Search_Key)
+
 
                 };
                 // DLConnection db = new DLConnection();
