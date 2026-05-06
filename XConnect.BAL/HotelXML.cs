@@ -48594,7 +48594,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 #endregion
 
                                                                                 string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dsCartDetails, dtPassengers, UniqueNo, i, j, xMLHotelId, checkIn, checkOut, exelyCurrency, Nationality, tokenData.AgentCode, checksum);
-                                                                                string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _configuration["Exely:CreateBooking"].TrimStart('/');
+                                                                                string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.CreateBooking.TrimStart('/');
 
                                                                                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Request Confirm", ReferenceNo, "WithinEarth");
                                                                                 Error = "";
@@ -54221,7 +54221,7 @@ new SqlParameter("@AgentId", AgentId),
                                             string exelyNationality = rtParts.Length > 5 && !string.IsNullOrWhiteSpace(rtParts[5]) ? rtParts[5] : Nationality;
 
                                             string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, "", xMLHotelId, checkIn, checkOut, exelyCurrency, exelyNationality, tokenData.AgentCode, checksum, roomTypeId, noOfAdults, noOfChild);
-                                            string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _configuration["Exely:CreateBooking"].TrimStart('/');
+                                            string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.CreateBooking.TrimStart('/');
 
                                             _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "WithinEarth");
                                             Error = "";
@@ -59580,13 +59580,13 @@ new SqlParameter("@AgentId", AgentId),
                                 string AgentRef = Convert.ToString(AgentVoucherNo_Cancle);
                                 string password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
                                 string bookingNumber = AgentRef;
-                                string baseUrl = _configuration["Exely:BaseUrl"];
+                                string baseUrl = _supplierConfig.Exely.BaseUrl;
 
                                 //getcharge request
                                 string CancellationXMLcharge = _iExely.Get_Exely_GetCancellationChargesRQ(AgentRef);
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
-                                string exelyURL = baseUrl + _configuration["Exely:CalculateCancellationPenalty"].Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=";
+                                string exelyURL = baseUrl + _supplierConfig.Exely.CalculateCancellationPenalty.Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=";
                                 ResponseDto responseDto = await _iExely.ExelyResponseNew(CancellationXMLcharge, exelyURL, 120000, password);
                                 ResponseData = responseDto.Response;
                                 Error = responseDto.Error;
@@ -59606,7 +59606,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
-                                string cancelexelyurl = baseUrl + _configuration["Exely:CancelBooking"].Replace("{number}", bookingNumber);
+                                string cancelexelyurl = baseUrl + _supplierConfig.Exely.CancelBooking.Replace("{number}", bookingNumber);
                                 ResponseDto responseDto1 = await _iExely.ExelyResponseNew(CancellationXML, cancelexelyurl, 120000, password);
                                 string CancelResponseData = responseDto1.Response;
                                 Error = responseDto1.Error;
@@ -63453,13 +63453,13 @@ new SqlParameter("@AgentId", AgentId),
                                 string AgentRef = Convert.ToString(AgentVoucherNo_Cancle);
                                 string password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
                                 string bookingNumber = AgentRef;
-                                string baseUrl = _configuration["Exely:BaseUrl"];
+                                string baseUrl = _supplierConfig.Exely.BaseUrl;
 
                                 //getcharge request
                                 string CancellationXMLcharge = _iExely.Get_Exely_GetCancellationChargesRQ(AgentRef);
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
-                                string exelyURL = baseUrl + _configuration["Exely:CalculateCancellationPenalty"].Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=";
+                                string exelyURL = baseUrl + _supplierConfig.Exely.CalculateCancellationPenalty.Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=";
                                 ResponseDto responseDto = await _iExely.ExelyResponseNew(CancellationXMLcharge, exelyURL, 120000, password);
                                 ResponseData = responseDto.Response;
                                 Error = responseDto.Error;
@@ -63479,7 +63479,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
-                                string cancelexelyurl = baseUrl + _configuration["Exely:CancelBooking"].Replace("{number}", bookingNumber);
+                                string cancelexelyurl = baseUrl + _supplierConfig.Exely.CancelBooking.Replace("{number}", bookingNumber);
                                 ResponseDto responseDto1 = await _iExely.ExelyResponseNew(CancellationXML, cancelexelyurl, 120000, password);
                                 string CancelResponseData = responseDto1.Response;
                                 Error = responseDto1.Error;
