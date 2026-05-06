@@ -687,7 +687,8 @@ namespace XConnect.Supplier.TBO
                                             drWHLRoom["OfferDescription"] = OfferDescription;
                                             drWHLRoom["OfferCode"] = OfferCode;
                                             drWHLRoom["EssentialInformation"] = EssentialInformation;
-                                            double ItemPrice = Convert.ToDouble(CompanyBuying);
+                                            //double ItemPrice = Convert.ToDouble(CompanyBuying);
+                                            double ItemPrice = Convert.ToDouble(CompanyBuying) * CurrencyFactor;
 
                                             _markup.ProcessHotelRoom_WithMarkup(CurrencyFactor, Currency, false, true, SearchParam.NoofNights, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref ItemPrice, ref drWHLRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
 
