@@ -79,7 +79,7 @@ namespace XConnect.Supplier.GRNC
 
                                     DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchTechwise(SearchPara.Nationality, dtXMLCity, Supplier, GRNCDetails.TechName);
 
-                                    if (dataForSearch.XmlNationality != "" && dataForSearch.XmlNationality != "IN")
+                                    if (dataForSearch.XmlNationality != "") //&& dataForSearch.XmlNationality != "IN"
                                     {
                                         string Ids = string.Empty;
                                         string xmlbase = "";
