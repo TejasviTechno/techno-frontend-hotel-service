@@ -115,7 +115,7 @@ namespace XConnect.BAL.Interface
         Task<AgodaListResponse> ConvertToFinalResponseListForAgoda(AvailHotelList finalResponse, FilterUsed filterUsed, string Currency, string requestName = "", int _NoofRoom = 1);
         AgodaSearchError GetAgodaErrorMsg(string type, string code, string description);
         Task<IActionResult> CreateResponseCompressed_agodahotelsearch<T>(HttpContext context, int statusCode, T value, string mediaType,
-  AgodaSearchPara RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId);
+  AgodaSearchPara RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, string Search_Key = "", long elapsedMilliseconds = 0);
         #endregion
 
 

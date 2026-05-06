@@ -5760,13 +5760,13 @@ namespace XConnect.API.Controllers
                                     erroragoda = _hotelXML.GetAgodaErrorMsg("NO_AVAILABILITY", "", "no available rooms for given criteria.");
                                 // erroragoda =  _hotelXML.GetErrorMsg("NO_AVAILABILITY", version.Version, "no available rooms for given criteria.");
                                 //return Request.CreateResponseCompressed_agodahotelsearch(HttpStatusCode.OK, erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NorecordError, "0");
-                                 return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext,200, erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NorecordError, "0");
+                                 return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext,200, erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NorecordError, "0", "", timer.ElapsedMilliseconds);
 
                             }
                             else
                             {
                                 // return Request.CreateResponseCompressed_agodahotelsearch(HttpStatusCode.OK, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0");
-                                return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0"); // needtochange
+                                return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0", "", timer.ElapsedMilliseconds); // needtochange
 
                             }
                         }
