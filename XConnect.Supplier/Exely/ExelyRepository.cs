@@ -1284,7 +1284,7 @@ namespace XConnect.Supplier.Exely
                         },
                         //prepayment = new Prepayment { paymentType = "CreditCard", prepaidSum = 0, remark = "" },
                         //bookingComments = new List<string>(),
-                        //createBookingToken = uniqueBookingToken
+                        createBookingToken = uniqueBookingToken
                     }
                 };
 
@@ -1298,7 +1298,7 @@ namespace XConnect.Supplier.Exely
         }
         #endregion Request
 
-        #region Response
+#region Response
         public CreateBookingResult? Exely_ProcessBookingResponse(string responseData)
         {
             try

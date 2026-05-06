@@ -48593,7 +48593,17 @@ new SqlParameter("@AgentId", AgentId),
 
                                                                                 #endregion
 
-                                                                                string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dsCartDetails, dtPassengers, UniqueNo, i, j, xMLHotelId, checkIn, checkOut, exelyCurrency, Nationality, tokenData.AgentCode, checksum);
+                                                                                int exelyNoOfAdults = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfAdults"]);
+                                                                                int exelyNoOfChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfChild"]);
+                                                                                string exelyVerifyRQ = _iExely.Get_Exely_VerifyBookingRQ(exelyNoOfAdults, exelyNoOfChild, xMLHotelId, checkIn, checkOut, exelyRoomTypeId, Nationality, checksum, dtPassengers);
+                                                                                string exelyVerifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
+                                                                                ResponseDto exelyVerifyDto = await _iExely.ExelyResponseNew(exelyVerifyRQ, exelyVerifyUrl, 120000, password, SearchKey);
+                                                                                var exelyVerifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(exelyVerifyDto.Response ?? "");
+                                                                                var exelyVerifyBooking = exelyVerifyResult?.booking ?? exelyVerifyResult?.alternativeBooking;
+                                                                                string exelyCreateBookingToken = exelyVerifyBooking?.createBookingToken ?? "";
+                                                                                string exelyPropertyId = exelyVerifyBooking?.propertyId ?? xMLHotelId;
+
+                                                                                string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, exelyCreateBookingToken, exelyPropertyId, checkIn, checkOut, exelyCurrency, Nationality, tokenData.AgentCode, checksum, exelyRoomTypeId, exelyNoOfAdults, exelyNoOfChild);
                                                                                 string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.CreateBooking.TrimStart('/');
 
                                                                                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Request Confirm", ReferenceNo, "WithinEarth");
@@ -54220,7 +54230,14 @@ new SqlParameter("@AgentId", AgentId),
                                             int noOfChild = bookRequest.userCart.UserCartDetails[j].NoofChild;
                                             string exelyNationality = rtParts.Length > 5 && !string.IsNullOrWhiteSpace(rtParts[5]) ? rtParts[5] : Nationality;
 
-                                            string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, "", xMLHotelId, checkIn, checkOut, exelyCurrency, exelyNationality, tokenData.AgentCode, checksum, roomTypeId, noOfAdults, noOfChild);
+                                            string exelyVerifyRQ = _iExely.Get_Exely_VerifyBookingRQ(noOfAdults, noOfChild, xMLHotelId, checkIn, checkOut, roomTypeId, exelyNationality, checksum, dtPassengers);
+                                            string exelyVerifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
+                                            ResponseDto exelyVerifyDto = await _iExely.ExelyResponseNew(exelyVerifyRQ, exelyVerifyUrl, 120000, password, bookRequest.SearchKey);
+                                            var exelyVerifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(exelyVerifyDto.Response ?? "");
+                                            var exelyVerifyBooking = exelyVerifyResult?.booking ?? exelyVerifyResult?.alternativeBooking;
+                                            string exelyCreateBookingToken = exelyVerifyBooking?.createBookingToken ?? "";
+                                            string exelyPropertyId = exelyVerifyBooking?.propertyId ?? xMLHotelId;
+                                            string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, exelyCreateBookingToken, exelyPropertyId, checkIn, checkOut, exelyCurrency, exelyNationality, tokenData.AgentCode, checksum, roomTypeId, noOfAdults, noOfChild);
                                             string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.CreateBooking.TrimStart('/');
 
                                             _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "WithinEarth");
