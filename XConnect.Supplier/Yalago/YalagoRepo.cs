@@ -290,6 +290,7 @@ namespace XConnect.Supplier.Yalago
                 }
                 if (result.Messages.Count > 0)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -755,6 +756,7 @@ namespace XConnect.Supplier.Yalago
                     }
                     else
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;

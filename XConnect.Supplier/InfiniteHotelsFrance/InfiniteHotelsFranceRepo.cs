@@ -355,6 +355,7 @@ namespace XConnect.Supplier.InfiniteHotelsFrance
             {
                 if (ResponseData.ToLower() == "" || ResponseData.ToLower().Contains("error"))
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -377,6 +378,7 @@ namespace XConnect.Supplier.InfiniteHotelsFrance
                     DataSet IHFResponse = _commonMethod.GetDataSetFromXMLString(ResponseData);
                     if (IHFResponse == null || !IHFResponse.Tables.Contains("hotelResponse"))
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
@@ -529,6 +531,7 @@ namespace XConnect.Supplier.InfiniteHotelsFrance
                                     {
                                         if (IHFResponse.Tables["offer"].Rows.Count == 0)
                                         {
+                                            Item.SupplierResponseError = ResponseData;
                                             Item.ResponseStatus = 404;
                                             return options;
                                         }

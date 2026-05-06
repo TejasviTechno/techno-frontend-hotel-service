@@ -353,6 +353,7 @@ namespace XConnect.Supplier.GRNC
                     string SessionId = Convert.ToString(GRNCResponsedata.Tables["Row"].Rows[0]["search_id"]);
                     if (SessionId != "" || SessionId != null || SessionId != string.Empty)
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         //Common.XMLRequestResponseTrack_SupplierHotel(URLandRequest, ResponseData, "TBO", "HotelSearch", SessionId);
@@ -360,6 +361,7 @@ namespace XConnect.Supplier.GRNC
                     double TotalCharges = 0;
                     if (!GRNCResponsedata.Tables.Contains("hotels"))
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;

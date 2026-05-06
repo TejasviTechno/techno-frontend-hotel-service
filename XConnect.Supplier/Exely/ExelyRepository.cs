@@ -292,6 +292,7 @@ namespace XConnect.Supplier.Exely
                 }
                 if (result.roomStays == null || result.roomStays.Count == 0)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -639,6 +640,7 @@ namespace XConnect.Supplier.Exely
                     }
                     else
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;

@@ -1649,6 +1649,7 @@ namespace XConnect.Supplier.Hyperguest
 
                 catch (Exception ex)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     _exception.Error(ex);
@@ -1662,6 +1663,7 @@ namespace XConnect.Supplier.Hyperguest
 
                 if (DS.results.Count < 1)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;

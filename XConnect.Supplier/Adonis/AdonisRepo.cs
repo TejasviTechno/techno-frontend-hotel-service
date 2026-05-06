@@ -257,6 +257,7 @@ namespace XConnect.Supplier.Adonis
                     DataSet Adonis_Response = _commonMethod.GetDataSetFromXMLString(ResponseData);
                     if (Adonis_Response == null || !Adonis_Response.Tables.Contains("HotelDTO") ||  Adonis_Response.Tables["HotelDTO"].Rows.Count < 1)
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;

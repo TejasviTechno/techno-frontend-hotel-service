@@ -293,12 +293,14 @@ namespace XConnect.Supplier.Hoteltrader
 
                         if (Adonis_Response.data.getPropertiesByIds.properties == null)
                         {
+                            Item.SupplierResponseError = ResponseData1;
                             Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                             return options;
                         }
                         if (Adonis_Response.data.getPropertiesByIds.properties.Count < 1)
                         {
+                            Item.SupplierResponseError = ResponseData1;
                             Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                             return options;
@@ -405,6 +407,7 @@ namespace XConnect.Supplier.Hoteltrader
 
                         if (!RoomResponse.Tables.Contains("properties"))
                         {
+                            Item.SupplierResponseError = ResponseData1;
                             Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                             return options;

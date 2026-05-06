@@ -832,6 +832,7 @@ namespace XConnect.Supplier.Webbeds
                     }
                     if (DOTWResponse == null || DOTWResponse.Tables["hotel"] == null)
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;

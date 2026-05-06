@@ -902,6 +902,7 @@ namespace XConnect.Supplier.Booking.Com
 
                     if (dsResponse.result == null || dsResponse.result?.Count == 0)
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         return options;
                     }
@@ -2777,6 +2778,7 @@ namespace XConnect.Supplier.Booking.Com
                 reshotelsearchnroom.Rootobject dsResponse = JsonConvert.DeserializeObject<reshotelsearchnroom.Rootobject>(ResponseData);
                 if (dsResponse.data == null || dsResponse.data.Length == 0)
                 {
+                    item.SupplierResponseError = ResponseData;
                     item.ResponseStatus = 404;
                     item.ResponseType = "NoCount";
                     return options;

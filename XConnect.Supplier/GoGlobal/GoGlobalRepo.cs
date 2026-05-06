@@ -470,7 +470,6 @@ namespace XConnect.Supplier.GoGlobal
                 {
                     if (ResponseData == "")
                     {
-                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;

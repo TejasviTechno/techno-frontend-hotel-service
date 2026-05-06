@@ -491,6 +491,7 @@ namespace XConnect.Supplier.Omnibees
 
                 if (OmnibeesResponse == null || OmnibeesResponse.HotelStaysType == null || OmnibeesResponse.HotelStaysType.HotelStays == null)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;

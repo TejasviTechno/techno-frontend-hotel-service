@@ -469,6 +469,7 @@ namespace XConnect.Supplier.PriceTravel
                 }
                 catch (Exception ex)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     _ = _exception.Error(ex);
@@ -476,6 +477,7 @@ namespace XConnect.Supplier.PriceTravel
                 }
                 if (response == null || response.hotels == null)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;

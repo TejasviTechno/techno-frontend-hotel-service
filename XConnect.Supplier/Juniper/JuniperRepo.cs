@@ -450,6 +450,7 @@ namespace XConnect.Supplier.Juniper
                     #region PriceOnly RS
                     if (ResponseData == string.Empty || ResponseData.Contains("Error"))
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
 
@@ -466,7 +467,8 @@ namespace XConnect.Supplier.Juniper
                     {
                         if (StoreSupplierResErrorLog == "1")
                             await _commonMethod.XMLRequestResponseTrack_Error(Item.RQRS[0].Request, ResponseData, Provider, timer_room_Juniper.Elapsed.ToString(), "", SearchParam.SearchKey);
-                        
+
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return Options;
@@ -476,6 +478,7 @@ namespace XConnect.Supplier.Juniper
                         if (StoreSupplierResErrorLog == "1")
                             await _commonMethod.XMLRequestResponseTrack_Error(Item.RQRS[0].Request, ResponseData, Provider, timer_room_Juniper.Elapsed.ToString(), "", SearchParam.SearchKey);
 
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return Options;

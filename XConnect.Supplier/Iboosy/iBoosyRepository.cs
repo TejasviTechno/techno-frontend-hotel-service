@@ -578,6 +578,7 @@ namespace XConnect.Supplier
                 #region "HotelList"
                 if (MethaBookResponse.availabilityRs == null || MethaBookResponse.availabilityRs.accommodations == null)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = NoCount;
                     return options;

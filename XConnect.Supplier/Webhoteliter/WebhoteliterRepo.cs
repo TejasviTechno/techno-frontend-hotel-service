@@ -571,18 +571,21 @@ namespace XConnect.Supplier.Webhoteliter
                     }
                     if (WHResponse.error_code.ToString().ToUpper() == "NO_AVAILABILITY" || WHResponse.error_code.ToString().ToUpper() == "NO_HOTELS_FOUND")
                     {
+                        item.SupplierResponseError = ResponseData;
                         item.ResponseStatus = 404;
                         return options;
                     }
 
                     if (WHResponse.data == null)
                     {
+                        item.SupplierResponseError = ResponseData;
                         item.ResponseStatus = 404;
                         return options;
                     }
 
                     if (WHResponse.data.hotels.Count < 1)
                     {
+                        item.SupplierResponseError = ResponseData;
                         item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                     }
@@ -691,7 +694,7 @@ namespace XConnect.Supplier.Webhoteliter
                     string JsonResponse = ResponseData;
                     if (JsonResponse == "")
                     {
-                        item.ResponseStatus = 404;
+                        item.ResponseStatus = 204;
                         return options;
                     }
                     WebHotellierRoom.WebHotelierRoomResponse.Root WebhotelierResponse = new WebHotellierRoom.WebHotelierRoomResponse.Root();
@@ -699,17 +702,19 @@ namespace XConnect.Supplier.Webhoteliter
                    // WebhotelierResponse = JsonSerializer.Deserialize<WebHotellierRoom.WebHotelierRoomResponse.Root>(JsonResponse);
                     if (WebhotelierResponse == null)
                     {
-                        item.ResponseStatus = 404;
+                        item.ResponseStatus = 204;
                         return options;
                     }
                     if (WebhotelierResponse.data == null)
                     {
+                        item.SupplierResponseError = ResponseData;
                         item.ResponseStatus = 404;
                         return options;
                     }
                         
                     if (WebhotelierResponse.data.hotels == null)
                     {
+                        item.SupplierResponseError = ResponseData;
                         item.ResponseStatus = 404;
                         return options;
                     }

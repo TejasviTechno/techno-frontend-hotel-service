@@ -381,6 +381,7 @@ namespace XConnect.Supplier.PkFare
 
                 if (PkFareResponse.hotels == null)
                 {
+                    item.SupplierResponseError = ResponseData;
                     item.ResponseStatus = 404;
                     item.ResponseType = "NoCount";
                     return options;

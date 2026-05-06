@@ -400,6 +400,7 @@ namespace XConnect.Supplier.Saltours
 
                         if (SaltoursResponse == null || SaltoursResponse.Tables["RoomStay"] == null)
                         {
+                            item.SupplierResponseError = ResponseData;
                             item.ResponseStatus = 404;
                             item.ResponseType = "NoCount";
                             return options;
@@ -413,6 +414,7 @@ namespace XConnect.Supplier.Saltours
 
                         if (SaltoursResponse.Tables["RoomStay"].Rows.Count < 1)
                         {
+                            item.SupplierResponseError = ResponseData;
                             item.ResponseStatus = 404;
                             item.ResponseType = "NoCount";
                             return options;
@@ -420,6 +422,7 @@ namespace XConnect.Supplier.Saltours
                     }
                     else
                     {
+                        item.SupplierResponseError = ResponseData;
                         item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                         return options;

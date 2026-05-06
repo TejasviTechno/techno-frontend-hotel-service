@@ -1423,12 +1423,14 @@ namespace Xconnect.Hotelbeds
                     }
                     catch (Exception ex)
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }
                     if (HBResponse == null || HBResponse.hotels == null || HBResponse.hotels.hotels == null || HBResponse.hotels.hotels.Count() == 0)
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 204;
                         Item.ResponseType = "NoCount";
                         return options;

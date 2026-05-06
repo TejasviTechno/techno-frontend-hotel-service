@@ -398,7 +398,8 @@ namespace XConnect.Supplier.TBO
                     }
                     if (DS == null || DS.HotelResult == null)
                     {
-                        Item.ResponseStatus = 204;
+                        Item.SupplierResponseError = ResponseData;
+                        Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
                     }

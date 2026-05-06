@@ -863,6 +863,7 @@ namespace XConnect.Supplier.Rezlive
                     DataSet Rezlive_Response = _commonMethod.GetDataSetFromXMLString(ResponseData);
                     if (Rezlive_Response == null || Rezlive_Response.Tables["Hotel"] == null)
                     {
+                        item.SupplierResponseError = ResponseData;
                         item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                         return options;
@@ -883,6 +884,7 @@ namespace XConnect.Supplier.Rezlive
                     #region Hotel List
                     if (Rezlive_Response.Tables["Hotel"].Rows.Count < 1)
                     {
+                        item.SupplierResponseError = ResponseData;
                         item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                         return options;

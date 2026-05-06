@@ -751,6 +751,7 @@ namespace XConnect.Supplier.Rakuten
 
                         if (RakutenResponse.hotels.Count < 1)
                         {
+                            Item.SupplierResponseError = ResponseData;
                             Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                         }

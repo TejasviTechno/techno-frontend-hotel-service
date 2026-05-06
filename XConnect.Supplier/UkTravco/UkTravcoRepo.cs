@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Azure;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols;
 using XConnect.CommonUtilities;
@@ -483,6 +484,7 @@ namespace XConnect.Supplier.UkTravco
                 #region Response
                 if (ResponseData == string.Empty || ResponseData.Contains("ErrorTxt"))
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -491,6 +493,7 @@ namespace XConnect.Supplier.UkTravco
                 DataSet uk_travcoResponse = _commonMethod.GetDataSetFromXMLString(ResponseData);
                 if (uk_travcoResponse == null || uk_travcoResponse.Tables["Hotel"] == null)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;

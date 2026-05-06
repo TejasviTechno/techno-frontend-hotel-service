@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Azure;
 using Microsoft.Extensions.Options;
 using XConnect.CommonUtilities;
 using XConnect.CommonUtilities.Interface;
@@ -582,6 +583,7 @@ namespace Xconnect.Expedia
             {
                 if (TLResponse == null || TLResponse == string.Empty || TLResponse.ToLower().Contains("error"))
                 {
+                    Item.SupplierResponseError = TLResponse;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;

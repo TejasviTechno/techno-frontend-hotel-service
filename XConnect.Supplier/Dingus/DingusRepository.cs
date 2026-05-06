@@ -452,6 +452,7 @@ namespace XConnect.Supplier.Dingus
                 #region Response
                 if (ResponseData == string.Empty || ResponseData.Contains("ErrorTxt"))
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -462,6 +463,7 @@ namespace XConnect.Supplier.Dingus
                 DataSet Dingus_Response = _commonMethod.GetDataSetFromXMLString(ResponseData);
                 if (Dingus_Response == null || Dingus_Response.Tables["BasicPropertyInfo"] == null)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;

@@ -324,6 +324,7 @@ namespace XConnect.Supplier.Welcomebeds
 
                 if (ResponseData.ToLower().Contains("error"))
                 {
+                    item.SupplierResponseError = ResponseData;
                     item.ResponseStatus = 404;
                     item.ResponseType = "NoCount";
                     return options;
@@ -331,7 +332,7 @@ namespace XConnect.Supplier.Welcomebeds
 
                 if (ResponseData == null || ResponseData == string.Empty)
                 {
-                    item.ResponseStatus = 404;
+                    item.ResponseStatus = 204;
                     return options;
                 }
                     
@@ -340,6 +341,7 @@ namespace XConnect.Supplier.Welcomebeds
 
                     if (welResponse == null || welResponse.hotels == null || welResponse.hotels.Count < 1)
                     {
+                        item.SupplierResponseError = ResponseData;
                         item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                     }

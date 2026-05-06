@@ -281,6 +281,7 @@ namespace XConnect.Supplier.Travellanda
             {
                 if (TLResponse == null || TLResponse == string.Empty || TLResponse.ToLower().Contains("error"))
                 {
+                    Item.SupplierResponseError = TLResponse;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -288,6 +289,7 @@ namespace XConnect.Supplier.Travellanda
                 DataSet TLData = _commonMethod.GetDataSetFromXMLString(TLResponse);
                 if (TLData.Tables["Hotel"] == null)
                 {
+                    Item.SupplierResponseError = TLResponse;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;

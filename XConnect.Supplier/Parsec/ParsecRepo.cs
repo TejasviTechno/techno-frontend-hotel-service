@@ -353,6 +353,7 @@ namespace XConnect.Supplier.Parsec
             {
                 if (Response == null || Response == string.Empty || Response.ToLower().Contains("error"))
                 {
+                    Item.SupplierResponseError = Response;
                     Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -360,6 +361,7 @@ namespace XConnect.Supplier.Parsec
                 DataSet ResponseData = _commonMethod.GetDataSetFromXMLString(Response);
                 if (Convert.ToInt32(ResponseData.Tables["hotels"].Rows[0]["hotelCount"]) == 0)
                 {
+                    Item.SupplierResponseError = Response;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;

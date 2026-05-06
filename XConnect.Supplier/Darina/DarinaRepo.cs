@@ -541,6 +541,7 @@ namespace XConnect.Supplier.Darina
                 {
                     if (ResponseData == string.Empty || ResponseData.Contains("ErrorTxt"))
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
@@ -549,6 +550,7 @@ namespace XConnect.Supplier.Darina
 
                     if (DarinaResponse == null || DarinaResponse.Tables["hotels"] == null)
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;

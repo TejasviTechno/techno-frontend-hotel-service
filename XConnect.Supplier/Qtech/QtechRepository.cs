@@ -1839,6 +1839,7 @@ namespace XConnect.Supplier.Qtech
 
                     if (ResponseData == string.Empty || ResponseData.Contains("ErrorTxt"))
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
@@ -1857,6 +1858,7 @@ namespace XConnect.Supplier.Qtech
                     string Message = Convert.ToString(Qtechres.Message[0]);
                     if (Message.ToLower() == "fail")
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;
@@ -1865,6 +1867,7 @@ namespace XConnect.Supplier.Qtech
                     int TotalCount = Convert.ToInt32(Qtechres.TotalCount);
                     if (TotalCount == 0)
                     {
+                        Item.SupplierResponseError = ResponseData;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;

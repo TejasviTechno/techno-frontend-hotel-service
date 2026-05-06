@@ -371,6 +371,7 @@ namespace XConnect.Supplier.Paximum
                 //if (DS.results.Count < 1)
                 if (paximumResponse.hotels.Count < 1)
                 {
+                    Item.SupplierResponseError = Response;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;

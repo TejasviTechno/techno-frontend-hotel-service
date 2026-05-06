@@ -706,6 +706,7 @@ namespace XConnect.Supplier.MGBedBank
                 DataSet MgBedBankResponse = _commonMethod.GetDataSetFromXMLString(ResponseData);
                 if (MgBedBankResponse == null || MgBedBankResponse.Tables["Hotel"] == null)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;

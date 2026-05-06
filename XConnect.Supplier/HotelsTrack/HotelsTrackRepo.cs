@@ -348,6 +348,7 @@ namespace XConnect.Supplier.HotelsTrack
                     DataSet HotelsTrackResponse = _commonMethod.GetDataSetFromXMLString(ResponseData);
                     if (HotelsTrackResponse == null || HotelsTrackResponse.Tables["Hotel"] == null)
                     {
+                        item.SupplierResponseError = ResponseData;
                         item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                         return options;
@@ -361,6 +362,7 @@ namespace XConnect.Supplier.HotelsTrack
                     string haskey = Convert.ToString(HotelsTrackResponse.Tables["SearchHotel_Response"].Rows[0]["hasKey"]);
                     if (HotelsTrackResponse.Tables["hotel"].Rows.Count < 1)
                     {
+                        item.SupplierResponseError = ResponseData;
                         item.ResponseStatus = 404;
                         item.ResponseType = "NoCount";
                         return options;

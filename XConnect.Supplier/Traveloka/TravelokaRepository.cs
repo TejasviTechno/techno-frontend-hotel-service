@@ -652,6 +652,7 @@ namespace XConnect.Supplier.Traveloka
                         k = Newtonsoft.Json.JsonConvert.DeserializeObject<TravelokaListResponse.RootObject>(ResponseData); //140525
                         if (k == null || k.properties == null)
                         {
+                            Item.SupplierResponseError = ResponseData;
                             Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                             return options;
@@ -659,6 +660,7 @@ namespace XConnect.Supplier.Traveloka
 
                         if (k.properties.Count < 1)
                         {
+                            Item.SupplierResponseError = ResponseData;
                             Item.ResponseStatus = 404;
                             Item.ResponseType = "NoCount";
                             return options;
@@ -746,6 +748,7 @@ namespace XConnect.Supplier.Traveloka
 
                         if (h == null)
                         {
+                            Item.SupplierResponseError = ResponseData;
                             Item.ResponseStatus = 404;
                             return options;
                         }
@@ -753,6 +756,7 @@ namespace XConnect.Supplier.Traveloka
 
                         if (h.Count < 1)
                         {
+                            Item.SupplierResponseError = ResponseData;
                             Item.ResponseStatus = 404;
                             return options;
                         }

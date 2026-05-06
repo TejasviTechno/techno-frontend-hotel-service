@@ -1905,6 +1905,7 @@ namespace XConnect.Supplier.XTG
 
                 if (dsRM.data.hotelX.search.errors != null)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return Options;

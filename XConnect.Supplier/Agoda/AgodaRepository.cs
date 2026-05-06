@@ -670,6 +670,7 @@ namespace Xconnect.Expedia
                     }
                     catch (Exception ex)
                     {
+                        Item.SupplierResponseError = Response;
                         Item.ResponseStatus = 404;
                         await _exception.Error(ex);
                         Item.ResponseType = "NoCount";
@@ -684,6 +685,7 @@ namespace Xconnect.Expedia
                     //if (DS.results.Count < 1)
                     if (Agoda_NewResponse.properties == null || Agoda_NewResponse.properties.Count < 1)
                     {
+                        Item.SupplierResponseError = Response;
                         Item.ResponseStatus = 404;
                         Item.ResponseType = "NoCount";
                         return options;

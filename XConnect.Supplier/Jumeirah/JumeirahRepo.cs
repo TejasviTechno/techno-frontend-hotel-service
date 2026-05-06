@@ -277,6 +277,7 @@ namespace XConnect.Supplier.Jumeirah
                 #region PriceOnly RS 
                 if (ResponseData == string.Empty || ResponseData == null || ResponseData.Contains("Error") || ResponseData == "")
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -286,6 +287,7 @@ namespace XConnect.Supplier.Jumeirah
 
                 if (JumeirahResponse == null || JumeirahResponse.availablity_price == null)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;

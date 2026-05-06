@@ -268,6 +268,7 @@ namespace XConnect.Supplier.HotelsPro
             {
                 if (ResponseData.ToLower().Contains("eanwserror") || ResponseData.Trim() == "")
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -442,6 +443,7 @@ namespace XConnect.Supplier.HotelsPro
                                     string Response = (response != null ? response : "");
                                     if (Response == "")
                                     {
+                                        Item.SupplierResponseError = ResponseData;
                                         Item.ResponseStatus = 404;
                                         return options;
                                     }

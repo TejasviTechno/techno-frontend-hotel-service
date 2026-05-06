@@ -464,6 +464,7 @@ namespace XConnect.Supplier.HotelDo
                 //    totalChild = Convert.ToInt32(SearchParam.Rooms[b].NoofChild) + totalChild;
                 //}
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 204;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -949,6 +950,7 @@ namespace XConnect.Supplier.HotelDo
                 }
                 else
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                 }
                 //}

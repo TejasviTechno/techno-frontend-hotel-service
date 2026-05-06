@@ -462,6 +462,7 @@ namespace XConnect.Supplier.Nuitee
 
                 if (NuiteeResponse == null || NuiteeResponse.Tables.Contains("getCityAvailabilityRes") == false)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
@@ -469,6 +470,7 @@ namespace XConnect.Supplier.Nuitee
                 #endregion
                 if (NuiteeResponse.Tables["getCityAvailabilityRes"].Columns.Contains("currency") == false)
                 {
+                    Item.SupplierResponseError = ResponseData;
                     Item.ResponseStatus = 404;
                     Item.ResponseType = "NoCount";
                     return options;
