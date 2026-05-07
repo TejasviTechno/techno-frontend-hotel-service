@@ -1416,42 +1416,55 @@ namespace Xconnect.BLL
 
 
 
-                    #region GetDataFromCache //RoomMapping
 
-
-                    //bool ActiveRoomMApping = false;
-                    //int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
-
-
-
-                    //if (Tokendata.AgentCode.ToLower() == "dag2") //Add On 17SEP2025
-                    //{
-                    //    finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping
-
-                    //}
-                    //else
-                    //{
-                    //    if (ActiveRoomMApping && SearchPara.Filters.IsShowRooms == 1 || IsAvailbilityWithCancellationv2 == 1)  //ADD on 29-JAN-2025
-                    //    {
-                    //        if (IsAvailbilityWithCancellationv2 == 1)
-                    //            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMappingv2(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 29-JAN-2025
-                    //        else
-
-                    //            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 30-May-2025 
-                    //    }
-                    //    else
-                    //    {
-                    //        finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList(finalResponse, NewSearchKey, withcancellation, Tokendata.IsFromAPI); //convert to final response // No RoomMapping
-                    //    }
-                    //}
-                    #endregion
                     #region GetDataFromCache 
-                    //170426tttt
                     if (true)
                     {
+
                         bool ActiveRoomMApping = false;
                         bool ActiveRoomMAppingwithoutException = false;
                         bool ActiveRoomId = false;
+                        try
+                        {
+                            string keydata = "GetActiveRoomMApping_AgentID_" + Convert.ToString(Tokendata.AgentId);
+                            DataSet dsActiveRoomMApping = new DataSet();
+                            if (!_cache.TryGetValue(keydata, out dsActiveRoomMApping) || advancedOptions.CustomerIpAddress == "777")
+                            {
+                                SqlParameter[] para11 = new SqlParameter[] {
+new SqlParameter("@AgentId",Tokendata.AgentId),
+};
+                                dsActiveRoomMApping = await _dlConnection.GetDataSet_Limit("GetActiveRoomMapping_Agent", para11, 5);//@HID
+                                if (dsActiveRoomMApping.Tables[0].Rows.Count > 0)
+                                {
+                                    _cache.Set(keydata, dsActiveRoomMApping, new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(5)));
+                                }
+                            }
+
+
+
+                            // Safe version
+                            if (dsActiveRoomMApping.Tables.Count > 0 && dsActiveRoomMApping.Tables[0].Rows.Count > 0)
+                            {
+                                var row = dsActiveRoomMApping.Tables[0].Rows[0];
+
+                                ActiveRoomMApping = row["RoomLevelMapping"] != DBNull.Value
+                                                    && Convert.ToBoolean(row["RoomLevelMapping"]);
+                                ActiveRoomMAppingwithoutException = row["RoomLevelWithoutException"] != DBNull.Value
+                                                               && Convert.ToBoolean(row["RoomLevelWithoutException"]);
+                                ActiveRoomId = row["RoomId"] != DBNull.Value
+                                                               && Convert.ToBoolean(row["RoomId"]);
+                            }
+
+                        }
+                        catch (Exception EA)
+                        {
+                            _ = _exception.Error(EA);
+                            ActiveRoomMApping = false;
+                        }
+
+
+
+
                         //int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
                         int Roommapping = 1;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
                         if (ActiveRoomMAppingwithoutException) //Add On 17SEP2025 
@@ -1477,7 +1490,6 @@ namespace Xconnect.BLL
                         }
 
                     }
-
 
                     #endregion
                 }
@@ -13145,32 +13157,49 @@ new SqlParameter("@AgentId", AgentId),
 
             #region GetDataFromCache //RoomMapping
             bool ActiveRoomMApping = false;
-            //try
-            //{
-            //    string keydata = "GetActiveRoomMApping_AgentID_" + Convert.ToString(tokenData.AgentId);
-            //    DataSet dsActiveRoomMApping = new DataSet();
-            //    if (!_cache.TryGetValue(keydata, out dsActiveRoomMApping) || advancedOptions.CustomerIpAddress == "777")
-            //    {
-            //        SqlParameter[] para = new SqlParameter[] {
-            //                                new SqlParameter("@AgentId",tokenData.AgentId),
-            //                                };
-            //        dsActiveRoomMApping = await _dlConnection.GetDataSet_Limit("GetActiveRoomMapping_Agent", para, 5);//@HID
-            //        if (dsActiveRoomMApping.Tables[0].Rows.Count > 0)
-            //        {
-            //            _cache.Set(keydata, dsActiveRoomMApping, new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(5)));
-            //        }
-            //    }
+            bool ActiveRoomMApping = false;
+            bool RoomLevelWithoutException = false;
+            bool RoomId = false;
+            int Roommapping = 0;
+            try
+            {
+                string keydata = "GetActiveRoomMApping_AgentID_" + Convert.ToString(tokenData.AgentId);
+                DataSet dsActiveRoomMApping = new DataSet();
+                if (!_cache.TryGetValue(keydata, out dsActiveRoomMApping) || advancedOptions.CustomerIpAddress == "777")
+                {
+                    SqlParameter[] para11 = new SqlParameter[] {
+      new SqlParameter("@AgentId",tokenData.AgentId),
+      };
+                    dsActiveRoomMApping = await _dlConnection.GetDataSet_Limit("GetActiveRoomMapping_Agent", para11, 5);//@HID
+                    if (dsActiveRoomMApping.Tables[0].Rows.Count > 0)
+                    {
+                        _cache.Set(keydata, dsActiveRoomMApping, new MemoryCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(5)));
+                    }
+                }
 
-            //    ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]);
-            //}
-            //catch (Exception EA)
-            //{
-            //    await _exception.ErrorNew(EA, _LogAPI.Recheck, SearchKey);
-            //    ActiveRoomMApping = false;
-            //}
-            #endregion
 
-            if (ActiveRoomMApping) //Added on 22-NOV-2024
+
+                // Safe version
+                if (dsActiveRoomMApping.Tables.Count > 0 && dsActiveRoomMApping.Tables[0].Rows.Count > 0)
+                {
+                    var row = dsActiveRoomMApping.Tables[0].Rows[0];
+
+                    ActiveRoomMApping = row["RoomLevelMapping"] != DBNull.Value
+                                        && Convert.ToBoolean(row["RoomLevelMapping"]);
+                    RoomLevelWithoutException = row["RoomLevelWithoutException"] != DBNull.Value
+                                                   && Convert.ToBoolean(row["RoomLevelWithoutException"]);
+                    RoomId = row["RoomId"] != DBNull.Value
+                                                   && Convert.ToBoolean(row["RoomId"]);
+                }
+
+            }
+            catch (Exception EA)
+            {
+                _ = _exception.Error(EA);
+                ActiveRoomMApping = false;
+            }
+
+            if (ActiveRoomMApping || RoomLevelWithoutException || RoomId) //Added on 22-NOV-2024
             {
 
                 DataTable DtHotelInformation = await _commonMethod.GetVervoRoomMappingdata(Convert.ToInt32(HotelId));
@@ -13178,13 +13207,13 @@ new SqlParameter("@AgentId", AgentId),
                 {
                     //HotelId
                     string MappRoomName = "";
-                    string S_RoomID = ""; 
-                     //string processedRoomTypeName = _commonMethod.getMappedRoom_rlm(finalPolicyResponse.ReCheckRS[r].RoomTypeName.Trim(), DtHotelInformation, Convert.ToInt32(HotelId), ref S_RoomID);
+                    string S_RoomID = "";
+                    //string processedRoomTypeName = _commonMethod.getMappedRoom_rlm(finalPolicyResponse.ReCheckRS[r].RoomTypeName.Trim(), DtHotelInformation, Convert.ToInt32(HotelId), ref S_RoomID);
                     string S_RoomNo = null;
 
                     IMongoCollection<BsonDocument> collection = null;
 
-                  string  collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// 
+                    string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// 
 
                     string processedRoomTypeName = _commonMethod.getMappedRoom_rlmASAL(finalPolicyResponse.ReCheckRS[0].RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(OwnsystemHotelId), collection, ref S_RoomNo);
 
@@ -13192,8 +13221,7 @@ new SqlParameter("@AgentId", AgentId),
                 }
 
             }
-
-           
+            #endregion
 
             finalPolicyResponse_1.CancellationPolicyRS_Multi_v1 = finalPolicyResponse;
             return finalPolicyResponse_1;
@@ -15707,8 +15735,13 @@ new SqlParameter("@AgentId", AgentId),
                     PreBookRoom preBookRoom = new PreBookRoom();
                     preBookRoom.HotelRooms = selectedRoom.RoomToken.DecryptRoomToken();
                     IsCombine = preBookRoom.HotelRooms.IsCombineRoom;
+
+
                     #region GetDataFromCache //RoomMapping
-                    bool ActiveRoomMApping = false; int Roommapping = 0;
+                    bool ActiveRoomMApping = false;
+                    bool RoomLevelWithoutException = false;
+                    bool RoomId = false;
+                    int Roommapping = 0;
                     try
                     {
                         string keydata = "GetActiveRoomMApping_AgentID_" + Convert.ToString(tokenData.AgentId);
@@ -15716,8 +15749,8 @@ new SqlParameter("@AgentId", AgentId),
                         if (!_cache.TryGetValue(keydata, out dsActiveRoomMApping) || advancedOptions.CustomerIpAddress == "777")
                         {
                             SqlParameter[] para11 = new SqlParameter[] {
-                 new SqlParameter("@AgentId",tokenData.AgentId),
-                 };
+      new SqlParameter("@AgentId",tokenData.AgentId),
+      };
                             dsActiveRoomMApping = await _dlConnection.GetDataSet_Limit("GetActiveRoomMapping_Agent", para11, 5);//@HID
                             if (dsActiveRoomMApping.Tables[0].Rows.Count > 0)
                             {
@@ -15725,21 +15758,21 @@ new SqlParameter("@AgentId", AgentId),
                             }
                         }
 
-                        // ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]); commnent on 4 june 2024
-                        ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]);
-                        if (!ActiveRoomMApping)
-                            ActiveRoomMApping = Convert.ToBoolean(dsActiveRoomMApping.Tables[1].Rows[0]["IsGimoRoomMapping"]);
 
-                        if (ActiveRoomMApping)
+
+                        // Safe version
+                        if (dsActiveRoomMApping.Tables.Count > 0 && dsActiveRoomMApping.Tables[0].Rows.Count > 0)
                         {
-                            bool isvervoRoomMapping = Convert.ToBoolean(dsActiveRoomMApping.Tables[0].Rows[0]["ActiveRoomMapping"]);
-                            bool isGimoRoomMapping = Convert.ToBoolean(dsActiveRoomMApping.Tables[1].Rows[0]["IsGimoRoomMapping"]);
-                            if (isvervoRoomMapping)
-                                Roommapping = 1; //vervo
+                            var row = dsActiveRoomMApping.Tables[0].Rows[0];
 
-                            if (isGimoRoomMapping)
-                                Roommapping = 2;  //Gimmo
+                            ActiveRoomMApping = row["RoomLevelMapping"] != DBNull.Value
+                                                && Convert.ToBoolean(row["RoomLevelMapping"]);
+                            RoomLevelWithoutException = row["RoomLevelWithoutException"] != DBNull.Value
+                                                           && Convert.ToBoolean(row["RoomLevelWithoutException"]);
+                            RoomId = row["RoomId"] != DBNull.Value
+                                                           && Convert.ToBoolean(row["RoomId"]);
                         }
+
                     }
                     catch (Exception EA)
                     {
@@ -15749,20 +15782,13 @@ new SqlParameter("@AgentId", AgentId),
                     #endregion
 
                     //currently no room mapping active so added false on 10-JAN-26
-                    if (ActiveRoomMApping && false) //Added on 22-NOV-2024 
+                    if (ActiveRoomMApping || RoomLevelWithoutException || RoomId) //Added on 22-NOV-2024 
                     {
-                        // DataTable DtHotelInformation = Common.GetVervoRoomMappingdata(Rayna_ID); comment on 4 June 2025
-
-                        DataTable DtHotelInformation = new DataTable();
-                        if (Roommapping == 1)
-                        {
-                            DtHotelInformation = await _commonMethod.GetVervoRoomMappingdata(Convert.ToInt32(Rayna_ID));
-                        }
-                        if (Roommapping == 2)
+                        DataTable DtHotelInformation = await _commonMethod.GetVervoRoomMappingdata(Convert.ToInt32(HotelId));
                         {
                             string mongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_RoomMapping;
                             string databaseName = _mongoSettings.MongoDB_DatabaseName_RoomMapping;
-                            string collectionName = _mongoSettings.GimmonoxMongoDB_CollectionName_RoomMapping;
+                            string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;
 
                             try
                             {
@@ -15790,12 +15816,14 @@ new SqlParameter("@AgentId", AgentId),
 
                         //for (int r = 0; r < finalPolicyResponse.ReCheckRS.Count; r++)
                         {
-                            //HotelId
-                            //string MappRoomName = "";
-                            //SuppliersRoomName.Add(preBookRoom.HotelRooms.RoomTypeName);
                             string S_RoomID = ""; // Add ON 29-JAN-2025
+                            IMongoCollection<BsonDocument> collection = null;
+                            string S_RoomNo = null;
                             preBookRoom.HotelRooms.SupplierRoomTypeName = preBookRoom.HotelRooms.RoomTypeName;
-                            string processedRoomTypeName = _commonMethod.getMappedRoom_rlm(preBookRoom.HotelRooms.RoomTypeName.Trim(), DtHotelInformation, Rayna_ID, ref S_RoomID);
+                            // string processedRoomTypeName = _commonMethod.getMappedRoom_rlm(preBookRoom.HotelRooms.RoomTypeName.Trim(), DtHotelInformation, Rayna_ID, ref S_RoomID);
+                            string processedRoomTypeName = _commonMethod.getMappedRoom_rlmASAL(preBookRoom.HotelRooms.RoomTypeName.Trim(), OwnsystemHotelId_RQ, collection, ref S_RoomNo);
+
+                            preBookRoom.HotelRooms.RoomTypeName = processedRoomTypeName;
 
                             preBookRoom.HotelRooms.RoomTypeName = processedRoomTypeName;
                         }
@@ -16525,21 +16553,31 @@ new SqlParameter("@AgentId", AgentId),
                     //userCartDetails_Pre.ServiceSellingAmount = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
                     userCartDetails_Pre.ServiceSellingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency)) : value : Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
                     //userCartDetails_Pre.BaseServiceSellingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
-                    userCartDetails_Pre.BaseServiceSellingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
+                    userCartDetails_Pre.BaseServiceSellingAmount = Math.Round(objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice), 2);
 
 
+                    userCartDetails_Pre.ServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(objdata.ShoppingCartDetails[room].BuyingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].BuyingPrice); //Supplier curency
                     if (objdata.SupplierCurrency.ToLower() != tokenData.SiteCurrency.Trim().ToLower())
                     {
-                        //userCartDetails_Pre.ServiceBuyingAmount = Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)); //Supplier curency
-                        userCartDetails_Pre.ServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)) : value : Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)); //Supplier curency
+                        userCartDetails_Pre.BaseServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? (Convert.ToDouble(objdata.ShoppingCartDetails[room].BuyingPrice) * _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)) : value : (Convert.ToDouble(objdata.ShoppingCartDetails[room].BuyingPrice) * _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
+
                     }
                     else
                     {
-                        //userCartDetails_Pre.ServiceBuyingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice); //Supplier curency
-                        userCartDetails_Pre.ServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice); //Supplier curency
+                        userCartDetails_Pre.BaseServiceBuyingAmount = Math.Round(objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(objdata.ShoppingCartDetails[room].BuyingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].BuyingPrice), 2); //Supplier curency
+
                     }
-                    //userCartDetails_Pre.BaseServiceBuyingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
-                    userCartDetails_Pre.BaseServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
+                    //if (objdata.SupplierCurrency.ToLower() != tokenData.SiteCurrency.Trim().ToLower())
+                    //{
+                    //    //userCartDetails_Pre.ServiceBuyingAmount = Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)); //Supplier curency
+                    //    userCartDetails_Pre.ServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)) : value : Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)); //Supplier curency
+                    //}
+                    //else
+                    //{
+                    //    //userCartDetails_Pre.ServiceBuyingAmount = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice); //Supplier curency
+                    //    userCartDetails_Pre.ServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice); //Supplier curency
+                    //}
+                    //userCartDetails_Pre.BaseServiceBuyingAmount = objdata.IsCombineRoom ? objdata.ShoppingCartDetails[room].RoomNo == 1 ? Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) : value : Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice);
 
                     //userCartDetails_Pre.CheckInDate = Convert.ToString(objdata.CheckInDate);
                     //userCartDetails_Pre.CheckOutDate = Convert.ToString(objdata.CheckOutDate);
@@ -16579,8 +16617,15 @@ new SqlParameter("@AgentId", AgentId),
                     {
                         #region SupplierRB
                         SupplierRateBreakUp_Prebook supplierRateBreakUp_Prebook = new SupplierRateBreakUp_Prebook();
-                        supplierRateBreakUp_Prebook.BuyingPrice = Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].CompanyBuyingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
-                        supplierRateBreakUp_Prebook.BaseBuyingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].CompanyBuyingPrice);
+                        //supplierRateBreakUp_Prebook.BuyingPrice = Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].CompanyBuyingPrice) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
+                        supplierRateBreakUp_Prebook.BuyingPrice = Convert.ToDouble(Convert.ToDouble(objdata.ShoppingCartDetails[room].BuyingPrice));
+
+                        if (objdata.SupplierCurrency.ToLower() != tokenData.SiteCurrency.Trim().ToLower())
+                            supplierRateBreakUp_Prebook.BaseBuyingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].BuyingPrice) * _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE);
+                        else
+                            supplierRateBreakUp_Prebook.BaseBuyingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].BuyingPrice);
+
+
                         supplierRateBreakUp_Prebook.SellingPrice = Convert.ToDouble(Convert.ToDecimal(objdata.ShoppingCartDetails[room].CompanySellingPrice).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency)); ;
                         supplierRateBreakUp_Prebook.BaseSellingPrice = Convert.ToDouble(objdata.ShoppingCartDetails[room].CompanySellingPrice);
                         supplierRateBreakUp_Prebook.SupplierId = Convert.ToInt32(BookOption.Hotel.SupplierId);// Convert.ToInt32(objdata.SupplierID);
@@ -16605,20 +16650,6 @@ new SqlParameter("@AgentId", AgentId),
                         #endregion
                         #region Policy
                         List<HotelPolicy_Prebook> hotelPolicy_Prebooks = new List<HotelPolicy_Prebook>();
-                        //for (int p = 0; p < dtPolicy.Rows.Count; p++)
-                        //{
-                        //    HotelPolicy_Prebook hotelPolicy_Prebook = new HotelPolicy_Prebook();
-                        //    hotelPolicy_Prebook.RoomNumber = Convert.ToInt32(dtPolicy.Rows[p]["RoomNo"]);
-                        //    hotelPolicy_Prebook.FromDate = Convert.ToString(dtPolicy.Rows[p]["FromDate"]);
-                        //    hotelPolicy_Prebook.Todate = Convert.ToString(dtPolicy.Rows[p]["ToDate"]);
-                        //    hotelPolicy_Prebook.CancellationAmount = Convert.ToDouble(Convert.ToDouble(dtPolicy.Rows[p]["BuyingPrice"]) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
-                        //    hotelPolicy_Prebook.BaseCancellationAmount = Convert.ToDouble(dtPolicy.Rows[p]["BuyingPrice"]);
-                        //    hotelPolicy_Prebook.AgentcancellationAmount = Convert.ToDouble(Convert.ToDecimal(dtPolicy.Rows[p]["AgentCancellationPrice"]).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
-                        //    hotelPolicy_Prebook.BaseAgentcancellationAmount = Convert.ToDouble(dtPolicy.Rows[p]["AgentCancellationPrice"]);
-                        //    hotelPolicy_Prebook.CompanyCancellationAmount = Convert.ToDouble(dtPolicy.Rows[p]["BuyingPrice"]);
-                        //    hotelPolicy_Prebook.BaseCompanyCancellationAmount = Convert.ToDouble(dtPolicy.Rows[p]["BuyingPrice"]);
-                        //    hotelPolicy_Prebooks.Add(hotelPolicy_Prebook);
-                        //}
 
                         DataRow[] drPolicy = dtPolicy.Select("RoomNo='" + Convert.ToInt32(objdata.ShoppingCartDetails[room].RoomNo) + "'");
 
@@ -16626,12 +16657,7 @@ new SqlParameter("@AgentId", AgentId),
                         {
 
                             HotelPolicy_Prebook hotelPolicy_Prebook = new HotelPolicy_Prebook();
-
                             hotelPolicy_Prebook.RoomNumber = Convert.ToInt32(drPolicy[p]["RoomNo"]);
-
-                            //hotelPolicy_Prebook.FromDate = Convert.ToString(drPolicy[p]["FromDate"]);
-
-                            //hotelPolicy_Prebook.Todate = Convert.ToString(drPolicy[p]["ToDate"]);
                             DateTime fromDate = Convert.ToDateTime(drPolicy[p]["FromDate"]);
                             DateTime toDate = Convert.ToDateTime(drPolicy[p]["ToDate"]);
                             hotelPolicy_Prebook.FromDate = fromDate.ToString("MM/dd/yyyy HH:mm:ss");
@@ -16663,17 +16689,6 @@ new SqlParameter("@AgentId", AgentId),
                             double Night_Price = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / userCart_Prebook.NoofNights;
                             string newCheckInDate = Convert.ToString(objdata.CheckInDate);
                             string newCheckOutDate = Convert.ToString(objdata.CheckOutDate);
-                            //DateTime dtCheckInDate = DateTime.ParseExact(newCheckInDate, "M/d/yyyy", null);
-                            //DateTime dtCheckInDate = DateTime.ParseExact(newCheckInDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture); 
-                            //DateTime dtCheckOutDate = DateTime.ParseExact(newCheckOutDate, "M/d/yyyy", null);
-                            //DateTime dtCheckOutDate = DateTime.ParseExact(newCheckOutDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
-
-                            //DateTime dtCheckInDate = DateTime.ParseExact(newCheckInDate, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                            //DateTime dtCheckOutDate = DateTime.ParseExact(newCheckOutDate, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-
-
-                            //TimeSpan t = dtCheckOutDate - dtCheckInDate;
-
                             ratebreakup_Prebook.RoomTypeName = Convert.ToString(objdata.ShoppingCartDetails[room].RoomName);
                             ratebreakup_Prebook.MealName = Convert.ToString(objdata.ShoppingCartDetails[room].MealPlanCode);
                             ratebreakup_Prebook.RateType = Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
