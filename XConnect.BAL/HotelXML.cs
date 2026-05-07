@@ -13157,7 +13157,7 @@ new SqlParameter("@AgentId", AgentId),
 
             #region GetDataFromCache //RoomMapping
             bool ActiveRoomMApping = false;
-            bool ActiveRoomMApping = false;
+            //bool ActiveRoomMApping = false;
             bool RoomLevelWithoutException = false;
             bool RoomId = false;
             int Roommapping = 0;
@@ -15784,7 +15784,7 @@ new SqlParameter("@AgentId", AgentId),
                     //currently no room mapping active so added false on 10-JAN-26
                     if (ActiveRoomMApping || RoomLevelWithoutException || RoomId) //Added on 22-NOV-2024 
                     {
-                        DataTable DtHotelInformation = await _commonMethod.GetVervoRoomMappingdata(Convert.ToInt32(HotelId));
+                        DataTable DtHotelInformation = await _commonMethod.GetVervoRoomMappingdata(Convert.ToInt32(selectedOption.HotelId));
                         {
                             string mongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_RoomMapping;
                             string databaseName = _mongoSettings.MongoDB_DatabaseName_RoomMapping;
@@ -15821,11 +15821,11 @@ new SqlParameter("@AgentId", AgentId),
                             string S_RoomNo = null;
                             preBookRoom.HotelRooms.SupplierRoomTypeName = preBookRoom.HotelRooms.RoomTypeName;
                             // string processedRoomTypeName = _commonMethod.getMappedRoom_rlm(preBookRoom.HotelRooms.RoomTypeName.Trim(), DtHotelInformation, Rayna_ID, ref S_RoomID);
-                            string processedRoomTypeName = _commonMethod.getMappedRoom_rlmASAL(preBookRoom.HotelRooms.RoomTypeName.Trim(), OwnsystemHotelId_RQ, collection, ref S_RoomNo);
+                            string processedRoomTypeName = _commonMethod.getMappedRoom_rlmASAL(preBookRoom.HotelRooms.RoomTypeName.Trim(), Rayna_ID, collection, ref S_RoomNo);
 
                             preBookRoom.HotelRooms.RoomTypeName = processedRoomTypeName;
 
-                            preBookRoom.HotelRooms.RoomTypeName = processedRoomTypeName;
+                            //preBookRoom.HotelRooms.RoomTypeName = processedRoomTypeName;
                         }
 
                     }
