@@ -1365,7 +1365,11 @@ namespace XConnect.Supplier.Exely
             if (string.IsNullOrWhiteSpace(dateText))
                 return DateTime.Today;
 
-            string[] formats = new[] { "dd-MM-yyyy", "dd/MM/yyyy", "yyyy-MM-dd", "yyyyMMdd" };
+            string[] formats = new[] { "dd-MM-yyyy", "dd/MM/yyyy", "yyyy-MM-dd", "yyyyMMdd",
+                "yyyy-MM-ddTHH:mm",
+                "yyyy-MM-ddTHH:mm:ss",
+                "dd-MM-yyyy HH:mm",
+                "dd/MM/yyyy HH:mm" };
             if (DateTime.TryParseExact(dateText, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsed))
                 return parsed;
 
