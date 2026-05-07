@@ -54236,7 +54236,9 @@ new SqlParameter("@AgentId", AgentId),
                                         for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
                                         {
                                             UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                            string xMLHotelId = bookRequest.userCart.XMLHotelId;
+                                            string xMLHotelId = !string.IsNullOrWhiteSpace(bookRequest.userCart.XMLHotelId)
+                                                ? bookRequest.userCart.XMLHotelId
+                                                : (bookRequest.userCart.HotelId > 0 ? Convert.ToString(bookRequest.userCart.HotelId) : "");
                                             string checkIn = bookRequest.userCart.UserCartDetails[j].CheckInDate;
                                             string checkOut = bookRequest.userCart.UserCartDetails[j].CheckOutDate;
                                             string roomTypeId = bookRequest.userCart.UserCartDetails[j].RoomTypeId ?? "";
@@ -54254,6 +54256,36 @@ new SqlParameter("@AgentId", AgentId),
                                             var exelyVerifyBooking = exelyVerifyResult?.booking ?? exelyVerifyResult?.alternativeBooking;
                                             string exelyCreateBookingToken = exelyVerifyBooking?.createBookingToken ?? "";
                                             string exelyPropertyId = exelyVerifyBooking?.propertyId ?? exelyHotelIdForVerify;
+                                            if (string.IsNullOrWhiteSpace(exelyCreateBookingToken))
+                                            {
+                                                RequestSPR = exelyVerifyRQ;
+                                                ReponseSPR = exelyVerifyDto.Response;
+                                                Error = exelyVerifyDto.Error;
+                                                time = "00:00:00.000000";
+                                                bookingStatus = 2;
+                                                AgentVoucherNo = "";
+                                                responsetype = "GeneralError";
+                                                _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, (exelyVerifyDto.Response ?? "") + (exelyVerifyDto.Error ?? ""), "After Exely Verify Booking Failed", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "WithinEarth");
+                                                try
+                                                {
+                                                    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, exelyVerifyRQ, exelyVerifyDto.Response, Error);
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                }
+
+                                                AgentVoucher verifyFailedVoucher = new AgentVoucher();
+                                                verifyFailedVoucher.UserCartId = bookRequest.userCart.UserCartDetails[j].UserCartId;
+                                                verifyFailedVoucher.UserCartDetailId = bookRequest.userCart.UserCartDetails[j].UserCartDetailId;
+                                                verifyFailedVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                verifyFailedVoucher.XMLRequest = exelyVerifyRQ;
+                                                verifyFailedVoucher.XMLResponse = exelyVerifyDto.Response;
+                                                verifyFailedVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                verifyFailedVoucher.SupplierName = suppliername;
+                                                agentVouchers.Add(verifyFailedVoucher);
+                                                continue;
+                                            }
                                             string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, exelyCreateBookingToken, exelyPropertyId, checkIn, checkOut, exelyCurrency, exelyNationality, tokenData.AgentCode, checksum, roomTypeId, noOfAdults, noOfChild);
                                             string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.CreateBooking.TrimStart('/');
 
