@@ -32186,7 +32186,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             }
 
                                                             //int flag = await _dida.DidaPreBookingReq(ReferenceNo, UserID, Password, XMLHotelId, RoomTypeId, NoOfAdults, NoOfChild, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, Convert.ToString(UserCartDetailId), AgentUniqueNo, false, ChildAge1, ChildAge2, NoOfRoom, Nationality, CDate, Searchkey, AgentId);
-                                                            PriceCheckDidaDto priceCheckDidaDto = await _dida.DidaPreBookingReq(ReferenceNo, UserID, Password, XMLHotelId, RoomTypeId, NoOfAdults, NoOfChild, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, Convert.ToString(UserCartDetailId), AgentUniqueNo, false, ChildAge1, ChildAge2, NoOfRoom, Nationality, CDate, Searchkey, AgentId, DidaCurrency, CurrencyFactorDida);
+                                                            PriceCheckDidaDto priceCheckDidaDto = await _dida.DidaPreBookingReq(ReferenceNo, UserID, Password, XMLHotelId, RoomTypeId, NoOfAdults, NoOfChild, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, Convert.ToString(UserCartDetailId), AgentUniqueNo, false, ChildAge1, ChildAge2, NoOfRoom, Nationality, CDate, Searchkey, AgentId, DidaCurrency, CurrencyFactorDida, TechName);
                                                             int flag = priceCheckDidaDto.Flag;
                                                             FinalPrice = priceCheckDidaDto.FinalPrice;
                                                             ReferenceNo = priceCheckDidaDto.ReferenceNo;
@@ -32271,6 +32271,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
+                                                            _ = _commonMethod.AnalyticsPrebookandbookData(Supplier, "PreBook", responsetype, time, Searchkey, TechName);
                                                             _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
                                                         }
                                                         catch (Exception e)

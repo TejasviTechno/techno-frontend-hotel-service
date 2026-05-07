@@ -134,6 +134,7 @@ namespace XConnect.CommonUtilities.Interface
 
         Task<string> SupplierPerformanceReportForPrebookAndBook(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "");
         Task<string> AnalyticsRecheckData(string SupplierName, string ResponseType, string ResponseTimeout, string SearchKey = "", string TechName = "");
+        Task<string> AnalyticsPrebookandbookData(string SupplierName, string ReportType, string ResponseType, string ResponseTimeout, string SearchKey = "", string TechName = "");
         Task<string> SupplierPerformanceReportForRecheckOnly(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "");
         Task<DataTable> GetVervoRoomMappingdata(int HotelId, string HotelIds = "");
 
