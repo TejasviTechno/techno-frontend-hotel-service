@@ -1057,9 +1057,7 @@ namespace XConnect.Supplier.Exely
                 List<int> childAges = new List<int>();
                 for (int c = 0; c < noofchild; c++) childAges.Add(8);
 
-                var placements = new List<BookingPlacementRq>();
-                if (noofadult > 0)
-                    placements.Add(new BookingPlacementRq { code = $"AdultBed-{noofadult}" });
+                var placements = BuildBookingPlacements(noofadult, noofchild);
 
                 var guests = new List<BookingGuest>();
                 if (dtPassengers != null && dtPassengers.Rows.Count > 0)
@@ -1143,6 +1141,7 @@ namespace XConnect.Supplier.Exely
                 int noOfChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfChild"]);
                 List<int> childAges = new List<int>();
                 for (int c = 0; c < noOfChild; c++) childAges.Add(8);
+                var placements = BuildBookingPlacements(noOfAdults, noOfChild);
 
                 List<BookingGuest> guests = new List<BookingGuest>();
                 foreach (DataRow pax in dtPassengers.Rows)
@@ -1178,7 +1177,7 @@ namespace XConnect.Supplier.Exely
                             {
                                 stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(checkIn), departureDateTime = ParseSearchDate(checkOut) },
                                 ratePlan = new BookingRatePlanRq { id = ratePlanCode },
-                                roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = new List<BookingPlacementRq>() },
+                                roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = placements },
                                 guests = guests,
                                 guestCount = new BookingGuestCount { adultCount = noOfAdults, childAges = childAges.Count > 0 ? childAges : null },
                                 checksum = checksum,
@@ -1226,6 +1225,7 @@ namespace XConnect.Supplier.Exely
 
                 List<int> childAges = new List<int>();
                 for (int c = 0; c < noOfChild; c++) childAges.Add(8);
+                var placements = BuildBookingPlacements(noOfAdults, noOfChild);
 
                 List<BookingGuest> guests = new List<BookingGuest>();
                 foreach (DataRow pax in dtPassengers.Rows)
@@ -1259,7 +1259,7 @@ namespace XConnect.Supplier.Exely
                             {
                                 stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(checkIn), departureDateTime = ParseSearchDate(checkOut) },
                                 ratePlan = new BookingRatePlanRq { id = ratePlanCode },
-                                roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = new List<BookingPlacementRq>() },
+                                roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = placements },
                                 guests = guests,
                                 guestCount = new BookingGuestCount { adultCount = noOfAdults, childAges = childAges.Count > 0 ? childAges : null },
                                 checksum = checksum,
@@ -1316,6 +1316,14 @@ namespace XConnect.Supplier.Exely
         }
         #endregion Response
         #endregion Book
+
+        private static List<BookingPlacementRq> BuildBookingPlacements(int noOfAdults, int noOfChild)
+        {
+            int bedCount = noOfAdults + noOfChild;
+            return bedCount > 0
+                ? new List<BookingPlacementRq> { new BookingPlacementRq { code = $"AdultBed-{bedCount}" } }
+                : new List<BookingPlacementRq>();
+        }
 
         public string Get_Exely_GetCancellationChargesRQ(string AgentRef)
         {
