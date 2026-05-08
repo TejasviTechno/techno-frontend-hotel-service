@@ -773,7 +773,7 @@ namespace XConnect.Supplier.Techno
             }
         }
 
-        public async Task<CancellationDto> Get_Withinearth_DMC_CancelationPolicy(DataSet dsHotel, string ownsystemid, string RoomTypeId_Own, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtMarkupDetails, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string roomno, string HotelId, string Provider, int AgentId, string GiataId, int hotelRating, string roomtypename, string Mealid, DataTable dtROE, string Search_Key, string IP, TokenData tokenData)
+        public async Task<CancellationDto> Get_Withinearth_DMC_CancelationPolicy(DataSet dsHotel, string ownsystemid, string RoomTypeId_Own, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtMarkupDetails, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string roomno, string HotelId, string Provider, int AgentId, string GiataId, int hotelRating, string roomtypename, string Mealid, DataTable dtROE, string Search_Key, string IP, TokenData tokenData,string Techname)
         {
             string Error = "";
             string IsBooking = "Available";
@@ -837,7 +837,7 @@ namespace XConnect.Supplier.Techno
                 string Request = Withinearth_DMCCancellationPolicyRequest(UserID, objSearPera, SearchKey, HotelOptionId, RoomToken, Currency, IP);
                 _commonMethod.ThirdPartyGetPolicyHistory(RoomTypeId, Convert.ToString(SearchKey), Request, "-", "After Get Policy", Provider, "Response", Search_Key, "");
 
-                ResponseDto responseDto = await GetSupplierResponseWE_DMC(Request, URL, 30000, Provider, objSearPera, false);
+                ResponseDto responseDto = await GetSupplierResponseWE_DMC(Request, URL, 30000, Provider, objSearPera, false, password,Techname);
                 string Response = responseDto.Response;
                 Error = responseDto.Error;
 
@@ -963,7 +963,7 @@ namespace XConnect.Supplier.Techno
             }
         }
 
-        public async Task<ResponseDto> GetSupplierResponseWE_DMC(string strxmlRQRS, string strHost, int TimeOut, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string UniqueNo = "", string Search_key = "")
+        public async Task<ResponseDto> GetSupplierResponseWE_DMC(string strxmlRQRS, string strHost, int TimeOut, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string UniqueNo = "", string Search_key = "",string password="",string Techname="")
         {
             //System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             //timer.Start();
@@ -983,6 +983,11 @@ namespace XConnect.Supplier.Techno
                 //Request.ContentType = "text/xml;charset=utf-8;";
                 //Request.Accept = "text/xml";
                 Request.Headers.Add("Accept-Encoding", "gzip,deflate");
+                 
+                if(Techname.ToLower()=="techno_new")
+                    Request.Headers.Add("Authorization", "Bearer " + password);
+
+
                 Request.KeepAlive = false;
                 Request.ContentType = "application/json";
                 Request.Accept = null;

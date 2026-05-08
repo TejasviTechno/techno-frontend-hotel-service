@@ -971,7 +971,7 @@ namespace XConnect.Markup
                     if (matched.Length == 0)
                     {
                         allMatched = false;
-                        break;
+                        //break;
                     }
 
                     // Pick row with actual markupvalue
