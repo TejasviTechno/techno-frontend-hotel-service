@@ -1467,22 +1467,22 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
 
                         //int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
                         int Roommapping = 1;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
-                        if (ActiveRoomMAppingwithoutException) //Add On 17SEP2025 
+                       if (ActiveRoomMAppingwithoutException) //Add On 17SEP2025 
                         {
                             //finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping
                             //need to write code for inserting excetion 
-                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping_withoutEx(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping);
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping_withoutEx(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode,Roommapping, Tokendata.IsFromAPI);
 
                         }
                         else if (ActiveRoomId)
                         {
-                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMappingv2(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 29-JAN-2025
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMappingv2(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping,Tokendata.IsFromAPI); //convert to final response //RoomMapping  //ADD on 29-JAN-2025
 
                         }
                         else if (ActiveRoomMApping)
                         {
 
-                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 30-May-2025 
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping, Tokendata.IsFromAPI); //convert to final response //RoomMapping  //ADD on 30-May-2025 
                         }
                         else
                         {
@@ -3046,9 +3046,7 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
 
                             if ((SearchPara.IsSearchFor.ToLower().IndexOf("dingus") >= 0 || SearchPara.IsSearchFor.ToLower().IndexOf("multi") >= 0) && HitFromAll)
                             {
-
-                                DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchNew(SearchPara.Nationality, dtXMLCity, "dingus");
-                                if (dataForSearch.XmlNationality != "" && commonSearchList.commonHotelCodes != null && commonSearchList.commonHotelCodes.Dingus_codes != null)
+                                if (commonSearchList.commonHotelCodes != null && commonSearchList.commonHotelCodes.Dingus_codes != null)
                                 {
                                     DateTime todaysdate = DateTime.Now;
                                     string dateString = todaysdate.ToString("yyyy-MM-dd");
@@ -3062,30 +3060,15 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                                     TimeSpan difference = todaysDate - checkinDate;
                                     int daysDifference = Math.Abs(difference.Days);
 
-                                    if (Dingus_SearchConfig.Count > 0)
+                                    if (Dingus_SearchConfig.Count > 0 && Dingus_SearchConfig != null)
                                     {
-                                        //if (SearchPara.Rooms.Count == 1)  //new change
+                                        if (daysDifference > 7)
                                         {
-                                            if (daysDifference > 7)
-                                            {
-                                                //if (Dingus_SearchConfig[0].RestrictedNationality != null)
-                                                if (Dingus_SearchConfig != null)
-                                                {
+                                            _dingus.DingusRequestOnly_async_new(commonSearchList.commonHotelCodes.Dingus_codes, lstRating, dtROE, SearchPara, Dingus_details, Dingus_SearchConfig, dtPreferredDataHotel, ref AllTask, hit, tokenData, dtXMLCity);
 
-                                                    //string RestrictedNationality = Convert.ToString(Dingus_SearchConfig[0].RestrictedNationality).ToLower();
-                                                    string RestrictedNationality = "";// Convert.ToString(Dingus_SearchConfig[0].RestrictedNationality).ToLower();
-                                                    if (!RestrictedNationality.Contains(Convert.ToString(SearchPara.Nationality).ToLower()) || SearchPara.CountryID != 13068)
-                                                    {
-                                                        _dingus.DingusRequestOnly_async(commonSearchList.commonHotelCodes.Dingus_codes, lstRating, dtROE, SearchPara, Dingus_details, Dingus_SearchConfig, dtPreferredDataHotel, ref AllTask, dataForSearch.xmlCity, dataForSearch.xmlCountry, dataForSearch.XmlNationality, hit, "dingus", tokenData);
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    _dingus.DingusRequestOnly_async(commonSearchList.commonHotelCodes.Dingus_codes, lstRating, dtROE, SearchPara, Dingus_details, Dingus_SearchConfig, dtPreferredDataHotel, ref AllTask, dataForSearch.xmlCity, dataForSearch.xmlCountry, dataForSearch.XmlNationality, hit, "dingus", tokenData);
-                                                }
-                                            }
                                         }
                                     }
+
                                 }
                             }
 
@@ -5915,7 +5898,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                 case "dingus":
                                     dataTable.Add(Task.Run(async () =>
                                     {
-                                        var result = await _dingus.XMLDingusPriceOnly_Async(item, commonSearch, item.RQRS[0].Response, SearchPara, item.XmlCity, item.XmlCountry, item.CurrencyCode, item.CurrencyFactor, item.XmlNationality,
+                                        var result = await _dingus.XMLDingusPriceOnly_Async_Multiroom(item, commonSearch, item.RQRS[0].Response, SearchPara, item.XmlCity, item.XmlCountry, item.CurrencyCode, item.CurrencyFactor, item.XmlNationality,
                                       dtAgentDetail, item.Supplier, dsAgentDetails, dtVatHotelList, item.SupplierID, item.GIATACode, dtROE);
                                         item.dtHotelRoom = result;
                                         return result;
@@ -35882,26 +35865,22 @@ new SqlParameter("@AgentId", AgentId),
 
                                                         dtPriceUpdateTable = _commonMethod.getPriceUpdateTable();
                                                         dtCartUpdateTable = _commonMethod.getCardUpdateTable();
-                                                        List<DingusClass.DingusRoom> ListDR = new List<DingusClass.DingusRoom>();
-                                                        for (int d = 0; d < dsCartDetails.Tables[1].DefaultView.Count; d++)
+                                                        //List<DingusClass.DingusRoom> ListDR = new List<DingusClass.DingusRoom>();
+                                                        //for (int d = 0; d < dsCartDetails.Tables[1].DefaultView.Count; d++)
+                                                        //{
+                                                        //    DingusClass.DingusRoom DR = new DingusClass.DingusRoom();
+                                                        //    DR.NoofAdults = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["NoofAdults"]);
+                                                        //    DR.NoofChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["NoofChild"]);
+                                                        //    DR.Child1Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge1"]);
+                                                        //    DR.Child2Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge2"]);
+                                                        //    //DR.Child3Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge3"]);
+                                                        //    // DR.Child4Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge4"]);
+                                                        //    ListDR.Add(DR);
+                                                        //}
+                                                        int j = 0;
+                                                        // for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
                                                         {
-                                                            DingusClass.DingusRoom DR = new DingusClass.DingusRoom();
-                                                            DR.NoofAdults = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["NoofAdults"]);
-                                                            DR.NoofChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["NoofChild"]);
-                                                            DR.Child1Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge1"]);
-                                                            DR.Child2Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge2"]);
-                                                            //DR.Child3Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge3"]);
-                                                            // DR.Child4Age = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[d]["ChildAge4"]);
-                                                            ListDR.Add(DR);
-                                                        }
 
-                                                        for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
-                                                        {
-                                                            string[] HBArray = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
-                                                            string RoomTypeCode = HBArray[1];
-                                                            string MealPlanCodes = HBArray[2];
-                                                            string RatePlanID = HBArray[3];
-                                                            string RatePlanCode = HBArray[4];
 
                                                             double CompanyBuyPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
                                                             bool IsErrors = false;
@@ -35911,7 +35890,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             DataRow[] SupplierDetail1 = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
 
 
-                                                            PriceCheckCMDto priceCheckDingus = await _dingus.PriceUpdateDingus(ListDR, Supplier.ToLower(), RoomTypeCode, MealPlanCodes, RatePlanID, RatePlanCode, dtCheckPriceReqStructure, dsCartDetails, SupplierDetail1, UniqueNo, AgentUniqueNo, i, j, "P", CompanyBuyPrice, IsErrors, itemprice, TokenData, Searchkey, AgentId);
+                                                            PriceCheckCMDto priceCheckDingus = await _dingus.PriceUpdateDingus(Supplier.ToLower(), dtCheckPriceReqStructure, dsCartDetails, SupplierDetail1, UniqueNo, AgentUniqueNo, i, j, "P", CompanyBuyPrice, IsErrors, itemprice, TokenData, Searchkey, AgentId);
                                                             bool IsPriceUpdates = priceCheckDingus.Flag;
                                                             itemprice = priceCheckDingus.ItemPrice;
                                                             IsErrors = priceCheckDingus.IsError;

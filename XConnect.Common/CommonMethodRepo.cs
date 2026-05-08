@@ -6758,7 +6758,7 @@ namespace XConnect.CommonUtilities
 
         
 
-        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1) //Add int Roommapping=0 on 30MAY2025
+        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1, bool IsFromAPI = false) //Add int Roommapping=0 on 30MAY2025
         {
             AvailabilityRS_Comp availHotelList_Comp = new AvailabilityRS_Comp();
             AvailHotelList_Comp finalResponse_Comp = new AvailHotelList_Comp();
@@ -7120,7 +7120,7 @@ namespace XConnect.CommonUtilities
             }
             return null;
         }
-        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping_withoutEx(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1) //Add int Roommapping=0 on 30MAY2025
+        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping_withoutEx(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1, bool IsFromAPI = false) //Add int Roommapping=0 on 30MAY2025
         {
             AvailabilityRS_Comp availHotelList_Comp = new AvailabilityRS_Comp();
             AvailHotelList_Comp finalResponse_Comp = new AvailHotelList_Comp();
@@ -7500,7 +7500,7 @@ namespace XConnect.CommonUtilities
             }
             return null;
         }
-        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMappingv2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1)  // ADD on 29-JAN-2025
+        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMappingv2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1 , bool IsFromAPI = false)  // ADD on 29-JAN-2025
         {
             AvailabilityRS_Comp availHotelList_Comp = new AvailabilityRS_Comp();
             AvailHotelList_Comp finalResponse_Comp = new AvailHotelList_Comp();
