@@ -970,8 +970,7 @@ namespace XConnect.Markup
 
                     if (matched.Length == 0)
                     {
-                        allMatched = false;
-                        //break;
+                        continue;
                     }
 
                     // Pick row with actual markupvalue
@@ -979,6 +978,7 @@ namespace XConnect.Markup
                         && Convert.ToDouble(matched[0]["markupvalue"]) > 0)
                     {
                         valueRow = matched[0];
+                        break;
                     }
                 }
 
