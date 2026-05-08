@@ -2085,6 +2085,7 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                                         SaltoursSearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
                                         break;
                                     case "techno":
+                                    case "techno_new":
                                         TechnoDetails.Add(item);
                                         TechnoSearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
                                         break;
@@ -2196,7 +2197,7 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                 string SearchParaCheck = SearchPara.IsSearchFor.ToLower();
                 #endregion
 
-                Parallel.For(1, 58, workerId =>
+                Parallel.For(1, 59, workerId =>
                 {
                     switch (workerId)
                     {
@@ -3111,6 +3112,15 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                                 {
                                     _iExely.GetExelyRequestOnly_Async(commonSearchList.commonHotelCodes.Exely_Codes, lstRating, dtPreferredDataHotel, SearchPara, Exely_SearchConfig, Exely_Details, ref AllTask, AgentCode, hit, tokenData, dtXMLCity, advancedOptions);
                                 }
+                            }
+                            #endregion
+                            break;
+                        case 58:
+                            #region"Techno_New"
+                            if (TechnoDetails != null && TechnoDetails.Count > 0 && TechnoSearchConfig != null && TechnoSearchConfig.Count != 0)
+                            {
+                                if (commonSearchList.commonHotelCodes.Techno_Codes != null)
+                                    _techno.GetWE_DMCRequestOnly_Async(commonSearchList.SearchByHotel, advancedOptions, commonSearchList.commonHotelCodes.Techno_Codes, dtPreferredDataHotel, SearchPara, TechnoSearchConfig, TechnoDetails, ref AllTask, AgentCode, hit, lstRating, dtROE, tokenData, dtXMLCity, Platform, SearchByOneID);
                             }
                             #endregion
                             break;
@@ -5100,6 +5110,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                                             case "rezlive":
                                                             case "hotelstrack":
                                                             case "welcomebeds":
+                                                            case "techno_new":
                                                                 response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL, item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType, "", (Supplier.ToLower() == "hotelspro")).ConfigureAwait(false);
                                                                 break;
                                                             case "dida":
@@ -5456,6 +5467,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     }));
                                     break;
                                 case "techno":
+                                case "techno_new":
                                     dataTable.Add(Task.Run(async () =>
                                     {
                                         var result = await _techno.WE_techno_HotelSearchWithRooms(item, commonSearch, item.RQRS[0].Response, item.XmlCity, item.XmlCountry, SearchPara, item.CurrencyCode, item.CurrencyFactor, item.Supplier, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog);
@@ -6541,11 +6553,15 @@ new SqlParameter("@AgentId", AgentId),
                             Request.Headers.ConnectionClose = false;
                             break;
                         case "techno":
+                        case "techno_new":
                             Request = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, strHost)
                             {
                                 Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json")
                             };
                             Request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                            if(TechName.ToLower()== "techno_new")
+                                Request.Headers.Add("Authorization", "Bearer " + Password);
                             break;
                         case "hotelbedsv1_new":
                         case "hotelbeds":
@@ -12378,6 +12394,7 @@ new SqlParameter("@AgentId", AgentId),
                     && TechName.ToLower() != "hotelstrack"//added on 17-11-25 //only when call availabilitywithcancellation call 
                     && TechName.ToLower() != "rezlive"
                     && TechName.ToLower() != "hotelbeds"
+                    && TechName.ToLower() != "techno_new" //added 08may26
 
                     )//added on 01-12-25 //only when call availabilitywithcancellation call 
                 //if (selectedRoom.CancellationPolicy.Count > 0 && roomex.SupplierName.ToLower() != "iwtx" && !(roomex.SupplierName.ToLower().Contains("_xtg")))//added on 01-APR-2025
@@ -13512,18 +13529,19 @@ new SqlParameter("@AgentId", AgentId),
                     #endregion
                     #region "_techno"
                     case "techno":
-                    case "travab_dmc":
-                    case "bedlinker_techno":
-                    case "travelbullz_techno":
-                    case "hotelinx_techno":
-                    case "rayna_techno":
-                    case "khayi_techno":
-                    case "farhat_techno":
+                    case "techno_new":
+                    //case "travab_dmc":
+                    //case "bedlinker_techno":
+                    //case "travelbullz_techno":
+                    //case "hotelinx_techno":
+                    //case "rayna_techno":
+                    //case "khayi_techno":
+                    //case "farhat_techno":
                         dsHotelData.Tables[2].DefaultView.RowFilter = "OwnsystemHotelId=" + hotelid + "and RoomTypeId='" + roomtypeid + "' and RoomNo='" + roomno + "'";
                         if (dsHotelData.Tables[2].DefaultView.Count == 0)
                         {
 
-                            cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData);
+                            cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData ,TechName);
                         }
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
@@ -33282,6 +33300,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 case "khayi_techno":
                                                 case "farhat_techno":
                                                 case "techno":
+                                                case "techno_new":
                                                     try
                                                     {
                                                         string Provider_WE_DMC = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower();
@@ -51609,6 +51628,7 @@ new SqlParameter("@AgentId", AgentId),
                                 #endregion
                                 #region "_techno"
                                 case "techno":
+                                case "techno_new":
 
                                     try
                                     {
