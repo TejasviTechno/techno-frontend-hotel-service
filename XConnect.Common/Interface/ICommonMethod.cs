@@ -159,6 +159,8 @@ namespace XConnect.CommonUtilities.Interface
         string GenerateGTARequest(HotelSearchParameter objSearchPara);
 
         Task<ResponseDto> GetSupplierResponse(string strUniqueId, string strxmlRQRS, string strHost, Int32 TimeOut, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "");
+        public void XMLRequestResponseTrack_HotelBeds(string XmlRequest, string XmlResponse, string Provider, string TypeRequest, string reqId = "");
+
         #endregion
 
         Task<DataTable> MongoDB_BookingC(List<string> xmlhotelcode1);
@@ -256,10 +258,15 @@ namespace XConnect.CommonUtilities.Interface
         Task UpdateTBOVoucherStatus(string referenceNumber,int UserCartDetailId,int TBOVoucherStatus);
 
         DataTable GetApisoBookingData(int usercartdetailsid);
+        Task Gettimeoutemail(string referenceNumber, string suppliername, string Checkin, string Checkout, string Entrydate, string Error, string HostName = "");//new add 04082026
+        Task Gettimeoutemail_forbidden(string referenceNumber, string suppliername, string Checkin, string Checkout, string Entrydate, string Error, string HostName = "");//new add 04082026
 
-        
+
+
 
         DataSet ReadXmlFileToDataSet(string Path = "");
+
+
         #endregion
 
         #region VCN
