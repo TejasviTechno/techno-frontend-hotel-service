@@ -2824,6 +2824,25 @@ namespace XConnect.CommonUtilities
             responseDto.Error = Error;
             return responseDto;
         }
+        public void XMLRequestResponseTrack_HotelBeds(string XmlRequest, string XmlResponse, string Provider, string TypeRequest, string reqId = "")
+        {
+            try
+            {
+
+                SqlParameter[] para = new SqlParameter[]{
+            new SqlParameter("@XmlRequest",XmlRequest),
+            new SqlParameter("@XmlResponse",XmlResponse),
+            new SqlParameter("@Provider",Provider),
+            new SqlParameter("@TypeRequest",TypeRequest),
+            new SqlParameter("@ReqId",reqId)
+            };
+                _dlConnection.GetExecuteScalarSP("InsertXMLRequestResponseTrack_HotelBeds", para);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+            }
+        }
 
         public async Task<ResponseDto> AbreuOnlineResponse_Supplier(string Request_Text, string APIUrl, int SearchTimeOut, string SearchKey = "", string Provider = "", string UserId = "", string Stage = "")
         {
@@ -4619,6 +4638,7 @@ namespace XConnect.CommonUtilities
                         case "pkfair":
                         case "letsfly":
                         case "elevateholidays":
+                        case "dingus":
                             dataFor.XmlNationality = Convert.ToString(GetThirdPartyStaticData_New(dtXMLCity.Tables[1], "Desc", Convert.ToString(Natinality), "XmlNationality", "Agoda"));
 
                             break;
@@ -10449,6 +10469,105 @@ new SqlParameter("@timeoutMs", timeoutMs)
                 _ = _exception.ErrorNew(ex, _LogAPI.Book);
             }
         }
+
+        public async Task Gettimeoutemail(string referenceNumber, string suppliername, string Checkin, string Checkout, string Entrydate, string Error, string HostName = "")
+        {
+            try
+            {
+
+                List<Email_Details> emailList = new List<Email_Details>();
+                int emailsendstatus = 0;
+                DataSet ds = new DataSet();
+                ds = await GetVoucher(241);
+                string SuppplierSubject = "";
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    SuppplierSubject = ds.Tables[0].Rows[0]["NotificationBody"].ToString().Replace("&lt;", "<").Replace("&gt;", ">").Replace("&nbsp;", "").Replace("<p>", "").Replace("</p>", "");
+                    SuppplierSubject = SuppplierSubject.Replace("#IntRef", referenceNumber).Replace("#Refno", referenceNumber).Replace("#End", suppliername).Replace("#EntryDate UTC", Entrydate).Replace("#CheckInDate", Checkin).Replace("#CheckOutDate", Checkout);
+                }
+                string FinalAgentTemplate = "";
+
+                emailList.Add(new Email_Details
+                {
+                    FromId = _keySettings.FromEmailId,
+                    ToId = "",
+                    // ToId = Convert.ToString(WebConfigurationManager.AppSettings["CCMailSupplierHotelBooking"]),
+
+                    CcId = "",
+                    BccId = "",
+                    Subject = "Booking Timeout Alert Mail",
+                    EmailText = SuppplierSubject,
+                    EmailType = "Booking Timeout Alert Mail",
+                    ServiceType = "Booking Timeout Alert Mail",
+                    Website = Convert.ToString(HostName),
+                    CompanyId = 1,
+                    IsRayna = 1,
+
+                    UserHost = _keySettings.WLUserHost,
+                    UserPassword = _keySettings.WLUserPassword,
+                    UserPort = _keySettings.WLUserPort,
+                    UserEmail = _keySettings.WLUserEmail,
+                    CompanyName = _keySettings.WLUserCompanyName,
+                    refno = referenceNumber
+                });
+
+
+                await SaveMailSendingDetails(emailList, emailsendstatus);
+
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+            }
+
+        }
+        public async Task Gettimeoutemail_forbidden(string referenceNumber, string suppliername, string Checkin, string Checkout, string Entrydate, string Error, string HostName = "")
+        {
+            try
+            {
+                List<Email_Details> emailList = new List<Email_Details>();
+                int emailsendstatus = 0;
+                DataSet ds = new DataSet();
+                ds = await GetVoucher(241);
+                string SuppplierSubject = "";
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    SuppplierSubject = ds.Tables[0].Rows[0]["NotificationBody"].ToString().Replace("&lt;", "<").Replace("&gt;", ">").Replace("&nbsp;", "").Replace("<p>", "").Replace("</p>", "");
+                    SuppplierSubject = SuppplierSubject.Replace("#IntRef", referenceNumber).Replace("#Refno", referenceNumber).Replace("#End", suppliername).Replace("#EntryDate UTC", Entrydate).Replace("#CheckInDate", Checkin).Replace("#CheckOutDate", Checkout);
+                }
+                string FinalAgentTemplate = "";
+
+                emailList.Add(new Email_Details
+                {
+                    FromId = _keySettings.FromEmailId,
+                    ToId = "",
+                    //ToId = Convert.ToString(WebConfigurationManager.AppSettings["CCMailSupplierHotelBooking"]),
+                    CcId = "",
+                    BccId = "",
+                    Subject = "Booking not cancel successfully ,Be Alert",
+                    EmailText = SuppplierSubject,
+                    EmailType = "Booking not cancel successfully ,Be Alert",
+                    ServiceType = "Booking not cancel successfully ,Be Alert",
+                    Website = Convert.ToString(HostName),
+                    CompanyId = 1,
+                    IsRayna = 1,
+                    UserHost = _keySettings.WLUserHost,
+                    UserPassword = _keySettings.WLUserPassword,
+                    UserPort = _keySettings.WLUserPort,
+                    UserEmail = _keySettings.WLUserEmail,
+                    CompanyName = _keySettings.WLUserCompanyName,
+                    refno = referenceNumber
+                });
+
+                await SaveMailSendingDetails(emailList, emailsendstatus);
+
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+            }
+        }
+
         #endregion
 
         // public async Task<bool> CheckVervopatchBookingTime(string AgentCode)
