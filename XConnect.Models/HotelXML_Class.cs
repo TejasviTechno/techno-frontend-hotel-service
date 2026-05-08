@@ -1923,7 +1923,8 @@ namespace XConnect.Models
         public string PurchaseToken { get; set; }
         public string EachoToken { get; set; }
         public int RoomNo { get; set; }
-        
+        public string ChildAge1 { get; set; }//040526
+        public string ChildAge2 { get; set; }//040526
 
     }
 
