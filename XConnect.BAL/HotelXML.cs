@@ -1471,18 +1471,18 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                         {
                             //finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping
                             //need to write code for inserting excetion 
-                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping_withoutEx(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping);
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping_withoutEx(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode,Roommapping, Tokendata.IsFromAPI);
 
                         }
                         else if (ActiveRoomId)
                         {
-                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMappingv2(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 29-JAN-2025
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMappingv2(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping,Tokendata.IsFromAPI); //convert to final response //RoomMapping  //ADD on 29-JAN-2025
 
                         }
                         else if (ActiveRoomMApping)
                         {
 
-                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping); //convert to final response //RoomMapping  //ADD on 30-May-2025 
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping, Tokendata.IsFromAPI); //convert to final response //RoomMapping  //ADD on 30-May-2025 
                         }
                         else
                         {

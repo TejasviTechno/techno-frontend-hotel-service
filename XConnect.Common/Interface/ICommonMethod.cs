@@ -70,11 +70,11 @@ namespace XConnect.CommonUtilities.Interface
         Task<AvailHotelList> MakeCacheForHotelListMaster(string filepath, string Extension, string NewSearchKey, TokenData Tokendata, AvailHotelList finalResponse, int operation);
 
        // Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = ""); // Commnet on 30MAY2025
-        Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping=1); //ADD On 30MAY2025
+        Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping=1, bool IsFromAPI = true); //ADD On 30MAY2025
 
-        Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMappingv2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1);
+        Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMappingv2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1, bool IsFromAPI = true);
 
-        Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping_withoutEx(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1);
+        Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping_withoutEx(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1, bool IsFromAPI = true);
         // ADD on 29-JAN-2025
         Task<AvailHotelList_Comp> ConvertToFinalResponseList(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, bool IsFromAPI = true);
        

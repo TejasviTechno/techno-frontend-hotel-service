@@ -23,6 +23,7 @@ namespace XConnect.Models
         public string MongoDB_DatabaseName_BookingC { get; set; } //130625
 
         public string MongoDB_CollectionName_RoomMapping { get; set; }
+        public string UnMapped_MongoDB_CollectionName_RoomMapping { get; set; }
         public string MongoDB_CollectionName_BookingC { get; set; } //130625
         public string GimmonoxMongoDB_CollectionName_RoomMapping { get; set; } //Add On 30MAY2025
         public string GimmonoxMongoDB_CollectionName_RoomMapping_DAG2 { get; set; } //Add On 17SEP2025

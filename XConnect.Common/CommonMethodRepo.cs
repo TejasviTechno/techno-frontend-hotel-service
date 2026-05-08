@@ -2855,19 +2855,19 @@ namespace XConnect.CommonUtilities
                     request.ContentType = "application/soap+xml; charset=utf-8";
                     request.Headers.Add("Accept-Encoding", "gzip");
                     if (Stage.ToLower() == "policy")
-                       // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.PriceBreakDown));
+                        // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.PriceBreakDown));
                         request.Headers.Add("API-Operation", Convert.ToString(_supplierConfig.GoGlobal.PriceBreakDown));
                     else if (Stage.ToLower() == "checkprice")
-                       // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingValuation));
+                        // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingValuation));
                         request.Headers.Add("API-Operation", Convert.ToString(_supplierConfig.GoGlobal.BookingValuation));
                     else if (Stage.ToLower() == "booking")
                         //request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingInsert));
                         request.Headers.Add("API-Operation", Convert.ToString(_supplierConfig.GoGlobal.BookingInsert));
                     else if (Stage.ToLower() == "cancel")
-                       // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingCancellation));
+                        // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingCancellation));
                         request.Headers.Add("API-Operation", Convert.ToString(_supplierConfig.GoGlobal.BookingCancellation));
                     else if (Stage.ToLower() == "voucher")
-                       // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.VoucherDetails));
+                        // request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.VoucherDetails));
                         request.Headers.Add("API-Operation", Convert.ToString(_supplierConfig.GoGlobal.VoucherDetails));
                     else if (Stage.ToLower() == "bookingstatus")
                         //request.Headers.Add("API-Operation", Convert.ToString(XMLHotelBookingCommon.BookingStatus));
@@ -3672,7 +3672,7 @@ namespace XConnect.CommonUtilities
 
         public async Task<string> SupplierPerformanceReportForPrebookAndBook(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "")
         {
-      
+
 
             try
             {
@@ -6756,17 +6756,18 @@ namespace XConnect.CommonUtilities
             }
         }
 
-        
 
-        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1) //Add int Roommapping=0 on 30MAY2025
+
+        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1, bool IsFromAPI = true) //Add int Roommapping=0 on 30MAY2025
         {
             AvailabilityRS_Comp availHotelList_Comp = new AvailabilityRS_Comp();
             AvailHotelList_Comp finalResponse_Comp = new AvailHotelList_Comp();
             availHotelList_Comp.HotelResult = new List<_HotelListNew_Comp>();
             List<RoomInfo> missingRoomList = new List<RoomInfo>(); //Add On 020526
-
+            string SupplierName = "";
             try
             {
+              
                 availHotelList_Comp.SearchKey = NewSearchKey;
                 int ab = 0;
                 // Global dictionary to track unique roomKeys across all HotelOptions
@@ -6781,6 +6782,7 @@ namespace XConnect.CommonUtilities
                 IMongoCollection<BsonDocument> collection = null;
                 collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
 
+                collection = GetRoomMappingCollection(collectionName); //Add on 10FEB2026
                 if (SearchPara != null)
                 {
                     timerx.Stop();
@@ -6881,7 +6883,7 @@ namespace XConnect.CommonUtilities
                                     string S_RoomNo = null; // ADD ON 29-JAN-2025
                                                             // Process RoomTypeName and Refundability
 
-                                        processedRoomTypeName = getMappedRoom_rlmASAL(currentRoom.RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(hotel.OwnsystemHotelId), collection, ref S_RoomNo); // ADD ON 6FEB2026
+                                    processedRoomTypeName = getMappedRoom_rlmASAL(currentRoom.RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(hotel.OwnsystemHotelId), collection, ref S_RoomNo); // ADD ON 6FEB2026
 
                                     if (string.IsNullOrEmpty(S_RoomNo)) //Add On 17SEP2025
                                     {
@@ -6952,7 +6954,30 @@ namespace XConnect.CommonUtilities
                                         continue; // Skip adding this room as it is a duplicate
                                     }
 
-                                    // Initialize RoomList for this unique room
+                                    //// Initialize RoomList for this unique room
+                                    //_FinalRoomList_Comp RoomList = new _FinalRoomList_Comp
+                                    //{
+                                    //    RoomToken = RoomToken_New,
+                                    //    RoomNo = currentRoom.RoomNo,
+                                    //    RoomTypeName = processedRoomTypeName,
+                                    //    MealName = currentRoom.MealName,
+                                    //    Price = currentRoom.Price,
+                                    //    BookingStatus = currentRoom.BookingStatus,
+                                    //    MappedMealName = currentRoom.MappedMealName,
+                                    //    CancellationPolicy = cancellationPolicies,
+                                    //    SEQNO = Roomseq  // ADD On 4-FEB-2025
+
+                                    //};
+
+                                    //// Add room to uniqueRoomMap if it’s the lowest-priced or if not already added
+                                    //if (!uniqueRoomMap.ContainsKey(roomKey) || currentRoom.Price < uniqueRoomMap[roomKey].Price)
+                                    //{
+                                    //    uniqueRoomMap[roomKey] = RoomList;
+                                    //    globalRoomKeySet.Add(roomKey); // Track globally to avoid duplicate roomKey
+                                    //}
+
+
+
                                     _FinalRoomList_Comp RoomList = new _FinalRoomList_Comp
                                     {
                                         RoomToken = RoomToken_New,
@@ -6963,14 +6988,19 @@ namespace XConnect.CommonUtilities
                                         BookingStatus = currentRoom.BookingStatus,
                                         MappedMealName = currentRoom.MappedMealName,
                                         CancellationPolicy = cancellationPolicies,
-                                        SEQNO = Roomseq  // ADD On 4-FEB-2025
+                                        SEQNO = Roomseq, // ADD On 4-FEB-2025
+                                        //added080526
+                                        SupplierCurrency = !IsFromAPI ? currentRoom.SupplierCurrency : null,
+                                       
                                     };
+                                    SupplierName = !IsFromAPI ? currentRoom.SupplierName : null;
+
 
                                     // Add room to uniqueRoomMap if it’s the lowest-priced or if not already added
                                     if (!uniqueRoomMap.ContainsKey(roomKey) || currentRoom.Price < uniqueRoomMap[roomKey].Price)
                                     {
                                         uniqueRoomMap[roomKey] = RoomList;
-                                        globalRoomKeySet.Add(roomKey); // Track globally to avoid duplicate roomKey
+                                        globalRoomKeySet.Add(roomKey);
                                     }
                                 }
 
@@ -6985,6 +7015,7 @@ namespace XConnect.CommonUtilities
                                     Options_Comp option = new Options_Comp
                                     {
                                         HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                        SupplierName = SupplierName,
                                         // Set MinPrice to the sum of prices for the RoomTypeName with the cheapest RoomNo 1
                                         MinPrice = uniqueRoomMap.Values
                                                         .Where(r => Convert.ToInt32(r.RoomNo) == 1) // Filter RoomNo 1
@@ -7039,6 +7070,7 @@ namespace XConnect.CommonUtilities
                                         Options_Comp option = new Options_Comp
                                         {
                                             HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                            SupplierName = SupplierName,
                                             MinPrice = uniqueRoomMap.Values.Min(r => r.Price),
                                             IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
                                             HotelRooms = uniqueRoomMap.Values
@@ -7068,6 +7100,7 @@ namespace XConnect.CommonUtilities
                             Options_Comp option = new Options_Comp
                             {
                                 HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                SupplierName = SupplierName,
                                 MinPrice = finalResponse.AvailabilityRS.HotelResult[giataSeq].StartPrice,
                                 IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
                                 HotelRooms = new List<List<_FinalRoomList_Comp>>() // Empty list
@@ -7093,17 +7126,30 @@ namespace XConnect.CommonUtilities
                 availHotelList_Comp.Currency = finalResponse.AvailabilityRS.Currency;
                 finalResponse_Comp.AvailabilityRS = availHotelList_Comp;
 
-                if (missingRoomList.Any()) //Add On 020526
+                if (missingRoomList.Any()) //Add On 17SEP2025
                 {
                     try
                     {
-                        var UnMappedmongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_UmMappedRoomMapping;//  ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"]; // ADD ON 29-JAN-2025
-                        var UnMappeddatabaseName = _mongoSettings.MongoDB_DatabaseName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"]; // ADD ON 29-JAN-2025
-                        var UnMappedcollectionName = _mongoSettings.MongoDB_CollectionName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
+                        #region NotNeed
+                        //var UnMappedmongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_UmMappedRoomMapping;//  ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"]; // ADD ON 29-JAN-2025
+                        //var UnMappeddatabaseName = _mongoSettings.MongoDB_DatabaseName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"]; // ADD ON 29-JAN-2025
+                        //var UnMappedcollectionName = _mongoSettings.MongoDB_CollectionName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
 
-                        var collection1 = _RowroomMapping.GetCollection<RoomInfo>(UnMappedcollectionName);
 
-                        _ = InsertRoomsBulkAsync(collection1, missingRoomList);
+                        //var collection1 = _RowroomMapping.GetCollection<RoomInfo>(UnMappedcollectionName);
+
+                        //  _ = InsertRoomsBulkAsync(collection1, missingRoomList);
+
+                        #endregion NotNeed
+
+                        string collectionName_ForUnMapp = "";
+                        IMongoCollection<RoomInfo> collection_ForUnMapp = null;
+                        collectionName_ForUnMapp = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+                        collection_ForUnMapp = GetRoomMappingCollection_Unmap(collectionName_ForUnMapp); //Add on 10FEB2026
+                        _ = InsertRoomsBulkAsync_unmapp(collection_ForUnMapp, missingRoomList);
+
+
+
                     }
                     catch (Exception ex)
                     {
@@ -7120,13 +7166,21 @@ namespace XConnect.CommonUtilities
             }
             return null;
         }
-        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping_withoutEx(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1) //Add int Roommapping=0 on 30MAY2025
+        public IMongoCollection<BsonDocument> GetRoomMappingCollection(string collectionName)
+        {
+            return _roomMapping.GetCollection<BsonDocument>(collectionName);
+        }
+        public IMongoCollection<RoomInfo> GetRoomMappingCollection_Unmap(string collectionName)
+        {
+            return _roomMapping.GetCollection<RoomInfo>(collectionName);
+        }
+        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping_withoutEx(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1, bool IsFromAPI = true) //Add int Roommapping=0 on 30MAY2025
         {
             AvailabilityRS_Comp availHotelList_Comp = new AvailabilityRS_Comp();
             AvailHotelList_Comp finalResponse_Comp = new AvailHotelList_Comp();
             availHotelList_Comp.HotelResult = new List<_HotelListNew_Comp>();
             List<RoomInfo> missingRoomList = new List<RoomInfo>(); //Add On 020526
-
+            string SupplierName = "";
 
             try
             {
@@ -7145,8 +7199,9 @@ namespace XConnect.CommonUtilities
                 IMongoCollection<BsonDocument> collection = null;
 
                 collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
-               
-                
+
+
+                collection = GetRoomMappingCollection(collectionName); //Add on 10FEB2026
 
                 if (SearchPara != null)
                 {
@@ -7246,8 +7301,8 @@ namespace XConnect.CommonUtilities
 
                                     int Roomseq = roomList[roomIndex].Sequence;
                                     string S_RoomNo = null; // ADD ON 29-JAN-2025
-                                   
-                                        processedRoomTypeName = getMappedRoom_rlmASAL(currentRoom.RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(hotel.OwnsystemHotelId), collection, ref S_RoomNo); // ADD ON 6FEB2026
+
+                                    processedRoomTypeName = getMappedRoom_rlmASAL(currentRoom.RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(hotel.OwnsystemHotelId), collection, ref S_RoomNo); // ADD ON 6FEB2026
 
 
                                     //if (string.IsNullOrEmpty(S_RoomNo)) //Add On 02may26
@@ -7269,7 +7324,7 @@ namespace XConnect.CommonUtilities
                                             Time = DateTime.Now
                                         });
 
-                                        continue; 
+                                        continue;
                                     }
 
 
@@ -7343,8 +7398,10 @@ namespace XConnect.CommonUtilities
                                         BookingStatus = currentRoom.BookingStatus,
                                         MappedMealName = currentRoom.MappedMealName,
                                         CancellationPolicy = cancellationPolicies,
-                                        SEQNO = Roomseq  // ADD On 4-FEB-2025
+                                        SEQNO = Roomseq , // ADD On 4-FEB-2025,
+                                        SupplierCurrency = !IsFromAPI ? currentRoom.SupplierCurrency : null
                                     };
+                                    SupplierName = !IsFromAPI ? currentRoom.SupplierName : null;
 
                                     // Add room to uniqueRoomMap if it’s the lowest-priced or if not already added
                                     if (!uniqueRoomMap.ContainsKey(roomKey) || currentRoom.Price < uniqueRoomMap[roomKey].Price)
@@ -7365,6 +7422,7 @@ namespace XConnect.CommonUtilities
                                     Options_Comp option = new Options_Comp
                                     {
                                         HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                        SupplierName = SupplierName,
                                         // Set MinPrice to the sum of prices for the RoomTypeName with the cheapest RoomNo 1
                                         MinPrice = uniqueRoomMap.Values
                                                         .Where(r => Convert.ToInt32(r.RoomNo) == 1) // Filter RoomNo 1
@@ -7419,6 +7477,7 @@ namespace XConnect.CommonUtilities
                                         Options_Comp option = new Options_Comp
                                         {
                                             HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                            SupplierName = SupplierName,
                                             MinPrice = uniqueRoomMap.Values.Min(r => r.Price),
                                             IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
                                             HotelRooms = uniqueRoomMap.Values
@@ -7448,6 +7507,7 @@ namespace XConnect.CommonUtilities
                             Options_Comp option = new Options_Comp
                             {
                                 HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                SupplierName = SupplierName,
                                 MinPrice = finalResponse.AvailabilityRS.HotelResult[giataSeq].StartPrice,
                                 IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
                                 HotelRooms = new List<List<_FinalRoomList_Comp>>() // Empty list
@@ -7478,13 +7538,26 @@ namespace XConnect.CommonUtilities
                 {
                     try
                     {
-                        var UnMappedmongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_UmMappedRoomMapping;//  ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"]; // ADD ON 29-JAN-2025
-                        var UnMappeddatabaseName = _mongoSettings.MongoDB_DatabaseName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"]; // ADD ON 29-JAN-2025
-                        var UnMappedcollectionName = _mongoSettings.MongoDB_CollectionName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
+                        #region NotNeed
+                        //var UnMappedmongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_UmMappedRoomMapping;//  ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"]; // ADD ON 29-JAN-2025
+                        //var UnMappeddatabaseName = _mongoSettings.MongoDB_DatabaseName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"]; // ADD ON 29-JAN-2025
+                        //var UnMappedcollectionName = _mongoSettings.MongoDB_CollectionName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
 
-                        var collection1 = _RowroomMapping.GetCollection<RoomInfo>(UnMappedcollectionName);
 
-                        _ = InsertRoomsBulkAsync(collection1, missingRoomList);
+                        //var collection1 = _RowroomMapping.GetCollection<RoomInfo>(UnMappedcollectionName);
+
+                        //  _ = InsertRoomsBulkAsync(collection1, missingRoomList);
+
+                        #endregion NotNeed
+
+                        string collectionName_ForUnMapp = "";
+                        IMongoCollection<RoomInfo> collection_ForUnMapp = null;
+                        collectionName_ForUnMapp = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+                        collection_ForUnMapp = GetRoomMappingCollection_Unmap(collectionName_ForUnMapp); //Add on 10FEB2026
+                        _ = InsertRoomsBulkAsync_unmapp(collection_ForUnMapp, missingRoomList);
+
+
+
                     }
                     catch (Exception ex)
                     {
@@ -7500,13 +7573,13 @@ namespace XConnect.CommonUtilities
             }
             return null;
         }
-        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMappingv2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1)  // ADD on 29-JAN-2025
+        public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMappingv2(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1, bool IsFromAPI = true)  // ADD on 29-JAN-2025
         {
             AvailabilityRS_Comp availHotelList_Comp = new AvailabilityRS_Comp();
             AvailHotelList_Comp finalResponse_Comp = new AvailHotelList_Comp();
             availHotelList_Comp.HotelResult = new List<_HotelListNew_Comp>();
             List<RoomInfo> missingRoomList = new List<RoomInfo>(); //Add On 020526
-
+            string SupplierName = "";
             try
             {
                 availHotelList_Comp.SearchKey = NewSearchKey;
@@ -7523,11 +7596,8 @@ namespace XConnect.CommonUtilities
                 string collectionName = "";
                 IMongoCollection<BsonDocument> collection = null;
                 collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
-                
 
-               
-
-               
+                collection = GetRoomMappingCollection(collectionName); //Add on 10FEB2026
 
                 if (SearchPara != null)
                 {
@@ -7627,11 +7697,11 @@ namespace XConnect.CommonUtilities
                                     int Roomseq = roomList[roomIndex].Sequence;  // ADD ON 29-JAN-2025
 
                                     string S_RoomNo = null; // ADD ON 29-JAN-2025
-                                    //                        // Process RoomTypeName and Refundability
-                                    //if (!NewRoomMappingEnable)
-                                    //    processedRoomTypeName = getMappedRoom_rlm(currentRoom.RoomTypeName.Split('|')[0].Trim(), DtHotelInformation, Convert.ToInt32(hotel.OwnsystemHotelId), ref S_RoomNo); // ADD ON 29-JAN-2025 //CMT on 10FEB2026
-                                    //else
-                                        processedRoomTypeName = getMappedRoom_rlmASAL(currentRoom.RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(hotel.OwnsystemHotelId), collection, ref S_RoomNo); // Add 10FEB2026
+                                                            //                        // Process RoomTypeName and Refundability
+                                                            //if (!NewRoomMappingEnable)
+                                                            //    processedRoomTypeName = getMappedRoom_rlm(currentRoom.RoomTypeName.Split('|')[0].Trim(), DtHotelInformation, Convert.ToInt32(hotel.OwnsystemHotelId), ref S_RoomNo); // ADD ON 29-JAN-2025 //CMT on 10FEB2026
+                                                            //else
+                                    processedRoomTypeName = getMappedRoom_rlmASAL(currentRoom.RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(hotel.OwnsystemHotelId), collection, ref S_RoomNo); // Add 10FEB2026
 
                                     if (string.IsNullOrEmpty(S_RoomNo)) //Add On 17SEP2025
                                     {
@@ -7714,8 +7784,10 @@ namespace XConnect.CommonUtilities
                                         BookingStatus = currentRoom.BookingStatus,
                                         MappedMealName = currentRoom.MappedMealName,
                                         CancellationPolicy = cancellationPolicies,
-                                        SEQNO = Roomseq  // ADD On 4-FEB-2025
+                                        SEQNO = Roomseq , // ADD On 4-FEB-2025
+                                        SupplierCurrency = !IsFromAPI ? currentRoom.SupplierCurrency : null,
                                     };
+                                    SupplierName = !IsFromAPI ? currentRoom.SupplierName : null;
 
                                     // Add room to uniqueRoomMap if it’s the lowest-priced or if not already added
                                     if (!uniqueRoomMap.ContainsKey(roomKey) || currentRoom.Price < uniqueRoomMap[roomKey].Price)
@@ -7736,6 +7808,7 @@ namespace XConnect.CommonUtilities
                                     Options_Comp option = new Options_Comp
                                     {
                                         HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                        SupplierName = SupplierName,
                                         // Set MinPrice to the sum of prices for the RoomTypeName with the cheapest RoomNo 1
                                         MinPrice = uniqueRoomMap.Values
                                                         .Where(r => Convert.ToInt32(r.RoomNo) == 1) // Filter RoomNo 1
@@ -7783,6 +7856,7 @@ namespace XConnect.CommonUtilities
                                         Options_Comp option = new Options_Comp
                                         {
                                             HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                            SupplierName = SupplierName,
                                             MinPrice = uniqueRoomMap.Values.Min(r => r.Price),
                                             IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
                                             HotelRooms = uniqueRoomMap.Values
@@ -7810,6 +7884,7 @@ namespace XConnect.CommonUtilities
                             Options_Comp option = new Options_Comp
                             {
                                 HotelOptionId = $"{giataSeq}|{hotel.OwnsystemHotelId}|{hotel.SupplierId}|{hotelSeq}",
+                                SupplierName = SupplierName,
                                 MinPrice = finalResponse.AvailabilityRS.HotelResult[giataSeq].StartPrice,
                                 IsCombineRoom = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].IsCombineRoom,
                                 HotelRooms = new List<List<_FinalRoomList_Comp>>() // Empty list
@@ -7837,13 +7912,26 @@ namespace XConnect.CommonUtilities
                 {
                     try
                     {
-                        var UnMappedmongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_UmMappedRoomMapping;//  ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"]; // ADD ON 29-JAN-2025
-                        var UnMappeddatabaseName = _mongoSettings.MongoDB_DatabaseName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"]; // ADD ON 29-JAN-2025
-                        var UnMappedcollectionName = _mongoSettings.MongoDB_CollectionName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
+                        #region NotNeed
+                        //var UnMappedmongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_UmMappedRoomMapping;//  ConfigurationManager.AppSettings["MongoDB_ConnectionStr_RoomMapping"]; // ADD ON 29-JAN-2025
+                        //var UnMappeddatabaseName = _mongoSettings.MongoDB_DatabaseName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_DatabaseName_RoomMapping"]; // ADD ON 29-JAN-2025
+                        //var UnMappedcollectionName = _mongoSettings.MongoDB_CollectionName_UmMappedRoomMapping;// ConfigurationManager.AppSettings["MongoDB_CollectionName_RoomMapping"];
 
-                        var collection1 = _RowroomMapping.GetCollection<RoomInfo>(UnMappedcollectionName);
 
-                        _ = InsertRoomsBulkAsync(collection1, missingRoomList);
+                        //var collection1 = _RowroomMapping.GetCollection<RoomInfo>(UnMappedcollectionName);
+
+                        //  _ = InsertRoomsBulkAsync(collection1, missingRoomList);
+
+                        #endregion NotNeed
+
+                        string collectionName_ForUnMapp = "";
+                        IMongoCollection<RoomInfo> collection_ForUnMapp = null;
+                        collectionName_ForUnMapp = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+                        collection_ForUnMapp = GetRoomMappingCollection_Unmap(collectionName_ForUnMapp); //Add on 10FEB2026
+                        _ = InsertRoomsBulkAsync_unmapp(collection_ForUnMapp, missingRoomList);
+
+
+
                     }
                     catch (Exception ex)
                     {
@@ -8245,6 +8333,43 @@ namespace XConnect.CommonUtilities
             var bulkOptions = new BulkWriteOptions { IsOrdered = false };
             await collection.BulkWriteAsync(models, bulkOptions);
         }
+
+        public async Task InsertRoomsBulkAsync_unmapp(
+    IMongoCollection<RoomInfo> collection_ForUnMapp,
+    List<RoomInfo> list)
+        {
+            if (list == null || list.Count == 0)
+                return;
+
+            var distinctList = list
+                .GroupBy(x => new
+                {
+                    x.OwnsystemHotelId,
+                    x.ProcessedRoomTypeName
+                })
+                .Select(x => x.First())
+                .ToList();
+
+            var models = distinctList
+                .Select(room =>
+                    new ReplaceOneModel<RoomInfo>(
+                        Builders<RoomInfo>.Filter.Where(x =>
+                            x.OwnsystemHotelId == room.OwnsystemHotelId &&
+                            x.ProcessedRoomTypeName == room.ProcessedRoomTypeName),
+                        room)
+                    {
+                        IsUpsert = true
+                    })
+                .ToList();
+
+            await collection_ForUnMapp.BulkWriteAsync(
+                models,
+                new BulkWriteOptions
+                {
+                    IsOrdered = false
+                });
+        }
+
 
         public async Task<int> InsertHotelSearchData(SaveParameter data, int count, bool from, string SupplierTime, int agentid, string SearchKey, string IP)
         {
@@ -10608,84 +10733,84 @@ new SqlParameter("@timeoutMs", timeoutMs)
         //        return default;
         //    }
         //}
-        
-public async Task<T?> SendRequestAsync_checkvervo<T>(
-    string baseUrl,
-    string endpoint,
-    HttpMethod method,
-    object? parameters = null,
-    string? token = null,
-    Dictionary<string, string>? headers = null)
-    {
-        try
+
+        public async Task<T?> SendRequestAsync_checkvervo<T>(
+            string baseUrl,
+            string endpoint,
+            HttpMethod method,
+            object? parameters = null,
+            string? token = null,
+            Dictionary<string, string>? headers = null)
         {
-            // Create HttpClient using the injected factory
-            var client = _httpClientFactory.CreateClient();
-
-            // Ensure BaseAddress ends with a slash
-            client.BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/");
-
-            // Create the HttpRequestMessage
-            using var request = new HttpRequestMessage(method, endpoint);
-
-            // Set the Accept header to JSON
-            request.Headers.Accept.Clear();
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            // Authorization header if token is provided
-            if (!string.IsNullOrEmpty(token))
+            try
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
+                // Create HttpClient using the injected factory
+                var client = _httpClientFactory.CreateClient();
 
-            // Add custom headers if provided
-            if (headers != null)
-            {
-                foreach (var header in headers)
+                // Ensure BaseAddress ends with a slash
+                client.BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/");
+
+                // Create the HttpRequestMessage
+                using var request = new HttpRequestMessage(method, endpoint);
+
+                // Set the Accept header to JSON
+                request.Headers.Accept.Clear();
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // Authorization header if token is provided
+                if (!string.IsNullOrEmpty(token))
                 {
-                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 }
-            }
 
-            // Add the request body if parameters are provided and the method requires it
-            if (parameters != null &&
-                (method == HttpMethod.Post || method == HttpMethod.Put || method.Method == "PATCH"))
+                // Add custom headers if provided
+                if (headers != null)
+                {
+                    foreach (var header in headers)
+                    {
+                        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    }
+                }
+
+                // Add the request body if parameters are provided and the method requires it
+                if (parameters != null &&
+                    (method == HttpMethod.Post || method == HttpMethod.Put || method.Method == "PATCH"))
+                {
+                    var json = JsonSerializer.Serialize(parameters);  // Serialize parameters to JSON
+                    request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                }
+
+                // Send the request asynchronously
+                var response = await client.SendAsync(request);
+
+                // Read the response content as a string
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                // Handle unsuccessful responses
+                if (!response.IsSuccessStatusCode)
+                {
+                    _ = _exception.Error(new Exception(
+                        $"API Error: {(int)response.StatusCode} - {jsonResponse}"
+                    ));
+                    return default;  // Return default if there is an error
+                }
+
+                // If the response is empty, return default
+                if (string.IsNullOrWhiteSpace(jsonResponse))
+                    return default;
+
+                // Deserialize the JSON response into the desired type T
+                return JsonSerializer.Deserialize<T>(jsonResponse);
+            }
+            catch (Exception ex)
             {
-                var json = JsonSerializer.Serialize(parameters);  // Serialize parameters to JSON
-                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                // Log the exception if any occurs
+                _ = _exception.Error(ex, "SendRequestAsync_checkvervo");
+                return default;  // Return default if an exception occurs
             }
-
-            // Send the request asynchronously
-            var response = await client.SendAsync(request);
-
-            // Read the response content as a string
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-
-            // Handle unsuccessful responses
-            if (!response.IsSuccessStatusCode)
-            {
-                _ = _exception.Error(new Exception(
-                    $"API Error: {(int)response.StatusCode} - {jsonResponse}"
-                ));
-                return default;  // Return default if there is an error
-            }
-
-            // If the response is empty, return default
-            if (string.IsNullOrWhiteSpace(jsonResponse))
-                return default;
-
-            // Deserialize the JSON response into the desired type T
-            return JsonSerializer.Deserialize<T>(jsonResponse);
         }
-        catch (Exception ex)
-        {
-            // Log the exception if any occurs
-            _ = _exception.Error(ex, "SendRequestAsync_checkvervo");
-            return default;  // Return default if an exception occurs
-        }
+
+
     }
 
-
-}
-        
 }
