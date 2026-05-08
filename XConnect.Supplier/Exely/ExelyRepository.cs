@@ -1175,7 +1175,7 @@ namespace XConnect.Supplier.Exely
                         {
                             new BookingRoomStayRq
                             {
-                                stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(checkIn), departureDateTime = ParseSearchDate(checkOut) },
+                                stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(checkIn).Date.AddHours(8), departureDateTime = ParseSearchDate(checkOut).Date.AddHours(12) },
                                 ratePlan = new BookingRatePlanRq { id = ratePlanCode },
                                 roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = placements },
                                 guests = guests,
@@ -1257,7 +1257,7 @@ namespace XConnect.Supplier.Exely
                         {
                             new BookingRoomStayRq
                             {
-                                stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(checkIn), departureDateTime = ParseSearchDate(checkOut) },
+                                stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(checkIn).Date.AddHours(8), departureDateTime = ParseSearchDate(checkOut).Date.AddHours(12) },
                                 ratePlan = new BookingRatePlanRq { id = ratePlanCode },
                                 roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = placements },
                                 guests = guests,
