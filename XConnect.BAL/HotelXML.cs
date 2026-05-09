@@ -1700,6 +1700,7 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                 List<SupplierDetails> Dingus_details = new List<SupplierDetails>();
                 List<SupplierDetails> WelcomebedsDetails = new List<SupplierDetails>();
                 List<SupplierDetails> Exely_Details = new List<SupplierDetails>();
+                List<SupplierDetails> Techno_NewDetails = new List<SupplierDetails>();
 
                 //-----------------------------------------------------------------------------------
 
@@ -1776,6 +1777,7 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                 List<SupplierSearchConfig> Dingus_SearchConfig = new List<SupplierSearchConfig>();
                 List<SupplierSearchConfig> WelcomebedsSearchConfig = new List<SupplierSearchConfig>();
                 List<SupplierSearchConfig> Exely_SearchConfig = new List<SupplierSearchConfig>();
+                List<SupplierSearchConfig> Techno_NewSearchConfig = new List<SupplierSearchConfig>();
 
 
                 int degreeOfParallelism = Environment.ProcessorCount;
@@ -2085,7 +2087,6 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                                         SaltoursSearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
                                         break;
                                     case "techno":
-                                    case "techno_new":
                                         TechnoDetails.Add(item);
                                         TechnoSearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
                                         break;
@@ -2140,6 +2141,10 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                                     case "exely":
                                         Exely_Details.Add(item);
                                         Exely_SearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
+                                        break;
+                                    case "techno_new":
+                                        Techno_NewDetails.Add(item);
+                                        Techno_NewSearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
                                         break;
                                     default:
                                         break;
@@ -3100,10 +3105,10 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                             break;
                         case 58:
                             #region"Techno_New"
-                            if (TechnoDetails != null && TechnoDetails.Count > 0 && TechnoSearchConfig != null && TechnoSearchConfig.Count != 0)
+                            if (Techno_NewDetails != null && Techno_NewDetails.Count > 0 && Techno_NewSearchConfig != null && Techno_NewSearchConfig.Count != 0)
                             {
-                                if (commonSearchList.commonHotelCodes.Techno_Codes != null)
-                                    _techno.GetWE_DMCRequestOnly_Async(commonSearchList.SearchByHotel, advancedOptions, commonSearchList.commonHotelCodes.Techno_Codes, dtPreferredDataHotel, SearchPara, TechnoSearchConfig, TechnoDetails, ref AllTask, AgentCode, hit, lstRating, dtROE, tokenData, dtXMLCity, Platform, SearchByOneID);
+                                if (commonSearchList.commonHotelCodes.Techno_New_Codes != null)
+                                    _techno.GetWE_DMCRequestOnly_Async(commonSearchList.SearchByHotel, advancedOptions, commonSearchList.commonHotelCodes.Techno_New_Codes, dtPreferredDataHotel, SearchPara, Techno_NewSearchConfig, Techno_NewDetails, ref AllTask, AgentCode, hit, lstRating, dtROE, tokenData, dtXMLCity, Platform, SearchByOneID);
                             }
                             #endregion
                             break;
@@ -8890,7 +8895,7 @@ new SqlParameter("@AgentId", AgentId),
             list.Agoda_Chian_Codes = null;
             list.HotelBeds_new_Codes = null;
             list.Exely_Codes = null;
-
+            list.Techno_New_Codes = null;
 
             try
             {
@@ -9474,6 +9479,11 @@ new SqlParameter("@AgentId", AgentId),
                                     #region Exely
                                     case "exely":
                                         list.Exely_Codes = FilterHotelCodes(lstdtHotelCommon, SuppplierCheck);
+                                        break;
+                                    #endregion
+                                    #region"Techno_New"
+                                    case "techno_new":
+                                        list.Techno_New_Codes = FilterHotelCodesTechWise(lstdtHotelCommon, SuppplierCheck);
                                         break;
                                     #endregion
                                     default:
@@ -54399,7 +54409,133 @@ new SqlParameter("@AgentId", AgentId),
                                     }
                                     break;
                                 #endregion
+                                #region"Dingus" 
+                                case "dingus":
 
+                                    try
+                                    {
+                                        int j = 0;
+                                        string SpecialReqToPass = "";
+                                        string SupplierName = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName);
+
+                                        #region Data
+                                        bookingStatus = 6;
+                                        UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                        string TicketNumber = "Book" + Convert.ToString(tokenData.AgentCode + "_" + UniqueNo);
+
+                                        string UserID = Convert.ToString(XPDetails[0]["UserName"]);
+                                        string Password = Convert.ToString(XPDetails[0]["Password"]);
+
+                                        string RoomTypeId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
+
+                                        int UserCartId1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                        String UserCartDetailId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+
+                                        string BookUrl = "";
+                                        //added 952025
+                                        string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
+                                        //CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                                        string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
+                                        //CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+
+                                        DateTime checkInDate = DateTime.Parse(CheckIn);
+                                        DateTime checkOutDate = DateTime.Parse(CheckOut);
+
+                                        // Convert to "yyyy-MM-dd" format
+                                        CheckIn = checkInDate.ToString("yyyy-MM-dd");
+                                        CheckOut = checkOutDate.ToString("yyyy-MM-dd");
+
+                                        BookUrl = Convert.ToString(XPDetails[0]["WebSiteURL"]);
+                                        #endregion
+
+                                        string DingusBookRequest = _dingus.Get_Dingus_BookingRequestNew(bookRequest, dtPassengers, XPDetails, UniqueNo, 0, j, ReferenceNo, SpecialReqToPass, CheckIn, CheckOut);
+
+                                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(UserCartDetailId), DingusBookRequest, "-", "Before Block hit Request  booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "WithInEarth");
+
+                                        string Responsebook = "";
+                                        isNonRefundable = false;
+
+                                        ResponseDto responseDto = await _dingus.Get_Dingus_Response_timeout(BookUrl, DingusBookRequest, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), ReferenceNo, CheckIn, CheckOut, Error, HostName);
+                                        //ResponseDto responseDto = null;
+                                        Responsebook = responseDto.Response;
+                                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), DingusBookRequest, Responsebook + Error, "After Block  hit Response booking", SupplierName, "Response Confirm", ReferenceNo, "WithInEarth");
+
+                                        RequestSPR = DingusBookRequest;
+                                        ReponseSPR = Responsebook;
+                                        if (Responsebook != null || Responsebook != "")
+                                        {
+                                            DataSet dsResponsebook = new DataSet();
+                                            dsResponsebook = _commonMethod.GetDataSetFromXMLString(Responsebook);
+
+                                            if (dsResponsebook != null)
+                                            {
+                                                string ResId_Value = "";
+                                                if (dsResponsebook.Tables["OTA_HotelResRS"].Columns.Contains("Success"))
+                                                {
+                                                    bookingStatus = 6;
+                                                    if (dsResponsebook.Tables["HotelReservationID"].Columns.Contains("ResID_Value"))
+                                                    {
+                                                        ResId_Value = Convert.ToString(dsResponsebook.Tables["HotelReservationID"].Rows[0]["ResID_Value"]);
+                                                    }
+                                                    AgentVoucherNo = ResId_Value;
+                                                    //dtAgentVoucher.Rows.Add(Common.AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), AgentVoucherNo, DingusBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
+
+                                                    #region Booking DataRaw
+
+                                                    AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                    //DataRow newRow_Dingus = dtAgentVoucher.NewRow();
+
+                                                    agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                    agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                    agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                    agentVoucher.XMLRequest = DingusBookRequest;
+                                                    agentVoucher.XMLResponse = Responsebook;
+                                                    agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                    agentVoucher.SupplierName = SupplierName;
+                                                    //agentVoucher.PackageId = bookRequest.userCart.PackageId;
+                                                    // agentVoucher.TicketNumber= "Book" + Convert.ToString(tokenData.AgentCode + "_" + UniqueNo); //new change
+                                                    //agentVoucher.TicketOrderNumber = TicketNumber; //new change
+                                                    agentVouchers.Add(agentVoucher);
+                                                    #endregion
+
+                                                    //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
+                                                    bookResponse_1.agentVouchers = agentVouchers;
+
+                                                }
+                                                else
+                                                {
+                                                    bookingStatus = 2;
+                                                    AgentVoucherNo = "";
+                                                    //dtAgentVoucher.Rows.Add(Common.AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), AgentVoucherNo, DingusBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                bookingStatus = 2;
+                                                AgentVoucherNo = "";
+                                                //dtAgentVoucher.Rows.Add(Common.AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), AgentVoucherNo, DingusBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            bookingStatus = 2;
+                                            AgentVoucherNo = "";
+                                            //dtAgentVoucher.Rows.Add(Common.AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), AgentVoucherNo, DingusBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
+                                        }
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _ = _exception.Error(ex);
+                                    }
+
+                                    break;
+
+                                #endregion
 
 
 
