@@ -5836,6 +5836,88 @@ namespace XConnect.API.Controllers
             return null;
         }
 
+        [HttpPost]
+        [Route("/v1.9/booking")]
+        public async Task<IActionResult> Booking(AgodaBookingRQ RQ)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            TokenData TokenData = new TokenData();
+            CommonRequest data = new CommonRequest();
+            data.AdvancedOptions = new AdvancedOptions();
+
+            string IP = _platformService.GetIPAddress();
+            string userAgent = _platformService.GetUserPlatform(IP);
+
+            //var authResult = await _authenticationTokenAgent.Authenticate(Request.Headers["Authorization"], new TokenData(), new CommonRequest());
+            AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+
+
+            if (Convert.ToBoolean(authData.tokenData.AgentId))
+            {
+                AgodaBookingRS agodaBookingRS = new AgodaBookingRS();
+                AgodaBookingErrorRS_New bookingerrorcode = new AgodaBookingErrorRS_New();
+                AgodaBookingErrorRS agodaError = new AgodaBookingErrorRS();
+                agodaBookingRS = await _hotelXML.AgodaBookingProcess(RQ, authData.tokenData, timer);
+
+                if (agodaBookingRS != null)
+
+                {
+                    //Change 5/03/20
+                    if (agodaBookingRS.remark == "booking already exists")
+                    {
+                        agodaError.responseStatus = "SUCCESS";
+                        agodaError.remark = agodaBookingRS.remark;
+                        agodaError.referenceId = agodaBookingRS.referenceId;
+                        agodaError.bookingReferenceId = agodaBookingRS.bookingReferenceId;
+                        //return Request.CreateResponseCompressed_agodabooking(HttpStatusCode.OK, agodaError, "application/json", RQ, agodaError, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.DUPLICATION, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
+                    }
+                    if (agodaBookingRS.status == "FAILED")
+                    {
+                        agodaError.responseStatus = "SUCCESS";
+                        agodaError.remark = agodaBookingRS.remark;
+                        agodaError.status = "SUCCESS";
+                        agodaError.referenceId = agodaBookingRS.referenceId;
+                        agodaError.bookingReferenceId = agodaBookingRS.bookingReferenceId;
+                        //return Request.CreateResponseCompressed_agodabooking(HttpStatusCode.OK, bookingerrorcode, "application/json", RQ, bookingerrorcode, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
+                    }
+                    if (agodaBookingRS.status == "BOOKING_FAILED")
+                    {
+                        bookingerrorcode.responseStatus = "BOOKING_FAILED";
+                        bookingerrorcode.remark = agodaBookingRS.remark;
+                        //return Request.CreateResponseCompressed_agodabooking(HttpStatusCode.OK, bookingerrorcode, "application/json", RQ, bookingerrorcode, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
+                    }
+                    if (agodaBookingRS == null || agodaBookingRS.status == null)
+                    {
+                        erroragoda = _hotelXML.GetAgodaErrorMsg("BOOKING_FAIL", "", "cannot create booking.");
+                        //return Request.CreateResponseCompressed(HttpStatusCode.OK, erroragoda, "application/json", data, erroragoda, TokenData, "booking", true, timer.Elapsed.ToString(), "", "0");
+                        //return Request.CreateResponseCompressed_agodabooking(HttpStatusCode.OK, erroragoda, "application/json", RQ, erroragoda, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
+                    }
+                    else
+                    {
+                        //return Request.CreateResponseCompressed(HttpStatusCode.OK, agodaBookingRS, "application/json", data, agodaBookingRS, TokenData, "booking", true, timer.Elapsed.ToString(), "", "0");
+                        // return Request.CreateResponseCompressed_agodabooking(HttpStatusCode.OK, agodaBookingRS, "application/json", RQ, agodaBookingRS, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.NoError, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
+                        return await _hotelXML.CreateResponseCompressed_agodabooking(HttpContext, 200, agodaBookingRS, "application/json", RQ, agodaBookingRS, TokenData, "booking", true, timer.Elapsed.ToString(), "SUCCESSFULL", "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
+
+
+                    }
+
+                }
+
+            }
+            else
+            {
+                erroragoda = _hotelXML.GetAgodaErrorMsg("UNAUTHORIZED", "", "Access credential is incorrect");
+                // return Request.CreateResponseCompressed_agodahotelsearch(HttpStatusCode.OK, erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "0");
+                //return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 401, erroragoda, "application/json", RQ, erroragoda, TokenData, "Booking", EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0"); // needtochange
+            }
+
+
+            return null;
+
+
+        }
+
         #endregion
 
         [Route("GetRoomMappingHotel")]

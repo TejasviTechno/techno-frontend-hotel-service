@@ -2710,6 +2710,98 @@ namespace XConnect.Models
         }
     }
 
+    public class AgodaBookingRQ
+    {
+        public string bookingReferenceId { get; set; }
+        public string checkIn { get; set; }
+        public string checkOut { get; set; }
+        public string hotel { get; set; }
+        public string roomCode { get; set; }
+        public string boardCode { get; set; }
+        public string ratePlanCode { get; set; }
+        public int channel { get; set; }
+        public string currency { get; set; }
+        public int quantity { get; set; }
+        public decimal totalPrice { get; set; }
+        public Guest guest { get; set; }
+        public List<RoomBook> rooms { get; set; }
+        public string token { get; set; }
+        public TokenData TokenData { get; set; }
+
+        public string metadata { get; set; }
+    }
+
+    public class Guest
+    {
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+    }
+
+    public class RoomBook
+    {
+        public int adults { get; set; }
+        public int children { get; set; }
+        public List<int> childrenAges { get; set; }
+        public int price { get; set; }
+    }
+    public class AgodaBookingRS
+    {
+        public string responseStatus { get; set; }
+        public string version { get; set; }
+        public string referenceId { get; set; }
+        public string bookingReferenceId { get; set; }
+        public string status { get; set; }
+        public string remark { get; set; }
+
+
+
+
+        public AgodaBookingRS()
+        {
+            responseStatus = "SUCCESS";
+            version = new AgodaVersion().Version;
+        }
+    }
+    public class AgodaBookingErrorRS_New
+    {
+        public string responseStatus { get; set; }
+        public string version { get; set; }
+
+        public string remark { get; set; }
+
+
+
+
+        public AgodaBookingErrorRS_New()
+        {
+            // responseStatus = "FAILED";
+            version = new AgodaVersion().Version;
+        }
+    }
+
+    public class AgodaBookingErrorRS
+    {
+        public string responseStatus { get; set; }
+        public string version { get; set; }
+        public string referenceId { get; set; }
+        public string bookingReferenceId { get; set; }
+        public string status { get; set; }
+
+        public string remark { get; set; }
+        public AgodaBookingErrorRS()
+        {
+            // responseStatus = "FAILED";
+            version = new AgodaVersion().Version;
+        }
+    }
+
+    public class CommonXMLBookResponse
+    {
+        public List<_Error> Error { get; set; }
+        // public BookResponse_newversion_new BookRS { get; set; }  //25042026
+        public BookRS BookRS { get; set; }
+
+    }
 
     #endregion
 
