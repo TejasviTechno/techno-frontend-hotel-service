@@ -21,7 +21,7 @@ namespace XConnect.Supplier.GoGlobal.Interface
         Task<CancellationDto> GoGlobal_cancellation(TokenData TokenData,string Mealid, string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, double roomprice, string GiataId = "0", int hotelRating = 0, string SearchKey = "");
 
         //prebook - 02-07-25
-        Task<PriceCheckCMDto> PriceCheckGoGlobal(int i, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] GGDetails, string UniqueNo, string AgentUniqueNo, string IsFor,  bool IsError, string supplier, double CompanyBuyPrice, double itemprice, bool PolicyChange, int AgentId = 0, string SearchKey = "");
+        Task<PriceCheckCMDto> PriceCheckGoGlobal(int i, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] GGDetails, string UniqueNo, string AgentUniqueNo, string IsFor,  bool IsError, string supplier, double CompanyBuyPrice, double itemprice, bool PolicyChange, int AgentId = 0, string SearchKey = "",string TechName="");
 
         string GoGlobalBooking(int i, DataTable dtPassengers, DataSet dsCartDetails, string UserName, string Password, string UserId, string UniqueNo, string AgentCode, string SpecialReqToPass);
         string GoGlobalBooking_newversion(int i, DataTable dtPassengers, BookRequest_newversion bookRequest, string UserName, string Password, string UserId, string UniqueNo, string AgentCode, string SpecialReqToPass);

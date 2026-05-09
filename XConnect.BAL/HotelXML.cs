@@ -32272,8 +32272,8 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.AnalyticsPrebookandbookData(Supplier, "PreBook", responsetype, time, Searchkey, TechName);
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                           // _ = _commonMethod.AnalyticsPrebookandbookData(Supplier, "PreBook", responsetype, time, Searchkey, TechName);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -32888,7 +32888,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                             if (1 == 1)
                                                             {
-                                                                PriceCheckCMDto priceCheckCMDto = await _restel.Get_Restel_PriceCheck(dsCartDetails, RestelDetails, i, 0, UniqueNo, AgentUniqueNo, FinalPrice, UserName, CompanyBuyingPrice, PreBookingToken, dtCheckPriceReqStructure, Searchkey, AgentId, TokenData);
+                                                                PriceCheckCMDto priceCheckCMDto = await _restel.Get_Restel_PriceCheck(dsCartDetails, RestelDetails, i, 0, UniqueNo, AgentUniqueNo, FinalPrice, UserName, CompanyBuyingPrice, PreBookingToken, dtCheckPriceReqStructure, Searchkey, AgentId, TokenData,TechName);
                                                                 ispriceupdate = priceCheckCMDto.Flag;
                                                                 FinalPrice = priceCheckCMDto.ItemPrice;
                                                             }
@@ -32960,7 +32960,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -32982,7 +32982,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]);
                                                         double CompanyBuyPrice_g = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]);
                                                         bool PolicyChange_g = false;
-                                                        PriceCheckCMDto priceCheckCMDto = await _goglobal.PriceCheckGoGlobal(i, dtCheckPriceReqStructure, dsCartDetails, GoGlobalDetails, UniqueNo, AgentUniqueNo, "P", IsErrors_g, Supplier, CompanyBuyPrice_g, itemprice_g, PolicyChange_g, AgentId, Searchkey);
+                                                        PriceCheckCMDto priceCheckCMDto = await _goglobal.PriceCheckGoGlobal(i, dtCheckPriceReqStructure, dsCartDetails, GoGlobalDetails, UniqueNo, AgentUniqueNo, "P", IsErrors_g, Supplier, CompanyBuyPrice_g, itemprice_g, PolicyChange_g, AgentId, Searchkey,TechName);
 
                                                         bool IsPriceUpdates_g = priceCheckCMDto.Flag;
                                                         IsErrors_g = priceCheckCMDto.IsError;
@@ -33062,7 +33062,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -33374,7 +33374,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         //string SearchKey = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["PurchaseToken"]);
                                                         int j = 0;
                                                         bool IsCombine = Convert.ToBoolean(dsCartDetails.Tables[1].DefaultView[0]["IsCombineRoom"]);
-                                                        PriceCheckDidaDto priceCheckDidaDto = await _techno.Get_Withinearth_DMC_PreBookingReqRes(Supplier, IsCombine, dsCartDetails, RefrenceNo, UserID, Password, HotelCode, RoomCode, CheckInDate, CheckOutDate, URL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, UniqueNo, AgentUniqueNo, isForBooking, RoomNo, SupplierSearchKey, HotelOptionId, WE_DMCCurrency, CurrencyFactorHotelWE_DMC, Searchkey, AgentId, IP);
+                                                        PriceCheckDidaDto priceCheckDidaDto = await _techno.Get_Withinearth_DMC_PreBookingReqRes(Supplier, IsCombine, dsCartDetails, RefrenceNo, UserID, Password, HotelCode, RoomCode, CheckInDate, CheckOutDate, URL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, UniqueNo, AgentUniqueNo, isForBooking, RoomNo, SupplierSearchKey, HotelOptionId, WE_DMCCurrency, CurrencyFactorHotelWE_DMC, Searchkey, AgentId, IP,TechName);
 
                                                         int flag = priceCheckDidaDto.Flag;
                                                         FinalPrice = priceCheckDidaDto.FinalPrice;
@@ -33439,7 +33439,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         #region SupplierPR Price Check
                                                         try
                                                         {
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -33455,7 +33455,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -34477,7 +34477,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             int NoOfAdults = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfAdults"]);
                                                             int NoofChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoofChild"]);
                                                             string iwtxprice = "";
-                                                            PriceCheckCMDto priceCheckCMDto = await _iwtx.PriceUpdate_IWTX(/*ListIWTX,*/ RoomTypeCode, MealPlanCode, RoomType, ContractTokenId, XmlCity, Uniqueid, NoOfAdults, NoofChild, Child1Age, Child2Age, RoomConfigurationId, dtCheckPriceReqStructure, dsCartDetails, IWTXDetails, UniqueNo, AgentUniqueNo, i, j, "P", CompanyBuyPrice, IsErrors, itemprice, iwtxprice, AgentId, Searchkey, TokenData, Supplier);
+                                                            PriceCheckCMDto priceCheckCMDto = await _iwtx.PriceUpdate_IWTX(/*ListIWTX,*/ RoomTypeCode, MealPlanCode, RoomType, ContractTokenId, XmlCity, Uniqueid, NoOfAdults, NoofChild, Child1Age, Child2Age, RoomConfigurationId, dtCheckPriceReqStructure, dsCartDetails, IWTXDetails, UniqueNo, AgentUniqueNo, i, j, "P", CompanyBuyPrice, IsErrors, itemprice, iwtxprice, AgentId, Searchkey, TokenData, Supplier,TechName);
                                                             bool IsPriceUpdates = priceCheckCMDto.Flag;
                                                             itemprice = priceCheckCMDto.ItemPrice;
                                                             IsErrors = priceCheckCMDto.IsError;
@@ -34561,7 +34561,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -35077,7 +35077,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         double FinalPrice = 0;
                                                         double CompanyBuyingPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]);
                                                         //bool IsPrice_Update = Common.Get_Ostrovok_Prebook(dsCartDetails, OstrovokDetails, ref FinalPrice, CompanyBuyingPrice, TokenData, Searchkey);
-                                                        PriceCheckCMDto priceCheckCMDto = await _etg.Get_Ostrovok_Prebook_new(objdata, dsCartDetails, ratehawk_Details, FinalPrice, CompanyBuyingPrice, TokenData, Searchkey, AgentId, i, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]));
+                                                        PriceCheckCMDto priceCheckCMDto = await _etg.Get_Ostrovok_Prebook_new(objdata, dsCartDetails, ratehawk_Details, FinalPrice, CompanyBuyingPrice, TokenData, Searchkey, AgentId, i, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]),TechName);
 
                                                         bool IsPrice_Update = priceCheckCMDto.Flag;
                                                         FinalPrice = priceCheckCMDto.ItemPrice;
@@ -35124,7 +35124,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message.ToString() + "#=" + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -35481,7 +35481,7 @@ new SqlParameter("@AgentId", AgentId),
 
 
 
-                                                            PriceCheckCMDto priceCheckCMDto = await _letsfly.GetLetsflyPriceCheckREQRES_newversion(objdata, dsCartDetails, letsflyDetails, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData, Searchkey);
+                                                            PriceCheckCMDto priceCheckCMDto = await _letsfly.GetLetsflyPriceCheckREQRES_newversion(objdata, dsCartDetails, letsflyDetails, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData, Searchkey,TechName);
                                                             ErrorPop = priceCheckCMDto.Flag;
                                                             FinalPrice = priceCheckCMDto.ItemPrice;
 
@@ -35550,7 +35550,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message.ToString() + "#=" + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -49504,7 +49504,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                 //responsetype = "GeneralError";
                                                 // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                                _ = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, ENRq, ENRs, Error);
+                                                _ = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, ENRq, ENRs, Error, bookRequest.SearchKey,TechName);
                                             }
                                             catch (Exception e)
                                             {
@@ -49538,7 +49538,7 @@ new SqlParameter("@AgentId", AgentId),
                                             Error = ex.Message;
                                             responsetype = "GeneralError";
                                             time = "00:00:00.000000";
-                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey,TechName);
                                         }
                                         catch (Exception e)
                                         {
@@ -49801,7 +49801,7 @@ new SqlParameter("@AgentId", AgentId),
                                         {
                                             //responsetype = "GeneralError";
                                             // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, DidaBookRequest, DidaResponse, Error);
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, DidaBookRequest, DidaResponse, Error, bookRequest.SearchKey,TechName);
                                         }
                                         catch (Exception e)
                                         {
@@ -49819,7 +49819,7 @@ new SqlParameter("@AgentId", AgentId),
                                             Error = ex.Message + ex.StackTrace.ToString();
                                             responsetype = "GeneralError";
                                             time = "00:00:00.000000";
-                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, DidaBookRequest, DidaResponse, Error);
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, DidaBookRequest, DidaResponse, Error, bookRequest.SearchKey,TechName);
                                         }
                                         catch (Exception e)
                                         {
@@ -50048,7 +50048,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                     try
                                                     {
-                                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "Book", tokenData.AgentId, time, responsetype, BookingRequest_restel, ResponseDatatest, Error);
+                                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "Book", tokenData.AgentId, time, responsetype, BookingRequest_restel, ResponseDatatest, Error, bookRequest.SearchKey,TechName);
                                                     }
                                                     catch (Exception e)
                                                     {
@@ -50081,7 +50081,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 Error = ex.Message + ex.StackTrace.ToString();
                                                 responsetype = "GeneralError";
                                                 time = "00:00:00.000000";
-                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey,TechName);
                                             }
                                             catch (Exception e)
                                             {
@@ -50384,7 +50384,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     }
                                                     try
                                                     {
-                                                        string abc =await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, EtgBookingFSReqest, EtgBookingFSResponse, Error);
+                                                        string abc =await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, EtgBookingFSReqest, EtgBookingFSResponse, Error, bookRequest.SearchKey,TechName);
                                                     }
                                                     catch (Exception e)
                                                     {
@@ -50401,7 +50401,7 @@ new SqlParameter("@AgentId", AgentId),
                                             {
                                                 Error = ex.Message + ex.StackTrace.ToString();
                                                 responsetype = "GeneralError";
-                                                String abc =await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                String abc =await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey,TechName);
                                             }
                                             catch (Exception e)
                                             {
@@ -50705,7 +50705,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 }
                                                 try
                                                 {
-                                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, IWTXBookRequest, Responsebook, Error);
+                                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, IWTXBookRequest, Responsebook, Error, bookRequest.SearchKey,TechName);
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -50735,7 +50735,7 @@ new SqlParameter("@AgentId", AgentId),
                                             {
                                                 Error = ex.Message + ex.StackTrace.ToString();
                                                 responsetype = "GeneralError";
-                                                string abc  =await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book",tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                string abc  =await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book",tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey,TechName);
                                             }
                                             catch (Exception e)
                                             {
@@ -50984,7 +50984,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 try
                                                 {
                                                     //responsetype = "GeneralError";
-                                                    string abc= await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, letsflyBookingReq, LetsFlyBookingRes, Error);
+                                                    string abc= await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, letsflyBookingReq, LetsFlyBookingRes, Error, bookRequest.SearchKey,TechName);
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -51004,7 +51004,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 responsetype = "GeneralError";
                                                 time = "00:00:00.000000";
                                                 // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey,TechName);
 
                                                 #region BookingData
                                                 AgentVoucher agentVoucher = new AgentVoucher();

@@ -3689,9 +3689,39 @@ namespace XConnect.CommonUtilities
         }
         #endregion RoomMapping
 
-        public async Task<string> SupplierPerformanceReportForPrebookAndBook(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "")
+        public async Task<string> SupplierPerformanceReportForPrebookAndBook(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "", string SearchKey = "", string TechName = "")
         {
+            #region Analytics
+            try
+            {
 
+                string stage = ReportType;
+                if (ReportType.ToLower() == "prebook")
+                    stage = "Prebook";
+
+                _analyticSupplier.PushHotelRecheckSupplierDataForAnalyticsAsyc(new AnalyticsData
+                {
+                    Result = null,
+                    Action = "SupplierReportPrebookAndBook",
+                    Version = "v1",
+                    HttpStatusCode = ResponseType.ToLower() == "success" ? 200 : 404,
+                    Stage = stage,
+                    Payload = null,
+                    ElapsedTime = string.IsNullOrEmpty(ResponseTimeout) ? 0 : (long)TimeSpan.Parse(ResponseTimeout).TotalMilliseconds,
+                    //ElapsedTime = (long)TimeSpan.Parse(ResponseTimeout).TotalMilliseconds,
+                    Description = ResponseType,
+                    //StaticResult = null,
+                    Search_Key = SearchKey,
+                    SupplierName = SupplierName,
+                    TechName = TechName
+
+                });
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+            }
+            #endregion
 
             try
             {

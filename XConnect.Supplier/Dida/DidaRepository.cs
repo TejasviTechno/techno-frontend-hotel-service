@@ -1724,8 +1724,7 @@ namespace Xconnect.Expedia
                     try
                     {
                         responsetype = "GeneralError";
-                        string abcd = await _commonMethod.AnalyticsPrebookandbookData(SupplierName, "PreBook", responsetype, time, Searchkey, TechName);
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey,TechName);
                     }
                     catch (Exception e)
                     {
@@ -1793,8 +1792,7 @@ namespace Xconnect.Expedia
                                 try
                                 {
                                     responsetype = "GeneralError";
-                                    string abcd = await _commonMethod.AnalyticsPrebookandbookData(SupplierName, "PreBook", responsetype, time, Searchkey, TechName);
-                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error);
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey, TechName);
                                 }
                                 catch (Exception e)
                                 {
@@ -1832,8 +1830,7 @@ namespace Xconnect.Expedia
                 {
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abcd = await _commonMethod.AnalyticsPrebookandbookData(SupplierName, "PreBook", responsetype, time, Searchkey, TechName);
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey,TechName);
                 }
                 catch (Exception e)
                 {
@@ -1848,8 +1845,7 @@ namespace Xconnect.Expedia
             try
             {
                 responsetype = "Success";
-                string abcd = await _commonMethod.AnalyticsPrebookandbookData(SupplierName, "PreBook", responsetype, time, Searchkey, TechName);
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName);
             }
             catch (Exception e)
             {

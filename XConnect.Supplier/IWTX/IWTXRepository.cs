@@ -3195,7 +3195,7 @@ namespace XConnect.Supplier.IWTX
         }
 
 
-        public async Task<PriceCheckCMDto> PriceUpdate_IWTX(string RoomTypeCode, string MealPlanCode, string RoomType, string ContractTokenId, string XmlCity, string Uniqueid, int NoOfAdults, int NoofChild, int Child1Age, int Child2Age, int RoomConfigurationId, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] IWTXDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string iwtxprice, int AgentId, string Searchkey, TokenData tokenData, string Supplier)
+        public async Task<PriceCheckCMDto> PriceUpdate_IWTX(string RoomTypeCode, string MealPlanCode, string RoomType, string ContractTokenId, string XmlCity, string Uniqueid, int NoOfAdults, int NoofChild, int Child1Age, int Child2Age, int RoomConfigurationId, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] IWTXDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string iwtxprice, int AgentId, string Searchkey, TokenData tokenData, string Supplier,string TechName="")
         {
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
             string responsetype = "Success";
@@ -3247,7 +3247,7 @@ namespace XConnect.Supplier.IWTX
                     try
                     {
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error,Searchkey,TechName);
                     }
                     catch (Exception e)
                     {
@@ -3290,7 +3290,7 @@ namespace XConnect.Supplier.IWTX
                     try
                     {
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error, Searchkey, TechName);
                     }
                     catch (Exception e)
                     {
@@ -3319,7 +3319,7 @@ namespace XConnect.Supplier.IWTX
                                 try
                                 {
                                     responsetype = "GeneralError";
-                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error, Searchkey, TechName);
                                 }
                                 catch (Exception e)
                                 {
@@ -3363,7 +3363,7 @@ namespace XConnect.Supplier.IWTX
                                                 {
                                                     ResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyPrice + " #New Price = " + itemprice + " #Response= " + ResponseData;
                                                     responsetype = "GeneralError";
-                                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error, Searchkey, TechName);
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -3385,7 +3385,7 @@ namespace XConnect.Supplier.IWTX
                                         try
                                         {
                                             responsetype = "GeneralError";
-                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error, Searchkey, TechName);
                                         }
                                         catch (Exception e)
                                         {
@@ -3407,7 +3407,7 @@ namespace XConnect.Supplier.IWTX
                             try
                             {
                                 responsetype = "GeneralError";
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error, Searchkey, TechName);
                             }
                             catch (Exception e)
                             {
@@ -3425,7 +3425,7 @@ namespace XConnect.Supplier.IWTX
                     try
                     {
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error, Searchkey, TechName);
                     }
                     catch (Exception e)
                     {
@@ -3443,7 +3443,7 @@ namespace XConnect.Supplier.IWTX
                 {
                     string Error1 = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, "ex= " + Error1 + " Error=" + Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, "ex= " + Error1 + " Error=" + Error, Searchkey, TechName);
                 }
                 catch (Exception x)
                 {
@@ -3461,7 +3461,7 @@ namespace XConnect.Supplier.IWTX
             try
             {
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error, Searchkey, TechName);
             }
             catch (Exception e)
             {
