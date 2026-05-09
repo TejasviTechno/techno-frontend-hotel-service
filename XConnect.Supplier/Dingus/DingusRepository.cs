@@ -3050,8 +3050,10 @@ namespace XConnect.Supplier.Dingus
                     string HotelCode = Convert.ToString(bookRequest.userCart.HotelId);
                     string HotelName = Convert.ToString(bookRequest.userCart.ServiceName);
 
-                    string Roomidsplit = Convert.ToString(bookRequest.userCart.UserCartDetails[x].RoomTypeId);
-                    string[] Roomids = Roomidsplit.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                    string[] Roomidsplit = Convert.ToString(bookRequest.userCart.UserCartDetails[x].RoomTypeId).Split(new String[] { "##$$" }, StringSplitOptions.None);
+
+                    string[] Roomids = Roomidsplit[x].Split(new String[] { "$$$" }, StringSplitOptions.None);
+
                     string RoomTypeCode = Roomids[1].ToString();
                     string MealPlanCodes = Roomids[2].ToString();
                     string RatePlanID = Roomids[3].ToString();
@@ -3351,7 +3353,7 @@ namespace XConnect.Supplier.Dingus
             }
 
         }
-        
+
 
         public async Task<ResponseDto> Get_Dingus_Response_timeout(string DingusURL, string request, string Provider, string referenceNumber, string CheckIn, string CheckOut, string Error, string HostName = "")
         {
