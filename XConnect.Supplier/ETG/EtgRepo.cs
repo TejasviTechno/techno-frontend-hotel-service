@@ -3119,7 +3119,7 @@ namespace XConnect.Supplier.ETG
             }
         }
 
-        public async Task<DataSet> Ratehawk_cancellation(string ISBooking, double CompanyBuy, string MealCode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData TokenData, string SearchKey = "", string GiataId = "0", int hotelRating = 0, string xmlcity = "", string TechName = "")
+        public async Task<DataSet> Ratehawk_cancellation(string ISBooking, double CompanyBuy, string MealCode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup,DataSet dsCountryCityMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData TokenData, string SearchKey = "", string GiataId = "0", int hotelRating = 0, string xmlcity = "", string TechName = "")
         {
             //DataTable dtEtgCancellation = GenerateCancellationDataTableNewV2();
             //DataTable dtEtgHotelRoom = Common.GenerateRoomtypeDataTableNewV2();
@@ -3177,7 +3177,8 @@ namespace XConnect.Supplier.ETG
                 Boolean blnIsShowSupplier = false;
                 double AgentMarkupAmount = 0.0;
                 //Common.getAgetMarkupSetting(provider, GiataId, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, Convert.ToInt32(dtAgentDetail.Rows[0]["AgentID"]), hotelRating, SearchPara.CityID, Convert.ToString(SearchPara.CountryID), Convert.ToString(SearchPara.CheckInDate));
-               _markup.getAgetMarkupSetting(provider, Convert.ToString(GiataId), dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, Convert.ToInt32(dtAgentDetail.Rows[0]["AgentID"]), hotelRating, SearchPara.CityID, Convert.ToString(SearchPara.CountryID), SearchPara.CheckInDate);
+              // _markup.getAgetMarkupSetting(provider, Convert.ToString(GiataId), dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, Convert.ToInt32(dtAgentDetail.Rows[0]["AgentID"]), hotelRating, SearchPara.CityID, Convert.ToString(SearchPara.CountryID), SearchPara.CheckInDate);
+                _markup.getAgetMarkupSettingNew_new(provider, Convert.ToString(GiataId), dtSuplierMarkup, dsCountryCityMarkup, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, Convert.ToInt32(dtAgentDetail.Rows[0]["AgentID"]), hotelRating, SearchPara.CityID, Convert.ToString(SearchPara.CountryID), SearchPara.CheckInDate);
 
                 double AgentCompanyPercentage = Convert.ToDouble(SearchPara.AgentCompanyPercentage);
                 bool IsB2C = Convert.ToBoolean(Convert.ToByte(SearchPara.IsB2BOrB2C));

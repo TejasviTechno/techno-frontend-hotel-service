@@ -2599,7 +2599,7 @@ namespace XConnect.Supplier.IWTX
             return Response;
         }
 
-        public async Task<CancellationDto> IWTX_cancellation(string SearchKey, string OwnsystemHotelId, string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData tokenData, string GiataId = "0", int hotelRating = 0, string CompanyBuyPrice = "", int RoomNo = 0, string XmlCity = "", string Uniqueid = "", string XmlNationality = "", string ContractTokenId = "", string MealPlanCode = "", string TechName = "")
+        public async Task<CancellationDto> IWTX_cancellation(string SearchKey, string OwnsystemHotelId, string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup,DataSet dsCountryCityMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, TokenData tokenData, string GiataId = "0", int hotelRating = 0, string CompanyBuyPrice = "", int RoomNo = 0, string XmlCity = "", string Uniqueid = "", string XmlNationality = "", string ContractTokenId = "", string MealPlanCode = "", string TechName = "")
         {
 
             CancellationDto cancellationDto = new CancellationDto();
@@ -2713,7 +2713,8 @@ namespace XConnect.Supplier.IWTX
                     double SubAgentMarkup = 0;
                     int IsParentId = 1;
                     Boolean blnIsShowSupplier = false;
-                    _markup.getAgetMarkupSetting(provider, GiataId, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, AgentId, hotelRating, SearchPara.CityID, Convert.ToString(SearchPara.CountryID) == null ? "0" : Convert.ToString(SearchPara.CountryID), Convert.ToString(SearchPara.CheckInDate));
+                   // _markup.getAgetMarkupSetting(provider, GiataId, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, AgentId, hotelRating, SearchPara.CityID, Convert.ToString(SearchPara.CountryID) == null ? "0" : Convert.ToString(SearchPara.CountryID), Convert.ToString(SearchPara.CheckInDate));
+                    _markup.getAgetMarkupSettingNew_new(provider, Convert.ToString(GiataId), dtSuplierMarkup, dsCountryCityMarkup, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, AgentId, hotelRating, SearchPara.CityID, Convert.ToString(SearchPara.CountryID), SearchPara.CheckInDate);
 
                     if (dtAgentDetail != null)
                     {

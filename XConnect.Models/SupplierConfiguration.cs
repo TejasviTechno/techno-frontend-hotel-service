@@ -28,6 +28,7 @@ namespace XConnect.Models
 
         public GRNCConfig GRNC { get; set; }
         public ExelyConfig Exely { get; set; }
+        public DirectContractingConfig DirectContract { get; set; }
     }
 
     public class ExpediaConfig
@@ -270,5 +271,10 @@ namespace XConnect.Models
         public string GetRoomStaysByProperty { get; set; }
         public string? PropertyContent { get; set; }
         public string? PropertyContentByProperty { get; set; }
+    }
+    public class DirectContractingConfig
+    {
+        public string HotelSearchURL { get; set; }
+
     }
 }

@@ -122,6 +122,8 @@ namespace XConnect.BAL.Interface
 
         #endregion
 
+        Task<List<SupplierperformanceReport>> GetSupplierperformanceReport(SprRequest sprRequest);
+
 
 
     }

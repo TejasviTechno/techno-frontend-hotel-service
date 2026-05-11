@@ -160,6 +160,31 @@ namespace XConnect.Models
         public string s { get; set; }
         public string r { get; set; }
     }
+    public class SupplierperformanceReport
+    {
+        public int Id { get; set; }
+        public int AgentID { get; set; }
+
+        public string SupplierName { get; set; }
+        public string Request { get; set; }
+        public string Response { get; set; }
+        public string ResponseType { get; set; }
+        public string ReportType { get; set; }
+        public string RSTimeout { get; set; }
+        public DateTime Entrydate { get; set; }
+        public string IsApi { get; set; }
+    }
+    public class SprRequest
+    {
+        public string SupplierName { get; set; }
+        public int AgentID { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime Todate { get; set; }
+
+        public string ReportType { get; set; }
+
+        public string IsApi { get; set; }
+    }
 
     #endregion
 }

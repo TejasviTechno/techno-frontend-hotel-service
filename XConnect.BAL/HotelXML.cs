@@ -168,6 +168,7 @@ using XConnect.Supplier.Exely;
 using XConnect.Supplier.Exely.Interface;
 using static XConnect.Supplier.Booking.Com.detailres;
 using static XConnect.Models.Ratearray;
+using XConnect.Supplier.DirectContracting.Interface;
 using static XConnect.Supplier.AgodaNew.AgodaNewRepository;
 
 
@@ -248,6 +249,7 @@ namespace Xconnect.BLL
         private readonly IDingus _dingus;
         private readonly IWelcomebeds _welcomebeds;
         private readonly IExely _iExely;
+        private readonly IDirectcontracting _directcontracting;
 
 
         private readonly ISiteMinder _siteMinder;
@@ -259,11 +261,12 @@ namespace Xconnect.BLL
         private readonly ITravelclick _travelclick;
         private readonly IStaah _staah;
 
+
         #endregion
 
 
 
-        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices, IWelcomebeds welcomebeds, IExely iExely, IConfiguration configuration, IAgodaNew agodanew, ILogger<Exception> logger)
+        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices, IWelcomebeds welcomebeds, IExely iExely, IConfiguration configuration, IAgodaNew agodanew, ILogger<Exception> logger, IDirectcontracting directcontracting)
         {
             _dlConnection = dlConnection;
             _cache = cache;
@@ -339,6 +342,7 @@ namespace Xconnect.BLL
             _configuration = configuration;
             _agodanew = agodanew;
             _logger = logger;
+            _directcontracting = directcontracting;
 
         }
 
@@ -1704,6 +1708,8 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                 List<SupplierDetails> WelcomebedsDetails = new List<SupplierDetails>();
                 List<SupplierDetails> Exely_Details = new List<SupplierDetails>();
                 List<SupplierDetails> Techno_NewDetails = new List<SupplierDetails>();
+                List<SupplierDetails> DirectConracting_details = new List<SupplierDetails>();//230326
+
 
                 //-----------------------------------------------------------------------------------
 
@@ -1781,6 +1787,7 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                 List<SupplierSearchConfig> WelcomebedsSearchConfig = new List<SupplierSearchConfig>();
                 List<SupplierSearchConfig> Exely_SearchConfig = new List<SupplierSearchConfig>();
                 List<SupplierSearchConfig> Techno_NewSearchConfig = new List<SupplierSearchConfig>();
+                List<SupplierSearchConfig> DirectConracting_SearchConfig = new List<SupplierSearchConfig>();//230326
 
 
                 int degreeOfParallelism = Environment.ProcessorCount;
@@ -2149,6 +2156,11 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                                         Techno_NewDetails.Add(item);
                                         Techno_NewSearchConfig.AddRange(GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara));
                                         break;
+
+                                    case "directcontracting"://230326
+                                        DirectConracting_details.Add(item);
+                                        DirectConracting_SearchConfig = GetSearchConfig(lstdtSupplierSearchConfig, item.SupplierID, SearchPara);
+                                        break;
                                     default:
                                         break;
 
@@ -2205,7 +2217,7 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                 string SearchParaCheck = SearchPara.IsSearchFor.ToLower();
                 #endregion
 
-                Parallel.For(1, 59, workerId =>
+                Parallel.For(1, 60, workerId =>
                 {
                     switch (workerId)
                     {
@@ -3113,6 +3125,18 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                                 if (commonSearchList.commonHotelCodes.Techno_New_Codes != null)
                                     _techno.GetWE_DMCRequestOnly_Async(commonSearchList.SearchByHotel, advancedOptions, commonSearchList.commonHotelCodes.Techno_New_Codes, dtPreferredDataHotel, SearchPara, Techno_NewSearchConfig, Techno_NewDetails, ref AllTask, AgentCode, hit, lstRating, dtROE, tokenData, dtXMLCity, Platform, SearchByOneID);
                             }
+                            #endregion
+                            break;
+                        case 59:
+                            #region "DirectConracting"
+                            if (DirectConracting_details != null && DirectConracting_details.Count > 0 && DirectConracting_SearchConfig != null && DirectConracting_SearchConfig.Count > 0 && HitFromAll)
+                            {
+                                if (commonSearchList.commonHotelCodes.DirectConracting_Codes != null)
+                                {
+                                    _directcontracting.GetDirectcontractingRequestOnly_Async(commonSearchList.commonHotelCodes.DirectConracting_Codes, lstRating, dtPreferredDataHotel, SearchPara, DirectConracting_SearchConfig, DirectConracting_details, ref AllTask, AgentCode, hit, tokenData, dtXMLCity, Platform);
+                                }
+                            }
+
                             #endregion
                             break;
                     }
@@ -5234,6 +5258,9 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                                             case "exely":
                                                                 response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL, item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType, "", (Supplier.ToLower() == "exely")).ConfigureAwait(false);
                                                                 break;
+                                                            case "directcontracting":
+                                                                response = await GetSupplierResponseFinalForAll(item, StoreSupplierResErrorLog, cts, item.TechName, "", RQ.Request, item.URL, item.SearchTimeOut, item.Supplier, SearchPara, item.DebugeMode, item.UserName, item.PassWord, item.MethoodType, item.UserId).ConfigureAwait(false);
+                                                                break;
                                                             #endregion
                                                             default:
                                                                 break;
@@ -5924,6 +5951,17 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     dataTable.Add(Task.Run(async () =>
                                     {
                                         var result = await _iExely.Exely_HotelSearchWithRooms(item, commonSearch, item.RQRS[0].Response, SearchPara, item.XmlCity, item.XmlCountry, item.XmlNationality, item.CurrencyCode, item.CurrencyFactor, dtROE, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
+                                        item.dtHotelRoom = result;
+                                        return result;
+                                    }));
+                                    break;
+
+                                case "directcontracting":
+                                    string strRatingTbzV2 = (SearchPara.SelectedStart + ",0").Replace(",", "','");
+                                    strRatingTbzV2 = "'" + strRatingTbzV2 + "'";
+                                    dataTable.Add(Task.Run(async () =>
+                                    {
+                                        var result = await _directcontracting.Directcontracting_HotelSearchWithRooms(item, commonSearch, item.RQRS[0].Response, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, dsAgentDetails, item.Supplier, dtCountryCityMarkup, AgentId, TariffID, item.AgentWiseMarkup, item.IsShowSupplier, item.SupplierID, item.MasterSupplierID, processTimeout, ProccessCutOffTime, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog, dtROE, dsAgentDetails.Tables[1]);
                                         item.dtHotelRoom = result;
                                         return result;
                                     }));
@@ -7735,6 +7773,17 @@ new SqlParameter("@AgentId", AgentId),
                             Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                             Request.Headers.Add("X-Api-Key", Password);
                             break;
+                        case "directcontracting":
+                            {
+                                Request = new HttpRequestMessage(HttpMethod.Post, strHost);
+                                Request.Version = HttpVersion.Version11;
+                                Request.Headers.UserAgent.ParseAdd("PostmanRuntime/7.51.1");
+                                Request.Headers.Accept.Clear();
+                                Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                                Request.Headers.Add("X-Requested-With", "XMLHttpRequest");
+                                Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
+                                break;
+                            }
                         default:
                             //Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
                             Request.Headers.Add("Accept-Encoding", "gzip");
@@ -10310,6 +10359,7 @@ new SqlParameter("@AgentId", AgentId),
             list.Welcomebeds_Codes = null;
             list.Exely_Codes = null;
             list.Techno_New_Codes = null;
+            list.DirectConracting_Codes = null;
 
             try
             {
@@ -10715,6 +10765,12 @@ new SqlParameter("@AgentId", AgentId),
                                     case "techno_new":
                                         list.Techno_New_Codes = FilterHotelCodesTechWise(lstdtHotelCommon, SuppplierCheck);
                                         break;
+                                    #endregion
+                                    #region Extranet
+                                    case "directcontracting":
+                                        list.DirectConracting_Codes = FilterHotelCodesTechWise(lstdtHotelCommon, SuppplierCheck);
+                                        break;
+
                                     #endregion
                                     default:
                                         break;
@@ -14262,7 +14318,7 @@ new SqlParameter("@AgentId", AgentId),
                     #endregion
                     #region"GoGlobal"
                     case "goglobal":
-                        cancellationDto = await _goglobal.GoGlobal_cancellation(ToeknData, Mealid, roomtypecode, dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, roomprice, GiataId, hotelRating, SearchKey);
+                        cancellationDto = await _goglobal.GoGlobal_cancellation(ToeknData, Mealid, roomtypecode, dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsCountryCityMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, roomprice, GiataId, hotelRating, SearchKey);
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion
@@ -14356,7 +14412,7 @@ new SqlParameter("@AgentId", AgentId),
                     #region IWTX
                     case "iwtx":
 
-                        cancellationDto = await _iwtx.IWTX_cancellation(SearchKey, hotelid, roomtypecode, dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, ToeknData, GiataId, hotelRating, Companybuy, RoomNo, xmlcity, "", "", "", "", TechName);
+                        cancellationDto = await _iwtx.IWTX_cancellation(SearchKey, hotelid, roomtypecode, dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsCountryCityMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, ToeknData, GiataId, hotelRating, Companybuy, RoomNo, xmlcity, "", "", "", "", TechName);
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion
@@ -14380,7 +14436,7 @@ new SqlParameter("@AgentId", AgentId),
                     case "etg":
                         //case "ratehawk_b2c":
                         // case "ratehawk_api":
-                        dsHotelData = await _etg.Ratehawk_cancellation(ISBooking, Convert.ToDouble(Companybuy), Mealid, dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, ToeknData, SearchKey, GiataId, hotelRating, xmlcity, TechName);
+                        dsHotelData = await _etg.Ratehawk_cancellation(ISBooking, Convert.ToDouble(Companybuy), Mealid, dsHotelData, hotelcode, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsCountryCityMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, ToeknData, SearchKey, GiataId, hotelRating, xmlcity, TechName);
                         dtReturn = dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion
@@ -66528,7 +66584,29 @@ new SqlParameter("@AgentId", AgentId),
             }
         }
 
+        public async Task<List<SupplierperformanceReport>> GetSupplierperformanceReport(SprRequest sprRequest)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[] {
+             new SqlParameter("@Supplier", sprRequest.SupplierName),
+                new SqlParameter("@AgentId", sprRequest.AgentID),
+                new SqlParameter("@FromDate", sprRequest.FromDate),
+                new SqlParameter("@Todate", sprRequest.Todate),
+                new SqlParameter("@ReportType", sprRequest.ReportType),
+                new SqlParameter("@IsApi",Convert.ToInt32(sprRequest.IsApi))
+         };
+                DataTable dt = await _dlConnection.GetDataTableByConnectionStringAsync("SupplierperformanceReportLogs", para, _connectionStrings.ConnectionString);
 
+                List<SupplierperformanceReport> lst = HtmlExtensions.ToList<SupplierperformanceReport>(dt);
+                return lst;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return null;
+            }
+        }
         #region agoda client
 
         public void PrepareForAgodaCommonSearch(ref HotelSearchParameter payload, ref CommonRequest data, ref AgodaSearchError agodaSearchError, TokenData tokenData, string requestName, FilterUsed filterUsed, AgodaSearchPara commonRQ)

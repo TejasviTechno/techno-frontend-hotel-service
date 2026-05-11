@@ -983,7 +983,8 @@ namespace XConnect.Models
         public DataRow[] Elevateholidays_codes { get; set; }//tjp
         public DataRow[] Exely_Codes { get; set; }
         public DataRow[] Techno_New_Codes { get; set; }
-        
+        public DataRow[] DirectConracting_Codes { get; set; }//230326
+
     }
 
     public class SupplierDetails
