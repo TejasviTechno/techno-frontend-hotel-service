@@ -22,6 +22,8 @@ using static XConnect.Supplier.DerbySoft.DerbySoft;
 using Microsoft.Extensions.Options;
 using Options = XConnect.Models.Options;
 using XConnect.Supplier.Techno;
+using Microsoft.Extensions.Logging;
+using XConnect.Analytics;
 //using static XConnect.Supplier.AgodaNew.AgodaNew;
 //using CommoXMLOutPreCheckRequest = XConnect.Supplier.AgodaNew.AgodaNew.CommoXMLOutPreCheckRequest;
 //using CommoXMLOutPreCheckResponse = XConnect.Supplier.AgodaNew.AgodaNew.CommoXMLOutPreCheckResponse;
@@ -36,14 +38,16 @@ namespace XConnect.Supplier.AgodaNew
         private readonly ISupplierRes _supplierRes;
         private readonly IDLConnection _dlConnection;
         private readonly KeySettings _keySettings;
+        private readonly ILogger<AnalyticSupplier> _logger;
 
-        public AgodaNewRepository(ICommonMethod commonMethod, IException exception, ISupplierRes supplierRes, IDLConnection dlConnection, IOptions<KeySettings> keySettings) 
+        public AgodaNewRepository(ICommonMethod commonMethod, IException exception, ISupplierRes supplierRes, IDLConnection dlConnection, IOptions<KeySettings> keySettings , ILogger<AnalyticSupplier> logger) 
         { 
              _commonMethod= commonMethod;
             _exception = exception;
             _supplierRes = supplierRes;
             _dlConnection = dlConnection;
             _keySettings = keySettings.Value;
+            _logger = logger;
         }
 
         public async Task<List<Options>> XMLOut_HotelSearchWithRooms(string requestName, HotelX Item, CommonSearch commonSearch, DataSet GTAResponse, string HotelID, HotelSearchParameter SearchParam, DataTable dtAgentDetail, DataTable dtMarkupDetails, AdvancedOptions advancedOptions, DataSet DTChainCode, DataSet DTCountryblock)
@@ -497,6 +501,8 @@ namespace XConnect.Supplier.AgodaNew
                             catch (Exception ex)
                             {
                                 _exception.Error(ex);
+                                _logger.LogError(ex , "XMLOut_HotelSearchWithRooms");
+
 
                                 return options;
                             }
