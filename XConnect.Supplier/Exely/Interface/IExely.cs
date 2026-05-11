@@ -14,7 +14,7 @@ namespace XConnect.Supplier.Exely.Interface
         string Get_Exely_BookingRequest(DataSet dsCartDetails, DataTable dtPassengers, string uniqueBookingToken, int i, int j, string hotelcode, string checkIn, string checkOut, string currency, string nationality, string agtCode, string checksum);
         string Get_Exely_BookingRequest(DataTable dtPassengers, string uniqueBookingToken, string hotelcode, string checkIn, string checkOut, string currency, string nationality, string agtCode, string checksum, string roomTypeId, int noOfAdults, int noOfChild);
         string Get_Exely_VerifyBookingRQ(int noofadult, int noofchild, string hotelcode, string CheckIn, string CheckOut, string RoomTypeId, string XmlNationality, string checksum = "", DataTable? dtPassengers = null);
-        Task<ResponseDto> ExelyResponseNew(string xmlRQRS, string strHost, int searchTimeOut, string password, string searchKey = "");
+        Task<ResponseDto> ExelyResponseNew(string xmlRQRS, string strHost, int searchTimeOut, string password, string searchKey = "", string requestMethod = "POST");
         string Get_Exely_GetCancellationChargesRQ(string agentRef);
         string Get_Exely_CancelBooking(double amount, string currency, string agentRef);
         CreateBookingResult? Exely_ProcessBookingResponse(string responseData);

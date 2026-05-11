@@ -889,26 +889,37 @@ namespace XConnect.Supplier.Exely
             }
         }
 
-        public async Task<ResponseDto> ExelyResponseNew(string xmlRQRS, string strHost, int SearchTimeOut, string Password, string SearchKey = "")
+        public async Task<ResponseDto> ExelyResponseNew(string xmlRQRS, string strHost, int SearchTimeOut, string Password, string SearchKey = "", string requestMethod = "POST")
         {
             string responseString = "";
             string error = "";
             try
             {
                 var request = (HttpWebRequest)WebRequest.Create(strHost);
-                var data = Encoding.UTF8.GetBytes(xmlRQRS);
+                //var data = Encoding.UTF8.GetBytes(xmlRQRS);
                 request.Proxy = null;
-                request.Method = "POST";
+                request.Method = requestMethod;
                 request.Timeout = SearchTimeOut;
                 request.ContentType = "application/json";
                 request.Accept = "application/json";
                 request.Headers.Add("X-Api-Key", Password);
-                request.ContentLength = data.Length;
+                //request.ContentLength = data.Length;
 
-                using (var stream = await request.GetRequestStreamAsync())
+                if (requestMethod.ToUpper() != "GET")
                 {
-                    await stream.WriteAsync(data, 0, data.Length);
+                    var data = Encoding.UTF8.GetBytes(xmlRQRS);
+                    request.ContentLength = data.Length;
+
+                    using (var stream = await request.GetRequestStreamAsync())
+                    {
+                        await stream.WriteAsync(data, 0, data.Length);
+                    }
                 }
+
+                //using (var stream = await request.GetRequestStreamAsync())
+                //{
+                //    await stream.WriteAsync(data, 0, data.Length);
+                //}
 
                 var response = (HttpWebResponse)await request.GetResponseAsync();
                 Stream st = response.GetResponseStream();
