@@ -110,6 +110,8 @@ using XConnect.Supplier.Exely.Interface;
 using XConnect.Supplier.Exely;
 using XConnect.Supplier.AgodaNew.Interface;
 using XConnect.Supplier.AgodaNew;
+using XConnect.Supplier.DirectContracting.Interface;
+using XConnect.Supplier.DirectContracting;
 
 
 
@@ -177,6 +179,7 @@ namespace XConnect.API.Extensions
             services.AddScoped<IWelcomebeds, WelcomebedsRepository>();
             services.AddScoped<IExely, ExelyRepository>();
             services.AddScoped<IAgodaNew, AgodaNewRepository>();
+            services.AddScoped<IDirectcontracting, DirectContractingRepository>();
 
 
             return services;

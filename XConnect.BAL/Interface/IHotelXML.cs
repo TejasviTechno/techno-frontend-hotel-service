@@ -118,7 +118,9 @@ namespace XConnect.BAL.Interface
   AgodaSearchPara RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, string Search_Key = "", long elapsedMilliseconds = 0);
         #endregion
 
+        Task<List<SupplierperformanceReport>> GetSupplierperformanceReport(SprRequest sprRequest);
 
-       
+
+
     }
 }

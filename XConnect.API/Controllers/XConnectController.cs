@@ -5963,7 +5963,55 @@ namespace XConnect.API.Controllers
 
         }
 
+        [Route("GetSupplierperformanceReport")]
+        [HttpPost]
+        public async Task<IActionResult> GetSupplierperformanceReport(CommonRequest data)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            TokenData TokenData = new TokenData();
+
+            try
+            {
+                string IP = _platformService.GetIPAddress();
+                string userAgent = _platformService.GetBrowserInfo(_platformService.GetRequest());
+
+
+                //AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                //if (Convert.ToBoolean(authData.tokenData.AgentId))
+                {
+                    SprRequest payload = Newtonsoft.Json.JsonConvert.DeserializeObject<SprRequest>(data.Request.ToString());
+                    List<SupplierperformanceReport> lstFiltOption = await _hotelXML.GetSupplierperformanceReport(payload);
+                    if (lstFiltOption != null)
+                    {
+                        timer.Stop();
+                        return Ok(lstFiltOption);
+                    }
+                    else
+                    {
+                        timer.Stop();
+                        return NotFound(StatusCodes.Status500InternalServerError);
+                    }
+                }
+                //else
+                //{
+                //    timer.Stop();
+                //    return NotFound(StatusCodes.Status401Unauthorized);
+                //}
+            }
+            catch (Exception ex)
+            {
+                timer.Stop();
+                await _exception.Error(ex);
+                return NotFound(StatusCodes.Status500InternalServerError);
+
+            }
+
+        }
+
+
 
     }
 }
+
 

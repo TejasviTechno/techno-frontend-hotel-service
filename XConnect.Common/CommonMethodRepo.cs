@@ -4639,6 +4639,7 @@ namespace XConnect.CommonUtilities
                         case "letsfly":
                         case "elevateholidays":
                         case "dingus":
+                        case "directcontracting":
                             dataFor.XmlNationality = Convert.ToString(GetThirdPartyStaticData_New(dtXMLCity.Tables[1], "Desc", Convert.ToString(Natinality), "XmlNationality", "Agoda"));
 
                             break;
