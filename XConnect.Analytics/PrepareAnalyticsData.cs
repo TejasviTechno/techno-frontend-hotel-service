@@ -361,7 +361,9 @@ namespace XConnect.Analytics
                             ElapsedTime = analyticsData.ElapsedTime,
                             Description = analyticsData.Description,
                             Errorcode = analyticsData.Errorcode,
-                            Search_Key = analyticsData?.Search_Key ?? "anonymous"
+                            Search_Key = analyticsData?.Search_Key ?? "anonymous",
+                            SuppliersearchResponseError = analyticsData?.SuppliersearchResponseError ?? "anonymous",
+                            SupplierRequest = analyticsData?.SupplierRequest ?? "anonymous",
 
                         };
                         //var locationItem = allTasks[i].RestaurantList?.FirstOrDefault();
@@ -598,7 +600,8 @@ namespace XConnect.Analytics
                 SearchKey = _analyticsData.Search_Key,
                 TenantId = Convert.ToString(_userContextAccessor?.DecodedJwt?.TenantId) ?? "",
                 CodeProcessingTime = _analyticsData.CodeProcessingTimenew,
-                ResponseErrorLog = _analyticsData.SuppliersearchResponseError,
+                ResponseErrorLog = _analyticsData?.SuppliersearchResponseError ?? "",
+                RequestErrorLog = _analyticsData?.SupplierRequest ?? "",
             };
         }
 

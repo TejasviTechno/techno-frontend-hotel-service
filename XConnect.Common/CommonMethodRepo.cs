@@ -3699,6 +3699,13 @@ namespace XConnect.CommonUtilities
                 if (ReportType.ToLower() == "prebook")
                     stage = "Prebook";
 
+                string supplierreq = "";
+                string supplierres = "";
+                if (ResponseType.ToLower() != "success")
+                {
+                    supplierreq = Request;
+                    supplierres = Response;
+                }
                 _analyticSupplier.PushHotelRecheckSupplierDataForAnalyticsAsyc(new AnalyticsData
                 {
                     Result = null,
@@ -3713,7 +3720,10 @@ namespace XConnect.CommonUtilities
                     //StaticResult = null,
                     Search_Key = SearchKey,
                     SupplierName = SupplierName,
-                    TechName = TechName
+                    TechName = TechName,
+                    SupplierRequest = supplierreq,
+                    SuppliersearchResponseError = supplierres
+
 
                 });
             }
