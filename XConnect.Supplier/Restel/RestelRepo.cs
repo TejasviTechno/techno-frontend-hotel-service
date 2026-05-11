@@ -1024,7 +1024,7 @@ namespace XConnect.Supplier.Restel
             }
         }
 
-        public async Task<CancellationDto> Get_Restel_CancellationPolicy(string rating, string ContractID, string Type, DataSet dsHotel, string hotelcode, string ownsystemid, string RoomTypeId_Own, string MealID, string Board_Text, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string UserId, string Password, string roomno, string Provider, int AgentId, DataTable dtMarkupDetails,string SearchKey, string GiataId = "0", int hotelRating = 0, double FinalSellPrice = 0, string TechName = "")
+        public async Task<CancellationDto> Get_Restel_CancellationPolicy(string rating, string ContractID, string Type, DataSet dsHotel, string hotelcode, string ownsystemid, string RoomTypeId_Own, string MealID, string Board_Text, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataSet dsCountryCityMarkup, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string UserId, string Password, string roomno, string Provider, int AgentId, DataTable dtMarkupDetails,string SearchKey, string GiataId = "0", int hotelRating = 0, double FinalSellPrice = 0, string TechName = "")
         {
             CancellationDto cancellationDto = new CancellationDto();
             string IsBooking = "Available";
@@ -1049,7 +1049,9 @@ namespace XConnect.Supplier.Restel
                 //Int32 hotelRating = 0;
                 //hotelRating = Convert.ToInt32(rating);
                 //string CheckinDate = objSearPera.CheckInDate;
-                _markup.getAgetMarkupSetting(Provider, GiataId, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, AgentId, hotelRating, objSearPera.CityID, Convert.ToString(objSearPera.CountryID), objSearPera.CheckInDate);
+                //_markup.getAgetMarkupSetting(Provider, GiataId, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, AgentId, hotelRating, objSearPera.CityID, Convert.ToString(objSearPera.CountryID), objSearPera.CheckInDate);
+                _markup.getAgetMarkupSettingNew_new(Provider, Convert.ToString(GiataId), dtSuplierMarkup, dsCountryCityMarkup, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, AgentId, hotelRating, objSearPera.CityID, Convert.ToString(objSearPera.CountryID), objSearPera.CheckInDate);
+
                 if (dtAgentDetail != null)
                 {
                     IsParentId = Convert.ToInt32(dtAgentDetail.Rows[0]["IsParentId"]);

@@ -38,9 +38,12 @@ namespace XConnect.Supplier.AgodaNew
         private readonly ISupplierRes _supplierRes;
         private readonly IDLConnection _dlConnection;
         private readonly KeySettings _keySettings;
-        private readonly ILogger<AnalyticSupplier> _logger;
+        private readonly ILogger<Exception> _logger;
 
-        public AgodaNewRepository(ICommonMethod commonMethod, IException exception, ISupplierRes supplierRes, IDLConnection dlConnection, IOptions<KeySettings> keySettings , ILogger<AnalyticSupplier> logger) 
+
+
+
+        public AgodaNewRepository(ICommonMethod commonMethod, IException exception, ISupplierRes supplierRes, IDLConnection dlConnection, IOptions<KeySettings> keySettings, ILogger<Exception> logger) 
         { 
              _commonMethod= commonMethod;
             _exception = exception;
@@ -503,8 +506,8 @@ namespace XConnect.Supplier.AgodaNew
                                 _exception.Error(ex);
                                 _logger.LogError(ex , "XMLOut_HotelSearchWithRooms");
 
-
                                 return options;
+                                
                             }
                             finally
                             {
