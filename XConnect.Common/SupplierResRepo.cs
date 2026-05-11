@@ -1,5 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 using System.Data;
+using XConnect.Analytics;
 using XConnect.CommonUtilities;
 using XConnect.CommonUtilities.Interface;
 using XConnect.DAL.Interface;
@@ -15,11 +17,13 @@ namespace XConnect.CommonUtilities
     {
         private readonly IException _exception;
         private readonly IDLConnection _dlConnection;
+        private readonly ILogger<AnalyticSupplier> _logger;
 
-        public SupplierResRepo(IException exception, IDLConnection dlConnection)
+        public SupplierResRepo(IException exception, IDLConnection dlConnection ,ILogger<AnalyticSupplier> logger)
         {
             _exception = exception;
             _dlConnection = dlConnection;
+            _logger = logger;
         }
 
         public async Task<Options> GetCommonRoomForSuppliers(long GiataId, TokenData tokenData, AdvancedOptions advancedOptions, double LowestRate, DataRow drXmlHotel, DataTable dtHotelRoom, DataTable dt_Cancellation, DataTable dt_RateBreackUp, HotelSearchParameter SearchParam, bool IsRoomRestriction = false, int NoOfReturnRoom = 0, int ForMoreThenRooms = 1)
@@ -1886,8 +1890,12 @@ namespace XConnect.CommonUtilities
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "GetCommonRoomForSuppliers_agoda");
                 _exception.Error(ex);
                 return null;
+               
+                
+
 
             }
         }
@@ -2221,6 +2229,7 @@ namespace XConnect.CommonUtilities
             {
                 // Common.Error(ex);
                 _exception.Error(ex);
+                _logger.LogError(ex, "GetHotelRoomForOptions_agoda");
             }
             if (SearchPara.Filters.IsShowRooms == 0)
                 // return new List<List<_FinalRoomList>>();
