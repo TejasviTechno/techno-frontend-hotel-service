@@ -1,8 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 using System.Data;
 using XConnect.CommonUtilities;
 using XConnect.CommonUtilities.Interface;
 using XConnect.DAL.Interface;
+using XConnect.ErrorLogHandler;
 using XConnect.ErrorLogHandler.Interface;
 using XConnect.Models;
 using XConnect.Models.Hotel;
@@ -15,14 +17,17 @@ namespace XConnect.CommonUtilities
     {
         private readonly IException _exception;
         private readonly IDLConnection _dlConnection;
+        private readonly ILogger<ExceptionLog> _logger;
 
-        public SupplierResRepo(IException exception, IDLConnection dlConnection)
+        public SupplierResRepo(IException exception, IDLConnection dlConnection,ILogger<ExceptionLog> logger)
         {
             _exception = exception;
             _dlConnection = dlConnection;
+            _logger = logger;
+
         }
 
-        public async Task<Options> GetCommonRoomForSuppliers(long GiataId, TokenData tokenData, AdvancedOptions advancedOptions, double LowestRate, DataRow drXmlHotel, DataTable dtHotelRoom, DataTable dt_Cancellation, DataTable dt_RateBreackUp, HotelSearchParameter SearchParam, bool IsRoomRestriction = false, int NoOfReturnRoom = 0, int ForMoreThenRooms = 1)
+        public async Task<Options> GetCommonRoomForSuppliers(long GiataId, TokenData tokenData, AdvancedOptions advancedOptions, double LowestRate, DataRow drXmlHotel, DataTable dtHotelRoom, DataTable dt_Cancellation, DataTable dt_RateBreackUp, HotelSearchParameter SearchParam, bool IsRoomRestriction = false, int NoOfReturnRoom = 0, int ForMoreThenRooms = 1  )
         {
             Options hotelListNew = GetDataFromHotelRow(drXmlHotel);
 
@@ -1886,7 +1891,13 @@ namespace XConnect.CommonUtilities
             }
             catch (Exception ex)
             {
-                _exception.Error(ex);
+
+                
+
+               // _exception.Error(ex);
+                _logger.LogError(ex, "GetCommonRoomForSuppliers_agoda", _finalRoom);
+
+               // _exception.Error(ex);
                 return null;
 
             }
@@ -2220,7 +2231,16 @@ namespace XConnect.CommonUtilities
             catch (Exception ex)
             {
                 // Common.Error(ex);
-                _exception.Error(ex);
+
+                System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace(ex, true);
+                System.Diagnostics.StackFrame stackFrame = trace.GetFrame(trace.FrameCount - 1);
+                System.Reflection.MethodBase site = ex.TargetSite;
+                string fileName = stackFrame.GetFileName();
+                string methodName = stackFrame.GetMethod().Name;
+                int lineNo = stackFrame.GetFileLineNumber();
+                string ErrorPageName1 = "Page:" + fileName + " Method:" + methodName + " Line No:" + lineNo + "";
+
+                _exception.Error(ex, ErrorPageName1+ "GetHotelRoomForOptions_agoda");
             }
             if (SearchPara.Filters.IsShowRooms == 0)
                 // return new List<List<_FinalRoomList>>();

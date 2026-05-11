@@ -196,6 +196,7 @@ namespace Xconnect.BLL
         private readonly IAnalytics _analytic;
         private readonly RemoteServices _remoteServices;
         private readonly IAgodaNew _agodanew;
+        private readonly ILogger<Exception> _logger;
 
         #region Supplier DI
         private readonly IExpedia _expedia;
@@ -261,7 +262,7 @@ namespace Xconnect.BLL
 
 
 
-        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices, IWelcomebeds welcomebeds, IExely iExely, IConfiguration configuration, IAgodaNew agodanew)
+        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices, IWelcomebeds welcomebeds, IExely iExely, IConfiguration configuration, IAgodaNew agodanew, ILogger<Exception> logger)
         {
             _dlConnection = dlConnection;
             _cache = cache;
@@ -336,6 +337,7 @@ namespace Xconnect.BLL
             _iExely = iExely;
             _configuration = configuration;
             _agodanew = agodanew;
+            _logger = logger;
 
         }
 
@@ -9576,6 +9578,7 @@ new SqlParameter("@AgentId", AgentId),
             list.Elevateholidays_codes = null;
             list.Welcomebeds_Codes = null;
             list.Exely_Codes = null;
+            list.Techno_New_Codes = null;
 
             try
             {
@@ -9977,6 +9980,11 @@ new SqlParameter("@AgentId", AgentId),
                                         list.Exely_Codes = FilterHotelCodesTechWise(lstdtHotelCommon, SuppplierCheck);
                                         break;
                                     #endregion
+                                    #region"Techno_New"
+                                    case "techno_new":
+                                        list.Techno_New_Codes = FilterHotelCodesTechWise(lstdtHotelCommon, SuppplierCheck);
+                                        break;
+                                    #endregion
                                     default:
                                         break;
 
@@ -10142,12 +10150,15 @@ new SqlParameter("@AgentId", AgentId),
 
 
                         if (_keySettings.UseLocalDatabase == "1")
+                           // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
                             dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
                         else
                         {
                             if (_keySettings.Use_ReplicationDB == "1")
+                                //dsIsSubAgent_Agent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
                                 dsIsSubAgent_Agent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
                             else
+                               // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
                                 dsIsSubAgent_Agent = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
                         }
 
@@ -13277,10 +13288,20 @@ new SqlParameter("@AgentId", AgentId),
                 dsHotelData.Tables[2].Merge(dtt);
                 #endregion               
                 int AgentId = Convert.ToInt32(SearchPara.AgentID);
+
+                DataSet dsCountryCityMarkup = new DataSet();//Added on 11-may-26
                 XMLHotelBookingCommon objhotel = new XMLHotelBookingCommon();
                 DataTable dtAgentDetail = dsAgentDetails.Tables[0];// (dsAgentDetails != null ? dsAgentDetails.Tables[0] : objhotel.IsSubAgent(AgentId).Tables[0]);
                 //DataTable dtMarkupDetails = Common.GetCommonMarkup(Convert.ToInt32(SearchPara.CountryID), SearchPara.CityID, TariffID, AgentId);
                 DataTable dtMarkupDetails = dsAgentDetails.Tables[7] != null ? dsAgentDetails.Tables[7] : await _markup.GetCommonMarkup(Convert.ToInt32(SearchPara.CountryID), SearchPara.CityID, TariffID, AgentId);
+                
+                //Added on 11-may-26
+                if (dsAgentDetails.Tables[12] != null && dsAgentDetails.Tables[12].Rows.Count > 0) //Added on 01-may-26
+                {
+                    dsCountryCityMarkup.Tables.Add(dsAgentDetails.Tables[12].Copy());
+                    dsCountryCityMarkup.Tables.Add(dsAgentDetails.Tables[13].Copy());
+                }
+                //end
                 DataTable dtSuplierMarkup = new DataTable();
                 dtSuplierMarkup = (dsAgentDetails != null ? dsAgentDetails.Tables[1] : await _markup.GetCommonMarkup(Convert.ToInt32(SearchPara.CountryID), SearchPara.CityID, TariffID, AgentId));
                 if (!dsHotelData.Tables[0].Columns.Contains("Rating"))
@@ -13504,7 +13525,7 @@ new SqlParameter("@AgentId", AgentId),
                     #endregion
                     #region"Restel"
                     case "restel":
-                        cancellationDto = await _restel.Get_Restel_CancellationPolicy(Convert.ToString(hotelRating), ContractId, type, dsHotelData, hotelcode, hotelid, roomtypeid, shortname, boardtype, dtAgentDetail, dtSuplierMarkup, dsAgentDetails.Tables[2], SearchPara, "", "", Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, SearchKey, GiataId, hotelRating, roomprice, TechName);
+                        cancellationDto = await _restel.Get_Restel_CancellationPolicy(Convert.ToString(hotelRating), ContractId, type, dsHotelData, hotelcode, hotelid, roomtypeid, shortname, boardtype, dtAgentDetail, dtSuplierMarkup, dsCountryCityMarkup, dsAgentDetails.Tables[2], SearchPara, "", "", Convert.ToString(roomno), provider, AgentId, dtMarkupDetails, SearchKey, GiataId, hotelRating, roomprice, TechName);
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion
@@ -67591,8 +67612,10 @@ new SqlParameter("@AgentId", AgentId),
                                     {
                                         if (requestName.ToLower() == "availability")
                                         {
+                                        
                                             dataTable.Add(Task.Run(async () =>
                                             {
+                                                List<Options> result = null;
                                                 try
                                                 {
                                                     // commonSearch.HotelIDS = commonSearchList.HotelIDS;
@@ -67600,7 +67623,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                     //string Hotelids = "598586";
                                                     string Hotelids = SearchPara.Filters.HotelIDs; //"176";
-                                                    var result = await _agodanew.XMLOut_HotelSearchWithRooms(
+                                                     result = await _agodanew.XMLOut_HotelSearchWithRooms(
                                                         requestName,
                                                         item,
                                                         commonSearch,
@@ -67619,6 +67642,9 @@ new SqlParameter("@AgentId", AgentId),
                                                 }
                                                 catch (Exception ex)
                                                 {
+                                                   
+                                                   // _logger.LogError(ex, "newhotelsearch_agoda", result);
+                                                    _logger.LogError(ex, "newhotelsearch_agoda {@Result}", result);
                                                     _exception.Error(ex);
                                                     return null;
                                                 }
@@ -68663,6 +68689,9 @@ new SqlParameter("@AgentId", AgentId),
             {
                 // Common.Error(ex);
                 _exception.Error(ex);
+                //_logger.LogError(ex, "ConvertToFinalResponseListForAgoda", rootreturn);
+                _logger.LogError(ex, "ConvertToFinalResponseListForAgoda {rootreturn}", (object)rootreturn);
+
             }
             return null;
         }

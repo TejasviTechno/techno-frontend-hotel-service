@@ -15,6 +15,7 @@ using UserContextMiddleWare.Services;
 using Xconnect.API.Extensions;
 using Xconnect.API.Middleware;
 using Xconnect.BLL;
+using XConnect.Analytics;
 using XConnect.Auth.Interface;
 using XConnect.BAL.Interface;
 using XConnect.CommonUtilities;
@@ -44,11 +45,11 @@ namespace XConnect.API.Controllers
         private readonly IUserContextAccessor _userContextAccessor;
         _Error error = new _Error();
         AgodaSearchError erroragoda = new AgodaSearchError();
+        private readonly ILogger<Analytic> _logger;
 
 
 
-
-        public XConnectController(IAuthenticationTokenAgent authenticationTokenAgent, IHotelXML hotelXML, IException exception, PlatformService platformService, IOptions<KeySettings> keySettings, IHttpContextAccessor httpContextAccessor, IUserContextAccessor userContextAccessor)
+        public XConnectController(IAuthenticationTokenAgent authenticationTokenAgent, IHotelXML hotelXML, IException exception, PlatformService platformService, IOptions<KeySettings> keySettings, IHttpContextAccessor httpContextAccessor, IUserContextAccessor userContextAccessor, ILogger<Analytic> logger)
         {
             _authenticationTokenAgent = authenticationTokenAgent;
             _hotelXML = hotelXML;
