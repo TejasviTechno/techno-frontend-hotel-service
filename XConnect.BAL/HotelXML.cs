@@ -60633,18 +60633,24 @@ new SqlParameter("@AgentId", AgentId),
 
                                 //getcharge request
                                 string CancellationXMLcharge = _iExely.Get_Exely_GetCancellationChargesRQ(AgentRef);
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit CalculateCancellationPenalty", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
-                                string exelyURL = baseUrl + _supplierConfig.Exely.CalculateCancellationPenalty.Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=";
+                                string cancellationDateTimeUtc = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                                string exelyURL = baseUrl + _supplierConfig.Exely.CalculateCancellationPenalty.Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=" + cancellationDateTimeUtc;
                                 ResponseDto responseDto = await _iExely.ExelyResponseNew(CancellationXMLcharge, exelyURL, 120000, password);
                                 ResponseData = responseDto.Response;
                                 Error = responseDto.Error;
 
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit CalculateCancellationPenalty", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+
+                                /*if (string.IsNullOrWhiteSpace(ResponseData))
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(exelyURL), Convert.ToString(Error), "From Cancellation Page - Empty Penalty Response", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "RaynaB2B");
+                                    return "";
+                                }*/
 
                                 var result = JsonConvert.DeserializeObject<ResultOfCalculatePenalty>(ResponseData);
-                                string currency = Convert.ToString(SupplierDetailsCommon[0]["Currency"]);
-                                double Amount = result.penaltyAmount ?? 0;
+                                double Amount = result?.penaltyAmount ?? 0;
 
                                 //cancel request 
                                 CancellationXML = JsonConvert.SerializeObject(new BookingCancellationRq
@@ -60653,14 +60659,14 @@ new SqlParameter("@AgentId", AgentId),
                                     expectedPenaltyAmount = Amount
                                 });
 
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit CancelBooking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
                                 string cancelexelyurl = baseUrl + _supplierConfig.Exely.CancelBooking.Replace("{number}", bookingNumber);
                                 ResponseDto responseDto1 = await _iExely.ExelyResponseNew(CancellationXML, cancelexelyurl, 120000, password);
                                 string CancelResponseData = responseDto1.Response;
                                 Error = responseDto1.Error;
 
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(CancelResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(CancelResponseData), "After Request hit CancelBooking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
                                 if (CancelResponseData == "")
                                 {
@@ -60669,11 +60675,12 @@ new SqlParameter("@AgentId", AgentId),
                                 }
                                 else
                                 {
-                                    var Result = JsonConvert.DeserializeObject<BookingCancellation>(CancelResponseData);
-                                    double? penalty = Result.penaltyAmount;
-                                    string Messages = Result.reason;
-                                    DateTime cancelledTime = Result.cancelledUtc;
-                                    int status = Result != null ? 1 : 0;
+                                    var Result = JsonConvert.DeserializeObject<CreateBookingResult>(CancelResponseData);
+                                    var cancellation = Result?.booking?.cancellation;
+                                    double? penalty = cancellation?.penaltyAmount;
+                                    string Messages = cancellation?.reason;
+                                    DateTime cancelledTime = cancellation?.cancelledUtc ?? DateTime.MinValue;
+                                    int status = Result?.booking?.status == BookingStatus.Cancelled ? 1 : 0;
                                     if (status == 1)
                                     {
 
@@ -64508,15 +64515,15 @@ new SqlParameter("@AgentId", AgentId),
                                 string CancellationXMLcharge = _iExely.Get_Exely_GetCancellationChargesRQ(AgentRef);
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
-                                string exelyURL = baseUrl + _supplierConfig.Exely.CalculateCancellationPenalty.Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=";
-                                ResponseDto responseDto = await _iExely.ExelyResponseNew(CancellationXMLcharge, exelyURL, 120000, password);
+                                string cancellationDateTimeUtc = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                                string exelyURL = baseUrl + _supplierConfig.Exely.CalculateCancellationPenalty.Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=" + cancellationDateTimeUtc;
+                                ResponseDto responseDto = await _iExely.ExelyResponseNew(CancellationXMLcharge, exelyURL, 120000, password, "", "GET");
                                 ResponseData = responseDto.Response;
                                 Error = responseDto.Error;
 
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
                                 var result = JsonConvert.DeserializeObject<ResultOfCalculatePenalty>(ResponseData);
-                                string currency = Convert.ToString(SupplierDetailsCommon[0]["Currency"]);
                                 double Amount = result.penaltyAmount ?? 0;
 
                                 //cancel request 
@@ -64525,6 +64532,7 @@ new SqlParameter("@AgentId", AgentId),
                                     reason = "Cancelled by customer",
                                     expectedPenaltyAmount = Amount
                                 });
+                                room.xmlrequest = CancellationXML;
 
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
@@ -64533,6 +64541,7 @@ new SqlParameter("@AgentId", AgentId),
                                 string CancelResponseData = responseDto1.Response;
                                 Error = responseDto1.Error;
 
+                                room.xmlresponse = CancelResponseData + " " + Error;
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(CancelResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
 
                                 if (CancelResponseData == "")
