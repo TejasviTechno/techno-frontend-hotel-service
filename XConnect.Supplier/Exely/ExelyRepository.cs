@@ -749,9 +749,9 @@ namespace XConnect.Supplier.Exely
                 string aggregationRQ = JsonConvert.SerializeObject(searchCriteria, GetExelyIsoJsonSettings());
                 string aggregationUrl = $"{baseUrl.TrimEnd('/')}/{(_supplierConfig.Exely.SearchRoomStays ?? string.Empty).TrimStart('/')}";
 
-                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(ownsystemid), Convert.ToString(ownsystemid), aggregationRQ, "-", "Before Exely Aggregation Search", Supplier, "Request", "-", "withinearth");
+                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(ownsystemid), Convert.ToString(ownsystemid), aggregationRQ, "-", "Before Exely Aggregation Search", Supplier, "Request", "-", "NomadsB2B");
                 ResponseDto aggregationDto = await ExelyResponseNew(aggregationRQ, aggregationUrl, searchTimeout, password, SearchKey);
-                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(ownsystemid), Convert.ToString(ownsystemid), aggregationRQ, aggregationDto.Response, "After Exely Aggregation Search", Supplier, "Response", "-", "withinearth");
+                _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(ownsystemid), Convert.ToString(ownsystemid), aggregationRQ, aggregationDto.Response, "After Exely Aggregation Search", Supplier, "Response", "-", "NomadsB2B");
 
                 if (!string.IsNullOrWhiteSpace(aggregationDto.Response) && !aggregationDto.Response.ToLower().Contains("error"))
                 {
@@ -985,14 +985,14 @@ namespace XConnect.Supplier.Exely
                     string propertyUrl = $"{baseUrl.TrimEnd('/')}/{propertyTemplate.Replace("{propertyId}", hotelId)}";
                     requestData = propertyUrl;
 
-                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, "-", "Before Exely Recheck", supplierName, "response confirm", "-", "WithinEarth");
+                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, "-", "Before Exely Recheck", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
                     #endregion Request
 
                     #region Response
                     var responseDto = await ExelyGetResponseAsync(propertyUrl, bookingTimeout, password, Searchkey);
                     responseData = responseDto.Response;
 
-                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData + "|ERR:" + responseDto.Error, "After Exely Recheck", supplierName, "response confirm", "-", "WithinEarth");
+                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData + "|ERR:" + responseDto.Error, "After Exely Recheck", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
 
                     // Property API failure should not block booking — always mark as available
                     priceCheckCMDto.IsError = false;
@@ -1028,14 +1028,14 @@ namespace XConnect.Supplier.Exely
                     string verifyUrl = $"{baseUrl.TrimEnd('/')}/{verifyUrlPath}";
                     requestData = verifyRQ;
 
-                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, "-", "Before Exely PreBook Verify", supplierName, "response confirm", "-", "WithinEarth");
+                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, "-", "Before Exely PreBook Verify", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
                     #endregion Request
 
                     #region Response
                     var responseDto = await ExelyResponseNew(verifyRQ, verifyUrl, bookingTimeout, password, Searchkey);
                     responseData = responseDto.Response;
 
-                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData + "|ERR:" + responseDto.Error, "After Exely PreBook Verify", supplierName, "response confirm", "-", "WithinEarth");
+                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData + "|ERR:" + responseDto.Error, "After Exely PreBook Verify", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
 
                     priceCheckCMDto.IsError = false;
                     priceCheckCMDto.Flag = false;
@@ -1088,7 +1088,7 @@ namespace XConnect.Supplier.Exely
                         });
                     }
                 }
-                if (guests.Count == 0)
+                while (guests.Count < noofadult)
                     guests.Add(new BookingGuest { firstName = "Guest", lastName = "User", middleName = "", citizenship = XmlNationality, sex = BookingGuestSexKind.Male });
 
                 string leadFirstName = guests[0].firstName ?? "Guest";
@@ -1172,7 +1172,7 @@ namespace XConnect.Supplier.Exely
                                     : BookingGuestSexKind.Male
                     });
                 }
-                if (guests.Count == 0)
+                while (guests.Count < noOfAdults)
                 {
                     guests.Add(new BookingGuest { firstName = "Guest", lastName = "User", middleName = "", citizenship = nationality, sex = BookingGuestSexKind.Male });
                 }
@@ -1256,7 +1256,7 @@ namespace XConnect.Supplier.Exely
                                     : BookingGuestSexKind.Male
                     });
                 }
-                if (guests.Count == 0)
+                while (guests.Count < noOfAdults)
                     guests.Add(new BookingGuest { firstName = "Guest", lastName = "User", middleName = "", citizenship = nationality, sex = BookingGuestSexKind.Male });
 
                 var request = new CreateBookingRequest
@@ -1410,7 +1410,7 @@ namespace XConnect.Supplier.Exely
                 ResponseDto responseDto = await ExelyGetResponseAsync(contentUrl, searchTimeout, password, searchKey);
                 string responseData = responseDto.Response;
 
-                _commonMethod.ThirdPartyGetPolicyHistory(hotelcode, hotelcode, contentUrl, responseData, "After Exely EInfo", provider, "Response", "-", "withinearth");
+                _commonMethod.ThirdPartyGetPolicyHistory(hotelcode, hotelcode, contentUrl, responseData, "After Exely EInfo", provider, "Response", "-", "NomadsB2B");
 
                 if (string.IsNullOrWhiteSpace(responseData) || responseData.ToLower().Contains("\"error\""))
                     return essential;
@@ -1557,7 +1557,7 @@ namespace XConnect.Supplier.Exely
                 string url = $"{baseUrl.TrimEnd('/')}/{path}?{string.Join("&", queryParams)}";
                 ResponseDto responseDto = await ExelyGetResponseAsync(url, searchTimeout, password, searchKey);
 
-                _commonMethod.ThirdPartyGetPolicyHistory(propertyId, propertyId, url, responseDto.Response, "After Exely RoomStaysByProperty", "Exely", "Response", "-", "withinearth");
+                _commonMethod.ThirdPartyGetPolicyHistory(propertyId, propertyId, url, responseDto.Response, "After Exely RoomStaysByProperty", "Exely", "Response", "-", "NomadsB2B");
 
                 if (string.IsNullOrWhiteSpace(responseDto.Response) || responseDto.Response.ToLower().Contains("\"error\""))
                     return null;
@@ -1582,7 +1582,7 @@ namespace XConnect.Supplier.Exely
                 ResponseDto responseDto = await ExelyGetResponseAsync(cancellationRulesUrl, searchTimeout, password, searchKey);
                 string responseData = responseDto.Response;
 
-                _commonMethod.ThirdPartyGetPolicyHistory(propertyId, propertyId, cancellationRulesUrl, responseData, "After Exely cancellation rules", "Exely", "Response", "-", "withinearth");
+                _commonMethod.ThirdPartyGetPolicyHistory(propertyId, propertyId, cancellationRulesUrl, responseData, "After Exely cancellation rules", "Exely", "Response", "-", "NomadsB2B");
 
                 if (string.IsNullOrWhiteSpace(responseData) || responseData.ToLower().Contains("\"error\""))
                     return null;

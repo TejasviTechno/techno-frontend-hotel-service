@@ -55122,7 +55122,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 bookingStatus = 2;
                                                 AgentVoucherNo = "";
                                                 responsetype = "GeneralError";
-                                                _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, (exelyVerifyDto.Response ?? "") + (exelyVerifyDto.Error ?? ""), "After Exely Verify Booking Failed", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "WithinEarth");
+                                                _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, (exelyVerifyDto.Response ?? "") + (exelyVerifyDto.Error ?? ""), "After Exely Verify Booking Failed", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "NomadsB2B");
                                                 try
                                                 {
                                                     _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, exelyVerifyRQ, exelyVerifyDto.Response, Error);
@@ -55146,7 +55146,7 @@ new SqlParameter("@AgentId", AgentId),
                                             string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, exelyCreateBookingToken, exelyPropertyId, checkIn, checkOut, exelyCurrency, exelyNationality, tokenData.AgentCode, checksum, roomTypeId, noOfAdults, noOfChild);
                                             string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.CreateBooking.TrimStart('/');
 
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "WithinEarth");
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "NomadsB2B");
                                             Error = "";
                                             System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                                             timerroomprocess.Start();
@@ -55160,7 +55160,7 @@ new SqlParameter("@AgentId", AgentId),
                                             timerroomprocess.Stop();
                                             time = timerroomprocess.Elapsed.ToString();
 
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, ExelyBookResponse + Error, "After Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "WithinEarth");
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, ExelyBookResponse + Error, "After Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "NomadsB2B");
 
                                             bookingStatus = 2;
                                             AgentVoucherNo = "";
@@ -64513,7 +64513,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                 //getcharge request
                                 string CancellationXMLcharge = _iExely.Get_Exely_GetCancellationChargesRQ(AgentRef);
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), "-", "Before Request hit CalculateCancellationPenalty", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
 
                                 string cancellationDateTimeUtc = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
                                 string exelyURL = baseUrl + _supplierConfig.Exely.CalculateCancellationPenalty.Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=" + cancellationDateTimeUtc;
@@ -64521,7 +64521,7 @@ new SqlParameter("@AgentId", AgentId),
                                 ResponseData = responseDto.Response;
                                 Error = responseDto.Error;
 
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit CalculateCancellationPenalty", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
 
                                 var result = JsonConvert.DeserializeObject<ResultOfCalculatePenalty>(ResponseData);
                                 double Amount = result.penaltyAmount ?? 0;
@@ -64534,7 +64534,7 @@ new SqlParameter("@AgentId", AgentId),
                                 });
                                 room.xmlrequest = CancellationXML;
 
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit CancelBooking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
 
                                 string cancelexelyurl = baseUrl + _supplierConfig.Exely.CancelBooking.Replace("{number}", bookingNumber);
                                 ResponseDto responseDto1 = await _iExely.ExelyResponseNew(CancellationXML, cancelexelyurl, 120000, password);
@@ -64542,11 +64542,11 @@ new SqlParameter("@AgentId", AgentId),
                                 Error = responseDto1.Error;
 
                                 room.xmlresponse = CancelResponseData + " " + Error;
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(CancelResponseData), "After Request hit Cancel", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(CancelResponseData), "After Request hit CancelBooking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
 
                                 if (CancelResponseData == "")
                                 {
-                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "RaynaB2B");
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "NomadsB2B");
                                     return "";
                                 }
                                 else
@@ -64559,11 +64559,11 @@ new SqlParameter("@AgentId", AgentId),
                                     if (status == 1)
                                     {
 
-                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "RaynaB2B");
+                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
                                     }
                                     else
                                     {
-                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "RaynaB2B");
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "NomadsB2B");
                                         return "";
                                     }
 
