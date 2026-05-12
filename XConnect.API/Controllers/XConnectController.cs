@@ -5736,7 +5736,7 @@ namespace XConnect.API.Controllers
                     }
                    
                     //AvailHotelList finalResponse = HotelXML.HotelSearchCommon(payload, tokenData, data.AdvancedOptions, requestName, CmName, commonRQ.metadata);
-                    AvailHotelList finalResponse = await _hotelXML.HotelSearchCommon(payload, authData.tokenData, data.AdvancedOptions, requestName, CmName, commonRQ.metadata);
+                    AvailHotelList finalResponse = await _hotelXML.HotelSearchCommon(payload, authData.tokenData, data.AdvancedOptions, timer, requestName, CmName, commonRQ.metadata);
 
                     if (!filterUsed.ratePlanSearch)
                     {

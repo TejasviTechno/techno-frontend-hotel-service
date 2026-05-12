@@ -66840,7 +66840,7 @@ new SqlParameter("@AgentId", AgentId),
             }
 
         }
-        public async Task<AvailHotelList> HotelSearchCommon(HotelSearchParameter SearchPara, TokenData Tokendata, AdvancedOptions advancedOptions, string requestName = "availability", string CmName = "", string ratePlanCode = "")
+        public async Task<AvailHotelList> HotelSearchCommon(HotelSearchParameter SearchPara, TokenData Tokendata, AdvancedOptions advancedOptions, Stopwatch MainTimer, string requestName = "availability", string CmName = "", string ratePlanCode = "")
         {
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
@@ -67205,7 +67205,7 @@ new SqlParameter("@AgentId", AgentId),
                     }
                 }
 
-                Task<List<Options>> dsFinalDataset = NewHotelSearch_agoda(dtROE, SearchByOneID, advancedOptions, Tokendata, IsParentId, SubAgentMarkup, B2CMarkup, agentPercent, dtCountryCityMarkup, TariffID, commonSearchList, 0, IsB2B, SearchPara, AgentId, dsAgentDetails, EchoToken, SessionId, AgentCode, dtCountryCityMarkup, IdWithLocalRates, Platform, true, CmName, requestName, ratePlanCode, DTChainCode, ds7, DTCountryblock);
+                Task<List<Options>> dsFinalDataset = NewHotelSearch_agoda(dtROE, SearchByOneID, advancedOptions, Tokendata, IsParentId, SubAgentMarkup, B2CMarkup, agentPercent, dtCountryCityMarkup, TariffID, commonSearchList, 0, IsB2B, SearchPara, AgentId, dsAgentDetails, EchoToken, SessionId, AgentCode, dtCountryCityMarkup, IdWithLocalRates, Platform, true, CmName, requestName, ratePlanCode, DTChainCode, ds7, DTCountryblock, MainTimer);
 
                 #endregion hit
                 #region "Prepare Response"
@@ -67426,7 +67426,7 @@ new SqlParameter("@AgentId", AgentId),
             }
         }
 
-        public async Task<List<Options>> NewHotelSearch_agoda(DataTable dtROE, bool SearchByOneID, AdvancedOptions advancedOptions, TokenData tokenData, int IsParentId, double SubAgentMarkup, double B2CMarkup, decimal AgentPercent, DataTable dtCountryCityMarkup, int TariffID, CommonSearchList commonSearchList, int hit, bool IsB2B, HotelSearchParameter SearchPara, int AgentId, DataSet dsAgentDetails, string EchoToken, string SessionId, string AgentCode, DataTable dtMarkupDetails, DataTable OwnIDSList, string Platform, bool HitFromAll = true, string CmName = "", string requestName = "", string ratePlanCode = "", DataSet DTChainCode = null, DataSet DS_HotelDetails = null, DataSet DTCountryblock = null)
+        public async Task<List<Options>> NewHotelSearch_agoda(DataTable dtROE, bool SearchByOneID, AdvancedOptions advancedOptions, TokenData tokenData, int IsParentId, double SubAgentMarkup, double B2CMarkup, decimal AgentPercent, DataTable dtCountryCityMarkup, int TariffID, CommonSearchList commonSearchList, int hit, bool IsB2B, HotelSearchParameter SearchPara, int AgentId, DataSet dsAgentDetails, string EchoToken, string SessionId, string AgentCode, DataTable dtMarkupDetails, DataTable OwnIDSList, string Platform, bool HitFromAll = true, string CmName = "", string requestName = "", string ratePlanCode = "", DataSet DTChainCode = null, DataSet DS_HotelDetails = null, DataSet DTCountryblock = null, Stopwatch MainTimer = null)
 
         {
 
@@ -68318,7 +68318,7 @@ new SqlParameter("@AgentId", AgentId),
                                         }, cts.Token));  //needtochange
                                                          //}));
                                                          //Check Time If High then return NoCount
-                                    if (IsTimeCutOffActive == "1") //&& MainTimer.ElapsedMilliseconds > 6000)
+                                    if (IsTimeCutOffActive == "1" && MainTimer.ElapsedMilliseconds > 6000)
                                     {
                                         break;
                                     }
@@ -68337,7 +68337,7 @@ new SqlParameter("@AgentId", AgentId),
                     //return null;
                 }
 
-                if (IsTimeCutOffActive == "1") //&& MainTimer.ElapsedMilliseconds > 7000)
+                if (IsTimeCutOffActive == "1" && MainTimer.ElapsedMilliseconds > 7000)
                 {
                     return null;
                 }
