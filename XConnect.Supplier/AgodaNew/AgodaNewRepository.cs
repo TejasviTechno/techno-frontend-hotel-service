@@ -1391,7 +1391,8 @@ namespace XConnect.Supplier.AgodaNew
             string responsedata = "";
             string Catchtype = "";
             string reqid = Convert.ToString(DateTime.Now.Ticks);
-            string finalUrl = "http://localhost:44373/api/xconnect/";  //needtochange
+            //string finalUrl = "http://localhost:44373/api/xconnect/";  //needtochange
+            string finalUrl = "";  //needtochange
 
             var timer = new System.Diagnostics.Stopwatch();
             timer.Start();
@@ -1434,7 +1435,7 @@ namespace XConnect.Supplier.AgodaNew
                             Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutBookTimeOut);
 
                            // finalUrl = $"{"http://localhost:44373/api/xconnect"}/{_keySettings.BookXMLOut.TrimStart('/')}";
-                            finalUrl = $"{_keySettings.EndPointforprebook.TrimEnd('/')}/{_keySettings.AddHotelToCartXMLOut.TrimStart('/')}";
+                            finalUrl = $"{_keySettings.EndPointXMLOut.TrimEnd('/')}/{_keySettings.BookXMLOut.TrimStart('/')}";
 
                         }
                         else if (requestName == "bookingdetail")
@@ -1471,8 +1472,8 @@ namespace XConnect.Supplier.AgodaNew
                         Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
 
                         Request.Headers.Authorization =
-                            //new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _keySettings.agoda_token);
-                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZ2VudElkIjoxOCwiYWdlbnRDb2RlIjoiUkEtMDAzIiwidXNlck5hbWUiOiJBZ29kYSIsImVtYWlsIjoia2luamFsLmdAdGVjaG5vaGVhdmVuLm5ldCIsInBob25lTm8iOiI3ODk0MTg4ODIwIiwidXNlcklkIjoxOCwic3ViVXNlcklkIjowLCJ1c2VyVHlwZUlkIjoxLCJ1c2VyVHlwZSI6IkFnZW50IiwidXNlckNvZGUiOiJBZ2VudCIsInBheW1lbnRUeXBlIjowLCJwYXltZW50VHlwZVZhbHVlIjoiUG9zdFBhaWQiLCJkaXNwbGF5Q3VycmVuY3lJZCI6NSwiY3JlZGl0bGltaXRDdXJyZW5jeUlkIjo1LCJjcmVkaXRsaW1pdEN1cnJlbmN5Q29kZSI6IlVTRCIsInJhdGVDYXRlZ29yeUlkIjoxLCJ0ZW5hbnRJZCI6IjMwMzcxMDg0LTcyNTgtRkNCNy0xMERGLTNBMUZENUFCQTIyMSIsImlzRnJvbUFwaSI6dHJ1ZSwic2Vzc2lvbklkIjoiYmI3NjhmMWUtNzRmOC00ZmEwLTk4NGItZWY2OGJkZTlhYjc4IiwiYXNzaXN0ZWRBZ2VudElkIjowLCJzZXJ2aWNlVHlwZSI6WyJIb3RlbCJdLCJyZXdhcmRQb2ludHMiOltdLCJwZXJtaXNzaW9uVHlwZSI6WyJGdWxsIEFjY2VzcyBQZXJtaXNzaW9uIiwiQ2FuIFZvdWNoZXIiLCJBbGxvdyBCb29raW5nIiwiRHVlIERhdGUgUmVtaW5kZXIiLCJEdWUgRGF0ZSBWb3VjaGVyIl0sImlzcyI6IlJBLTAwM18zMDM3MTA4NC03MjU4LUZDQjctMTBERi0zQTFGRDVBQkEyMjEiLCJpYXQiOjE3NzgzMzA3MTksImV4cCI6MTgwOTg2NjcxOX0.-S6xuOXONhJ8c2yi38nqwNARoen3LU2fSJFPLpRYI40");
+                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _keySettings.agoda_token);
+                        //new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZ2VudElkIjoxOCwiYWdlbnRDb2RlIjoiUkEtMDAzIiwidXNlck5hbWUiOiJBZ29kYSIsImVtYWlsIjoia2luamFsLmdAdGVjaG5vaGVhdmVuLm5ldCIsInBob25lTm8iOiI3ODk0MTg4ODIwIiwidXNlcklkIjoxOCwic3ViVXNlcklkIjowLCJ1c2VyVHlwZUlkIjoxLCJ1c2VyVHlwZSI6IkFnZW50IiwidXNlckNvZGUiOiJBZ2VudCIsInBheW1lbnRUeXBlIjowLCJwYXltZW50VHlwZVZhbHVlIjoiUG9zdFBhaWQiLCJkaXNwbGF5Q3VycmVuY3lJZCI6NSwiY3JlZGl0bGltaXRDdXJyZW5jeUlkIjo1LCJjcmVkaXRsaW1pdEN1cnJlbmN5Q29kZSI6IlVTRCIsInJhdGVDYXRlZ29yeUlkIjoxLCJ0ZW5hbnRJZCI6IjMwMzcxMDg0LTcyNTgtRkNCNy0xMERGLTNBMUZENUFCQTIyMSIsImlzRnJvbUFwaSI6dHJ1ZSwic2Vzc2lvbklkIjoiYmI3NjhmMWUtNzRmOC00ZmEwLTk4NGItZWY2OGJkZTlhYjc4IiwiYXNzaXN0ZWRBZ2VudElkIjowLCJzZXJ2aWNlVHlwZSI6WyJIb3RlbCJdLCJyZXdhcmRQb2ludHMiOltdLCJwZXJtaXNzaW9uVHlwZSI6WyJGdWxsIEFjY2VzcyBQZXJtaXNzaW9uIiwiQ2FuIFZvdWNoZXIiLCJBbGxvdyBCb29raW5nIiwiRHVlIERhdGUgUmVtaW5kZXIiLCJEdWUgRGF0ZSBWb3VjaGVyIl0sImlzcyI6IlJBLTAwM18zMDM3MTA4NC03MjU4LUZDQjctMTBERi0zQTFGRDVBQkEyMjEiLCJpYXQiOjE3NzgzMzA3MTksImV4cCI6MTgwOTg2NjcxOX0.-S6xuOXONhJ8c2yi38nqwNARoen3LU2fSJFPLpRYI40");
 
                         // Custom Header
                         Request.Headers.Add("X-Custom-Host", "13");

@@ -69016,8 +69016,8 @@ new SqlParameter("@AgentId", AgentId),
                         Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
 
                         Request.Headers.Authorization =
-                            //new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _keySettings.agoda_token);
-                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZ2VudElkIjoxOCwiYWdlbnRDb2RlIjoiUkEtMDAzIiwidXNlck5hbWUiOiJBZ29kYSIsImVtYWlsIjoia2luamFsLmdAdGVjaG5vaGVhdmVuLm5ldCIsInBob25lTm8iOiI3ODk0MTg4ODIwIiwidXNlcklkIjoxOCwic3ViVXNlcklkIjowLCJ1c2VyVHlwZUlkIjoxLCJ1c2VyVHlwZSI6IkFnZW50IiwidXNlckNvZGUiOiJBZ2VudCIsInBheW1lbnRUeXBlIjowLCJwYXltZW50VHlwZVZhbHVlIjoiUG9zdFBhaWQiLCJkaXNwbGF5Q3VycmVuY3lJZCI6NSwiY3JlZGl0bGltaXRDdXJyZW5jeUlkIjo1LCJjcmVkaXRsaW1pdEN1cnJlbmN5Q29kZSI6IlVTRCIsInJhdGVDYXRlZ29yeUlkIjoxLCJ0ZW5hbnRJZCI6IjMwMzcxMDg0LTcyNTgtRkNCNy0xMERGLTNBMUZENUFCQTIyMSIsImlzRnJvbUFwaSI6dHJ1ZSwic2Vzc2lvbklkIjoiYmI3NjhmMWUtNzRmOC00ZmEwLTk4NGItZWY2OGJkZTlhYjc4IiwiYXNzaXN0ZWRBZ2VudElkIjowLCJzZXJ2aWNlVHlwZSI6WyJIb3RlbCJdLCJyZXdhcmRQb2ludHMiOltdLCJwZXJtaXNzaW9uVHlwZSI6WyJGdWxsIEFjY2VzcyBQZXJtaXNzaW9uIiwiQ2FuIFZvdWNoZXIiLCJBbGxvdyBCb29raW5nIiwiRHVlIERhdGUgUmVtaW5kZXIiLCJEdWUgRGF0ZSBWb3VjaGVyIl0sImlzcyI6IlJBLTAwM18zMDM3MTA4NC03MjU4LUZDQjctMTBERi0zQTFGRDVBQkEyMjEiLCJpYXQiOjE3NzgzMzA3MTksImV4cCI6MTgwOTg2NjcxOX0.-S6xuOXONhJ8c2yi38nqwNARoen3LU2fSJFPLpRYI40");
+                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _keySettings.agoda_token);
+                        //new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZ2VudElkIjoxOCwiYWdlbnRDb2RlIjoiUkEtMDAzIiwidXNlck5hbWUiOiJBZ29kYSIsImVtYWlsIjoia2luamFsLmdAdGVjaG5vaGVhdmVuLm5ldCIsInBob25lTm8iOiI3ODk0MTg4ODIwIiwidXNlcklkIjoxOCwic3ViVXNlcklkIjowLCJ1c2VyVHlwZUlkIjoxLCJ1c2VyVHlwZSI6IkFnZW50IiwidXNlckNvZGUiOiJBZ2VudCIsInBheW1lbnRUeXBlIjowLCJwYXltZW50VHlwZVZhbHVlIjoiUG9zdFBhaWQiLCJkaXNwbGF5Q3VycmVuY3lJZCI6NSwiY3JlZGl0bGltaXRDdXJyZW5jeUlkIjo1LCJjcmVkaXRsaW1pdEN1cnJlbmN5Q29kZSI6IlVTRCIsInJhdGVDYXRlZ29yeUlkIjoxLCJ0ZW5hbnRJZCI6IjMwMzcxMDg0LTcyNTgtRkNCNy0xMERGLTNBMUZENUFCQTIyMSIsImlzRnJvbUFwaSI6dHJ1ZSwic2Vzc2lvbklkIjoiYmI3NjhmMWUtNzRmOC00ZmEwLTk4NGItZWY2OGJkZTlhYjc4IiwiYXNzaXN0ZWRBZ2VudElkIjowLCJzZXJ2aWNlVHlwZSI6WyJIb3RlbCJdLCJyZXdhcmRQb2ludHMiOltdLCJwZXJtaXNzaW9uVHlwZSI6WyJGdWxsIEFjY2VzcyBQZXJtaXNzaW9uIiwiQ2FuIFZvdWNoZXIiLCJBbGxvdyBCb29raW5nIiwiRHVlIERhdGUgUmVtaW5kZXIiLCJEdWUgRGF0ZSBWb3VjaGVyIl0sImlzcyI6IlJBLTAwM18zMDM3MTA4NC03MjU4LUZDQjctMTBERi0zQTFGRDVBQkEyMjEiLCJpYXQiOjE3NzgzMzA3MTksImV4cCI6MTgwOTg2NjcxOX0.-S6xuOXONhJ8c2yi38nqwNARoen3LU2fSJFPLpRYI40");
 
                         Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -69593,8 +69593,8 @@ new SqlParameter("@AgentId", AgentId),
                     // HotelMainarr mainarra = new HotelMainarr();
                     Hotelarraylist finallist = new Hotelarraylist();
                     finallist.code = Convert.ToString(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelId);
-                    //finallist.name = Convert.ToString(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelName); // needtochange
-                    finallist.name = "Grand Hyatt Dubai";
+                    finallist.name = Convert.ToString(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelName); // needtochange
+                    //finallist.name = "Grand Hyatt Dubai";
 
                     string gitaid = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelCode;
                     //for (int hotelSeq = 0; hotelSeq < finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption.Count; hotelSeq++)//each hotels
@@ -69923,6 +69923,8 @@ new SqlParameter("@AgentId", AgentId),
             try
             {
                 int cityId = Convert.ToInt32(DS_HotelDetails.Tables[0].Rows[0]["CityId"]);
+                string agodanationality = Convert.ToString(DS_HotelDetails.Tables[0].Rows[0]["nationality"]);
+
                 AgodareqXMLOUT.AvailabilityRequest availabilityRequest = new AgodareqXMLOUT.AvailabilityRequest();
 
                 //if (SearchPara.CityID != 0) //needtochange
@@ -69943,7 +69945,7 @@ new SqlParameter("@AgentId", AgentId),
                     request.CheckOutDate = COdate.ToString("MM-dd-yyyy");
                     request.NoofNights = SearchPara.NoofNights;
                     //request.Nationality = SearchPara.Nationality; //needtochange
-                    request.Nationality = "india";
+                    request.Nationality = agodanationality;
 
                     availabilityRequest.Request = request;
                     availabilityRequest.IsMobile = 1;
