@@ -69024,6 +69024,11 @@ new SqlParameter("@AgentId", AgentId),
                         // ❌ REMOVE manual gzip header
                         // Request.Headers.Add("Accept-Encoding", "gzip");
 
+                        // Custom Header
+                        Request.Headers.Add("X-Custom-Host", "13");
+                        Request.Headers.Add("X-Time-Zone", "abc");
+                        Request.Headers.Add("X-Accept-Language", "abc");
+
                         using (var responseMessage = await client.SendAsync(Request))
                         {
                             HttpStatusCode = (int)responseMessage.StatusCode;
