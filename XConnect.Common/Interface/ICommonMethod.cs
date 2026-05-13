@@ -333,9 +333,11 @@ namespace XConnect.CommonUtilities.Interface
         #region agoda client
         Task XMLRequestResponseTrack_agoda(string XmlRequest, string XmlResponse, string Provider, string TypeRequest, string reqId = "");
         string getMappedRoom_rlmASAL(string supplierRoomName, int hotelId, IMongoCollection<BsonDocument> collection, ref string roomNo);
-       
+
 
         #endregion
+
+        IMongoCollection<BsonDocument> GetRoomMappingCollection(string collectionName);
 
     }
 

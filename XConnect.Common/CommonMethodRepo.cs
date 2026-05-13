@@ -6959,10 +6959,45 @@ namespace XConnect.CommonUtilities
                                             Time = DateTime.Now
                                         });
                                     }
+                                    //old code 
+                                    //string refundability = "non-refundable";
+                                    //List<_FinalPolicy> cancellationPolicies = new List<_FinalPolicy>();
+
+                                    //if (withcancellation && currentRoom.CancellationPolicy != null)
+                                    //{
+                                    //    foreach (var policy in currentRoom.CancellationPolicy)
+                                    //    {
+                                    //        var cancellationPolicy = new _FinalPolicy
+                                    //        {
+                                    //            FromDate = Convert.ToDateTime(policy.FromDate).ToString("MM-dd-yyyy"),
+                                    //            ToDate = Convert.ToDateTime(policy.ToDate).ToString("MM-dd-yyyy"),
+                                    //            CancellationPrice = Convert.ToDecimal(policy.CancellationPrice)
+                                    //        };
+                                    //        cancellationPolicies.Add(cancellationPolicy);
+
+                                    //        if (DateTime.TryParse(policy.FromDate, out DateTime fromDate) &&
+                                    //            fromDate == DateTime.Today &&
+                                    //            policy.CancellationPrice == 0.0m)
+                                    //        {
+                                    //            refundability = "refundable";
+                                    //        }
+                                    //    }
+                                    //}
+
+                                    //end
 
                                     string refundability = "non-refundable";
                                     List<_FinalPolicy> cancellationPolicies = new List<_FinalPolicy>();
 
+                                    // ✅ Always compute refundability — independent of withcancellation flag
+                                    if (currentRoom.CancellationPolicy != null)
+                                    {
+                                        refundability = currentRoom.CancellationPolicy
+                                            .Any(p => Convert.ToDecimal(p.CancellationPrice) == 0)
+                                            ? "refundable" : "non-refundable";
+                                    }
+
+                                    // ✅ Populate cancellation policies only when withcancellation=true
                                     if (withcancellation && currentRoom.CancellationPolicy != null)
                                     {
                                         foreach (var policy in currentRoom.CancellationPolicy)
@@ -6974,15 +7009,10 @@ namespace XConnect.CommonUtilities
                                                 CancellationPrice = Convert.ToDecimal(policy.CancellationPrice)
                                             };
                                             cancellationPolicies.Add(cancellationPolicy);
-
-                                            if (DateTime.TryParse(policy.FromDate, out DateTime fromDate) &&
-                                                fromDate == DateTime.Today &&
-                                                policy.CancellationPrice == 0.0m)
-                                            {
-                                                refundability = "refundable";
-                                            }
                                         }
                                     }
+
+
                                     string roomKey = "";
                                     if (SearchPara.Rooms.Count == 1)
                                     {
@@ -7272,10 +7302,17 @@ namespace XConnect.CommonUtilities
 
                 collection = GetRoomMappingCollection(collectionName); //Add on 10FEB2026
 
+                //if (SearchPara != null)
+                //{
+                //    timerx.Stop();
+                //    SearchPara.SupplierTime += ",|RoomMappingSP_UsingMongo" + "|Time :" + timerx.Elapsed.ToString();
+                //}
+
                 if (SearchPara != null)
                 {
                     timerx.Stop();
-                    SearchPara.SupplierTime += ",|RoomMappingSP_UsingMongo" + "|Time :" + timerx.Elapsed.ToString();
+                    SearchPara.SupplierTime += ",|RoomMappingCollection_Init|Time:" + timerx.Elapsed.ToString();
+                    timerx.Restart(); // ✅ Restart for next measurement
                 }
 
                 if (SearchPara != null)
@@ -7373,16 +7410,6 @@ namespace XConnect.CommonUtilities
 
                                     processedRoomTypeName = getMappedRoom_rlmASAL(currentRoom.RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(hotel.OwnsystemHotelId), collection, ref S_RoomNo); // ADD ON 6FEB2026
 
-
-                                    //if (string.IsNullOrEmpty(S_RoomNo)) //Add On 02may26
-                                    //{
-                                    //    missingRoomList.Add(new RoomInfo
-                                    //    {
-                                    //        ProcessedRoomTypeName = processedRoomTypeName,
-                                    //        OwnsystemHotelId = Convert.ToInt32(hotel.OwnsystemHotelId),
-                                    //        Time = DateTime.Now
-                                    //    });
-                                    //}
 
                                     if (string.IsNullOrEmpty(S_RoomNo))
                                     {
@@ -7810,8 +7837,9 @@ namespace XConnect.CommonUtilities
                                         }
                                     }
                                     string roomKey = "";
-                                    if (SearchPara.Rooms.Count == 1)
-                                    {
+                                    //if (SearchPara.Rooms.Count == 1)
+                                        if (SearchPara?.Rooms?.Count == 1)
+                                        {
                                         if (_supplierRes.SwapMealName(AgentCode.ToLower()))//Added on 17-DEC-2024
                                                                                            // Generate roomKey based on RoomNo, RoomTypeName, MappedMealName, and Refundability
 
