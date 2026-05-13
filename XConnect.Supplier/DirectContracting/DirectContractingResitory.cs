@@ -25,6 +25,7 @@ using Options = XConnect.Models.Options;
 
 
 
+
 namespace XConnect.Supplier.DirectContracting
 {
     public class DirectContractingRepository : IDirectcontracting
@@ -780,7 +781,7 @@ namespace XConnect.Supplier.DirectContracting
 
         }
 
-        public async Task<PriceCheckCMDto> GetDCEPriceCheckREQRES(DataSet dsCartDetails, DataRow[] letsflyDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData)
+        public async Task<PriceCheckCMDto> GetDCEPriceCheckREQRES(DataSet dsCartDetails, DataRow[] letsflyDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData, string Searchkey = "")
         {
             PriceCheckCMDto priceCheckDto = new PriceCheckCMDto();
             string time = "";
@@ -791,7 +792,7 @@ namespace XConnect.Supplier.DirectContracting
 
             int UserCartDetailId = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
             string HotelId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["XMLHotelId"]);
-            string RoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]);
+            string RoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]);
             string[] roomTypeIds = RoomTypeId.Split(new string[] { "##" }, StringSplitOptions.RemoveEmptyEntries);
             string Nationality = roomTypeIds[5];
             string SupplierName = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]).ToLower();
@@ -799,11 +800,11 @@ namespace XConnect.Supplier.DirectContracting
             try
             {
                 prebookRequest = DCEPriceCheckRequest(RoomTypeId, j, HotelId, dsCartDetails, Nationality);
-                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, "", "Before Hit Price Check Response", SupplierName, "Price Check Request Confirm", "-", "withinearth");
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, "", "Before Hit Price Check Response", SupplierName, "Price Check Request Confirm", "-", "withinearth", Searchkey);
 
                 if (prebookRequest != "")
                 {
-                    string Url = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + LetsflyInfo.LetsFly_PrebookURL;
+                    string Url = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + _supplierConfig.DirectContract.HotelSearchURL;
                     
                     System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                     timerroomprocess.Start();
@@ -815,7 +816,7 @@ namespace XConnect.Supplier.DirectContracting
                     timerroomprocess.Stop();
                     time = timerroomprocess.Elapsed.ToString();
 
-                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, ResponseData + Error, "After Hit Price Check Response", SupplierName, "Price Check Response Confirm", "-", "withinearth");
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, ResponseData + Error, "After Hit Price Check Response", SupplierName, "Price Check Response Confirm", "-", "withinearth", Searchkey);
 
                     if (string.IsNullOrEmpty(ResponseData) || ResponseData.Contains("Error"))
                     {
@@ -999,6 +1000,7 @@ namespace XConnect.Supplier.DirectContracting
         {
             try
             {
+
                 string CheckIn = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["CheckInDate"]);//"20180327"
                 CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
                 string CheckOut = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["CheckOutDate"]);
@@ -1007,73 +1009,73 @@ namespace XConnect.Supplier.DirectContracting
                 int HotelId = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["XMLHotelId"]);
                 //int RoomNo = Searchpara.Rooms.Count;
                 //int NoofNights = Searchpara.NoofNights;
-                //StringBuilder SBreq = new StringBuilder();
-                //SBreq.Append("{");
-                //SBreq.Append("\"countryId\":null,");
-                //SBreq.Append("\"cityId\":null,");
-                //SBreq.Append("\"noOfNights\":" + NoofNights + ",");
-                //SBreq.Append("\"nationality\":\"" + Nationality + "\",");
-                //SBreq.Append("\"checkInDate\":\"" + CheckInDate + "\",");
-                //SBreq.Append("\"checkOutDate\":\"" + CheckOutDate + "\",");
-                //SBreq.Append("\"bookingDate\":\"" + DateTime.Today.ToString("yyyy-MM-dd") + "\",");
-                //SBreq.Append("\"Rooms\":[");
+                StringBuilder SBreq = new StringBuilder();
+                SBreq.Append("{");
+                SBreq.Append("\"countryId\":null,");
+                SBreq.Append("\"cityId\":null,");
+                SBreq.Append("\"noOfNights\":" + NoofNight + ",");
+                SBreq.Append("\"nationality\":\"" + Nationlity + "\",");
+                SBreq.Append("\"checkInDate\":\"" + CheckIn + "\",");
+                SBreq.Append("\"checkOutDate\":\"" + CheckOut + "\",");
+                SBreq.Append("\"bookingDate\":\"" + DateTime.Today.ToString("yyyy-MM-dd") + "\",");
+                SBreq.Append("\"Rooms\":[");
 
-                //for (int i = 0; i < RoomNo; i++)
-                //{
-                //    SBreq.Append("{");
-                //    SBreq.Append("\"roomNo\":" + (i + 1) + ",");
-                //    SBreq.Append("\"noOfAdults\":" + Searchpara.Rooms[i].NoofAdults + ",");
-                //    SBreq.Append("\"noOfChild\":" + Searchpara.Rooms[i].NoofChild + ",");
+                for (int i = 0; i < dsCartDetails.Tables[1].DefaultView.Count; i++)
+                {
+                    SBreq.Append("{");
+                    SBreq.Append("\"roomNo\":" + (i + 1) + ",");
+                    SBreq.Append("\"noOfAdults\":" + dsCartDetails.Tables[1].Rows[i]["NoOfAdults"] + ",");
+                    SBreq.Append("\"noOfChild\":" + dsCartDetails.Tables[1].Rows[i]["NoofChild"] + ",");
 
-                //    // Child Ages Array
-                //    SBreq.Append("\"childAges\":[");
+                    // Child Ages Array
+                    SBreq.Append("\"childAges\":[");
 
-                //    List<int> childAges = new List<int>();
+                    List<int> childAges = new List<int>();
 
-                //    if (Searchpara.Rooms[i].Child1Age > 0)
-                //        childAges.Add(Searchpara.Rooms[i].Child1Age);
+                    if (Convert.ToInt32(dsCartDetails.Tables[1].Rows[i]["Child1Age"]) > 0)
+                        childAges.Add(Convert.ToInt32(dsCartDetails.Tables[1].Rows[i]["Child1Age"]));
 
-                //    if (Searchpara.Rooms[i].Child2Age > 0)
-                //        childAges.Add(Searchpara.Rooms[i].Child2Age);
+                    if (Convert.ToInt32(dsCartDetails.Tables[1].Rows[i]["Child2Age"]) > 0)
+                        childAges.Add(Convert.ToInt32(dsCartDetails.Tables[1].Rows[i]["Child2Age"]));
 
-                //    for (int c = 0; c < childAges.Count; c++)
-                //    {
-                //        SBreq.Append(childAges[c]);
-                //        if (c < childAges.Count - 1)
-                //            SBreq.Append(",");
-                //    }
+                    for (int c = 0; c < childAges.Count; c++)
+                    {
+                        SBreq.Append(childAges[c]);
+                        if (c < childAges.Count - 1)
+                            SBreq.Append(",");
+                    }
 
-                //    SBreq.Append("]");
-                //    SBreq.Append("}");
+                    SBreq.Append("]");
+                    SBreq.Append("}");
 
-                //    if (i < RoomNo - 1)
-                //        SBreq.Append(",");
-                //}
+                    if (i < dsCartDetails.Tables[1].DefaultView.Count - 1)
+                        SBreq.Append(",");
+                }
 
-                //SBreq.Append("],");
-                //SBreq.Append("\"Filters\":{");
-                //SBreq.Append("\"IsOnlyAvailable\":\"" + true + "\",");
-                //SBreq.Append("\"StarRating\":{\"Min\":" + 1 + ",\"Max\":" + 5 + "},");
-                //SBreq.Append("\"hotelIds\":[");
-                //if (!string.IsNullOrEmpty(HotelIds))
-                //{
-                //    string[] ids = HotelIds.Split(',');
-                //    for (int h = 0; h < ids.Length; h++)
-                //    {
-                //        SBreq.Append(ids[h]);
-                //        if (h < ids.Length - 1)
-                //            SBreq.Append(",");
-                //    }
-                //}
-                //SBreq.Append("]");
-                //SBreq.Append("},");
-                //SBreq.Append("\"AdvancedOptions\":{");
-                //SBreq.Append("\"Currency\":\"" + Currency + "\",");
-                //SBreq.Append("\"CustomerIpAddress\":\"" + CustomerIpAddress + "\",");
-                //SBreq.Append("\"promotionCode\":null");
-                //SBreq.Append("}");
-                //SBreq.Append("}");
-                //return SBreq.ToString();
+                SBreq.Append("],");
+                SBreq.Append("\"Filters\":{");
+                SBreq.Append("\"IsOnlyAvailable\":\"" + true + "\",");
+                SBreq.Append("\"StarRating\":{\"Min\":" + 1 + ",\"Max\":" + 5 + "},");
+                SBreq.Append("\"hotelIds\":[");
+                if (!string.IsNullOrEmpty(HotelIds))
+                {
+                    string[] ids = HotelIds.Split(',');
+                    for (int h = 0; h < ids.Length; h++)
+                    {
+                        SBreq.Append(ids[h]);
+                        if (h < ids.Length - 1)
+                            SBreq.Append(",");
+                    }
+                }
+                SBreq.Append("]");
+                SBreq.Append("},");
+                SBreq.Append("\"AdvancedOptions\":{");
+                SBreq.Append("\"Currency\":\"" + Convert.ToString(dsCartDetails.Tables[0].Rows[0]["SupplierCurrency"] + "\","));
+                SBreq.Append("\"CustomerIpAddress\":\"" + "::1" + "\",");//need change
+                SBreq.Append("\"promotionCode\":null");
+                SBreq.Append("}");
+                SBreq.Append("}");
+                return SBreq.ToString();
                 string abc = "";
                 return abc;
             }

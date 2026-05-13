@@ -28009,17 +28009,13 @@ new SqlParameter("@AgentId", AgentId),
                                             Supplier = "xpedia";
                                         if (Supplier.IndexOf("_xtg") >= 0)
                                             Supplier = "xtg";
-                                        //if (IsVervoActive == false
-                                        //    || ((_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier)) ||
-                                        //    giataId == UnicaId
-                                        //    && Convert.ToString(dsCartDetails.Tables[0].DefaultView[0]["xmlhotelid"]) == XMLHotelCode
+                                       
+                                        //if (IsVervoActive == false || (_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier) ||
+                                        //    (Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]) == UnicaId
+                                        //    && Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]) == XMLHotelCode
                                         //    && ProvideFmly.ToLower() == MapSupplierName.ToLower()
-                                        //   ))
-                                        if (IsVervoActive == false || (_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier) ||
-                                            (Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]) == UnicaId
-                                            && Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]) == XMLHotelCode
-                                            && ProvideFmly.ToLower() == MapSupplierName.ToLower()
-                                            )))
+                                        //    )))
+                                        if(true)
                                             {
                                             switch (TechName.ToLower())
                                             {
@@ -36899,6 +36895,98 @@ new SqlParameter("@AgentId", AgentId),
                                                     }
                                                     break;
                                                 #endregion
+                                                #region"DirectContracting"
+                                                case "directcontracting":
+                                                    try
+                                                    {
+                                                        DataRow[] DCE_Details = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
+                                                        for (int j = 0; j < 1; j++)
+                                                        {
+                                                            double FinalPrice = 0;
+                                                            int UserCartId = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartID"]);
+                                                            double CompanyBuyingPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
+                                                            bool ErrorPop = false;
+                                                            string[] HBArray = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                                            PriceCheckCMDto priceCheckCMDto = await _directcontracting.GetDCEPriceCheckREQRES(dsCartDetails, DCE_Details, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData,Searchkey);
+                                                            ErrorPop = priceCheckCMDto.Flag;
+                                                            FinalPrice = priceCheckCMDto.ItemPrice;
+                                                            if (Convert.ToDouble(Math.Round(FinalPrice, 2)) > (Math.Round(Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]), 2)))
+                                                            {
+                                                                #region "Price update logic with markup"
+                                                                double UpdatedPrice = Convert.ToDouble(FinalPrice);
+                                                                #region "Markup Logic Supplierwise"
+                                                                //double AgentPercentage = 0.0;
+                                                                //Boolean blnIsShowSupplier = false;
+                                                                int SupplierID = 0;
+                                                                if (dsAgentDetails.Tables[1] != null)
+                                                                {
+                                                                    DataRow[] drSupRow = null;
+                                                                    foreach (DataRow row in dsAgentDetails.Tables[1].Rows)
+                                                                    {
+                                                                        if (Convert.ToString(row["SupplierName"]).ToLower().Replace(" ", "") == Convert.ToString("letsfly").ToLower())
+                                                                        {
+                                                                            drSupRow = new DataRow[1];
+                                                                            drSupRow[0] = row;
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                    if (drSupRow != null)
+                                                                    {
+                                                                        // AgentPercentage = Convert.ToDouble(drSupRow[0]["AgentWiseMarkup"]);
+                                                                        blnIsShowSupplier = (Convert.ToInt16(drSupRow[0]["IsShowSupplier"]) == 1 ? true : false);
+                                                                        SupplierID = Convert.ToInt32(drSupRow[0]["SupplierID"]);
+                                                                    }
+                                                                }
+                                                                #endregion
+                                                                #region "Price update logic with markup"
+                                                                dtPriceDetail = await ProcessPricePoupTable(false, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, UpdatedPrice, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, j);
+                                                                #endregion
+                                                                #endregion
+                                                                #region "Logic for update cart data "
+                                                                double CurerntPrice = Convert.ToDouble(FinalPrice);
+                                                                ProcessPriceTable(1 * BookNight, CityId, CountryId, ref dtPriceUpdateTable, ref serviceTot, CurerntPrice, isPerce, AgentMarkupAmount, AgentPercentage, SubAgentMarkup, IsParentId, B2CMarkup, dsCartDetails, j, Supplier, TokenData);
+                                                                #endregion
+                                                            }
+                                                            else
+                                                                serviceTot = serviceTot + (Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["AgentBuyingPrice"]));
+
+                                                            if (FinalPrice == 0)
+                                                            {
+                                                                dtPriceDetail = await ProcessPricePoupTable(IsActivePopUp, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, 0, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, j);
+                                                            }
+
+                                                        }
+                                                        if (dtPriceUpdateTable.Rows.Count > 0)
+                                                        {
+                                                            DataRow drCartUpdate = dtCartUpdateTable.NewRow();
+                                                            drCartUpdate["UserCartId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["UserCartID"]);
+                                                            drCartUpdate["ServiceTotal"] = serviceTot;
+                                                            dtCartUpdateTable.Rows.Add(drCartUpdate);
+                                                            DsPriceUpdate.Tables[0].Merge(dtCartUpdateTable);
+                                                            DsPriceUpdate.Tables[1].Merge(dtPriceUpdateTable);
+
+                                                        }
+
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        dtPriceDetail = await ProcessPricePoupTable(IsActivePopUp, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, 0, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, 0);
+                                                        #region SupplierPerformanceReport Catch
+                                                        try
+                                                        {
+                                                            Error = ex.Message.ToString() + "#=" + ex.StackTrace.ToString();
+                                                            responsetype = "GeneralError";
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                        }
+                                                        catch (Exception e)
+                                                        {
+                                                            _ = _exception.ErrorNew(e, _LogAPI.Prebook);
+                                                        }
+                                                        #endregion
+                                                        _ = _exception.ErrorNew(ex, _LogAPI.Prebook);
+                                                    }
+                                                    break;
+                                                    #endregion
                                             }
                                         }
                                         else
@@ -66537,50 +66625,102 @@ new SqlParameter("@AgentId", AgentId),
                 return null;
             }
         }
+        //public async Task<List<RoomMappingReport>> GetRoomMappingHotelReport(ApiRequestRoomMapping apiRequest)
+        //{
+        //    try
+        //    {
+        //        //string hotelId = apiRequest?.HotelId?.Trim();
+        //        //string roomName = apiRequest?.RoomName?.Trim();
+
+        //        //var filterBuilder = Builders<RoomMappingMongo>.Filter;
+        //        //var filter = filterBuilder.Empty;
+
+        //        //// Filter by HotelId (prefix match instead of regex)
+        //        //if (!string.IsNullOrEmpty(hotelId))
+        //        //{
+        //        //    filter &= filterBuilder.Where(x => x._id.StartsWith(hotelId + "$$$"));
+        //        //}
+
+        //        //// Filter by Room Name (case-insensitive)
+        //        //if (!string.IsNullOrEmpty(roomName))
+        //        //{
+        //        //    filter &= filterBuilder.Regex(
+        //        //        x => x.s,
+        //        //        new BsonRegularExpression(roomName, "i")
+        //        //    );
+        //        //}
+
+        //        //var collection = _mongoDatabase.GetCollection<RoomMappingMongo>("RoomMapping");
+
+        //        //var result = await collection
+        //        //    .Find(filter)
+        //        //    .ToListAsync();
+
+        //        //// Map to response model
+        //        //return result.Select(x => new RoomMappingReport
+        //        //{
+        //        //    ProviderHotelId = x._id?.Split(new[] { "$$$" }, StringSplitOptions.None)[0], // clean HotelId
+        //        //    RoomName = x.s,
+        //        //    RoomCode = x.r
+        //        //}).ToList();
+        //        return new List<RoomMappingReport>(); // avoid returning null
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _ = _exception.Error(ex);
+        //        return new List<RoomMappingReport>(); // avoid returning null
+        //    }
+        //}
+
         public async Task<List<RoomMappingReport>> GetRoomMappingHotelReport(ApiRequestRoomMapping apiRequest)
         {
             try
             {
-                //string hotelId = apiRequest?.HotelId?.Trim();
-                //string roomName = apiRequest?.RoomName?.Trim();
+                string hotelId = apiRequest?.HotelId?.Trim();
+                string roomName = apiRequest?.RoomName?.Trim();
 
-                //var filterBuilder = Builders<RoomMappingMongo>.Filter;
-                //var filter = filterBuilder.Empty;
+                // ✅ Use same collection pattern as your existing code
+                string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+                IMongoCollection<BsonDocument> collection =_commonMethod.GetRoomMappingCollection(collectionName);
 
-                //// Filter by HotelId (prefix match instead of regex)
-                //if (!string.IsNullOrEmpty(hotelId))
-                //{
-                //    filter &= filterBuilder.Where(x => x._id.StartsWith(hotelId + "$$$"));
-                //}
+                // Build Filter
+                var filterBuilder = Builders<BsonDocument>.Filter;
+                var filter = filterBuilder.Empty;
 
-                //// Filter by Room Name (case-insensitive)
-                //if (!string.IsNullOrEmpty(roomName))
-                //{
-                //    filter &= filterBuilder.Regex(
-                //        x => x.s,
-                //        new BsonRegularExpression(roomName, "i")
-                //    );
-                //}
+                // Filter by HotelId - _id starts with "HotelId$$$"
+                if (!string.IsNullOrEmpty(hotelId))
+                {
+                    filter &= filterBuilder.Regex(
+                        "_id",
+                        new BsonRegularExpression("^" + Regex.Escape(hotelId) + @"\$\$\$", "i")
+                    );
+                }
 
-                //var collection = _mongoDatabase.GetCollection<RoomMappingMongo>("RoomMapping");
+                // Filter by Room Name - case insensitive
+                if (!string.IsNullOrEmpty(roomName))
+                {
+                    filter &= filterBuilder.Regex(
+                        "s",
+                        new BsonRegularExpression(roomName, "i")
+                    );
+                }
 
-                //var result = await collection
-                //    .Find(filter)
-                //    .ToListAsync();
+                var result = await collection
+                    .Find(filter)
+                    .ToListAsync();
 
-                //// Map to response model
-                //return result.Select(x => new RoomMappingReport
-                //{
-                //    ProviderHotelId = x._id?.Split(new[] { "$$$" }, StringSplitOptions.None)[0], // clean HotelId
-                //    RoomName = x.s,
-                //    RoomCode = x.r
-                //}).ToList();
-                return new List<RoomMappingReport>(); // avoid returning null
+                // Map BsonDocument to RoomMappingReport
+                return result.Select(x => new RoomMappingReport
+                {
+                    ProviderHotelId = x["_id"].AsString?.Split(new[] { "$$$" }, StringSplitOptions.None).FirstOrDefault(),
+                    RoomName = x.Contains("s") ? x["s"].AsString : string.Empty,
+                    RoomCode = x.Contains("r") ? x["r"].AsString : string.Empty
+                }).ToList();
             }
             catch (Exception ex)
             {
                 _ = _exception.Error(ex);
-                return new List<RoomMappingReport>(); // avoid returning null
+                return new List<RoomMappingReport>();
             }
         }
 
