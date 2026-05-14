@@ -5871,7 +5871,7 @@ namespace XConnect.API.Controllers
                         agodaError.remark = agodaBookingRS.remark;
                         agodaError.referenceId = agodaBookingRS.referenceId;
                         agodaError.bookingReferenceId = agodaBookingRS.bookingReferenceId;
-                        //return Request.CreateResponseCompressed_agodabooking(HttpStatusCode.OK, agodaError, "application/json", RQ, agodaError, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.DUPLICATION, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
+                        return await _hotelXML.CreateResponseCompressed_agodabooking(HttpContext, 200, agodaError, "application/json", RQ, agodaError, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.DUPLICATION, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
                     }
                     if (agodaBookingRS.status == "FAILED")
                     {
@@ -5881,18 +5881,20 @@ namespace XConnect.API.Controllers
                         agodaError.referenceId = agodaBookingRS.referenceId;
                         agodaError.bookingReferenceId = agodaBookingRS.bookingReferenceId;
                         //return Request.CreateResponseCompressed_agodabooking(HttpStatusCode.OK, bookingerrorcode, "application/json", RQ, bookingerrorcode, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
+                        return await _hotelXML.CreateResponseCompressed_agodabooking(HttpContext, 200, bookingerrorcode, "application/json", RQ, bookingerrorcode, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
+
                     }
                     if (agodaBookingRS.status == "BOOKING_FAILED")
                     {
                         bookingerrorcode.responseStatus = "BOOKING_FAILED";
                         bookingerrorcode.remark = agodaBookingRS.remark;
-                        //return Request.CreateResponseCompressed_agodabooking(HttpStatusCode.OK, bookingerrorcode, "application/json", RQ, bookingerrorcode, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
+                        return await _hotelXML.CreateResponseCompressed_agodabooking(HttpContext, 200, bookingerrorcode, "application/json", RQ, bookingerrorcode, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
                     }
                     if (agodaBookingRS == null || agodaBookingRS.status == null)
                     {
                         erroragoda = _hotelXML.GetAgodaErrorMsg("BOOKING_FAIL", "", "cannot create booking.");
                         //return Request.CreateResponseCompressed(HttpStatusCode.OK, erroragoda, "application/json", data, erroragoda, TokenData, "booking", true, timer.Elapsed.ToString(), "", "0");
-                        //return Request.CreateResponseCompressed_agodabooking(HttpStatusCode.OK, erroragoda, "application/json", RQ, erroragoda, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
+                        return await _hotelXML.CreateResponseCompressed_agodabooking(HttpContext, 200, erroragoda, "application/json", RQ, erroragoda, TokenData, "booking", true, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", agodaBookingRS.referenceId, agodaBookingRS.bookingReferenceId);
                     }
                     else
                     {
