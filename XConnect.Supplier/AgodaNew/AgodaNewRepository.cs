@@ -1479,6 +1479,7 @@ namespace XConnect.Supplier.AgodaNew
                         Request.Headers.Add("X-Custom-Host", "13");
                         Request.Headers.Add("X-Time-Zone", "abc");
                         Request.Headers.Add("X-Accept-Language", "abc");
+                        Request.Headers.Add("User-Agent", "PostmanRuntime/7.51.1");
 
                         //X - Custom - Host : 13
 
