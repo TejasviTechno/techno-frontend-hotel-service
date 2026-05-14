@@ -3810,7 +3810,9 @@ namespace XConnect.Supplier.IWTX
 
                 Random rnd = new Random();
                 int randomNumber = rnd.Next(1, 100);
-                string AgentReference = Convert.ToString(ReferenceNo + ":" +UserCartDetailId + ":" + randomNumber);
+                //string AgentReference = Convert.ToString(ReferenceNo + ":" +UserCartDetailId + ":" + randomNumber);
+                string AgentReference = Convert.ToString(UserCartDetailId + ":" + randomNumber); //140526
+
 
                 double Price = Convert.ToDouble(Price1);
 

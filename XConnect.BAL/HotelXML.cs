@@ -66688,47 +66688,99 @@ new SqlParameter("@AgentId", AgentId),
                 string hotelId = apiRequest?.HotelId?.Trim();
                 string roomName = apiRequest?.RoomName?.Trim();
 
-                // ✅ Use same collection pattern as your existing code
                 string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;
-                IMongoCollection<BsonDocument> collection =_commonMethod.GetRoomMappingCollection(collectionName);
 
-                // Build Filter
+                IMongoCollection<BsonDocument> collection =
+                    _commonMethod.GetRoomMappingCollection(collectionName);
+
                 var filterBuilder = Builders<BsonDocument>.Filter;
                 var filter = filterBuilder.Empty;
 
-                // Filter by HotelId - _id starts with "HotelId$$$"
-                if (!string.IsNullOrEmpty(hotelId))
+                // Filter by HotelId
+                if (!string.IsNullOrWhiteSpace(hotelId))
                 {
                     filter &= filterBuilder.Regex(
                         "_id",
-                        new BsonRegularExpression("^" + Regex.Escape(hotelId) + @"\$\$\$", "i")
+                        new BsonRegularExpression(
+                            "^" + Regex.Escape(hotelId) + @"\$\$\$",
+                            "i"
+                        )
                     );
                 }
 
-                // Filter by Room Name - case insensitive
-                if (!string.IsNullOrEmpty(roomName))
+                // Filter by Room Name
+                if (!string.IsNullOrWhiteSpace(roomName))
                 {
                     filter &= filterBuilder.Regex(
                         "s",
-                        new BsonRegularExpression(roomName, "i")
+                        new BsonRegularExpression(
+                            Regex.Escape(roomName),
+                            "i"
+                        )
                     );
                 }
 
+                // Only string _id
+                filter &= filterBuilder.Type("_id", BsonType.String);
+
+                // Projection (fetch only required fields)
+                var projection = Builders<BsonDocument>.Projection
+                    .Include("_id")
+                    .Include("s")
+                    .Include("r");
+
                 var result = await collection
                     .Find(filter)
+                    .Project(projection)
+                    .Limit(500) // prevent huge data load
                     .ToListAsync();
 
-                // Map BsonDocument to RoomMappingReport
                 return result.Select(x => new RoomMappingReport
                 {
-                    ProviderHotelId = x["_id"].AsString?.Split(new[] { "$$$" }, StringSplitOptions.None).FirstOrDefault(),
-                    RoomName = x.Contains("s") ? x["s"].AsString : string.Empty,
-                    RoomCode = x.Contains("r") ? x["r"].AsString : string.Empty
+                    RateuaraHotelId =
+                        x.Contains("_id") &&
+                        x["_id"].BsonType == BsonType.String
+                            ? x["_id"]
+                                .AsString
+                                .Split(new[] { "$$$" }, StringSplitOptions.None)
+                                .FirstOrDefault()
+                            : string.Empty,
+                    //                ProviderHotelId =
+                    //x.Contains("_id") &&
+                    //x["_id"].BsonType == BsonType.String
+                    //    ? x["_id"].AsString
+                    //    : string.Empty,
+
+                    RoomName =
+                        x.Contains("s") &&
+                        x["s"].BsonType == BsonType.String
+                            ? x["s"].AsString
+                            : string.Empty,
+
+                    RoomCode =
+                        x.Contains("r") &&
+                        x["r"].BsonType == BsonType.String
+                            ? x["r"].AsString
+                            : string.Empty
+
                 }).ToList();
+            }
+            catch (MongoConnectionException ex)
+            {
+                _ = _exception.Error(ex);
+
+                return new List<RoomMappingReport>();
+            }
+            catch (TimeoutException ex)
+            {
+                _ = _exception.Error(ex);
+
+                return new List<RoomMappingReport>();
             }
             catch (Exception ex)
             {
                 _ = _exception.Error(ex);
+
                 return new List<RoomMappingReport>();
             }
         }

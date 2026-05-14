@@ -5923,7 +5923,7 @@ namespace XConnect.API.Controllers
 
         #endregion
 
-        [Route("GetRoomMappingHotel")]
+        [Route("GetRoomMappingHotelReport")]
         [HttpPost]
         public async Task<IActionResult> GetRoomMappingHotel(CommonRequest data)
 
