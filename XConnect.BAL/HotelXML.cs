@@ -67191,16 +67191,18 @@ new SqlParameter("@AgentId", AgentId),
 
                     SqlParameter[] para3 = new SqlParameter[]
                     {
-                new SqlParameter("@Hotelid", Convert.ToInt32(SearchPara.Filters.HotelIDs))
+                //new SqlParameter("@Hotelid", Convert.ToInt32(SearchPara.Filters.HotelIDs)) cmt14052026
                     };
 
-                    DTCountryblock = await _dlConnection.GetDataSet("GetAgodaCountryblockdata", para3);
+                    DTCountryblock = await _dlConnection.GetDataSet("Agoda_HDC_chcek", para3);  
+                    //DTCountryblock = await _dlConnection.GetDataSet("GetAgodaCountryblockdata", para3);  cmt14052026
 
                     if (DTCountryblock.Tables[0].Rows.Count > 0)
                     {
+                        //var cacheOptions = new MemoryCacheEntryOptions()
+                        //    .SetAbsoluteExpiration(TimeSpan.FromHours(24));  cmt14052026
                         var cacheOptions = new MemoryCacheEntryOptions()
-                            .SetAbsoluteExpiration(TimeSpan.FromHours(24));
-
+    .SetAbsoluteExpiration(TimeSpan.FromMinutes(6));
                         _cache.Set(keydata2, DTCountryblock, cacheOptions);
                     }
                 }
@@ -69267,7 +69269,7 @@ new SqlParameter("@AgentId", AgentId),
             }
             catch (Exception ex)
             {
-                //Common.Error(ex);
+                _exception.Error(ex);
             }
             return error;
         }
