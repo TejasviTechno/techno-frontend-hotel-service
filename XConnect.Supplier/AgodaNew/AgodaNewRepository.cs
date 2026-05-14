@@ -280,6 +280,31 @@ namespace XConnect.Supplier.AgodaNew
                                                 {
 
                                                     string ChainCode_Agoda = Convert.ToString(DTChainCode.Tables[0].Rows[chaincode]["chaincode"]);// Convert.ToString(chaincode);
+
+                                                    #region countrycityrestrication
+
+                                                    int CountryId = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["CountryId"]);
+                                                    int CityId = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["CityId"]);
+                                                    int chainid = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["HotelChainId"]);
+
+                                                    DataRow[] drsChinn = DTCountryblock.Tables[0].Select($"chainid = {chainid} AND channalcode = '{ChainCode_Agoda}'");
+                                                    if (drsChinn.GetLength(0) > 0)
+                                                    {
+                                                        continue;
+                                                    }
+                                                    DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = 0");
+                                                    if (drCountry.GetLength(0) > 0)
+                                                    {
+                                                        continue;
+                                                    }
+                                                    DataRow[] drCity = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}'");
+                                                    if (drCity.GetLength(0) > 0)
+                                                    {
+                                                        continue;
+                                                    }
+
+                                                    #endregion
+
                                                     string[] getsupplier = HotelOptionIdRP.Split('|');
                                                     string Supplierid = getsupplier[2] == "" ? "12" : getsupplier[2];
 
