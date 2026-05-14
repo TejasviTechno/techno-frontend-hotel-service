@@ -68917,36 +68917,37 @@ new SqlParameter("@AgentId", AgentId),
                 }
 
                 // added on 02052026
-                try
-                {
-                    if (_keySettings.SupplierPerformanceReport == "1")//&& IsErrorCountHigh == 0)//IsErrorCountHigh added on 22-AUG-2024 for disable SuppPerfLog is Sp take time
-                    {
-                        System.Diagnostics.Stopwatch timerroom3 = new System.Diagnostics.Stopwatch();
-                        timerroom3.Start();
 
-                        // if (Convert.ToInt16(AgentId) == 4)
-                        {
-                            //string searchkey1 = AllTask.
+                //try
+                //{
+                //    if (_keySettings.SupplierPerformanceReport == "1")//&& IsErrorCountHigh == 0)//IsErrorCountHigh added on 22-AUG-2024 for disable SuppPerfLog is Sp take time
+                //    {
+                //        System.Diagnostics.Stopwatch timerroom3 = new System.Diagnostics.Stopwatch();
+                //        timerroom3.Start();
 
-                            //_ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
-                            _ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
-                            //SupplierPerformancereport(AllTask, AgentId);
-                        }
-                        timerroom3.Stop();
-                        SearchPara.SupplierTime += ",Finish:Supplier Perfomance Report " + "Execution Time :" + timerroom3.Elapsed.ToString();
-                    }
-                    else
-                    {
-                        //if (IsErrorCountHigh == 1)//Need to save history logs in table and send email
-                        //{
+                //        // if (Convert.ToInt16(AgentId) == 4)
+                //        {
+                //            //string searchkey1 = AllTask.
 
-                        //}
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await _exception.Error(ex);
-                }
+                //            //_ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
+                //            _ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
+                //            //SupplierPerformancereport(AllTask, AgentId);
+                //        }
+                //        timerroom3.Stop();
+                //        SearchPara.SupplierTime += ",Finish:Supplier Perfomance Report " + "Execution Time :" + timerroom3.Elapsed.ToString();
+                //    }
+                //    else
+                //    {
+                //        //if (IsErrorCountHigh == 1)//Need to save history logs in table and send email
+                //        //{
+
+                //        //}
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    await _exception.Error(ex);
+                //}
 
 
                 #endregion
