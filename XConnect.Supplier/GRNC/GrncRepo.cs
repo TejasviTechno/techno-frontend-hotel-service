@@ -858,8 +858,13 @@ namespace XConnect.Supplier.GRNC
                                                 drXmlHotelRoom["EssentialInformation"] = "";
                                                 //}
 
+                                                if ((GRNCResponsedata.Tables["min_rate"].Rows[h]["currency"]).ToString().ToLower() != commonSearch.tokenData.SiteCurrency.ToLower())
+                                                {
+                                                    Factor = _commonMethod.GetROEByCurrency(Convert.ToString(GRNCResponsedata.Tables["min_rate"].Rows[h]["currency"].ToString()), commonSearch.tokenData.dtROE);
+                                                }
 
-                                                double ItemPrice = Convert.ToDouble(price);
+                                                double ItemPrice = Convert.ToDouble(price) * Factor;
+                                                //double ItemPrice = Convert.ToDouble(price);
                                                 //if (cancellation_policy_code != "")
                                                 //{
                                                 //    Common.ProcessHotelRoom_WithMarkup(CurrencyFactorGRNC, GRNCCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, SearchParam.CountryId, SearchParam.CheckInDate, SearchParam.CheckOutDate, ref ItemPrice, ref drXmlHotelRoom, isPerce, AgentPercentage, AgentMarkupAmount, SubAgentMarkup, B2CMarkup, IsParentId);
@@ -1006,7 +1011,7 @@ namespace XConnect.Supplier.GRNC
             return responseString;
         }
 
-        public async Task<CancellationDto> GRNCCancelltionPolicy(DataSet dsHotel, string ownsystemid, string RoomTypeId_Own, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtMarkupDetails, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string roomno, string HotelId, string Provider, string roomtypecode, string type, string GiataId, int AgentId, int hotelRating/*, string CurrencyCode, string amount_type*/, string checkin, string checkout, double roomprice, string MealId, string SearchKey, string CompanyBuying = "")
+        public async Task<CancellationDto> GRNCCancelltionPolicy(DataSet dsHotel, string ownsystemid, string RoomTypeId_Own, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtMarkupDetails, TokenData tokenData, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string roomno, string HotelId, string Provider, string roomtypecode, string type, string GiataId, int AgentId, int hotelRating/*, string CurrencyCode, string amount_type*/, string checkin, string checkout, double roomprice, string MealId, string SearchKey, string CompanyBuying = "")
         {
             CancellationDto cancellationDto = new  CancellationDto();
             string IsBooking = "Available";
@@ -1152,8 +1157,14 @@ namespace XConnect.Supplier.GRNC
 
                 string Currency = Convert.ToString(drSuplierMarkup[0]["CurrencyShortName"]);
 
-                DataTable dtInrCurrency = _commonMethod.GetCountryCurrency(Currency);
-                double CurrencyFactorQTech = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
+                double CurrencyFactorQTech = 1;
+                if (Currency.ToLower() != tokenData.SiteCurrency.ToLower())
+                {
+                    CurrencyFactorQTech = _commonMethod.GetROEByCurrency(Currency, tokenData.dtROE);
+                }
+
+                //DataTable dtInrCurrency = _commonMethod.GetCountryCurrency(Currency);
+                //double CurrencyFactorQTech = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
 
                 if (ResponseData.Contains("error") != true)
                 {
@@ -1170,8 +1181,11 @@ namespace XConnect.Supplier.GRNC
                     {
                         try
                         {
-                            mandetory = Convert.ToBoolean(rck.hotel.rate.price_details.hotel_charges[0].mandatory);
-                            hotel_charge = Convert.ToString(rck.hotel.rate.price_details.hotel_charges);
+                            if (rck?.hotel?.rate?.price_details?.hotel_charges != null && rck.hotel.rate.price_details.hotel_charges.Count > 0 && rck.hotel.rate.price_details.hotel_charges[0] != null)
+                            {
+                                mandetory = Convert.ToBoolean(rck.hotel.rate.price_details.hotel_charges[0].mandatory);
+                                hotel_charge = Convert.ToString(rck.hotel.rate.price_details.hotel_charges);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -1325,15 +1339,23 @@ namespace XConnect.Supplier.GRNC
 
                         if (cancellation_policy != "")
                         {
-                            cancel_by_date = Convert.ToDateTime(rck.hotel.rate.cancellation_policy.cancel_by_date);
-                            if (cancel_by_date.AddDays(CutOffDays).Date > DateTime.Now.Date)
+                            if (rck.hotel.rate.cancellation_policy != null && !string.IsNullOrWhiteSpace(Convert.ToString(rck.hotel.rate.cancellation_policy.cancel_by_date)))
                             {
-                                cancel_by_date = cancel_by_date.AddDays(CutOffDays).Date;
+                                cancel_by_date = Convert.ToDateTime(rck.hotel.rate.cancellation_policy.cancel_by_date);
+                                if (cancel_by_date.AddDays(CutOffDays).Date > DateTime.Now.Date)
+                                {
+                                    cancel_by_date = cancel_by_date.AddDays(CutOffDays).Date;
+                                }
+                                else
+                                {
+                                    cancel_by_date = DateTime.Now.Date;
+                                }
                             }
                             else
                             {
                                 cancel_by_date = DateTime.Now.Date;
                             }
+
                             bool under_canllation = Convert.ToBoolean(rck.hotel.rate.cancellation_policy.under_cancellation);
                             string detail = Convert.ToString(rck.hotel.rate.cancellation_policy.details);
                             double persentage = Convert.ToDouble(rck.hotel.rate.cancellation_policy.details[0].percent);

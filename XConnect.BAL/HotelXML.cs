@@ -13529,7 +13529,7 @@ new SqlParameter("@AgentId", AgentId),
                     #endregion
                     #region "GRNC "
                     case "grnc":
-                        cancellationDto = await _grnc.GRNCCancelltionPolicy(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, roomtypecode, type, GiataId, AgentId, hotelRating, SearchPara.CheckInDate, SearchPara.CheckOutDate, roomprice, Mealid, SearchKey, Companybuy);
+                        cancellationDto = await _grnc.GRNCCancelltionPolicy(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, ToeknData, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, roomtypecode, type, GiataId, AgentId, hotelRating, SearchPara.CheckInDate, SearchPara.CheckOutDate, roomprice, Mealid, SearchKey, Companybuy);
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
                     #endregion
