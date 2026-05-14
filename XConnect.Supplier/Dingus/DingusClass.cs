@@ -39,7 +39,14 @@ namespace XConnect.Supplier.Dingus
             public string NumberOfUnits { get; set; }
         }
 
+        public class Roomlist
+        {
 
+            public string Meal { get; set; }
+            public double Price { get; set; }
+
+            public int RPH { get; set; }
+        }
         [System.SerializableAttribute()]
         [System.ComponentModel.DesignerCategoryAttribute("code")]
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://schemas.xmlsoap.org/soap/envelope/")]
