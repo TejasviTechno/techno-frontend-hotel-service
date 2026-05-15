@@ -1341,8 +1341,8 @@ namespace XConnect.Supplier.AgodaNew
 
                                 CommonXMLOutBookingDetailRequest.BookingDetailRQ bookingDetailRQ = new CommonXMLOutBookingDetailRequest.BookingDetailRQ();
                                 bookingDetailRQ.BookingId = 0;
-                                // bookingDetailRQ.InternalReference = commonXMLBookResponse.BookRS.InternalReference;
-                                // bookingDetailRQ.ReferenceNo = commonXMLBookResponse.BookRS.ReferenceNo;
+                                 bookingDetailRQ.InternalReference = commonXMLBookResponse.BookRS.InternalReference;
+                                 bookingDetailRQ.ReferenceNo = commonXMLBookResponse.BookRS.ReferenceNo;
 
                                 CommonXMLOutBookingDetailRequest.AdvancedOptions advancedOptions1 = new CommonXMLOutBookingDetailRequest.AdvancedOptions();
                                 advancedOptions1.Currency = "USD";
