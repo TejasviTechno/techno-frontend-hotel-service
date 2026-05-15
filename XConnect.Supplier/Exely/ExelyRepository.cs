@@ -148,7 +148,7 @@ namespace XConnect.Supplier.Exely
                                                                         RQRS objrq = new RQRS();
                                                                         List<RoomDetails> serchRooms = new List<RoomDetails>();
                                                                         serchRooms.Add(SearchPara.Rooms[rr]);
-                                                                        objrq.Request = XMLExelyRequestOnly_Async(SearchPara, Xhotel.SearchTimeOut, ExelyCurrencyFactor, DebugMode, dataForSearch.xmlCity, dataForSearch.XmlNationality, dataForSearch.xmlCountry, Xhotel.UserId, Xhotel.UserName, Xhotel.PassWord, Xhotel.CurrencyCode, IdsForSearch, SearchPara.Rooms[rr]);
+                                                                        objrq.Request = XMLExelyRequestOnly_Async(SearchPara, Xhotel.SearchTimeOut, ExelyCurrencyFactor, DebugMode, dataForSearch.xmlCity, dataForSearch.XmlNationality, dataForSearch.xmlCountry, Xhotel.UserId, Xhotel.UserName, Xhotel.PassWord, Xhotel.CurrencyCode, IdsForSearch, rr);
                                                                         objrq.Response = ""; RQRS.Add(objrq);
                                                                     }
                                                                     Xhotel.RQRS = RQRS;
@@ -180,11 +180,11 @@ namespace XConnect.Supplier.Exely
             }
         }
 
-        public string XMLExelyRequestOnly_Async(HotelSearchParameter SearchPara, Int32 SearchTimeOut, double ExelyCurrencyFactor, bool DebugMode, string XmlCity, string XmlNationality, string XmlCountry, string UserId, string UserName, string Password, string CurrencyCode, string HotelCode, RoomDetails room)
+        public string XMLExelyRequestOnly_Async(HotelSearchParameter SearchPara, Int32 SearchTimeOut, double ExelyCurrencyFactor, bool DebugMode, string XmlCity, string XmlNationality, string XmlCountry, string UserId, string UserName, string Password, string CurrencyCode, string HotelCode, int roomIndex = -1)
         {
             try
             {
-                string ExelyRequestJson = Get_Exely_AvailabilityRQ(SearchPara, HotelCode, CurrencyCode, room);
+                string ExelyRequestJson = Get_Exely_AvailabilityRQ(SearchPara, HotelCode, CurrencyCode, roomIndex);
                 return ExelyRequestJson;
             }
             catch (Exception ex)
@@ -194,7 +194,8 @@ namespace XConnect.Supplier.Exely
             }
         }
 
-        public string Get_Exely_AvailabilityRQ(HotelSearchParameter SearchPara, string HotelCode, string currencyCode, RoomDetails room)
+        //public string Get_Exely_AvailabilityRQ(HotelSearchParameter SearchPara, string HotelCode, string currencyCode, RoomDetails room)
+        public string Get_Exely_AvailabilityRQ(HotelSearchParameter SearchPara, string HotelCode, string currencyCode, int roomIndex = -1)
         {
             try
             {
@@ -209,20 +210,38 @@ namespace XConnect.Supplier.Exely
                         .ToList();
                 }
 
-                // Use this room's occupancy only — not a sum of all rooms
-                int totalAdults = Math.Max(room.NoofAdults, 1);
+                // 🔹 Adults count: use specific room if roomIndex given, else Max across all rooms
+                int totalAdults = 1;
 
+                if (SearchPara.Rooms != null && SearchPara.Rooms.Count > 0)
+                {
+                    if (roomIndex >= 0 && roomIndex < SearchPara.Rooms.Count)
+                        totalAdults = Math.Max(SearchPara.Rooms[roomIndex].NoofAdults, 1);
+                    else
+                        totalAdults = SearchPara.Rooms.Max(r => Math.Max(r.NoofAdults, 1));
+                }
+
+                // 🔹 Child ages: use specific room if roomIndex given, else all rooms
                 List<int> childAges = new List<int>();
-                if (room.ChildAge != null && room.ChildAge.Length > 0)
+                if (SearchPara.Rooms != null)
                 {
-                    childAges.AddRange(room.ChildAge.Where(a => a > 0));
-                }
-                else
-                {
-                    if (room.Child1Age > 0) childAges.Add(room.Child1Age);
-                    if (room.Child2Age > 0) childAges.Add(room.Child2Age);
-                }
+                    var roomsToCheck = (roomIndex >= 0 && roomIndex < SearchPara.Rooms.Count)
+                        ? new List<RoomDetails> { SearchPara.Rooms[roomIndex] }
+                        : SearchPara.Rooms;
 
+                    foreach (var room in roomsToCheck)
+                    {
+                        if (room.ChildAge != null && room.ChildAge.Length > 0)
+                        {
+                            childAges.AddRange(room.ChildAge.Where(a => a > 0));
+                        }
+                        else
+                        {
+                            if (room.Child1Age > 0) childAges.Add(room.Child1Age);
+                            if (room.Child2Age > 0) childAges.Add(room.Child2Age);
+                        }
+                    }
+                }
                 // 🔹 Final minimal request
                 object exelyRequest;
                 if (childAges.Count > 0)
@@ -430,9 +449,34 @@ namespace XConnect.Supplier.Exely
 
                                             #region Supplier Room Code block
                                             double FinalPrice = 0;
-                                            for (int j = 0; j < result.roomStays.Count; j++)
+                                            // Bulk search returns only 1 room per hotel — fetch all rooms via per-property API
+                                            if (!roomStaysByPropertyCache.TryGetValue(hotelCode, out SearchByPropertyResponse? cachedPropertyRooms))
                                             {
-                                                var roomStay = result.roomStays[j];
+                                                cachedPropertyRooms = await GetRoomStaysByPropertyAsync(hotelCode, exelyBaseUrl, Item.PassWord, Item.SearchTimeOut, SearchParam, SearchParam.SearchKey);
+                                                roomStaysByPropertyCache[hotelCode] = cachedPropertyRooms;
+                                            }
+                                            List<ShortRoomStay> roomsForHotel = cachedPropertyRooms?.roomStays?.Count > 0
+                                                ? cachedPropertyRooms.roomStays.Select(r => new ShortRoomStay
+                                                {
+                                                    propertyId = r.propertyId,
+                                                    roomType = r.roomType,
+                                                    ratePlan = r.ratePlan,
+                                                    guestCount = r.guestCount,
+                                                    stayDates = r.stayDates,
+                                                    currencyCode = r.currencyCode,
+                                                    total = r.total,
+                                                    cancellationPolicy = r.cancellationPolicy,
+                                                    includedServices = r.includedServices,
+                                                    mealPlanCode = r.mealPlanCode,
+                                                    checksum = r.checksum,
+                                                    fullPlacementsName = r.fullPlacementsName,
+                                                    availability = r.availability,
+                                                    availableDiscounts = r.availableDiscounts
+                                                }).ToList()
+                                                : result.roomStays.Where(rs => string.Equals(rs.propertyId, hotelCode, StringComparison.OrdinalIgnoreCase)).ToList();
+                                            for (int j = 0; j < roomsForHotel.Count; j++)
+                                            {
+                                                var roomStay = roomsForHotel[j];
                                                 if (!string.Equals(roomStay.propertyId, hotelCode, StringComparison.OrdinalIgnoreCase))
                                                 {
                                                     continue;
@@ -450,16 +494,17 @@ namespace XConnect.Supplier.Exely
                                                 FinalPrice = roomStay.total.priceBeforeTax;
                                                 if (roomStay.total.taxAmount > 0)
                                                     BookingConditions = $"+ {roomStay.total.taxAmount.ToString("F2", CultureInfo.InvariantCulture)} {roomCurrency} taxes paid at hotel";
-
-                                                string RoomTypeId = roomStay.roomType.id + "$$$" + roomStay.ratePlan.id + "$$$" + FinalPrice.ToString(CultureInfo.InvariantCulture) + "$$$" + roomCurrency + "$$$" + uniqno + "$$$" + XmlNationality + "$$$" + (roomStay.checksum ?? "") + "$$$" + (roomStay.propertyId ?? "");
+                                                string placementCode = roomStay.roomType.placements?.FirstOrDefault()?.code ?? "";
+                                                //string RoomTypeId = roomStay.roomType.id + "$$$" + roomStay.ratePlan.id + "$$$" + FinalPrice.ToString(CultureInfo.InvariantCulture) + "$$$" + roomCurrency + "$$$" + uniqno + "$$$" + XmlNationality + "$$$" + (roomStay.checksum ?? "") + "$$$" + (roomStay.propertyId ?? "");
+                                                string RoomTypeId = roomStay.roomType.id + "$$$" + roomStay.ratePlan.id + "$$$" + FinalPrice.ToString(CultureInfo.InvariantCulture) + "$$$" + roomCurrency + "$$$" + uniqno + "$$$" + XmlNationality + "$$$" + (roomStay.checksum ?? "") + "$$$" + (roomStay.propertyId ?? "") + "$$$" + placementCode;
 
                                                 #region "Room"
                                                 DataRow drHotelRoom = dt_HotelRoom.NewRow();
                                                 drHotelRoom["OwnsystemHotelId"] = OwnsystemHotelId;
                                                 drHotelRoom["RoomTypeCode"] = roomStay.roomType.id;
                                                 drHotelRoom["BoardType"] = roomStay.mealPlanCode;
-                                                drHotelRoom["AdultsOccupancy"] = totalAdult;
-                                                drHotelRoom["ChildOccupancy"] = totalChild;
+                                                drHotelRoom["AdultsOccupancy"] = SearchParam.Rooms.Count > 0 ? SearchParam.Rooms[0].NoofAdults : totalAdult;
+                                                drHotelRoom["ChildOccupancy"] = SearchParam.Rooms.Count > 0 ? SearchParam.Rooms[0].NoofChild : totalChild;
                                                 drHotelRoom["MealName"] = roomStay.mealPlanCode;
                                                 drHotelRoom["MealId"] = roomStay.mealPlanCode;
                                                 drHotelRoom["Type"] = "";
@@ -467,7 +512,8 @@ namespace XConnect.Supplier.Exely
                                                 drHotelRoom["BookingStatus"] = "Available";
                                                 drHotelRoom["UniqueNo"] = hotelCode;
                                                 drHotelRoom["ContractID"] = 0;
-                                                drHotelRoom["RoomNo"] = 1;
+                                                drHotelRoom["RoomNo"] = SearchParam.Rooms.Count > 0 ? SearchParam.Rooms[0].RoomNo : 1;
+                                                drHotelRoom["IsCombineRoom"] = true;
                                                 drHotelRoom["RoomTypeId"] = RoomTypeId;
                                                 drHotelRoom["RoomSequenceNo"] = "";
                                                 if (roomStay.availableDiscounts != null && roomStay.availableDiscounts.Count > 0)
@@ -484,11 +530,21 @@ namespace XConnect.Supplier.Exely
                                                 {
                                                     drHotelRoom["EssentialInformation"] = "</br>" + BookingConditions;
                                                 }
-                                                _markup.ProcessHotelRoom_WithMarkup(Factor, roomCurrency, false, false, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref FinalTotal, ref drHotelRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
+                                                _markup.ProcessHotelRoom_WithMarkup(Factor, roomCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref FinalTotal, ref drHotelRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
                                                 drHotelRoom["SupplierName"] = Item.Supplier;
                                                 drHotelRoom["BoardTypeID"] = roomStay.mealPlanCode;
                                                 drHotelRoom["RoomTypeName"] = (roomStay.fullPlacementsName ?? string.Empty).Replace("-", "_");
                                                 dt_HotelRoom.Rows.Add(drHotelRoom);
+                                                // Clone room row for each additional room in multi-room search
+                                                for (int roomIdx = 1; roomIdx < SearchParam.Rooms.Count; roomIdx++)
+                                                {
+                                                    DataRow drExtraRoom = dt_HotelRoom.NewRow();
+                                                    drExtraRoom.ItemArray = (object[])drHotelRoom.ItemArray.Clone();
+                                                    drExtraRoom["RoomNo"] = SearchParam.Rooms[roomIdx].RoomNo;
+                                                    drExtraRoom["AdultsOccupancy"] = SearchParam.Rooms[roomIdx].NoofAdults;
+                                                    drExtraRoom["ChildOccupancy"] = SearchParam.Rooms[roomIdx].NoofChild;
+                                                    dt_HotelRoom.Rows.Add(drExtraRoom);
+                                                }
                                                 #endregion
 
                                                 #region Cancellation Policy
@@ -615,7 +671,28 @@ namespace XConnect.Supplier.Exely
                                                         RoomTypeId, "", roomStay.mealPlanCode ?? "", nowDate, checkInDate, markedupCancellationCharge, markedupCancellationCharge, "", vatOnPolicy, "", "YES", "", Essen, "", ""));
                                                     dt_Cancellation.AcceptChanges();
                                                 }
+                                                // Clone cancellation rows for each additional room in multi-room search
+                                                if (SearchParam.Rooms.Count > 1)
+                                                {
+                                                    string room0No = Convert.ToString(SearchParam.Rooms[0].RoomNo);
+                                                    var room0CancelRows = dt_Cancellation.AsEnumerable()
+                                                        .Where(r => Convert.ToString(r["RoomTypeId"]) == RoomTypeId && Convert.ToString(r["RoomNo"]) == room0No)
+                                                        .ToList();
+                                                    for (int roomIdx = 1; roomIdx < SearchParam.Rooms.Count; roomIdx++)
+                                                    {
+                                                        string extraRoomNo = Convert.ToString(SearchParam.Rooms[roomIdx].RoomNo);
+                                                        foreach (var srcRow in room0CancelRows)
+                                                        {
+                                                            DataRow newCancelRow = dt_Cancellation.NewRow();
+                                                            newCancelRow.ItemArray = (object[])srcRow.ItemArray.Clone();
+                                                            newCancelRow["RoomNo"] = extraRoomNo;
+                                                            dt_Cancellation.Rows.Add(newCancelRow);
+                                                        }
+                                                        dt_Cancellation.AcceptChanges();
+                                                    }
+                                                }
                                                 #endregion
+
                                             }
 
                                             #endregion
@@ -978,6 +1055,17 @@ namespace XConnect.Supplier.Exely
                     string propertyTemplate = (_supplierConfig.Exely.PropertyContentByProperty ?? string.Empty).TrimStart('/');
                     string propertyUrl = $"{baseUrl.TrimEnd('/')}/{propertyTemplate.Replace("{propertyId}", hotelId)}";
                     requestData = propertyUrl;
+                    /*// RECHECK: GET /api/search/v1/properties/{propertyId}/room-stays
+                    string recheckCheckIn = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]) ?? string.Empty;
+                    string recheckCheckOut = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckOutDate"]) ?? string.Empty;
+                    int recheckAdults = 1;
+                    if (dsCartDetails.Tables.Count > 1 && dsCartDetails.Tables[1].DefaultView.Count > j)
+                        recheckAdults = Math.Max(1, Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfAdults"]));
+                    string recheckArrival = ParseSearchDate(recheckCheckIn).ToString("yyyy-MM-dd");
+                    string recheckDeparture = ParseSearchDate(recheckCheckOut).ToString("yyyy-MM-dd");
+                    string propertyTemplate = (_supplierConfig.Exely.GetRoomStaysByProperty ?? string.Empty).TrimStart('/');
+                    string propertyUrl = $"{baseUrl.TrimEnd('/')}/{propertyTemplate.Replace("{propertyId}", hotelId)}?arrivalDate={recheckArrival}&departureDate={recheckDeparture}&adults={recheckAdults}";
+                    requestData = propertyUrl;*/
 
                     _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, "-", "Before Exely Recheck", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
                     #endregion Request
@@ -1074,10 +1162,11 @@ namespace XConnect.Supplier.Exely
                 string[] roomTypeParts = (RoomTypeId ?? string.Empty).Split("$$$");
                 string roomTypeCode = roomTypeParts.Length > 0 ? roomTypeParts[0] : "";
                 string ratePlanCode = roomTypeParts.Length > 1 ? roomTypeParts[1] : "";
+                string storedPlacementCode = roomTypeParts.Length > 8 ? roomTypeParts[8] : "";
                 List<int> childAges = new List<int>();
                 for (int c = 0; c < noofchild; c++) childAges.Add(8);
 
-                var placements = BuildBookingPlacements(noofadult, noofchild);
+                var placements = BuildBookingPlacements(storedPlacementCode, noofadult, noofchild);
 
                 var guests = new List<BookingGuest>();
                 if (dtPassengers != null && dtPassengers.Rows.Count > 0)
@@ -1156,12 +1245,13 @@ namespace XConnect.Supplier.Exely
                 string[] roomTypeParts = (roomTypeId ?? string.Empty).Split("$$$");
                 string roomTypeCode = roomTypeParts.Length > 0 ? roomTypeParts[0] : "";
                 string ratePlanCode = roomTypeParts.Length > 1 ? roomTypeParts[1] : "";
+                string storedPlacementCode = roomTypeParts.Length > 8 ? roomTypeParts[8] : "";
 
                 int noOfAdults = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfAdults"]);
                 int noOfChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfChild"]);
                 List<int> childAges = new List<int>();
                 for (int c = 0; c < noOfChild; c++) childAges.Add(8);
-                var placements = BuildBookingPlacements(noOfAdults, noOfChild);
+                var placements = BuildBookingPlacements(storedPlacementCode,noOfAdults, noOfChild);
 
                 List<BookingGuest> guests = new List<BookingGuest>();
                 foreach (DataRow pax in dtPassengers.Rows)
@@ -1242,10 +1332,11 @@ namespace XConnect.Supplier.Exely
                 string[] roomTypeParts = (roomTypeId ?? string.Empty).Split("$$$");
                 string roomTypeCode = roomTypeParts.Length > 0 ? roomTypeParts[0] : "";
                 string ratePlanCode = roomTypeParts.Length > 1 ? roomTypeParts[1] : "";
+                string storedPlacementCode = roomTypeParts.Length > 8 ? roomTypeParts[8] : "";
 
                 List<int> childAges = new List<int>();
                 for (int c = 0; c < noOfChild; c++) childAges.Add(8);
-                var placements = BuildBookingPlacements(noOfAdults, noOfChild);
+                var placements = BuildBookingPlacements(storedPlacementCode,noOfAdults, noOfChild);
 
                 List<BookingGuest> guests = new List<BookingGuest>();
                 foreach (DataRow pax in dtPassengers.Rows)
@@ -1337,8 +1428,14 @@ namespace XConnect.Supplier.Exely
         #endregion Response
         #endregion Book
 
-        private static List<BookingPlacementRq> BuildBookingPlacements(int noOfAdults, int noOfChild)
+        private static List<BookingPlacementRq> BuildBookingPlacements(string storedPlacementCodes, int noOfAdults, int noOfChild)
         {
+            if (!string.IsNullOrEmpty(storedPlacementCodes))
+                return storedPlacementCodes.Split('|')
+                    .Where(c => !string.IsNullOrEmpty(c))
+                    .Select(c => new BookingPlacementRq { code = c })
+                    .ToList();
+
             int bedCount = noOfAdults + noOfChild;
             return bedCount > 0
                 ? new List<BookingPlacementRq> { new BookingPlacementRq { code = $"AdultBed-{bedCount}" } }
