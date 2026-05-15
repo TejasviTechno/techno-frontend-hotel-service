@@ -69,6 +69,8 @@ if (tracingEnabled)
 
                     options.RecordException = true;
                 })
+                .AddSource("MongoDB.Driver.Core.Extensions.DiagnosticSources")
+
 
                   .AddOtlpExporter(opt =>
                   {
@@ -98,6 +100,8 @@ builder.Host.UseSerilog((context, services, loggerConfiguration) =>
 .MinimumLevel.Override("System", LogEventLevel.Warning)
 .MinimumLevel.Override("Volo", LogEventLevel.Warning)
 .MinimumLevel.Override("Abp", LogEventLevel.Warning)
+.MinimumLevel.Override("Serilog.AspNetCore.RequestLoggingMiddeleware", LogEventLevel.Warning)
+ 
 
         .Enrich.FromLogContext()
         .Enrich.WithProperty("Application", applicationName);

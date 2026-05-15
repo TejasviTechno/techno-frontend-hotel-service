@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
@@ -5922,7 +5923,7 @@ namespace XConnect.API.Controllers
         }
 
         #endregion
-
+        [AllowAnonymous]
         [Route("GetRoomMappingHotelReport")]
         [HttpPost]
         public async Task<IActionResult> GetRoomMappingHotel(CommonRequest data)
@@ -6046,7 +6047,7 @@ namespace XConnect.API.Controllers
             }
 
         }
-
+        [AllowAnonymous]
         [Route("GetSupplierperformanceReport")]
         [HttpPost]
         public async Task<IActionResult> GetSupplierperformanceReport(CommonRequest data)
