@@ -5950,7 +5950,9 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                 case "exely":
                                     dataTable.Add(Task.Run(async () =>
                                     {
-                                        var result = await _iExely.Exely_HotelSearchWithRooms(item, commonSearch, item.RQRS[0].Response, SearchPara, item.XmlCity, item.XmlCountry, item.XmlNationality, item.CurrencyCode, item.CurrencyFactor, dtROE, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
+                                        string exelyMergedResponse = MergeExelyRoomResponses(item.RQRS);
+                                        //var allRoomResponses = item.RQRS.Select(r => r.Response).ToList();
+                                        var result = await _iExely.Exely_HotelSearchWithRooms(item, commonSearch, exelyMergedResponse, SearchPara, item.XmlCity, item.XmlCountry, item.XmlNationality, item.CurrencyCode, item.CurrencyFactor, dtROE, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
                                         item.dtHotelRoom = result;
                                         return result;
                                     }));
@@ -10864,6 +10866,58 @@ new SqlParameter("@AgentId", AgentId),
                 _exception.Error(ex);
             }
             return final;
+        }
+
+        private string MergeExelyRoomResponses(List<RQRS> rqrsList)
+        {
+            if (rqrsList == null || rqrsList.Count == 0) return "";
+            if (rqrsList.Count == 1) return rqrsList[0].Response ?? "";
+
+            var parsed = rqrsList
+                .Where(r => !string.IsNullOrEmpty(r.Response))
+                .Select(r => JsonConvert.DeserializeObject<AggregationSearchByPropertiesResponse>(r.Response))
+                .Where(r => r?.roomStays != null && r.roomStays.Count > 0)
+                .ToList();
+
+            if (parsed.Count == 0) return rqrsList[0].Response ?? "";
+            if (parsed.Count == 1) return rqrsList.First(r => !string.IsNullOrEmpty(r.Response)).Response;
+
+            // cheapest roomStay per propertyId for each room request
+            var cheapestPerHotelPerRoom = parsed.Select(r =>
+                r.roomStays
+                 .GroupBy(rs => rs.propertyId, StringComparer.OrdinalIgnoreCase)
+                 .ToDictionary(
+                     g => g.Key,
+                     g => g.OrderBy(rs => rs.total?.priceBeforeTax ?? double.MaxValue).First(),
+                     StringComparer.OrdinalIgnoreCase)
+            ).ToList();
+
+            // only hotels present in ALL room responses
+            IEnumerable<string> commonHotels = cheapestPerHotelPerRoom[0].Keys;
+            for (int i = 1; i < cheapestPerHotelPerRoom.Count; i++)
+                commonHotels = commonHotels.Intersect(cheapestPerHotelPerRoom[i].Keys, StringComparer.OrdinalIgnoreCase);
+
+            var mergedRoomStays = new List<ShortRoomStay>();
+            foreach (var hotelId in commonHotels)
+            {
+                // use room[0]'s roomStay as template (roomType, ratePlan, mealPlan, cancellation etc.)
+                var baseStay = JsonConvert.DeserializeObject<ShortRoomStay>(
+                    JsonConvert.SerializeObject(cheapestPerHotelPerRoom[0][hotelId]));
+
+                baseStay.total = new XConnect.Supplier.Exely.Total
+                {
+                    priceBeforeTax = cheapestPerHotelPerRoom.Sum(h => h[hotelId].total?.priceBeforeTax ?? 0),
+                    taxAmount = cheapestPerHotelPerRoom.Sum(h => h[hotelId].total?.taxAmount ?? 0)
+                };
+                mergedRoomStays.Add(baseStay);
+            }
+
+            var merged = new AggregationSearchByPropertiesResponse
+            {
+                roomStays = mergedRoomStays,
+                warnings = parsed[0].warnings
+            };
+            return JsonConvert.SerializeObject(merged);
         }
 
         public List<int> GetStarRatingStringListNew(HotelSearchParameter SearchPara)
