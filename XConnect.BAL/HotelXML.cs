@@ -199,7 +199,7 @@ namespace Xconnect.BLL
         private readonly RemoteServices _remoteServices;
         private readonly IAgodaNew _agodanew;
         private readonly ILogger<Exception> _logger;
-
+        private readonly IHttpContextAccessor _httpContextAccessor;
         #region Supplier DI
         private readonly IExpedia _expedia;
         private readonly IFitruums _fitruums;
@@ -266,7 +266,7 @@ namespace Xconnect.BLL
 
 
 
-        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices, IWelcomebeds welcomebeds, IExely iExely, IConfiguration configuration, IAgodaNew agodanew, ILogger<Exception> logger, IDirectcontracting directcontracting)
+        public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices, IWelcomebeds welcomebeds, IExely iExely, IConfiguration configuration, IAgodaNew agodanew, ILogger<Exception> logger, IDirectcontracting directcontracting, IHttpContextAccessor httpContextAccessor)
         {
             _dlConnection = dlConnection;
             _cache = cache;
@@ -343,7 +343,7 @@ namespace Xconnect.BLL
             _agodanew = agodanew;
             _logger = logger;
             _directcontracting = directcontracting;
-
+            _httpContextAccessor = httpContextAccessor;
         }
 
         #region Static Data - used
@@ -68972,36 +68972,36 @@ new SqlParameter("@AgentId", AgentId),
 
                 // added on 02052026
 
-                //try
-                //{
-                //    if (_keySettings.SupplierPerformanceReport == "1")//&& IsErrorCountHigh == 0)//IsErrorCountHigh added on 22-AUG-2024 for disable SuppPerfLog is Sp take time
-                //    {
-                //        System.Diagnostics.Stopwatch timerroom3 = new System.Diagnostics.Stopwatch();
-                //        timerroom3.Start();
+                try
+                {
+                    if (_keySettings.SupplierPerformanceReport == "1")//&& IsErrorCountHigh == 0)//IsErrorCountHigh added on 22-AUG-2024 for disable SuppPerfLog is Sp take time
+                    {
+                        System.Diagnostics.Stopwatch timerroom3 = new System.Diagnostics.Stopwatch();
+                        timerroom3.Start();
 
-                //        // if (Convert.ToInt16(AgentId) == 4)
-                //        {
-                //            //string searchkey1 = AllTask.
+                        // if (Convert.ToInt16(AgentId) == 4)
+                        {
+                            //string searchkey1 = AllTask.
 
-                //            //_ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
-                //            _ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
-                //            //SupplierPerformancereport(AllTask, AgentId);
-                //        }
-                //        timerroom3.Stop();
-                //        SearchPara.SupplierTime += ",Finish:Supplier Perfomance Report " + "Execution Time :" + timerroom3.Elapsed.ToString();
-                //    }
-                //    else
-                //    {
-                //        //if (IsErrorCountHigh == 1)//Need to save history logs in table and send email
-                //        //{
+                            //_ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
+                            _ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
+                            //SupplierPerformancereport(AllTask, AgentId);
+                        }
+                        timerroom3.Stop();
+                        SearchPara.SupplierTime += ",Finish:Supplier Perfomance Report " + "Execution Time :" + timerroom3.Elapsed.ToString();
+                    }
+                    else
+                    {
+                        //if (IsErrorCountHigh == 1)//Need to save history logs in table and send email
+                        //{
 
-                //        //}
-                //    }
-                //}
-                //catch (Exception ex)
-                //{
-                //    await _exception.Error(ex);
-                //}
+                        //}
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await _exception.Error(ex);
+                }
 
 
                 #endregion
@@ -69175,13 +69175,13 @@ new SqlParameter("@AgentId", AgentId),
                         {
                             Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutBookTimeOut);
 
-                            finalUrl = $"{_keySettings.EndPointXMLOut.TrimEnd('/')}/{_keySettings.BookXMLOut.TrimStart('/')}";
+                            finalUrl = $"{_keySettings.EndPointforbook.TrimEnd('/')}/{_keySettings.BookXMLOut.TrimStart('/')}";
                         }
                         else if (requestName == "bookingdetail")
                         {
                             Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutBookingDetailTimeOut);
 
-                            finalUrl = $"{_keySettings.EndPointXMLOut.TrimEnd('/')}/{_keySettings.BookingDetailXMLOut.TrimStart('/')}";
+                            finalUrl = $"{_keySettings.EndPointforbookingdetail.TrimEnd('/')}/{_keySettings.BookingDetailXMLOut.TrimStart('/')}";
                         }
                         else if (requestName == "checkhotelcancellationcharges")
                         {
@@ -69219,11 +69219,18 @@ new SqlParameter("@AgentId", AgentId),
                         // ❌ REMOVE manual gzip header
                         // Request.Headers.Add("Accept-Encoding", "gzip");
 
+                        var clientIp = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString();
+                        var existing = _httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+                        var xForwardedFor = string.IsNullOrEmpty(existing)
+                            ? clientIp
+                            : $"{existing}, {clientIp}";
+
                         // Custom Header
                         Request.Headers.Add("X-Custom-Host", "13");
                         Request.Headers.Add("X-Time-Zone", "abc");
                         Request.Headers.Add("X-Accept-Language", "abc");
                         Request.Headers.Add("User-Agent", "PostmanRuntime/7.51.1");
+                        Request.Headers.Add("X-Forwarded-For", xForwardedFor);
 
                         using (var responseMessage = await client.SendAsync(Request))
                         {

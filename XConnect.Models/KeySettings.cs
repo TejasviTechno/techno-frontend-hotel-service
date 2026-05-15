@@ -125,7 +125,9 @@ namespace XConnect.Models
         public string? TimeOutXMLOut { get; set; } = String.Empty; //Added on 25-march-26 
         public string? AddHotelToCartXMLOut { get; set; } = String.Empty; //Added on 29-apr-26 
         public string? EndPointforprebook { get; set; } = String.Empty; //Added on 29-apr-26 
-
+        public string? EndPointforbook { get; set; } = String.Empty; //Added on 29-apr-26 
+        public string? EndPointforbookingdetail { get; set; } = String.Empty; //Added on 29-apr-26 
+        
 
     }
 }

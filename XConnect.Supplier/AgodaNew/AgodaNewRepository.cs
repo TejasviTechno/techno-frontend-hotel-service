@@ -1464,14 +1464,14 @@ namespace XConnect.Supplier.AgodaNew
                             Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutBookTimeOut);
 
                            // finalUrl = $"{"http://localhost:44373/api/xconnect"}/{_keySettings.BookXMLOut.TrimStart('/')}";
-                            finalUrl = $"{_keySettings.EndPointXMLOut.TrimEnd('/')}/{_keySettings.BookXMLOut.TrimStart('/')}";
+                            finalUrl = $"{_keySettings.EndPointforbook.TrimEnd('/')}/{_keySettings.BookXMLOut.TrimStart('/')}";
 
                         }
                         else if (requestName == "bookingdetail")
                         {
                             Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutBookingDetailTimeOut);
 
-                            finalUrl = $"{_keySettings.EndPointXMLOut.TrimEnd('/')}/{_keySettings.BookingDetailXMLOut.TrimStart('/')}";
+                            finalUrl = $"{_keySettings.EndPointforbookingdetail.TrimEnd('/')}/{_keySettings.BookingDetailXMLOut.TrimStart('/')}";
                         }
                         else if (requestName == "checkhotelcancellationcharges")
                         {
