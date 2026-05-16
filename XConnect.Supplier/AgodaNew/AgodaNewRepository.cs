@@ -177,6 +177,7 @@ namespace XConnect.Supplier.AgodaNew
                                             int daysBeforeCheckIn = 365;
                                             double totalprice = 0;
                                             string RoomName = "";
+                                            string RoomId = "";
                                             string MealName = "Ro";
                                             string processedRoomTypeID = "";
                                             bool isroom = true;
@@ -209,14 +210,15 @@ namespace XConnect.Supplier.AgodaNew
                                                         string RoomTokenRP1 = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelRooms[j][kk].RoomToken;
                                                         RoomTokenRP = RoomTokenRP + "###" + RoomTokenRP1;
                                                         RoomName = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelRooms[j][kk].RoomTypeName;
+                                                        RoomId = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelRooms[j][kk].RoomId;
 
-                                                        processedRoomTypeID = "123"; //getMappedRoom_rlm(RoomName.Split('|')[0].Trim(), GTAResponse.Tables[1], Convert.ToInt32(Item.SearchPara.Filters.HotelIDs));
+                                                        processedRoomTypeID = RoomId; //getMappedRoom_rlm(RoomName.Split('|')[0].Trim(), GTAResponse.Tables[1], Convert.ToInt32(Item.SearchPara.Filters.HotelIDs));
 
-                                                        //if (processedRoomTypeID == "")  // needtochange
-                                                        //{
-                                                        //    isroom = false;
-                                                        //    continue;
-                                                        //}
+                                                        if (processedRoomTypeID == "")  // needtochange
+                                                        {
+                                                            isroom = false;
+                                                            continue;
+                                                        }
 
                                                         //MealName = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelRooms[j][kk].MealName;
                                                         MealName = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelRooms[j][kk].MappedMealName;
@@ -409,7 +411,7 @@ namespace XConnect.Supplier.AgodaNew
                                                     drhotelRoom["OfferCode"] = ""; // OfferCode;
                                                     drhotelRoom["MealName"] = MealName;// rm.MealName; //Convert.ToString(drRoomCategories[rc]["BoardBasis"]);
                                                                                        //drhotelRoom["RoomTypeId"] = rm.RoomToken; // Convert.ToString(drRoomCategories[rc]["RoomTypeId"]); 
-                                                    drhotelRoom["RoomTypeId"] = "123";// processedRoomTypeID;// "123";// gimmonixDetail.GimmonixRoomId; // Convert.ToString(drRoomCategories[rc]["RoomTypeId"]); 
+                                                    drhotelRoom["RoomTypeId"] = processedRoomTypeID;// "123";// gimmonixDetail.GimmonixRoomId; // Convert.ToString(drRoomCategories[rc]["RoomTypeId"]); 
                                                                                                     //drhotelRoom["RoomTypeCode"] = rm.RoomToken; //RateplancodeSiteminder;
                                                     drhotelRoom["BoardTypeID"] = MealName;//rm.RoomToken;
                                                     drhotelRoom["MealId"] = MealName; // Convert.ToString(drRoomCategories[rc]["BoardBasis"]);
@@ -437,7 +439,7 @@ namespace XConnect.Supplier.AgodaNew
                                                     //HotelOptionIdRP + "$$$" + SearchKeyRP + "$$$" + RoomTokenRP + "^^" +
                                                     MasterSupplierID + "^^" +
                                                     DaysBeforeCheckIn + "^^" +
-                                                    "Rateaura" + "^^" + ChainCode_Agoda + "^^" + AgentPercentage + "^^" + requestName;
+                                                    "Rateaura" + "^^" + ChainCode_Agoda + "^^" + AgentPercentage + "^^" + requestName + "^^" + processedRoomTypeID; 
 
                                                     byte[] textBytes = Encoding.UTF8.GetBytes(RatePlanCode);
 
@@ -452,7 +454,7 @@ namespace XConnect.Supplier.AgodaNew
                                                     drHotelCancellation["OwnsystemHotelId"] = Item.SearchPara.Filters.HotelIDs;
                                                     drHotelCancellation["RoomNo"] = 1; // Convert.ToString(drRoomCategories[rc]["RoomNo"]);
                                                                                        //drHotelCancellation["RoomTypeId"] = rm.RoomToken;//Convert.ToString(drRoomCategories[rc]["RoomTypeId"]);
-                                                    drHotelCancellation["RoomTypeId"] = "123";// processedRoomTypeID;// "123";// gimmonixDetail.GimmonixRoomId;//Convert.ToString(drRoomCategories[rc]["RoomTypeId"]);
+                                                    drHotelCancellation["RoomTypeId"] = processedRoomTypeID;// "123";// gimmonixDetail.GimmonixRoomId;//Convert.ToString(drRoomCategories[rc]["RoomTypeId"]);
                                                     drHotelCancellation["BoardTypeID"] = RoomTokenRP;// rm.RoomToken;
                                                     drHotelCancellation["RoomTypeCode"] = base64Encoded;// RatePlanCode;
                                                                                                         //drHotelCancellation["RoomTypeName"] = rm.RoomTypeName;//RoomDesc;
@@ -499,7 +501,7 @@ namespace XConnect.Supplier.AgodaNew
                                                     //drHotelRoomRateBreackUp["RoomTypeName"] = rm.RoomTypeName;
                                                     drHotelRoomRateBreackUp["RoomTypeName"] = RoomName;// "Stander";// gimmonixDetail.GimmonixRoomName;
                                                                                                        //drHotelRoomRateBreackUp["RoomTypeId"] = rm.RoomToken;
-                                                    drHotelRoomRateBreackUp["RoomTypeId"] = "123";// processedRoomTypeID; // "123";// gimmonixDetail.GimmonixRoomId;
+                                                    drHotelRoomRateBreackUp["RoomTypeId"] = processedRoomTypeID; // "123";// gimmonixDetail.GimmonixRoomId;
                                                     drHotelRoomRateBreackUp["RoomTypeCode"] = base64Encoded;// RatePlanCode;//RateplancodeSiteminder;
                                                     drHotelRoomRateBreackUp["BoardTypeID"] = RoomTokenRP;// rm.RoomToken;
                                                     drHotelRoomRateBreackUp["MealId"] = MealName; // Convert.ToString(drRoomCategories[rc]["BoardBasis"]);
@@ -604,6 +606,7 @@ namespace XConnect.Supplier.AgodaNew
             {
                 string giitaCode = "";
                 double LowestRate = 0;
+                string RoomId = "";
                 DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
                 //DataRow drXmlHotel = DtHotel.NewRow();
                 //DataTable DtHotelRoom = Common.GenerateRoomtypeDataTableNewV2();
@@ -660,6 +663,7 @@ namespace XConnect.Supplier.AgodaNew
                                             SearchKey = spitid2[1];
                                             RoomToken = spitid2[2];
                                             RoomNo = "1";
+                                            RoomId = spitid1[1];    
                                         }
                                         string SupplierID = spitid1[6];
                                         int MasterSupplierID = 0;
@@ -775,7 +779,7 @@ namespace XConnect.Supplier.AgodaNew
                                                             double totalprice1 = preCheckResponse.PreBookRS.HotelOption.HotelRooms[kk].Price;
                                                             RoomName = preCheckResponse.PreBookRS.HotelOption.HotelRooms[kk].RoomTypeName;
 
-                                                            processedRoomTypeID = "123"; // getMappedRoom_rlm(RoomName.Split('|')[0].Trim(), GTAResponse.Tables[1], Convert.ToInt32(Item.SearchPara.Filters.HotelIDs)); //needtochange
+                                                            processedRoomTypeID = RoomId; // getMappedRoom_rlm(RoomName.Split('|')[0].Trim(), GTAResponse.Tables[1], Convert.ToInt32(Item.SearchPara.Filters.HotelIDs)); //needtochange
 
                                                             if (processedRoomTypeID == "")
                                                             {
@@ -790,26 +794,26 @@ namespace XConnect.Supplier.AgodaNew
                                                             int UniqueId = preCheckResponse.PreBookRS.HotelOption.HotelRooms[kk].UniqueId;
 
                                                             //needtochange
-                                                            try
-                                                            {
-                                                                // DLConnection dBConnection1 = new DLConnection();
-                                                                SqlParameter[] para1 = new SqlParameter[]{
-                                                            new SqlParameter("@totalprice1",Math.Round(totalprice1,2)),
-                                                            new SqlParameter("@PRprice",Math.Round(PRprice,2)),
-                                                            new SqlParameter("@UniqueId",UniqueId),
-                                                            new SqlParameter("@ChainMarkup",ChainMarkup)
-                                                            };
-                                                                //DataTable DsPrice = dBConnection1.GetDataTable("AgodaUpdatePrice_channalWise", para1);
-                                                                DataTable DsPrice = _dlConnection.GetDataTable("AgodaUpdatePrice_channalWise", para1);
-                                                                price += Convert.ToDouble(DsPrice.Rows[0]["AGprice"]);
+                                                            //try
+                                                            //{
+                                                            //    // DLConnection dBConnection1 = new DLConnection();
+                                                            //    SqlParameter[] para1 = new SqlParameter[]{
+                                                            //new SqlParameter("@totalprice1",Math.Round(totalprice1,2)),
+                                                            //new SqlParameter("@PRprice",Math.Round(PRprice,2)),
+                                                            //new SqlParameter("@UniqueId",UniqueId),
+                                                            //new SqlParameter("@ChainMarkup",ChainMarkup)
+                                                            //};
+                                                            //    //DataTable DsPrice = dBConnection1.GetDataTable("AgodaUpdatePrice_channalWise", para1);
+                                                            //    DataTable DsPrice = _dlConnection.GetDataTable("AgodaUpdatePrice_channalWise", para1);
+                                                            //    price += Convert.ToDouble(DsPrice.Rows[0]["AGprice"]);
 
-                                                            }
-                                                            catch (System.Exception ex)
-                                                            {
-                                                                // Common.Error(ex);
-                                                                _exception.Error(ex);
+                                                            //}
+                                                            //catch (System.Exception ex)
+                                                            //{
+                                                            //    // Common.Error(ex);
+                                                            //    _exception.Error(ex);
 
-                                                            }
+                                                            //}
                                                             // ===============
                                                         }
                                                     }
