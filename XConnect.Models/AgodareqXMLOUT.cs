@@ -108,6 +108,8 @@ namespace XConnect.Models
             public double Price { get; set; }
             public string BookingStatus { get; set; }
             public string RoomToken { get; set; }
+            public string RoomId { get; set; }
+
             public List<CancellationPolicy> CancellationPolicy { get; set; }
         }
 

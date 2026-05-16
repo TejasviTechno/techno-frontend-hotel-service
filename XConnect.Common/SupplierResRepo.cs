@@ -1839,6 +1839,7 @@ namespace XConnect.CommonUtilities
                 string OptionId = dataRow.EncryptHotelToken();
                 hotelListNew.HotelCode = Convert.ToString(dataRow["GIITACode"]);
                 hotelListNew.HotelId = Convert.ToInt64(dataRow["RaynaId"]);
+                hotelListNew.HotelName = Convert.ToString(dataRow["HotelName"]);
                 hotelListNew.HotelOptionId = OptionId;
             }
             catch (Exception ex)
