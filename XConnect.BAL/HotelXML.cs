@@ -14007,27 +14007,61 @@ new SqlParameter("@AgentId", AgentId),
                 ActiveRoomMApping = false;
             }
 
-            if (ActiveRoomMApping || RoomLevelWithoutException || RoomId) //Added on 22-NOV-2024
-            {
+            //if (ActiveRoomMApping || RoomLevelWithoutException || RoomId) //Added on 22-NOV-2024
+            //{
 
-                DataTable DtHotelInformation = await _commonMethod.GetVervoRoomMappingdata(Convert.ToInt32(HotelId));
+            //    DataTable DtHotelInformation = await _commonMethod.GetVervoRoomMappingdata(Convert.ToInt32(HotelId));
+            //    for (int r = 0; r < finalPolicyResponse.ReCheckRS.Count; r++)
+            //    {
+            //        //HotelId
+            //        string MappRoomName = "";
+            //        string S_RoomID = "";
+            //        //string processedRoomTypeName = _commonMethod.getMappedRoom_rlm(finalPolicyResponse.ReCheckRS[r].RoomTypeName.Trim(), DtHotelInformation, Convert.ToInt32(HotelId), ref S_RoomID);
+            //        string S_RoomNo = null;
+
+            //        IMongoCollection<BsonDocument> collection = null;
+
+            //        string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// 
+
+            //        string processedRoomTypeName = _commonMethod.getMappedRoom_rlmASAL(finalPolicyResponse.ReCheckRS[0].RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(OwnsystemHotelId), collection, ref S_RoomNo);
+
+            //        finalPolicyResponse.ReCheckRS[r].RoomTypeName = processedRoomTypeName;
+            //    }
+
+            //}
+
+            if (ActiveRoomMApping || RoomLevelWithoutException || RoomId) //Added on 22-NOV-2024 
+            {
                 for (int r = 0; r < finalPolicyResponse.ReCheckRS.Count; r++)
                 {
-                    //HotelId
-                    string MappRoomName = "";
-                    string S_RoomID = "";
-                    //string processedRoomTypeName = _commonMethod.getMappedRoom_rlm(finalPolicyResponse.ReCheckRS[r].RoomTypeName.Trim(), DtHotelInformation, Convert.ToInt32(HotelId), ref S_RoomID);
-                    string S_RoomNo = null;
+
 
                     IMongoCollection<BsonDocument> collection = null;
+                    {
+                        try
+                        {
+                            string mongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_RoomMapping;
+                            string databaseName = _mongoSettings.MongoDB_DatabaseName_RoomMapping;
+                            string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;
 
-                    string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;// 
+                            var client = new MongoClient(mongoConnectionString);
+                            var database = client.GetDatabase(databaseName);
+                            collection = database.GetCollection<BsonDocument>(collectionName);
+                        }
+                        catch (Exception ex)
+                        {
+                            collection = null;
+                            _ = _exception.Error(ex);
+                        }
+                    }
+
+                    string S_RoomNo = null;
 
                     string processedRoomTypeName = _commonMethod.getMappedRoom_rlmASAL(finalPolicyResponse.ReCheckRS[0].RoomTypeName.Split('|')[0].Trim(), Convert.ToInt32(OwnsystemHotelId), collection, ref S_RoomNo);
 
+
                     finalPolicyResponse.ReCheckRS[r].RoomTypeName = processedRoomTypeName;
                 }
-
             }
             #endregion
 
@@ -16601,52 +16635,90 @@ new SqlParameter("@AgentId", AgentId),
                     #endregion
 
                     //currently no room mapping active so added false on 10-JAN-26
+                    //if (ActiveRoomMApping || RoomLevelWithoutException || RoomId) //Added on 22-NOV-2024 
+                    //{
+                    //    //DataTable DtHotelInformation = await _commonMethod.GetVervoRoomMappingdata(Convert.ToInt32(selectedOption.HotelId));
+                    //    {
+                    //        string mongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_RoomMapping;
+                    //        string databaseName = _mongoSettings.MongoDB_DatabaseName_RoomMapping;
+                    //        string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+
+                    //        try
+                    //        {
+                    //            // Initialize MongoDB client and get the collection
+                    //            var client = new MongoClient(mongoConnectionString);
+                    //            var database = client.GetDatabase(databaseName);
+                    //            var collection = database.GetCollection<BsonDocument>(collectionName);
+
+                    //            // Create filter using $in operator
+                    //            var filters = Builders<BsonDocument>.Filter.Eq("HotelId", Rayna_ID);
+
+                    //            // Fetch the matching records
+                    //            var results = collection.Find(filters).ToList();
+
+                    //            /// Insert results into a DataTable
+                    //            DtHotelInformation = _commonMethod.ConvertToDataTable(results);
+
+
+
+
+                    //        }
+                    //        catch (Exception ex)
+                    //        {
+                    //            DtHotelInformation = new DataTable();
+                    //            _ = _exception.Error(ex);
+                    //        }
+                    //    }
+
+                    //    //for (int r = 0; r < finalPolicyResponse.ReCheckRS.Count; r++)
+                    //    {
+                    //        string S_RoomID = ""; // Add ON 29-JAN-2025
+                    //        IMongoCollection<BsonDocument> collection = null;
+                    //        string S_RoomNo = null;
+                    //        preBookRoom.HotelRooms.SupplierRoomTypeName = preBookRoom.HotelRooms.RoomTypeName;
+                    //        // string processedRoomTypeName = _commonMethod.getMappedRoom_rlm(preBookRoom.HotelRooms.RoomTypeName.Trim(), DtHotelInformation, Rayna_ID, ref S_RoomID);
+                    //        string processedRoomTypeName = _commonMethod.getMappedRoom_rlmASAL(preBookRoom.HotelRooms.RoomTypeName.Trim(), Rayna_ID, collection, ref S_RoomNo);
+
+                    //        preBookRoom.HotelRooms.RoomTypeName = processedRoomTypeName;
+
+                    //        //preBookRoom.HotelRooms.RoomTypeName = processedRoomTypeName;
+                    //    }
+
+                    //}
+
                     if (ActiveRoomMApping || RoomLevelWithoutException || RoomId) //Added on 22-NOV-2024 
                     {
-                        DataTable DtHotelInformation = await _commonMethod.GetVervoRoomMappingdata(Convert.ToInt32(selectedOption.HotelId));
-                        {
-                            string mongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_RoomMapping;
-                            string databaseName = _mongoSettings.MongoDB_DatabaseName_RoomMapping;
-                            string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+                        IMongoCollection<BsonDocument> collection = null;
 
+                        if (Rayna_ID > 0)
+                        {
                             try
                             {
-                                // Initialize MongoDB client and get the collection
+                                string mongoConnectionString = _mongoSettings.MongoDB_ConnectionStr_RoomMapping;
+                                string databaseName = _mongoSettings.MongoDB_DatabaseName_RoomMapping;
+                                string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+
                                 var client = new MongoClient(mongoConnectionString);
                                 var database = client.GetDatabase(databaseName);
-                                var collection = database.GetCollection<BsonDocument>(collectionName);
-
-                                // Create filter using $in operator
-                                var filters = Builders<BsonDocument>.Filter.Eq("HotelId", Rayna_ID);
-
-                                // Fetch the matching records
-                                var results = collection.Find(filters).ToList();
-
-                                /// Insert results into a DataTable
-                                DtHotelInformation = _commonMethod.ConvertToDataTable(results);
-
+                                collection = database.GetCollection<BsonDocument>(collectionName);
                             }
                             catch (Exception ex)
                             {
-                                DtHotelInformation = new DataTable();
+                                collection = null;
                                 _ = _exception.Error(ex);
                             }
                         }
 
-                        //for (int r = 0; r < finalPolicyResponse.ReCheckRS.Count; r++)
-                        {
-                            string S_RoomID = ""; // Add ON 29-JAN-2025
-                            IMongoCollection<BsonDocument> collection = null;
-                            string S_RoomNo = null;
-                            preBookRoom.HotelRooms.SupplierRoomTypeName = preBookRoom.HotelRooms.RoomTypeName;
-                            // string processedRoomTypeName = _commonMethod.getMappedRoom_rlm(preBookRoom.HotelRooms.RoomTypeName.Trim(), DtHotelInformation, Rayna_ID, ref S_RoomID);
-                            string processedRoomTypeName = _commonMethod.getMappedRoom_rlmASAL(preBookRoom.HotelRooms.RoomTypeName.Trim(), Rayna_ID, collection, ref S_RoomNo);
+                        string S_RoomNo = null;
+                        preBookRoom.HotelRooms.SupplierRoomTypeName = preBookRoom.HotelRooms.RoomTypeName;
 
-                            preBookRoom.HotelRooms.RoomTypeName = processedRoomTypeName;
+                        string processedRoomTypeName = _commonMethod.getMappedRoom_rlmASAL(
+                            preBookRoom.HotelRooms.RoomTypeName.Trim(),
+                            Rayna_ID,
+                            collection,       // <-- pass collection directly, no DataTable
+                            ref S_RoomNo);
 
-                            //preBookRoom.HotelRooms.RoomTypeName = processedRoomTypeName;
-                        }
-
+                        preBookRoom.HotelRooms.RoomTypeName = processedRoomTypeName;
                     }
                     else
                     {
