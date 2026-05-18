@@ -100,7 +100,7 @@ builder.Host.UseSerilog((context, services, loggerConfiguration) =>
 .MinimumLevel.Override("System", LogEventLevel.Warning)
 .MinimumLevel.Override("Volo", LogEventLevel.Warning)
 .MinimumLevel.Override("Abp", LogEventLevel.Warning)
-.MinimumLevel.Override("Serilog.AspNetCore.RequestLoggingMiddeleware", LogEventLevel.Warning)
+.MinimumLevel.Override("Serilog.AspNetCore.RequestLoggingMiddleware", LogEventLevel.Warning)
  
 
         .Enrich.FromLogContext()
