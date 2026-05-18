@@ -5774,8 +5774,10 @@ namespace XConnect.API.Controllers
                         }
                         else
                         {
-                            erroragoda = _hotelXML.GetAgodaErrorMsg("SUPPLIER_SERVER_ERROR", "", "Supplier service unavailable/server down. Need to escalate to supplier.");
-                             return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200 ,lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.InternalError, "0", HttpStatusCode.InternalServerError);
+                            //erroragoda = _hotelXML.GetAgodaErrorMsg("SUPPLIER_SERVER_ERROR", "", "Supplier service unavailable/server down. Need to escalate to supplier.");
+                            erroragoda = _hotelXML.GetAgodaErrorMsg("NO_AVAILABILITY", "", "no available rooms for given criteria.");
+
+                            return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200 , erroragoda, "application/json", commonRQ, erroragoda, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.InternalError, "0", HttpStatusCode.InternalServerError);
                         }
                     }
                     else
@@ -5793,7 +5795,7 @@ namespace XConnect.API.Controllers
                         timer.Stop();
                         if (lstFiltOption != null)
                         {
-                            if (lstFiltOption.hotels == null)// || lstFiltOption.hotel.rooms.Count == 0) //needtochange
+                            if (lstFiltOption.hotels == null || lstFiltOption.hotels[0].rooms.Count == 0) //needtochange
                             {
                                 if (filterUsed.ratePlanSearch)
                                     erroragoda = _hotelXML.GetAgodaErrorMsg("NO_ALLOTMENT", "", "Given rate/allotment is not available for booking any more.");

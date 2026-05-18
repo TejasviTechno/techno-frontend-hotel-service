@@ -284,7 +284,23 @@ namespace XConnect.Supplier.AgodaNew
                                                 for (int chaincode = 0; chaincode < DTChainCode.Tables[0].Rows.Count; chaincode++)
                                                 {
 
-                                                    string ChainCode_Agoda = Convert.ToString(DTChainCode.Tables[0].Rows[chaincode]["chaincode"]);// Convert.ToString(chaincode);
+                                                    //string ChainCode_Agoda = Convert.ToString(DTChainCode.Tables[0].Rows[chaincode]["chaincode"]);// Convert.ToString(chaincode);
+
+                                                    string ChainCode_Agoda = Convert.ToString(DTChainCode.Tables[0].Rows[chaincode]["ChannelCode"]);
+                                                    bool supplierExists = DTChainCode.Tables[1].AsEnumerable().Any(r => Convert.ToString(r["Supplierid"])?.Trim() == SupplierID.Trim());
+
+                                                    if (supplierExists)
+                                                    {
+                                                        bool exists = DTChainCode.Tables[1].AsEnumerable().Any(r => Convert.ToString(r["Supplierid"])?.Trim() == SupplierID.Trim() && Convert.ToString(r["chaincode"])?.Trim() == ChainCode_Agoda);
+                                                        if (!exists)
+
+                                                        {
+
+                                                            continue;
+
+                                                        }
+                                                    }
+
 
                                                     #region countrycityrestrication
 

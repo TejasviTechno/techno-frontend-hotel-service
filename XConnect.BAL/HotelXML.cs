@@ -69989,7 +69989,9 @@ new SqlParameter("@AgentId", AgentId),
                                     {
                                         double Tolorance = (Convert.ToDouble(RoomListratearr.price) / 100) * 0.5; //Added By k2 18-07-2024
                                         double TolorancePrice = Convert.ToDouble(RoomListratearr.price) - Tolorance;
-                                        if (RoomListratearr.ratePlanCode != filterUsed.ratePlanCode || Convert.ToDouble(filterUsed.totalPrice) < TolorancePrice)// RoomListratearr.price)
+                                        //if (RoomListratearr.ratePlanCode != filterUsed.ratePlanCode || Convert.ToDouble(filterUsed.totalPrice) < TolorancePrice)// RoomListratearr.price)
+                                        if (RoomListratearr.ratePlanCode != filterUsed.ratePlanCode || Convert.ToDecimal(filterUsed.totalPrice) != RoomListratearr.price)
+
                                         {
                                             continue;
                                         }
@@ -70016,7 +70018,14 @@ new SqlParameter("@AgentId", AgentId),
                                         //    policycount = 0;
                                         //}
 
-                                        if (Convert.ToBoolean(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomtype][0].CancellationPolicy[cancel].isNRF) != true)
+                                        DateTime originalCheckIn = DateTime.Parse(filterUsed.OriginalcheckIn);
+                                        originalCheckIn = originalCheckIn.AddDays(-Convert.ToInt32(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomtype][0].CancellationPolicy[cancel].daysBeforeCheckIn));
+                                        DateTime Todate = DateTime.Now.Date;
+                                        bool IsRef = Todate < originalCheckIn ? true : false;
+
+
+                                        //if (Convert.ToBoolean(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomtype][0].CancellationPolicy[cancel].isNRF) != true)
+                                        if (IsRef)
                                         {
                                             if (true)// (Convert.ToInt32(finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomtype][0].CancellationPolicy[cancel].CancellationPrice) > 0 && policycount > 1)
                                             {
