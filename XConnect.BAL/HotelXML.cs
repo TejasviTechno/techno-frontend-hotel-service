@@ -5950,7 +5950,8 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                 case "exely":
                                     dataTable.Add(Task.Run(async () =>
                                     {
-                                        var result = await _iExely.Exely_HotelSearchWithRooms(item, commonSearch, item.RQRS[0].Response, SearchPara, item.XmlCity, item.XmlCountry, item.XmlNationality, item.CurrencyCode, item.CurrencyFactor, dtROE, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
+                                        string exelyMergedResponse = MergeExelyRoomResponses(item.RQRS);
+                                        var result = await _iExely.Exely_HotelSearchWithRooms(item, commonSearch, exelyMergedResponse, SearchPara, item.XmlCity, item.XmlCountry, item.XmlNationality, item.CurrencyCode, item.CurrencyFactor, dtROE, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
                                         item.dtHotelRoom = result;
                                         return result;
                                     }));
@@ -10864,6 +10865,58 @@ new SqlParameter("@AgentId", AgentId),
                 _exception.Error(ex);
             }
             return final;
+        }
+
+        private string MergeExelyRoomResponses(List<RQRS> rqrsList)
+        {
+            if (rqrsList == null || rqrsList.Count == 0) return "";
+            if (rqrsList.Count == 1) return rqrsList[0].Response ?? "";
+
+            var parsed = rqrsList
+                .Where(r => !string.IsNullOrEmpty(r.Response))
+                .Select(r => JsonConvert.DeserializeObject<AggregationSearchByPropertiesResponse>(r.Response))
+                .Where(r => r?.roomStays != null && r.roomStays.Count > 0)
+                .ToList();
+
+            if (parsed.Count == 0) return rqrsList[0].Response ?? "";
+            if (parsed.Count == 1) return rqrsList.First(r => !string.IsNullOrEmpty(r.Response)).Response;
+
+            // cheapest roomStay per propertyId for each room request
+            var cheapestPerHotelPerRoom = parsed.Select(r =>
+                r.roomStays
+                 .GroupBy(rs => rs.propertyId, StringComparer.OrdinalIgnoreCase)
+                 .ToDictionary(
+                     g => g.Key,
+                     g => g.OrderBy(rs => rs.total?.priceBeforeTax ?? double.MaxValue).First(),
+                     StringComparer.OrdinalIgnoreCase)
+            ).ToList();
+
+            // only hotels present in ALL room responses
+            IEnumerable<string> commonHotels = cheapestPerHotelPerRoom[0].Keys;
+            for (int i = 1; i < cheapestPerHotelPerRoom.Count; i++)
+                commonHotels = commonHotels.Intersect(cheapestPerHotelPerRoom[i].Keys, StringComparer.OrdinalIgnoreCase);
+
+            var mergedRoomStays = new List<ShortRoomStay>();
+            foreach (var hotelId in commonHotels)
+            {
+                // use room[0]'s roomStay as template (roomType, ratePlan, mealPlan, cancellation etc.)
+                var baseStay = JsonConvert.DeserializeObject<ShortRoomStay>(
+                    JsonConvert.SerializeObject(cheapestPerHotelPerRoom[0][hotelId]));
+
+                baseStay.total = new XConnect.Supplier.Exely.Total
+                {
+                    priceBeforeTax = cheapestPerHotelPerRoom.Sum(h => h[hotelId].total?.priceBeforeTax ?? 0),
+                    taxAmount = cheapestPerHotelPerRoom.Sum(h => h[hotelId].total?.taxAmount ?? 0)
+                };
+                mergedRoomStays.Add(baseStay);
+            }
+
+            var merged = new AggregationSearchByPropertiesResponse
+            {
+                roomStays = mergedRoomStays,
+                warnings = parsed[0].warnings
+            };
+            return JsonConvert.SerializeObject(merged);
         }
 
         public List<int> GetStarRatingStringListNew(HotelSearchParameter SearchPara)
@@ -16577,18 +16630,18 @@ new SqlParameter("@AgentId", AgentId),
                 for (int i = 0; i < prebookRQ.HotelOption.HotelRooms.Count; i++)
                 {
                     CacheRoomToken cacheRoomToken = prebookRQ.HotelOption.HotelRooms[i].RoomToken.DecryptCacheRoomToken();
-                    if (cacheRoomToken.giataid_Seq != giataid_Seq_Found || cacheRoomToken.hotelid_Seq != hotelid_Seq_Found || cacheRoomToken.roomno != i)
-                    {
-                        preBookResponse.Error.Add(GetErrorMsg(ErrorType.Mismatched, ErrorCode.Mismatched, ErrorDescription.DataMismatched + "| RoomToken + HotelOptionId"));
-                        preBookResponse_1.PreBookResponse = preBookResponse;
-                        return preBookResponse_1;
-                    }
+                    
                     List<_FinalRoomList> selectedRoomSequence = selectedOption.HotelRooms[cacheRoomToken.Room_seqno];
                     _FinalRoomList selectedRoom = selectedRoomSequence[cacheRoomToken.roomno];
                     PreBookRoom preBookRoom = new PreBookRoom();
                     preBookRoom.HotelRooms = selectedRoom.RoomToken.DecryptRoomToken();
                     IsCombine = preBookRoom.HotelRooms.IsCombineRoom;
-
+                    if (cacheRoomToken.giataid_Seq != giataid_Seq_Found || cacheRoomToken.hotelid_Seq != hotelid_Seq_Found || (cacheRoomToken.roomno != i))
+                    {
+                        preBookResponse.Error.Add(GetErrorMsg(ErrorType.Mismatched, ErrorCode.Mismatched, ErrorDescription.DataMismatched + "| RoomToken + HotelOptionId"));
+                        preBookResponse_1.PreBookResponse = preBookResponse;
+                        return preBookResponse_1;
+                    }
 
                     #region GetDataFromCache //RoomMapping
                     bool ActiveRoomMApping = false;
@@ -17504,7 +17557,7 @@ new SqlParameter("@AgentId", AgentId),
                     //userCartDetails_Pre.EachoToken = Convert.ToString(objdata.ShoppingCartDetails[room].SPUI);
                     userCartDetails_Pre.RoomNo = Convert.ToInt32(objdata.ShoppingCartDetails[room].RoomNo);//Updated
 
-                    if (!objdata.IsCombineRoom || room == 0)
+                    if (!objdata.IsCombineRoom || room == 0 || objdata.TechName?.ToLower() == "exely")
                     {
                         #region SupplierRB
                         SupplierRateBreakUp_Prebook supplierRateBreakUp_Prebook = new SupplierRateBreakUp_Prebook();
@@ -17543,7 +17596,8 @@ new SqlParameter("@AgentId", AgentId),
                         List<HotelPolicy_Prebook> hotelPolicy_Prebooks = new List<HotelPolicy_Prebook>();
 
                         DataRow[] drPolicy = dtPolicy.Select("RoomNo='" + Convert.ToInt32(objdata.ShoppingCartDetails[room].RoomNo) + "'");
-
+                        if (drPolicy.Length == 0 && objdata.IsCombineRoom)
+                            drPolicy = dtPolicy.Select("RoomNo='1'");
                         for (int p = 0; p < drPolicy.Length; p++)
                         {
 
@@ -55250,78 +55304,87 @@ new SqlParameter("@AgentId", AgentId),
                                         string password = Convert.ToString(XPDetails[0]["Password"]);
                                         string exelyCurrency = Convert.ToString(XPDetails[0]["CurrencyShortName"]);
 
+                                        // GROUP BOOKING: collect all rooms first, then single verify + single book
+                                        string xMLHotelIdBase = !string.IsNullOrWhiteSpace(bookRequest.userCart.XMLHotelId)
+                                            ? bookRequest.userCart.XMLHotelId
+                                            : (bookRequest.userCart.HotelId > 0 ? Convert.ToString(bookRequest.userCart.HotelId) : "");
+
+                                        var exelyRoomInfoList = new List<XConnect.Supplier.Exely.ExelyRoomInfo>();
+
                                         for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
                                         {
-                                            UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                            string xMLHotelId = !string.IsNullOrWhiteSpace(bookRequest.userCart.XMLHotelId)
-                                                ? bookRequest.userCart.XMLHotelId
-                                                : (bookRequest.userCart.HotelId > 0 ? Convert.ToString(bookRequest.userCart.HotelId) : "");
-                                            string checkIn = bookRequest.userCart.UserCartDetails[j].CheckInDate;
-                                            string checkOut = bookRequest.userCart.UserCartDetails[j].CheckOutDate;
                                             string roomTypeId = bookRequest.userCart.UserCartDetails[j].RoomTypeId ?? "";
                                             string[] rtParts = roomTypeId.Split("$$$");
-                                            string checksum = rtParts.Length > 6 ? rtParts[6] : "";
-                                            int noOfAdults = bookRequest.userCart.UserCartDetails[j].NoofAdult;
-                                            int noOfChild = bookRequest.userCart.UserCartDetails[j].NoofChild;
-                                            string exelyNationality = rtParts.Length > 5 && !string.IsNullOrWhiteSpace(rtParts[5]) ? rtParts[5] : Nationality;
-                                            string exelyHotelIdForVerify = rtParts.Length > 7 && !string.IsNullOrWhiteSpace(rtParts[7]) ? rtParts[7] : xMLHotelId;
 
-                                            string exelyVerifyRQ = _iExely.Get_Exely_VerifyBookingRQ(noOfAdults, noOfChild, exelyHotelIdForVerify, checkIn, checkOut, roomTypeId, exelyNationality, checksum, dtPassengers);
-                                            string exelyVerifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
-                                            ResponseDto exelyVerifyDto = await _iExely.ExelyResponseNew(exelyVerifyRQ, exelyVerifyUrl, 120000, password, bookRequest.SearchKey);
-                                            var exelyVerifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(exelyVerifyDto.Response ?? "");
-                                            var exelyVerifyBooking = exelyVerifyResult?.booking ?? exelyVerifyResult?.alternativeBooking;
-                                            string exelyCreateBookingToken = exelyVerifyBooking?.createBookingToken ?? "";
-                                            string exelyPropertyId = exelyVerifyBooking?.propertyId ?? exelyHotelIdForVerify;
-                                            if (string.IsNullOrWhiteSpace(exelyCreateBookingToken))
+                                            string roomNationality = rtParts.Length > 5 && !string.IsNullOrWhiteSpace(rtParts[5]) ? rtParts[5] : Nationality;
+                                            string roomHotelId = rtParts.Length > 7 && !string.IsNullOrWhiteSpace(rtParts[7]) ? rtParts[7] : xMLHotelIdBase;
+                                            exelyRoomInfoList.Add(new XConnect.Supplier.Exely.ExelyRoomInfo
                                             {
-                                                RequestSPR = exelyVerifyRQ;
-                                                ReponseSPR = exelyVerifyDto.Response;
-                                                Error = exelyVerifyDto.Error;
-                                                time = "00:00:00.000000";
-                                                bookingStatus = 2;
-                                                AgentVoucherNo = "";
-                                                responsetype = "GeneralError";
-                                                _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, (exelyVerifyDto.Response ?? "") + (exelyVerifyDto.Error ?? ""), "After Exely Verify Booking Failed", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "NomadsB2B");
-                                                try
-                                                {
-                                                    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, exelyVerifyRQ, exelyVerifyDto.Response, Error);
-                                                }
-                                                catch (Exception e)
-                                                {
-                                                    _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
-                                                }
+                                                RoomTypeId = roomTypeId,
+                                                CheckIn = bookRequest.userCart.UserCartDetails[j].CheckInDate,
+                                                CheckOut = bookRequest.userCart.UserCartDetails[j].CheckOutDate,
+                                                NoOfAdults = bookRequest.userCart.UserCartDetails[j].NoofAdult,
+                                                NoOfChild = bookRequest.userCart.UserCartDetails[j].NoofChild,
+                                                Nationality = roomNationality,
+                                                HotelId = roomHotelId
+                                            });
+                                        }// Use first room's propertyId and nationality as the group-level values
+                                        string groupPropertyId = exelyRoomInfoList[0].HotelId;
+                                        string groupNationality = exelyRoomInfoList[0].Nationality;
+                                        UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[0].UserCartDetailId);
 
-                                                AgentVoucher verifyFailedVoucher = new AgentVoucher();
-                                                verifyFailedVoucher.UserCartId = bookRequest.userCart.UserCartDetails[j].UserCartId;
-                                                verifyFailedVoucher.UserCartDetailId = bookRequest.userCart.UserCartDetails[j].UserCartDetailId;
-                                                verifyFailedVoucher.AgentVoucherNo = AgentVoucherNo;
-                                                verifyFailedVoucher.XMLRequest = exelyVerifyRQ;
-                                                verifyFailedVoucher.XMLResponse = exelyVerifyDto.Response;
-                                                verifyFailedVoucher.RoomStatus = Convert.ToString(bookingStatus);
-                                                verifyFailedVoucher.SupplierName = suppliername;
-                                                agentVouchers.Add(verifyFailedVoucher);
-                                                continue;
+                                        // STEP 1: Single verify for all rooms (group booking "all or nothing")
+                                        string exelyVerifyRQ = _iExely.Get_Exely_VerifyBookingRQ(exelyRoomInfoList, groupPropertyId, groupNationality, dtPassengers);
+                                        string exelyVerifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
+                                        _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, "-", "Before Exely Group Verify", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B");
+                                        ResponseDto exelyVerifyDto = await _iExely.ExelyResponseNew(exelyVerifyRQ, exelyVerifyUrl, 120000, password, bookRequest.SearchKey);
+                                        var exelyVerifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(exelyVerifyDto.Response ?? "");
+                                        var exelyVerifyBooking = exelyVerifyResult?.booking ?? exelyVerifyResult?.alternativeBooking;
+                                        string groupToken = exelyVerifyBooking?.createBookingToken ?? "";
+                                        string exelyPropertyId = exelyVerifyBooking?.propertyId ?? groupPropertyId;
+                                        _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, (exelyVerifyDto.Response ?? "") + (exelyVerifyDto.Error ?? ""), "After Exely Group Verify", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
+                                        if (string.IsNullOrWhiteSpace(groupToken))
+                                        {
+                                            // Verify failed — all rooms in the group fail together ("all or nothing")
+                                            RequestSPR = exelyVerifyRQ;
+                                            ReponseSPR = exelyVerifyDto.Response;
+                                            Error = exelyVerifyDto.Error;
+                                            time = "00:00:00.000000";
+                                            responsetype = "GeneralError";
+                                            
+                                            try { _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, exelyVerifyRQ, exelyVerifyDto.Response, Error); }
+                                            catch { }
+                                            for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
+                                            {
+                                                agentVouchers.Add(new AgentVoucher
+                                                {
+                                                    UserCartId = bookRequest.userCart.UserCartDetails[j].UserCartId,
+                                                    UserCartDetailId = bookRequest.userCart.UserCartDetails[j].UserCartDetailId,
+                                                    AgentVoucherNo = "",
+                                                    XMLRequest = exelyVerifyRQ,
+                                                    XMLResponse = exelyVerifyDto.Response,
+                                                    RoomStatus = "2",
+                                                    SupplierName = suppliername
+                                                });
                                             }
-                                            string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, exelyCreateBookingToken, exelyPropertyId, checkIn, checkOut, exelyCurrency, exelyNationality, tokenData.AgentCode, checksum, roomTypeId, noOfAdults, noOfChild);
+                                            bookResponse_1.agentVouchers = agentVouchers;
+                                        }
+                                        else
+                                        {
+                                            // STEP 2: Single book for all rooms using the group token
+                                            string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(exelyRoomInfoList, dtPassengers, groupToken, exelyPropertyId, groupNationality);
                                             string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.CreateBooking.TrimStart('/');
-
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "NomadsB2B");
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, "-", "Before Exely Group Book", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B");
                                             Error = "";
                                             System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                                             timerroomprocess.Start();
-
                                             ResponseDto responseDto = await _iExely.ExelyResponseNew(ExelyBookRequest, ExelyBookUrl, 120000, password, bookRequest.SearchKey);
                                             string ExelyBookResponse = responseDto.Response;
                                             Error = responseDto.Error;
-
                                             RequestSPR = ExelyBookRequest;
                                             ReponseSPR = ExelyBookResponse;
-                                            timerroomprocess.Stop();
-                                            time = timerroomprocess.Elapsed.ToString();
 
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, ExelyBookResponse + Error, "After Block Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "NomadsB2B");
-
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, ExelyBookResponse + Error, "After Exely Group Book", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
                                             bookingStatus = 2;
                                             AgentVoucherNo = "";
                                             if (!string.IsNullOrWhiteSpace(ExelyBookResponse))
@@ -55333,32 +55396,28 @@ new SqlParameter("@AgentId", AgentId),
                                                     bookingStatus = 6;
                                                 }
                                             }
+                                            timerroomprocess.Stop();
+                                            time = timerroomprocess.Elapsed.ToString();
 
-                                            if (bookingStatus == 6)
-                                                responsetype = "Success";
-                                            else
-                                                responsetype = "GeneralError";
+                                            responsetype = bookingStatus == 6 ? "Success" : "GeneralError";
+                                            try { _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, ExelyBookRequest, ExelyBookResponse, Error); } catch { }
 
-                                            try
+                                            // Same booking number for all rooms in the group
+                                            for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
                                             {
-                                                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, ExelyBookRequest, ExelyBookResponse, Error);
+                                                agentVouchers.Add(new AgentVoucher
+                                                {
+                                                    UserCartId = bookRequest.userCart.UserCartDetails[j].UserCartId,
+                                                    UserCartDetailId = bookRequest.userCart.UserCartDetails[j].UserCartDetailId,
+                                                    AgentVoucherNo = AgentVoucherNo,
+                                                    XMLRequest = ExelyBookRequest,
+                                                    XMLResponse = ExelyBookResponse,
+                                                    RoomStatus = Convert.ToString(bookingStatus),
+                                                    SupplierName = suppliername
+                                                });
                                             }
-                                            catch (Exception e)
-                                            {
-                                                _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
-                                            }
-
-                                            AgentVoucher agentVoucher = new AgentVoucher();
-                                            agentVoucher.UserCartId = bookRequest.userCart.UserCartDetails[j].UserCartId;
-                                            agentVoucher.UserCartDetailId = bookRequest.userCart.UserCartDetails[j].UserCartDetailId;
-                                            agentVoucher.AgentVoucherNo = AgentVoucherNo;
-                                            agentVoucher.XMLRequest = ExelyBookRequest;
-                                            agentVoucher.XMLResponse = ExelyBookResponse;
-                                            agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
-                                            agentVoucher.SupplierName = suppliername;
-                                            agentVouchers.Add(agentVoucher);
+                                            bookResponse_1.agentVouchers = agentVouchers;
                                         }
-                                        bookResponse_1.agentVouchers = agentVouchers;
                                     }
                                     catch (Exception ex)
                                     {
