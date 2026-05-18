@@ -7396,10 +7396,9 @@ namespace XConnect.CommonUtilities
 
                         string collectionName_ForUnMapp = "";
                         IMongoCollection<RoomInfo> collection_ForUnMapp = null;
-                        collectionName_ForUnMapp = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+                        collectionName_ForUnMapp = _mongoSettings.UnMapped_MongoDB_CollectionName_RoomMapping;
                         collection_ForUnMapp = GetRoomMappingCollection_Unmap(collectionName_ForUnMapp); //Add on 10FEB2026
                         _ = InsertRoomsBulkAsync_unmapp(collection_ForUnMapp, missingRoomList);
-
 
 
                     }
@@ -7427,7 +7426,7 @@ namespace XConnect.CommonUtilities
         }
         public IMongoCollection<RoomInfo> GetRoomMappingCollection_Unmap(string collectionName)
         {
-            return _roomMapping.GetCollection<RoomInfo>(collectionName);
+            return _RowroomMapping.GetCollection<RoomInfo>(collectionName);
         }
         public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping_withoutEx(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1, bool IsFromAPI = true) //Add int Roommapping=0 on 30MAY2025
 
@@ -7805,7 +7804,7 @@ namespace XConnect.CommonUtilities
 
                         string collectionName_ForUnMapp = "";
                         IMongoCollection<RoomInfo> collection_ForUnMapp = null;
-                        collectionName_ForUnMapp = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+                        collectionName_ForUnMapp = _mongoSettings.UnMapped_MongoDB_CollectionName_RoomMapping;
                         collection_ForUnMapp = GetRoomMappingCollection_Unmap(collectionName_ForUnMapp); //Add on 10FEB2026
                         _ = InsertRoomsBulkAsync_unmapp(collection_ForUnMapp, missingRoomList);
 
@@ -8184,7 +8183,7 @@ namespace XConnect.CommonUtilities
 
                         string collectionName_ForUnMapp = "";
                         IMongoCollection<RoomInfo> collection_ForUnMapp = null;
-                        collectionName_ForUnMapp = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+                        collectionName_ForUnMapp = _mongoSettings.UnMapped_MongoDB_CollectionName_RoomMapping;
                         collection_ForUnMapp = GetRoomMappingCollection_Unmap(collectionName_ForUnMapp); //Add on 10FEB2026
                         _ = InsertRoomsBulkAsync_unmapp(collection_ForUnMapp, missingRoomList);
 
