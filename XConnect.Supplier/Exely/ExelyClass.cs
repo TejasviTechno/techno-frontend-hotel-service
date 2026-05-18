@@ -305,6 +305,21 @@
 
     #endregion
 
+    #region Group Booking Helper
+
+    public class ExelyRoomInfo
+    {
+        public string RoomTypeId { get; set; } = "";
+        public string CheckIn { get; set; } = "";
+        public string CheckOut { get; set; } = "";
+        public int NoOfAdults { get; set; }
+        public int NoOfChild { get; set; }
+        public string Nationality { get; set; } = "";
+        public string HotelId { get; set; } = "";
+    }
+
+    #endregion
+
     #region Reservation API
 
     #region Create Booking Request

@@ -5228,6 +5228,7 @@ namespace XConnect.CommonUtilities
                     case "genting":
                     case "goodwin":
                     case "quantum":
+                    case "exely":
                         //case "hotelbedsv1":
                         //case "travellanda":
                         return true;

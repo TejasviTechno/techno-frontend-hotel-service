@@ -19,5 +19,7 @@ namespace XConnect.Supplier.Exely.Interface
         string Get_Exely_CancelBooking(double amount, string currency, string agentRef);
         CreateBookingResult? Exely_ProcessBookingResponse(string responseData);
         Task<string> Get_Exely_EInfo(string hotelcode, DataTable dtSuplierMarkup, DataTable dtSearchConfig, string provider, string searchKey, string roomTypeId);
+        string Get_Exely_VerifyBookingRQ(List<ExelyRoomInfo> rooms, string hotelcode, string XmlNationality, DataTable? dtPassengers = null);
+        string Get_Exely_BookingRequest(List<ExelyRoomInfo> rooms, DataTable dtPassengers, string uniqueBookingToken, string hotelcode, string nationality);
     }
 }
