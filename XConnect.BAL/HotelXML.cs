@@ -69055,8 +69055,8 @@ new SqlParameter("@AgentId", AgentId),
                         {
                             //string searchkey1 = AllTask.
 
-                            //_ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
-                            _ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
+                           // _ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
+                            _ = Task.Run(() => _commonMethod.FireAway_SPL_SQLAgoda(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
                             //SupplierPerformancereport(AllTask, AgentId);
                         }
                         timerroom3.Stop();
@@ -69560,7 +69560,7 @@ new SqlParameter("@AgentId", AgentId),
         }
 
         public async Task<IActionResult> CreateResponseCompressed_agodahotelsearch<T>(HttpContext context, int statusCode, T value, string mediaType,
-  AgodaSearchPara RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, string Search_Key = "", long elapsedMilliseconds = 0)
+  AgodaSearchPara RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, HttpStatusCode statusCodeagoda, string Search_Key = "", long elapsedMilliseconds = 0)
         {
             try
             {
@@ -69606,15 +69606,16 @@ new SqlParameter("@AgentId", AgentId),
                                         case "availabilitywithcancellation":
                                         case "availability":
                                         case "availabilitywithcancellationv2":
-                                            bool isapi = tokendata.IsFromAPI;
-                                            if (isapi)
-                                            {
-                                                stage = "Search";
-                                            }
-                                            else
-                                            {
-                                                stage = "SearchById";
-                                            }
+                                            stage = "Search";
+                                            //bool isapi = tokendata.IsFromAPI;
+                                            //if (isapi)
+                                            //{
+                                            //    stage = "Search";
+                                            //}
+                                            //else
+                                            //{
+                                            //    stage = "SearchById";
+                                            //}
                                             break;
 
                                         //case "recheck":
@@ -69641,25 +69642,22 @@ new SqlParameter("@AgentId", AgentId),
                                     bool isapi1 = tokendata.IsFromAPI;
                                     //bool isfromagoda = tokendata.IsFromAgoda;
 
-                                    string source = "";
-                                    if (isapi1)
-                                    {
-                                        source = "APIOut";
-                                    }
-                                    else
-                                    {
-                                        source = "Web";
-                                    }
+                                    string source = "APIOut";
+                                    //if (isapi1)
+                                    //{
+                                    //    source = "APIOut";
+                                    //}
                                     //else
                                     //{
-                                    //    source = "Agoda";
+                                    //    source = "Web";
                                     //}
+                                    
 
                                     _analytic.PushHotelDetailsClientDataForAnalyticsAsyc(new AnalyticsData
                                     {
                                         Result = value,
                                         Action = APIName,
-                                        HttpStatusCode = Convert.ToInt32(statusCode),
+                                        HttpStatusCode = Convert.ToInt32(statusCodeagoda),
                                         Stage = stage,
                                         // Payload = payload,
                                         Payload = RQ,

@@ -53,6 +53,7 @@ namespace XConnect.CommonUtilities.Interface
         Task FireAway_SQL_ResPorcessTimeLog(string Request, string Response, string Supplier, string NewSearchKey, Int32 SSTimeout, int AgentId);
 
         Task FireAway_SPL_SQL(ConcurrentBag<HotelX> AllTask, int AgentId, HotelSearchParameter searchpara, bool isapi = true);
+        Task FireAway_SPL_SQLAgoda(ConcurrentBag<HotelX> AllTask, int AgentId, HotelSearchParameter searchpara, bool isapi = true);
 
         Task FireAway_MongoDB_New(string Request, string Response, string Supplier, string NewSearchKey, Int32 SSTimeout);
 

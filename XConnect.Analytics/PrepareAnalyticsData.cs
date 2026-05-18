@@ -132,7 +132,8 @@ namespace XConnect.Analytics
                 var clientData = new ClientData
                 {
                     ServiceName = QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Client_HotelService,
-                    clientTimeZone = string.IsNullOrEmpty(_userContextAccessor.ClientStats.clientsLocalTimeZone) ? clientsLocalTimeZone : _userContextAccessor.ClientStats.clientsLocalTimeZone,
+                    // clientTimeZone = string.IsNullOrEmpty(_userContextAccessor.ClientStats.clientsLocalTimeZone) ? clientsLocalTimeZone : _userContextAccessor.ClientStats.clientsLocalTimeZone,
+                    clientTimeZone = string.IsNullOrEmpty(_userContextAccessor?.ClientStats?.clientsLocalTimeZone) ? (string.IsNullOrEmpty(clientsLocalTimeZone) ? null : clientsLocalTimeZone) : _userContextAccessor.ClientStats.clientsLocalTimeZone,
                     Description = analyticsData.Description,
                     ApiInfo = apiInfo,
                     UserInfo = userInfo,
@@ -144,7 +145,7 @@ namespace XConnect.Analytics
                     FareInfo = fareInfo,
                     client = clientDetails,
                     BrowserAgent = browserInfo,
-                    SiteType = _userContextAccessor.SiteType,
+                    SiteType = _userContextAccessor?.SiteType??"",
                     SearchAvailTrace= SearchAvailTrace,
                     Source = analyticsData.source,
                 };
@@ -296,7 +297,8 @@ namespace XConnect.Analytics
                             TechnologyPartner = allTasks[i].TechName,
                             SupplierName = allTasks[i].Supplier.ToUpper(),
                             ServiceName = QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Supplier_HotelService,
-                            clientTimeZone = string.IsNullOrEmpty(_userContextAccessor.ClientStats.clientsLocalTimeZone) ? clientsLocalTimeZone : _userContextAccessor.ClientStats.clientsLocalTimeZone,
+                            //clientTimeZone = string.IsNullOrEmpty(_userContextAccessor.ClientStats.clientsLocalTimeZone) ? clientsLocalTimeZone : _userContextAccessor.ClientStats.clientsLocalTimeZone,
+                            clientTimeZone = string.IsNullOrEmpty(_userContextAccessor?.ClientStats?.clientsLocalTimeZone) ? (string.IsNullOrEmpty(clientsLocalTimeZone) ? null : clientsLocalTimeZone) : _userContextAccessor.ClientStats.clientsLocalTimeZone,
                             Description = description,//analyticsData.Description,
                             ApiInfo = apiInfo,
                             UserInfo = userInfo,
@@ -615,12 +617,12 @@ namespace XConnect.Analytics
                 Long = _locationInfo.Long,
                 IsoCountry = _locationInfo.IsoCountry,
                 IsoNationality = _locationInfo.IsoNationality,
-                ClientIp = _userContextAccessor.ClientStats.ClientIp,
+                ClientIp = _userContextAccessor?.ClientStats?.ClientIp ?? "",
                 LocationType = _locationInfo.LocationType,
                 Nationality = _locationInfo.Nationality,
-                ClientCIso = _userContextAccessor.BrowserStats.ClientCIso,
-                ClientCity = _userContextAccessor.BrowserStats.ClientCity,
-                ClientCountry = _userContextAccessor.BrowserStats.ClientCountry,
+                ClientCIso = _userContextAccessor?.BrowserStats?.ClientCIso ?? "",
+                ClientCity = _userContextAccessor?.BrowserStats?.ClientCity ?? "",
+                ClientCountry = _userContextAccessor?.BrowserStats?.ClientCountry ?? "",
 
 
             };
@@ -631,7 +633,7 @@ namespace XConnect.Analytics
         {
             return new ClientDetails
             {
-                ClientName = _userContextAccessor.ClientStats.ClientName,
+                ClientName = _userContextAccessor?.ClientStats?.ClientName ?? "",
             };
         }
 
