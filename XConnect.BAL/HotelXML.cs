@@ -1474,24 +1474,24 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
 
                         //int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
                         int Roommapping = 1;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
-                       if (ActiveRoomMAppingwithoutException) //Add On 17SEP2025 
+                       if (ActiveRoomMAppingwithoutException) //onlyroommapping no added roomid no exeception 
                         {
                             //finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping
                             //need to write code for inserting excetion 
                             finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping_withoutEx(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode,Roommapping, Tokendata.IsFromAPI);
 
                         }
-                        else if (ActiveRoomId)
+                        else if (ActiveRoomId)//roomid no exeception 
                         {
                             finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMappingv2(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping,Tokendata.IsFromAPI); //convert to final response //RoomMapping  //ADD on 29-JAN-2025
 
                         }
-                        else if (ActiveRoomMApping)
+                        else if (ActiveRoomMApping)//no roomid ,but roomapping + exeception will return 
                         {
 
                             finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping, Tokendata.IsFromAPI); //convert to final response //RoomMapping  //ADD on 30-May-2025 
                         }
-                        else
+                        else //normal without room mapping 
                         {
                             finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList(finalResponse, NewSearchKey, withcancellation, Tokendata.IsFromAPI); //convert to final response // No RoomMapping
                         }
