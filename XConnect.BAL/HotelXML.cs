@@ -48850,7 +48850,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 //int Flag = Common.hyperguestPriceCheck(dsCartDetails, hyperguestDetails, j, ref FinalPrice, CurrencyFactorhyperguest, UniqueNo, AgentUniqueNo, ref ResPrice, Supplier);
 
                                                                                 string AGTRef = "";
-                                                                                hyperguestBookingRequest = _hyperguest.hyperguestBookingRequest(dsCartDetails, hyperguestDetails, i, j, ResPrice, dtPassengers, ref AGTRef, CheckIn, CheckOut, UserCartDetailId, AgentCode, IsPruvo);
+                                                                                hyperguestBookingRequest = _hyperguest.hyperguestBookingRequest(dsCartDetails, hyperguestDetails, i, j, ResPrice, dtPassengers, ref AGTRef, CheckIn, CheckOut, UserCartDetailId, UniqueNo, IsPruvo);
                                                                                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), hyperguestBookingRequest, "-", "Before Block Request hit booking [FinalPrice=" + FinalPrice + "]", Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Request Confirm j=" + j + "", ReferenceNo, "WithinEarth");
 
                                                                                 //if (j > 0)
@@ -55494,6 +55494,217 @@ new SqlParameter("@AgentId", AgentId),
                                             AgentVoucherNo = "";
                                             //dtAgentVoucher.Rows.Add(Common.AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), AgentVoucherNo, DingusBookRequest, Responsebook, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
                                         }
+
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _ = _exception.Error(ex);
+                                    }
+
+                                    break;
+
+                                #endregion
+                                #region Hyperguest
+                                case "hyperguest":
+                                    try
+                                    {
+                                        string BookingResponse = "";
+                                        //for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
+                                        int j = 0;
+                                        {
+                                            
+                                            //string hyperguestCurrency = Convert.ToString(ConfigurationManager.AppSettings["hyperguest_Currency"]);
+                                            //string hyperguestCurrency = Convert.ToString(_supplierConfig.Hyperguest.hyperguest_Currency);
+                                            UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                            
+                                            //DataTable dtInrCurrency = Common.GetCountryCurrency(hyperguestCurrency);
+                                            //double CurrencyFactorhyperguest = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
+                                            bookingStatus = 6;
+                                            
+                                            string BookUrl = Convert.ToString(_supplierConfig.Hyperguest.HyperguestBookingURL);
+                                            string URL = BookUrl + "booking/create";
+                                            //Allocation Enqiry
+                                            string Password = Convert.ToString(XPDetails[0]["Password"]);
+
+                                            //Only use For logs
+                                            double Rate = Convert.ToDouble(bookRequest.BookRQ.TotalPrice);
+
+                                            //int UserCartId1 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartID"]);
+                                            //int UserCartDetailId = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
+
+                                            
+                                            int UserCartId1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                            int UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+
+                                            double FinalPrice = Rate;
+
+                                            double ResPrice = 0;
+                                            string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
+                                            //CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                                            string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
+                                            //CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+
+                                            DateTime checkInDate = DateTime.Parse(CheckIn);
+                                            DateTime checkOutDate = DateTime.Parse(CheckOut);
+
+                                            // Convert to "yyyy-MM-dd" format
+                                            CheckIn = checkInDate.ToString("yyyy-MM-dd");
+                                            CheckOut = checkOutDate.ToString("yyyy-MM-dd");
+
+                                            //int Flag = Common.hyperguestPriceCheck(dsCartDetails, hyperguestDetails, j, ref FinalPrice, CurrencyFactorhyperguest, UniqueNo, AgentUniqueNo, ref ResPrice, Supplier);
+                                            string hyperguestBookingRequest = "";
+                                            //string InternalRefNo = "";
+                                            string AgentCode = Convert.ToString(tokenData.AgentCode);
+                                            string AGTRef = "";
+                                            //hyperguestBookingRequest = _hyperguest.hyperguestBookingRequest(bookRequest, XPDetails, 0, j, ResPrice, dtPassengers, ref AGTRef, CheckIn, CheckOut, UserCartDetailId, InternalRefNo);
+                                            bool IsPruvo = false;
+                                            hyperguestBookingRequest = _hyperguest.hyperguestBookingRequest_new(bookRequest, XPDetails, 0, j, ResPrice, dtPassengers, ref AGTRef, CheckIn, CheckOut, UserCartDetailId, AgentCode , IsPruvo);
+
+                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), hyperguestBookingRequest, "-", "Before Block Request hit booking [FinalPrice=" + FinalPrice + "]", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm j=" + j + "", ReferenceNo, "WithinEarth");
+
+                                            // BookingResponse = GethyperguestResponse2(hyperguestBookingRequest, BookUrl, Password);
+
+                                            //if (j > 0)
+                                            //{
+                                            //    delayManual(5000);
+                                            //}
+
+
+                                          //--testing booking request ---comment
+                                         // ResponseDto responseDto = await _hyperguest.GethyperguestResponse(hyperguestBookingRequest, URL, Password, 120000);
+                                         //BookingResponse = responseDto.Response;
+                                            
+
+
+                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), hyperguestBookingRequest, BookingResponse + Error, "After Block Request hit booking.", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "WithinEarth");
+
+
+
+                                            if (BookingResponse == "" || BookingResponse == string.Empty)
+                                            {
+
+                                                bookingStatus = 1;
+                                                if (isNonRefundable && Convert.ToInt32(XPDetails[0]["IsVeryNonrefundable"]) != 1)
+                                                    bookingStatus = 1;
+
+                                                AgentVoucherNo = "-";
+                                                //dtAgentVoucher.Rows.Add(Common.AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), bookingStatus == 2 ? "Rejected" : AgentVoucherNo, hyperguestBookingRequest, BookingResponse, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
+                                            }
+                                            else
+                                            {
+                                                if (BookingResponse.ToLower().Contains("errordetails") == true)
+                                                {
+                                                    bookingStatus = 2;
+                                                    AgentVoucherNo = "-";
+                                                    //dtAgentVoucher.Rows.Add(Common.AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), bookingStatus == 2 ? "Rejected" : AgentVoucherNo, hyperguestBookingRequest, BookingResponse, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
+
+                                                }
+                                                else
+                                                {
+                                                    hyperguest.HyperguestBookingResp.Root HTBookingRes = new hyperguest.HyperguestBookingResp.Root();
+                                                    try
+                                                    {
+                                                        HTBookingRes = JsonConvert.DeserializeObject<hyperguest.HyperguestBookingResp.Root>(BookingResponse);
+
+                                                        if (HTBookingRes != null && HTBookingRes.content.status != null)
+                                                        {
+                                                            if (HTBookingRes.content.bookingId != null)
+                                                            {
+                                                                string status = HTBookingRes.content.status;
+                                                                if (status.ToLower() == "confirmed")
+                                                                    bookingStatus = 6;
+                                                                else if (status.ToLower() == "pending")
+                                                                    bookingStatus = 1;
+                                                                else if (status.ToLower() == "rejected")
+                                                                    bookingStatus = 1;
+                                                                else
+                                                                    bookingStatus = 2;
+
+                                                                string reference = Convert.ToString(HTBookingRes.content.bookingId);
+
+                                                                AgentVoucherNo = reference;
+
+                                                                //dtAgentVoucher.Rows.Add(Common.AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), bookingStatus == 2 ? "Rejected" : AgentVoucherNo, hyperguestBookingRequest, BookingResponse, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
+
+
+                                                                #region Booking DataRaw
+
+                                                                AgentVoucher agentVoucher = new AgentVoucher();
+
+                                                                //DataRow newRow_Hyperguest = dtAgentVoucher.NewRow();
+
+                                                                agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                                agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                                agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                                agentVoucher.XMLRequest = hyperguestBookingRequest;
+                                                                agentVoucher.XMLResponse = BookingResponse;
+                                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                                agentVoucher.SupplierName = bookRequest.userCart.UserCartDetails[j].SupplierName;
+                                                                //newRow_Hyperguest["PackageId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["PackageId"]);
+                                                                //newRow_Hyperguest["TicketNumber"] = "Book" + Convert.ToString(Common.getSession("AgentCode") + "_" + UniqueNo);
+                                                                //newRow_Hyperguest["TicketOrderNumber"] = InternalRefNo;
+                                                                agentVouchers.Add(agentVoucher);
+                                                                #endregion
+                                                            }
+                                                            else
+                                                            {
+
+                                                                bookingStatus = 2; AgentVoucherNo = ".";
+                                                                if (HTBookingRes == null)
+                                                                    bookingStatus = 1; AgentVoucherNo = ":";
+
+                                                                //dtAgentVoucher.Rows.Add(Common.AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), bookingStatus == 2 ? "Rejected" : AgentVoucherNo, hyperguestBookingRequest, BookingResponse, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
+
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            bookingStatus = 2; AgentVoucherNo = "";
+                                                            //dtAgentVoucher.Rows.Add(Common.AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), AgentVoucherNo, hyperguestBookingRequest, BookingResponse, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
+                                                        }
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        bookingStatus = 1; AgentVoucherNo = ":";
+                                                        _ = _exception.Error(ex);
+                                                        //Common.Error(ex);
+
+
+                                                        //dtAgentVoucher.Rows.Add(Common.AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), AgentVoucherNo, hyperguestBookingRequest, BookingResponse, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus, voucherpackageid));
+
+                                                    }
+                                                }
+
+                                                
+
+                                            }
+                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), hyperguestBookingRequest, BookingResponse, "After Block Request hit booking...", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), Convert.ToString(bookingStatus), AgentVoucherNo, "WithinEarth");
+
+                                            // Comment on 18/05/2026 
+                                            //if (bookingStatus != 6)
+                                            //{
+                                            //    #region APISO VC for release if my booking is non con
+
+                                            //    int usercartdetailsid = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                            //    //get bookingid and detailsid
+                                            //    DLConnection db = new DLConnection();
+                                            //    SqlParameter[] param = new SqlParameter[]
+                                            //    {
+                                            //                                            new SqlParameter("@usercartdetailsid",usercartdetailsid)
+                                            //    };
+
+                                            //    DataTable dtbookingdata = db.GetDataTable("getApisobookingdata", param);
+
+
+                                            //    if (dtbookingdata != null)
+                                            //    {
+                                            //        GetApisoServiceDatatoReloadVCNDebitNonconfirmedbookings("", Convert.ToInt32(dtbookingdata.Rows[0]["OnlineBookingMasterId"]), Convert.ToInt32(dtbookingdata.Rows[0]["OnlineBookingDetailsId"]));
+                                            //    }
+                                            //    #endregion
+                                            //}
+
+                                        }
+
 
                                     }
                                     catch (Exception ex)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static XConnect.Supplier.Agoda.Agoda_newBookingRQ;
+using static XConnect.Supplier.GRNC.GRNCsearch;
 
 namespace XConnect.Supplier.Hyperguest
 {
@@ -11,7 +13,7 @@ namespace XConnect.Supplier.Hyperguest
         #region hyperguest class
         public class hyperguest
         {
-           // public static string hyperguest_Currency = "USD";
+            // public static string hyperguest_Currency = "USD";
 
             #region roomlist
             public class RoomList
@@ -1085,19 +1087,37 @@ namespace XConnect.Supplier.Hyperguest
                     public List<string> specialRequests { get; set; }
                     public List<Guest> guests { get; set; }
                 }
+
+                public class PaymentDetails
+                {
+                    public string type { get; set; }
+                    public Details details { get; set; }
+                }
+
+                public class Details
+                {
+                    public string number { get; set; }
+                    public string cvv { get; set; }
+                    public Expiry expiry { get; set; }
+                    public Name name { get; set; }
+                }
                 public class Root
                 {
+                    public int propertyId { get; set; }
+                   
                     public Dates dates { get; set; }
                     public int hotelId { get; set; }
                     public LeadGuest leadGuest { get; set; }
                     public Reference reference { get; set; }
                     public CreditCard creditCard { get; set; }
                     public List<Room> rooms { get; set; }
+                    public PaymentDetails paymentDetails { get; set; }
+                    
                 }
             }
             #endregion
 
-            
+
         }
         #endregion
     }
