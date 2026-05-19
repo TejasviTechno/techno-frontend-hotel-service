@@ -2897,7 +2897,7 @@ namespace XConnect.Supplier.Hyperguest
             }
             return RequestString;
         }
-        public string hyperguestBookingRequest(DataSet dsCartDetails, DataRow[] hyperguestDetails, int i, int j, double resPrice, DataTable dtPassengers, ref string AgtRef, string CheckIn, string CheckOut, int UniqueNo, String AgentCode, bool IsPruvo)
+        public string hyperguestBookingRequest(DataSet dsCartDetails, DataRow[] hyperguestDetails, int i, int j, double resPrice, DataTable dtPassengers, ref string AgtRef, string CheckIn, string CheckOut, int UniqueNo, string AgentCode ,bool IsPruvo)
         {
             string RequestString = "";
             try
@@ -2913,7 +2913,9 @@ namespace XConnect.Supplier.Hyperguest
                 string currency = spitid1[4];
                 string XmlNationality = spitid1[5];
 
+                //string HotelCode = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
                 string HotelCode = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
+
                 string ExternalReference = "Book_" + Convert.ToString(AgentCode + "_" + UniqueNo);
 
                 hyperguest.hyperguestBookingReq.LeadGuest objLeadPaxName = new hyperguest.hyperguestBookingReq.LeadGuest();
@@ -2931,11 +2933,11 @@ namespace XConnect.Supplier.Hyperguest
                 objcontect.country = XmlNationality;
 
                 string isLead = string.Empty;
-                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]) + "' and RoomNo='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomNumber"]) + "' and IsLead=1";
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + roomtypeid + "' and RoomNo='" + Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["RoomNumber"]) + "' and IsLead=1";
                 if (dtPassengers.DefaultView.Count == 0)
                     isLead = "true";
                 dtPassengers.DefaultView.RowFilter = "";
-                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]) + "' and RoomNo='" + (dsCartDetails.Tables[1].DefaultView[j]["RoomNumber"]) + "' and UserCartId='" + dsCartDetails.Tables[0].Rows[i]["UserCartId"] + "'";
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + roomtypeid + "' and RoomNo='" + Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["RoomNumber"]) + "' and UserCartId='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartId"]) + "'";
                 dtPassengers.DefaultView.Sort = "IsLead desc";
                 if (dtPassengers.DefaultView.Count > 0)
                 {
@@ -3011,7 +3013,7 @@ namespace XConnect.Supplier.Hyperguest
 
 
                 #region APISO VC
-                int usercartdetailsid = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
+                int usercartdetailsid = Convert.ToInt32(dsCartDetails.Tables[0].DefaultView[i]["UserCartDetailId"]); 
                 string Pan = "";
                 string CVV = "0", Expiry = "0";
 
@@ -3073,12 +3075,205 @@ namespace XConnect.Supplier.Hyperguest
                 return RequestString;
 
 
-                return RequestString;
+                
 
             }
             catch (Exception ex)
             {
                 _ =_exception.ErrorNew(ex, ErrorLog._LogAPI.Book);
+            }
+            return RequestString;
+        }
+
+
+        public string hyperguestBookingRequest_new(BookRequest_newversion bookRequest, DataRow[] hyperguestDetails, int i, int j, double resPrice, DataTable dtPassengers, ref string AgtRef, string CheckIn, string CheckOut, int UniqueNo, string AgentCode, bool IsPruvo)
+        {
+            string RequestString = "";
+            #region APISO VC
+            //int usercartdetailsid = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
+            //string Pan = "";
+            //string CVV = "0", Expiry = "0";
+            //GetApisoDetail(usercartdetailsid, "", ref Pan, ref CVV, ref Expiry);
+
+            //string ExpiryRegex = Convert.ToString(Expiry).Substring(2, 2);
+            //string ExpiryRegexFisrt = Convert.ToString(Expiry).Substring(0, 2);
+            #endregion
+            try
+            {
+
+
+
+                string AllRoomPrice = Convert.ToString(bookRequest.userCart.UserCartDetails[j].EachoToken);//added by jay
+                string[] TotalRoom = AllRoomPrice.Split(new String[] { "$$$" }, StringSplitOptions.None);
+
+                string roomtypeid = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
+                string[] spitid1 = roomtypeid.Split(new String[] { "###" }, StringSplitOptions.None);
+
+                string rateCode = spitid1[1];
+                string roomCode = spitid1[0];
+
+                string currency = spitid1[4];
+
+                if (currency == "AR$")
+                {
+                    currency = "ARS";
+                }
+
+
+
+                string XmlNationality = spitid1[5];
+
+                string HotelCode = spitid1[2]; //Convert.ToString(bookRequest.userCart.XMLHotelId);
+                //string ExternalReference = "Book_" + Convert.ToString(Common.getSession("AgentCode") + "_" + UniqueNo);
+                string ExternalReference = "Book_" + Convert.ToString(AgentCode + "_" + UniqueNo);
+
+                hyperguest.hyperguestBookingReq.LeadGuest objLeadPaxNameCommon = new hyperguest.hyperguestBookingReq.LeadGuest();
+                hyperguest.hyperguestBookingReq.LeadGuest objLeadPaxName = new hyperguest.hyperguestBookingReq.LeadGuest();
+
+
+                List<hyperguest.hyperguestBookingReq.Room> Rooms = new List<hyperguest.hyperguestBookingReq.Room>();
+                for (int a = 0; a < TotalRoom.Length - 1; a++)
+                {
+                    List<hyperguest.hyperguestBookingReq.Guest> objGuests = new List<hyperguest.hyperguestBookingReq.Guest>();
+                    hyperguest.hyperguestBookingReq.Contact objcontect = new hyperguest.hyperguestBookingReq.Contact();
+                    objcontect.address = "N/A";
+                    objcontect.city = "N/A";
+                    objcontect.email = "reservas@nites.travel";
+                    objcontect.phone = "N/A";
+                    objcontect.state = "N/A";
+                    objcontect.zip = "N/A";
+                    objcontect.country = XmlNationality;
+
+                    int RoomNo = a + 1;
+                    string isLead = string.Empty;
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and RoomNo='" + Convert.ToString(RoomNo) + "' and IsLead=1";
+                    if (dtPassengers.DefaultView.Count == 0)
+                        isLead = "true";
+                    dtPassengers.DefaultView.RowFilter = "";
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and RoomNo='" + Convert.ToString(RoomNo) + "' and UserCartId='" + bookRequest.userCart.UserCartId + "'";
+                    dtPassengers.DefaultView.Sort = "IsLead desc";
+                    if (dtPassengers.DefaultView.Count > 0)
+                    {
+                        for (int k = 0; k < dtPassengers.DefaultView.Count; k++)
+                        {
+                            DataRow[] drPassengers = dtPassengers.DefaultView.ToTable().Select("IsLead='1'");
+                            if (drPassengers.Length == 0)
+                            {
+                                if (Convert.ToString(dtPassengers.DefaultView[k]["PaxType"]).Trim().ToLower() == "adult")
+                                    dtPassengers.DefaultView[k]["IsLead"] = 1;
+                            }
+                            if (Convert.ToInt16(dtPassengers.DefaultView[k]["IsLead"]) == 1)
+                            {
+                                hyperguest.hyperguestBookingReq.Name objLeadGuestName = new hyperguest.hyperguestBookingReq.Name();
+                                objLeadGuestName.first = Convert.ToString(dtPassengers.DefaultView[k]["FirstName"]).Trim();
+                                objLeadGuestName.last = Convert.ToString(dtPassengers.DefaultView[k]["LastName"]).Trim();
+                                objLeadPaxName.title = Convert.ToString(dtPassengers.DefaultView[k]["Prefix"]).Trim().Replace(".", "");
+                                objLeadPaxName.name = objLeadGuestName;
+
+                                string BirthDay1 = Convert.ToString(DateTime.Now.Date.AddYears(-30));
+                                DateTime Dt1 = (Convert.ToDateTime(BirthDay1));
+                                string TD1 = Dt1.ToString("yyyy-MM-dd");
+                                objLeadPaxName.birthDate = Convert.ToString(TD1); //"1990-12-24";
+                                objLeadPaxName.contact = objcontect;
+
+                                if (RoomNo == 1)
+                                {
+                                    objLeadPaxNameCommon.title = Convert.ToString(dtPassengers.DefaultView[k]["Prefix"]).Trim().Replace(".", "");
+                                    objLeadPaxNameCommon.name = objLeadGuestName;
+                                    objLeadPaxNameCommon.birthDate = Convert.ToString(TD1); //"1990-12-24";
+                                    objLeadPaxNameCommon.contact = objcontect;
+                                }
+                            }
+                            //else
+                            {
+                                hyperguest.hyperguestBookingReq.Guest objGuestNew = new hyperguest.hyperguestBookingReq.Guest();
+                                hyperguest.hyperguestBookingReq.Name objguests = new hyperguest.hyperguestBookingReq.Name();
+                                objguests.first = Convert.ToString(dtPassengers.DefaultView[k]["FirstName"]).Trim();
+                                objguests.last = Convert.ToString(dtPassengers.DefaultView[k]["LastName"]).Trim();
+                                objGuestNew.title = Convert.ToString(dtPassengers.DefaultView[k]["Prefix"]).Trim().Replace(".", "");
+                                objGuestNew.birthDate = "1990-12-24";
+                                if (Convert.ToString(dtPassengers.DefaultView[k]["PaxType"]).Trim().ToLower() == "child")
+                                {
+                                    int ChildAge = Convert.ToInt32(dtPassengers.DefaultView[k]["ChildAge"]);
+                                    string BirthDay = Convert.ToString(DateTime.Now.Date.AddYears(-ChildAge));
+                                    DateTime Dt = (Convert.ToDateTime(BirthDay));
+                                    string TD = Dt.ToString("yyyy-MM-dd");
+                                    objGuestNew.birthDate = Convert.ToString(TD);
+                                }
+                                else
+                                {
+                                    string BirthDay = Convert.ToString(DateTime.Now.Date.AddYears(-30));
+                                    DateTime Dt = (Convert.ToDateTime(BirthDay));
+                                    string TD = Dt.ToString("yyyy-MM-dd");
+                                    objGuestNew.birthDate = Convert.ToString(TD);
+                                }
+                                objGuestNew.name = objguests;
+                                if (k == 0)
+                                    objGuestNew.contact = objcontect;
+                                objGuests.Add(objGuestNew);
+                            }
+
+                        }
+                    }
+
+                    hyperguest.hyperguestBookingReq.ExpectedPrice ExpectedPriceForRoom = new hyperguest.hyperguestBookingReq.ExpectedPrice();
+
+                    ExpectedPriceForRoom.amount = Convert.ToDouble(TotalRoom[a]);
+                    ExpectedPriceForRoom.currency = currency;
+
+                    hyperguest.hyperguestBookingReq.Room Room = new hyperguest.hyperguestBookingReq.Room();
+                    Room.rateCode = rateCode;
+                    Room.roomCode = roomCode;
+                    Room.expectedPrice = ExpectedPriceForRoom;
+                    Room.guests = objGuests;
+                    Rooms.Add(Room);
+
+                }
+
+                //hyperguest.hyperguestBookingReq.Name objName = new hyperguest.hyperguestBookingReq.Name();
+                //objName.first = "Dwant Travel";
+                //objName.last = "Dwant Travel";
+
+                //hyperguest.hyperguestBookingReq.Expiry objExpiry = new hyperguest.hyperguestBookingReq.Expiry();
+                //objExpiry.month = ExpiryRegex;
+                //objExpiry.year = "20" + ExpiryRegexFisrt;
+
+                //hyperguest.hyperguestBookingReq.CreditCard objCreditCard = new hyperguest.hyperguestBookingReq.CreditCard();
+                //objCreditCard.cvv = CVV;  //Convert.ToString(ConfigurationManager.AppSettings["Hyperguestcraditcardcvv"]); //"123";
+                //objCreditCard.expiry = objExpiry;
+                //objCreditCard.name = objName;
+                //objCreditCard.number = Pan; // Convert.ToString(ConfigurationManager.AppSettings["Hyperguestcraditcardnumber"]);
+
+                hyperguest.hyperguestBookingReq.PaymentDetails objpaymantdetail = new hyperguest.hyperguestBookingReq.PaymentDetails();
+                objpaymantdetail.type = "external";
+
+
+                hyperguest.hyperguestBookingReq.Reference objReference = new hyperguest.hyperguestBookingReq.Reference();
+                objReference.agency = ExternalReference;
+
+                hyperguest.hyperguestBookingReq.Dates objDates = new hyperguest.hyperguestBookingReq.Dates();
+                objDates.from = CheckIn;
+                objDates.to = CheckOut;
+
+                hyperguest.hyperguestBookingReq.Root main = new hyperguest.hyperguestBookingReq.Root();
+                main.dates = objDates;
+                main.propertyId = Convert.ToInt32(HotelCode);
+                //main.reference.agency = ExternalReference;
+                main.reference = objReference;
+                //main.creditCard = objCreditCard;
+                main.leadGuest = objLeadPaxNameCommon;
+                main.rooms = Rooms;
+                main.paymentDetails = objpaymantdetail;
+
+                JsonSerializerSettings settings = new JsonSerializerSettings();
+                settings.NullValueHandling = NullValueHandling.Ignore;
+                RequestString = JsonConvert.SerializeObject(main, settings);
+                return RequestString;
+
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
             }
             return RequestString;
         }
