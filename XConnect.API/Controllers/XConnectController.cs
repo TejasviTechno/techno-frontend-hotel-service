@@ -2792,7 +2792,7 @@ namespace XConnect.API.Controllers
                                 _ = _exception.Error(x);
                             }
                             timer.Stop();
-                            return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, payload.SearchKey, EntryTime, Ref, IntRef, "", 200);
+                            return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.NotFound, RS, "application/json", data, RS, authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, payload.SearchKey, EntryTime, Ref, IntRef, "", 200);
 
                         }
                         else
@@ -3475,12 +3475,12 @@ namespace XConnect.API.Controllers
                                 else
                                     RS.PreBookRS.Currency = authData.tokenData.SiteCurrency;
 
-                                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "PreBook", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200, null, timer.ElapsedMilliseconds);
+                                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.NotFound, RS, "application/json", data, RS, authData.tokenData, "PreBook", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200, null, timer.ElapsedMilliseconds);
                             }
                             else
                             {
                                 timer.Stop();
-                                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "PreBook", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200, null, timer.ElapsedMilliseconds);
+                                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.NotFound, RS, "application/json", data, RS, authData.tokenData, "PreBook", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200, null, timer.ElapsedMilliseconds);
 
                             }
 
