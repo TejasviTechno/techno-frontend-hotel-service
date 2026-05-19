@@ -859,7 +859,7 @@ namespace XConnect.Supplier.Exely
 
                     if (matchedPolicy.freeCancellationPossible && matchedPolicy.freeCancellationDeadlineLocal.HasValue)
                     {
-                        DateTime deadlineDate = matchedPolicy.freeCancellationDeadlineLocal.Value.AddDays(cutOffDays);
+                        DateTime deadlineDate = matchedPolicy.freeCancellationDeadlineLocal.Value.Date;
                         if (nowDate.Date < deadlineDate.Date)
                         {
                             double zero = 0;
@@ -867,8 +867,15 @@ namespace XConnect.Supplier.Exely
                                 roomtypeid, "", Convert.ToString(OptionCode), nowDate, deadlineDate.AddDays(-1).AddHours(00).AddMinutes(00).AddSeconds(00), 0, 0, "", vatOnPolicy, "", "NO", "", matchedEssen, "", ""));
                             dtHotelCancellation.AcceptChanges();
                         }
-                        dtHotelCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref companyChargeAmount, dtHotelCancellation.NewRow(), currencyFactor, currency, Supplier, ownsystemid, Convert.ToString(roomno),
-                             roomtypeid, "", Convert.ToString(OptionCode), deadlineDate, checkInDate, markedUpCharge, markedUpCharge, "", vatOnPolicy, "", "YES", "", matchedEssen, "", ""));
+                        double penaltyBase = (matchedPolicy.penaltyAmount.HasValue && matchedPolicy.penaltyAmount.Value > 0)
+                            ? matchedPolicy.penaltyAmount.Value * currencyFactor
+                            : cancellationChargeAmount;
+                        double vatOnPenalty = 0;
+                        double penaltyMainAgent = penaltyBase;
+                        double penaltyCompany = penaltyBase;
+                        double penaltyMarkedUp = _markup.ProcessHotelCancelationPrice_WithMarkup(ref penaltyMainAgent, SearchPara.NoofNights, SearchPara.CityID, Convert.ToString(SearchPara.CountryID), penaltyBase, isPerce, b2cMarkup, agentPercentage, agentMarkupAmount, 1, 0, ref vatOnPenalty);
+                        dtHotelCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref penaltyCompany, dtHotelCancellation.NewRow(), currencyFactor, currency, Supplier, ownsystemid, Convert.ToString(roomno),
+                             roomtypeid, "", Convert.ToString(OptionCode), deadlineDate, checkInDate, penaltyMarkedUp, penaltyMarkedUp, "", vatOnPenalty, "", "YES", "", matchedEssen, "", ""));
                         dtHotelCancellation.AcceptChanges();
                     }
                     else
@@ -1020,31 +1027,55 @@ namespace XConnect.Supplier.Exely
                     string propertyTemplate = (_supplierConfig.Exely.PropertyContentByProperty ?? string.Empty).TrimStart('/');
                     string propertyUrl = $"{baseUrl.TrimEnd('/')}/{propertyTemplate.Replace("{propertyId}", hotelId)}?languageCode=en";
                     requestData = propertyUrl;
-                    /*// RECHECK: GET /api/search/v1/properties/{propertyId}/room-stays
                     string recheckCheckIn = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]) ?? string.Empty;
                     string recheckCheckOut = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckOutDate"]) ?? string.Empty;
+                    string recheckRoomTypeId = string.Empty;
                     int recheckAdults = 1;
                     if (dsCartDetails.Tables.Count > 1 && dsCartDetails.Tables[1].DefaultView.Count > j)
+                    {
                         recheckAdults = Math.Max(1, Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfAdults"]));
+                        recheckRoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]) ?? string.Empty;
+                    }
+                    string[] recheckRtParts = recheckRoomTypeId.Split("$$$");
+                    string recheckExpectedRoomType = recheckRtParts.Length > 0 ? recheckRtParts[0] : "";
+                    string recheckExpectedRatePlan = recheckRtParts.Length > 1 ? recheckRtParts[1] : "";
                     string recheckArrival = ParseSearchDate(recheckCheckIn).ToString("yyyy-MM-dd");
                     string recheckDeparture = ParseSearchDate(recheckCheckOut).ToString("yyyy-MM-dd");
-                    string propertyTemplate = (_supplierConfig.Exely.GetRoomStaysByProperty ?? string.Empty).TrimStart('/');
-                    string propertyUrl = $"{baseUrl.TrimEnd('/')}/{propertyTemplate.Replace("{propertyId}", hotelId)}?arrivalDate={recheckArrival}&departureDate={recheckDeparture}&adults={recheckAdults}";
-                    requestData = propertyUrl;*/
+                    string recheckTemplate = (_supplierConfig.Exely.GetRoomStaysByProperty ?? string.Empty).TrimStart('/');
+                    string recheckUrl = $"{baseUrl.TrimEnd('/')}/{recheckTemplate.Replace("{propertyId}", hotelId)}?arrivalDate={recheckArrival}&departureDate={recheckDeparture}&adults={recheckAdults}";
+                    requestData = recheckUrl;
 
                     _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, "-", "Before Exely Recheck", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
                     #endregion Request
 
                     #region Response
-                    var responseDto = await ExelyGetResponseAsync(propertyUrl, bookingTimeout, password, Searchkey);
+                    var responseDto = await ExelyGetResponseAsync(recheckUrl, bookingTimeout, password, Searchkey);
                     responseData = responseDto.Response;
 
                     _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData + "|ERR:" + responseDto.Error, "After Exely Recheck", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
 
-                    // Property API failure should not block booking — always mark as available
                     priceCheckCMDto.IsError = false;
                     priceCheckCMDto.Flag = false;
                     priceCheckCMDto.ItemPrice = itempriceY > 0 ? itempriceY : CompanyBuyingPriceA;
+
+                    if (!string.IsNullOrWhiteSpace(responseData) && !responseData.ToLower().Contains("\"error\""))
+                    {
+                        var recheckResult = JsonConvert.DeserializeObject<SearchByPropertyResponse>(responseData);
+                        var matchedRecheckStay = recheckResult?.roomStays?.FirstOrDefault(rs =>
+                            (string.IsNullOrWhiteSpace(recheckExpectedRoomType) || string.Equals(rs.roomType?.id, recheckExpectedRoomType, StringComparison.OrdinalIgnoreCase)) &&
+                            (string.IsNullOrWhiteSpace(recheckExpectedRatePlan) || string.Equals(rs.ratePlan?.id, recheckExpectedRatePlan, StringComparison.OrdinalIgnoreCase)));
+
+                        if (matchedRecheckStay != null)
+                        {
+                            double livePrice = matchedRecheckStay.total?.priceBeforeTax ?? 0;
+                            double storedPrice = itempriceY > 0 ? itempriceY : CompanyBuyingPriceA;
+                            if (livePrice > 0 && Math.Abs(livePrice - storedPrice) > 0.01)
+                            {
+                                priceCheckCMDto.Flag = true;
+                                priceCheckCMDto.ItemPrice = livePrice;
+                            }
+                        }
+                    }
                     #endregion Response
                     #endregion Recheck
                 }
@@ -1997,7 +2028,7 @@ namespace XConnect.Supplier.Exely
             {
                 if (cancellationPolicy.freeCancellationDeadlineLocal.HasValue)
                 {
-                    DateTime deadlineDate = cancellationPolicy.freeCancellationDeadlineLocal.Value.AddDays(cutOffDays);
+                    DateTime deadlineDate = cancellationPolicy.freeCancellationDeadlineLocal.Value.Date;
                     string deadlineLocalStr = deadlineDate.ToString("yyyy-MM-ddTHH:mm");
                     string deadlineUtcStr = cancellationPolicy.freeCancellationDeadlineUtc.HasValue
                         ? cancellationPolicy.freeCancellationDeadlineUtc.Value.AddDays(cutOffDays).ToString("yyyy-MM-ddTHH:mm") + "Z"
