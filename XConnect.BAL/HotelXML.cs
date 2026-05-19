@@ -52231,7 +52231,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     else
                                                         agentVoucher.XMLResponse = ResponseDataHotelBedsV1;
 
-                                                    agentVoucher.RoomStatus = Convert.ToString(2);
+                                                    agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                     agentVoucher.SupplierName = suppliername;
                                                     agentVouchers.Add(agentVoucher);
                                                     //bookResponse_1.agentVouchers = agentVouchers;

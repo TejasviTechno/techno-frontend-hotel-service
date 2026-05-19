@@ -48,7 +48,7 @@ namespace XConnect.CommonUtilities
             _clientSuppLog = new MongoClient(_settings.MongoDB_ConnectionStr_SupplierLog);
             _clientRoomMapping = new MongoClient(_settings.MongoDB_ConnectionStr_RoomMapping);
            // _clientRoomMapping2 = new MongoClient(_settings.MongoDB_ConnectionStr_RoomMapping2);
-            _clientUnMappedRoomMapping = new MongoClient(_settings.MongoDB_ConnectionStr_UmMappedRoomMapping);
+            _clientUnMappedRoomMapping = new MongoClient(_settings.UnMapped_MongoDB_CollectionName_RoomMapping);
             _clientQRSLog = new MongoClient(_settings.MongoDB_ConStr_SaveAPIRQRSLog);
             _clientSPR = new MongoClient(_settings.MongoDB_ConStr_SPR);
             _clientExceptionLog = CreateFastClient(_settings.MongoDB_ConnectionStr_ExceptionLog); //Add On 31-DEC-25
@@ -149,7 +149,7 @@ namespace XConnect.CommonUtilities
                                 ? GetBalancedRoomMappingDatabase()
                                 : _clientRoomMapping.GetDatabase(_settings.MongoDB_DatabaseName_RoomMapping),
 
-                "Row_RoomsForRoomMapping" => _clientUnMappedRoomMapping.GetDatabase(_settings.MongoDB_DatabaseName_UmMappedRoomMapping),
+                "Roommapping_Excption" => _clientUnMappedRoomMapping.GetDatabase(_settings.UnMapped_MongoDB_CollectionName_RoomMapping),
                 "QRSLog" => _clientQRSLog.GetDatabase(_settings.MongoDB_DatabaseName_SaveAPIRQRSLog),
                 "SPR" => _clientSPR.GetDatabase(_settings.MongoDB_DatabaseName_SPR),
                 "BookingCRoomMapping" => _clientRoomMapping.GetDatabase(_settings.MongoDB_DatabaseName_BookingC), //130625
