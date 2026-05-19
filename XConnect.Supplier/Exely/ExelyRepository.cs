@@ -454,11 +454,14 @@ namespace XConnect.Supplier.Exely
                                             List<ShortRoomStay> roomsForHotel = result.roomStays
                                                 .Where(rs => string.Equals(rs.propertyId, hotelCode, StringComparison.OrdinalIgnoreCase))
                                                 .ToList();
-                                            // Fetch English room type names from Content API, cached for 24 hours
-                                            string contentCacheKey = $"ExelyRoomTypeNames_{hotelCode}_en";
-                                            if (!_cache.TryGetValue(contentCacheKey, out Dictionary<string, string>? roomTypeEnNames))
+                                            // Fetch English content from Content API (room names, category names, hotel description), cached for 24 hours
+                                            string contentCacheKey = $"ExelyPropertyContent_{hotelCode}_en";
+                                            Dictionary<string, string>? roomTypeEnNames;
+                                            Dictionary<string, string>? roomTypeCategoryNames;
+                                            string? hotelDescFromContent;
+                                            if (!_cache.TryGetValue(contentCacheKey, out (Dictionary<string, string>? Names, Dictionary<string, string>? CategoryNames, string? Description) contentData))
                                             {
-                                                roomTypeEnNames = null;
+                                                contentData = (null, null, null);
                                                 if (!string.IsNullOrWhiteSpace(exelyBaseUrl) && !string.IsNullOrWhiteSpace(Item.PassWord))
                                                 {
                                                     string enContentTpl = (_supplierConfig.Exely.PropertyContentByProperty ?? string.Empty).TrimStart('/');
@@ -467,14 +470,31 @@ namespace XConnect.Supplier.Exely
                                                     if (!string.IsNullOrWhiteSpace(enContentDto.Response) && !enContentDto.Response.ToLower().Contains("\"error\""))
                                                     {
                                                         var enContentResult = JsonConvert.DeserializeObject<PropertyInfoType>(enContentDto.Response);
-                                                        if (enContentResult?.RoomTypes != null)
-                                                            roomTypeEnNames = enContentResult.RoomTypes
-                                                                .Where(rt => !string.IsNullOrWhiteSpace(rt.Id) && !string.IsNullOrWhiteSpace(rt.Name))
-                                                                .ToDictionary(rt => rt.Id, rt => rt.Name, StringComparer.OrdinalIgnoreCase);
+                                                        
+                                                        if (enContentResult != null)
+                                                        {
+                                                            Dictionary<string, string>? names = null;
+                                                            Dictionary<string, string>? cats = null;
+                                                            if (enContentResult.RoomTypes != null)
+                                                            {
+                                                                names = enContentResult.RoomTypes
+                                                                    .Where(rt => !string.IsNullOrWhiteSpace(rt.Id) && !string.IsNullOrWhiteSpace(rt.Name))
+                                                                    .ToDictionary(rt => rt.Id, rt => rt.Name, StringComparer.OrdinalIgnoreCase);
+                                                                cats = enContentResult.RoomTypes
+                                                                    .Where(rt => !string.IsNullOrWhiteSpace(rt.Id) && !string.IsNullOrWhiteSpace(rt.CategoryName))
+                                                                    .ToDictionary(rt => rt.Id, rt => rt.CategoryName, StringComparer.OrdinalIgnoreCase);
+                                                            }
+                                                            contentData = (names, cats, enContentResult.Description);
+                                                        }
                                                     }
                                                 }
-                                                _cache.Set(contentCacheKey, roomTypeEnNames, TimeSpan.FromHours(24));
+                                                _cache.Set(contentCacheKey, contentData, TimeSpan.FromHours(24));
                                             }
+                                            roomTypeEnNames = contentData.Names;
+                                            roomTypeCategoryNames = contentData.CategoryNames;
+                                            hotelDescFromContent = contentData.Description;
+                                            if (!string.IsNullOrWhiteSpace(hotelDescFromContent))
+                                                drXmlHotel["Description"] = hotelDescFromContent;
                                             for (int j = 0; j < roomsForHotel.Count; j++)
                                             {
                                                 var roomStay = roomsForHotel[j];
@@ -527,15 +547,34 @@ namespace XConnect.Supplier.Exely
                                                 drHotelRoom["OfferDescription"] = SpecialOfferText;
                                                 drHotelRoom["OfferCode"] = string.IsNullOrEmpty(SpecialOfferText) ? "" : "offer";
                                                 drHotelRoom["Characteristic"] = "";
-                                                if (!string.IsNullOrEmpty(BookingConditions))
+                                                string stayTimesInfo = "";
+                                                if (roomStay.stayDates != null)
                                                 {
-                                                    drHotelRoom["EssentialInformation"] = "</br>" + BookingConditions;
+                                                    string checkInTime = roomStay.stayDates.arrivalDateTime.ToString("HH:mm");
+                                                    string checkOutTime = roomStay.stayDates.departureDateTime.ToString("HH:mm");
+                                                    string timezoneLabel = "hotel local time";
+                                                    if (roomStay.cancellationPolicy?.freeCancellationDeadlineLocal.HasValue == true
+                                                        && roomStay.cancellationPolicy?.freeCancellationDeadlineUtc.HasValue == true)
+                                                    {
+                                                        TimeSpan utcOffset = roomStay.cancellationPolicy.freeCancellationDeadlineLocal.Value
+                                                            - roomStay.cancellationPolicy.freeCancellationDeadlineUtc.Value;
+                                                        string sign = utcOffset >= TimeSpan.Zero ? "+" : "-";
+                                                        timezoneLabel = $"UTC {sign}{Math.Abs((int)utcOffset.TotalHours):D2}:{Math.Abs(utcOffset.Minutes):D2}";
+                                                    }
+                                                    stayTimesInfo = $"Check-in: {checkInTime} | Check-out: {checkOutTime} ({timezoneLabel})";
                                                 }
+                                                var essentialParts = new List<string>();
+                                                if (!string.IsNullOrEmpty(stayTimesInfo)) essentialParts.Add(stayTimesInfo);
+                                                if (!string.IsNullOrEmpty(BookingConditions)) essentialParts.Add(BookingConditions);
+                                                if (essentialParts.Count > 0)
+                                                    drHotelRoom["EssentialInformation"] = "</br>" + string.Join("</br>", essentialParts);
                                                 _markup.ProcessHotelRoom_WithMarkup(Factor, roomCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref roomLevelTotal, ref drHotelRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
                                                 drHotelRoom["SupplierName"] = Item.Supplier;
                                                 drHotelRoom["BoardTypeID"] = roomStay.mealPlanCode;
                                                 string enRoomName = roomTypeEnNames != null && roomTypeEnNames.TryGetValue(roomStay.roomType?.id ?? "", out string? enN) ? enN : null;
                                                 drHotelRoom["RoomTypeName"] = (!string.IsNullOrWhiteSpace(enRoomName) ? enRoomName : (roomStay.fullPlacementsName ?? string.Empty)).Replace("-", "_");
+                                                if (roomTypeCategoryNames != null && roomTypeCategoryNames.TryGetValue(roomStay.roomType?.id ?? "", out string? catN) && !string.IsNullOrWhiteSpace(catN))
+                                                    drHotelRoom["Type"] = catN;
                                                 dt_HotelRoom.Rows.Add(drHotelRoom);
                                                 // Clone room row for each additional room — use per-room occupancy search
                                                 for (int roomIdx = 1; roomIdx < SearchParam.Rooms.Count; roomIdx++)
