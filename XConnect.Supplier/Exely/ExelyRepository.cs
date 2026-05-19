@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -26,9 +27,10 @@ namespace XConnect.Supplier.Exely
         private readonly ISupplierRes _supplierRes;
         private readonly IMarkup _markup;
         private readonly SupplierConfiguration _supplierConfig;
+        private readonly IMemoryCache _cache;
 
 
-        public ExelyRepository(ICommonMethod commonMethod, IOptions<KeySettings> keySettings, IException exception, ISupplierRes supplierRes, IMarkup markup, IConfiguration configuration, IOptions<SupplierConfiguration> supplierConfig)
+        public ExelyRepository(ICommonMethod commonMethod, IOptions<KeySettings> keySettings, IException exception, ISupplierRes supplierRes, IMarkup markup, IConfiguration configuration, IOptions<SupplierConfiguration> supplierConfig, IMemoryCache cache)
         {
             _commonMethod = commonMethod;
             _keySettings = keySettings.Value;
@@ -36,6 +38,7 @@ namespace XConnect.Supplier.Exely
             _supplierRes = supplierRes;
             _markup = markup;
             _supplierConfig = supplierConfig.Value;
+            _cache = cache;
         }
 
         #region Availability
@@ -103,19 +106,19 @@ namespace XConnect.Supplier.Exely
                                                         if (Convert.ToInt32(ExelySearchConfig[k].CityID) == 0 || Convert.ToInt32(ExelySearchConfig[k].CityID) == SearchPara.CityID)
                                                         {
                                                             {
-                                                                int Noofrecords = Convert.ToInt32(ExelySearchConfig[k].Noofrecords);
                                                                 double count = Convert.ToDouble(filter.Count);
+                                                                int Noofrecords = Convert.ToInt32(ExelySearchConfig[k].Noofrecords);
                                                                 int NoOfDiv = Convert.ToInt32(Math.Ceiling(count / Convert.ToDouble(Noofrecords)));
                                                                 List<List<XMLID_Search>> lstxml = _commonMethod.GetXMLIDString(NoOfDiv, Noofrecords, count, filter);
 
-                                                                for (int a = 0; a < NoOfDiv; a++)
+                                                                // Flatten all batches into one request — exactly one aggregate POST per search
+                                                                List<XMLID_Search> allIds = lstxml.SelectMany(batch => batch).ToList();
+                                                                string IdsForSearch = Convert.ToString(_commonMethod.GetHotelCodeByCOmma(allIds));
                                                                 {
-                                                                    string IdsForSearch = Convert.ToString(_commonMethod.GetHotelCodeByCOmma(lstxml[a]));
                                                                     HotelX Xhotel = new HotelX();
                                                                     Xhotel.Supplier = Supplier;
                                                                     Xhotel.DebugeMode = DebugMode;
                                                                     Xhotel.SearchTimeOut = Convert.ToInt32(ExelySearchConfig[k].HotelSearchTimeOut);
-                                                                    //if (Hit > 0)
                                                                     Xhotel.ProcessTimeout = Convert.ToInt32(ExelySearchConfig[k].HotelSearchTimeOut2);
 
                                                                     if (_keySettings.SupplierProxy == "0")
@@ -287,8 +290,6 @@ namespace XConnect.Supplier.Exely
             List<Options> options = new List<Options>();
             DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
             Dictionary<string, CancellationRulesResponse?> cancellationRulesCache = new Dictionary<string, CancellationRulesResponse?>(StringComparer.OrdinalIgnoreCase);
-            Dictionary<string, SearchByPropertyResponse?> roomStaysByPropertyCache = new Dictionary<string, SearchByPropertyResponse?>(StringComparer.OrdinalIgnoreCase);
-            Dictionary<string, Dictionary<string, string>?> roomTypeEnNameCache = new Dictionary<string, Dictionary<string, string>?>(StringComparer.OrdinalIgnoreCase);
             try
             {
                 var result = JsonConvert.DeserializeObject<AggregationSearchByPropertiesResponse>(ResponseData);
@@ -450,36 +451,12 @@ namespace XConnect.Supplier.Exely
 
                                             #region Supplier Room Code block
                                             double FinalPrice = 0;
-                                            // Room 0: per-room occupancy (not combined total)
-                                            string cacheKey0 = $"{hotelCode}_r0";
-                                            if (!roomStaysByPropertyCache.TryGetValue(cacheKey0, out SearchByPropertyResponse? cachedPropertyRooms))
-                                            {
-                                                cachedPropertyRooms = SearchParam.Rooms.Count > 1
-                                                    ? await GetRoomStaysByPropertyAsync(hotelCode, exelyBaseUrl, Item.PassWord, Item.SearchTimeOut, SearchParam, SearchParam.SearchKey, 0)
-                                                    : await GetRoomStaysByPropertyAsync(hotelCode, exelyBaseUrl, Item.PassWord, Item.SearchTimeOut, SearchParam, SearchParam.SearchKey);
-                                                roomStaysByPropertyCache[cacheKey0] = cachedPropertyRooms;
-                                            }
-                                            List<ShortRoomStay> roomsForHotel = cachedPropertyRooms?.roomStays?.Count > 0
-                                                ? cachedPropertyRooms.roomStays.Select(r => new ShortRoomStay
-                                                {
-                                                    propertyId = r.propertyId,
-                                                    roomType = r.roomType,
-                                                    ratePlan = r.ratePlan,
-                                                    guestCount = r.guestCount,
-                                                    stayDates = r.stayDates,
-                                                    currencyCode = r.currencyCode,
-                                                    total = r.total,
-                                                    cancellationPolicy = r.cancellationPolicy,
-                                                    includedServices = r.includedServices,
-                                                    mealPlanCode = r.mealPlanCode,
-                                                    checksum = r.checksum,
-                                                    fullPlacementsName = r.fullPlacementsName,
-                                                    availability = r.availability,
-                                                    availableDiscounts = r.availableDiscounts
-                                                }).ToList()
-                                                : result.roomStays.Where(rs => string.Equals(rs.propertyId, hotelCode, StringComparison.OrdinalIgnoreCase)).ToList();
-                                            // Fetch English room type names from Content API (languageCode=en)
-                                            if (!roomTypeEnNameCache.TryGetValue(hotelCode, out Dictionary<string, string>? roomTypeEnNames))
+                                            List<ShortRoomStay> roomsForHotel = result.roomStays
+                                                .Where(rs => string.Equals(rs.propertyId, hotelCode, StringComparison.OrdinalIgnoreCase))
+                                                .ToList();
+                                            // Fetch English room type names from Content API, cached for 24 hours
+                                            string contentCacheKey = $"ExelyRoomTypeNames_{hotelCode}_en";
+                                            if (!_cache.TryGetValue(contentCacheKey, out Dictionary<string, string>? roomTypeEnNames))
                                             {
                                                 roomTypeEnNames = null;
                                                 if (!string.IsNullOrWhiteSpace(exelyBaseUrl) && !string.IsNullOrWhiteSpace(Item.PassWord))
@@ -496,7 +473,7 @@ namespace XConnect.Supplier.Exely
                                                                 .ToDictionary(rt => rt.Id, rt => rt.Name, StringComparer.OrdinalIgnoreCase);
                                                     }
                                                 }
-                                                roomTypeEnNameCache[hotelCode] = roomTypeEnNames;
+                                                _cache.Set(contentCacheKey, roomTypeEnNames, TimeSpan.FromHours(24));
                                             }
                                             for (int j = 0; j < roomsForHotel.Count; j++)
                                             {
@@ -514,12 +491,12 @@ namespace XConnect.Supplier.Exely
                                                 string uniqno = Guid.NewGuid().ToString().Substring(0, 4);
                                                 string SpecialOfferText = string.Empty;
                                                 string BookingConditions = string.Empty;
-                                                double companyBuyingPrice = FinalTotal;
                                                 FinalPrice = roomStay.total.priceBeforeTax;
+                                                double roomLevelTotal = FinalPrice * Factor;
+                                                double companyBuyingPrice = roomLevelTotal;
                                                 if (roomStay.total.taxAmount > 0)
                                                     BookingConditions = $"+ {roomStay.total.taxAmount.ToString("F2", CultureInfo.InvariantCulture)} {roomCurrency} taxes paid at hotel";
                                                 string placementCode = string.Join("|", roomStay.roomType.placements?.Select(p => p.code) ?? Enumerable.Empty<string>());
-                                                //string RoomTypeId = roomStay.roomType.id + "$$$" + roomStay.ratePlan.id + "$$$" + FinalPrice.ToString(CultureInfo.InvariantCulture) + "$$$" + roomCurrency + "$$$" + uniqno + "$$$" + XmlNationality + "$$$" + (roomStay.checksum ?? "") + "$$$" + (roomStay.propertyId ?? "");
                                                 string RoomTypeId = roomStay.roomType.id + "$$$" + roomStay.ratePlan.id + "$$$" + FinalPrice.ToString(CultureInfo.InvariantCulture) + "$$$" + roomCurrency + "$$$" + uniqno + "$$$" + XmlNationality + "$$$" + (roomStay.checksum ?? "") + "$$$" + (roomStay.propertyId ?? "") + "$$$" + placementCode;
 
                                                 #region "Room"
@@ -554,7 +531,7 @@ namespace XConnect.Supplier.Exely
                                                 {
                                                     drHotelRoom["EssentialInformation"] = "</br>" + BookingConditions;
                                                 }
-                                                _markup.ProcessHotelRoom_WithMarkup(Factor, roomCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref FinalTotal, ref drHotelRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
+                                                _markup.ProcessHotelRoom_WithMarkup(Factor, roomCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref roomLevelTotal, ref drHotelRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
                                                 drHotelRoom["SupplierName"] = Item.Supplier;
                                                 drHotelRoom["BoardTypeID"] = roomStay.mealPlanCode;
                                                 string enRoomName = roomTypeEnNames != null && roomTypeEnNames.TryGetValue(roomStay.roomType?.id ?? "", out string? enN) ? enN : null;
@@ -563,32 +540,11 @@ namespace XConnect.Supplier.Exely
                                                 // Clone room row for each additional room — use per-room occupancy search
                                                 for (int roomIdx = 1; roomIdx < SearchParam.Rooms.Count; roomIdx++)
                                                 {
-                                                    string cacheKeyN = $"{hotelCode}_r{roomIdx}";
-                                                    if (!roomStaysByPropertyCache.TryGetValue(cacheKeyN, out SearchByPropertyResponse? roomNResult))
-                                                    {
-                                                        roomNResult = await GetRoomStaysByPropertyAsync(hotelCode, exelyBaseUrl, Item.PassWord, Item.SearchTimeOut, SearchParam, SearchParam.SearchKey, roomIdx);
-                                                        roomStaysByPropertyCache[cacheKeyN] = roomNResult;
-                                                    }
-
-                                                    // Find same roomType+ratePlan for this room's occupancy
-                                                    var matchedRoomN = roomNResult?.roomStays?.FirstOrDefault(rs =>
-                                                        string.Equals(rs.roomType?.id, roomStay.roomType?.id, StringComparison.OrdinalIgnoreCase) &&
-                                                        string.Equals(rs.ratePlan?.id, roomStay.ratePlan?.id, StringComparison.OrdinalIgnoreCase));
                                                     DataRow drExtraRoom = dt_HotelRoom.NewRow();
                                                     drExtraRoom.ItemArray = (object[])drHotelRoom.ItemArray.Clone();
                                                     drExtraRoom["RoomNo"] = SearchParam.Rooms[roomIdx].RoomNo;
                                                     drExtraRoom["AdultsOccupancy"] = SearchParam.Rooms[roomIdx].NoofAdults;
                                                     drExtraRoom["ChildOccupancy"] = SearchParam.Rooms[roomIdx].NoofChild;
-                                                    if (matchedRoomN != null)
-                                                    {
-                                                        string roomNPlacement = string.Join("|", matchedRoomN.roomType.placements?.Select(p => p.code) ?? Enumerable.Empty<string>());
-                                                        double roomNPrice = matchedRoomN.total?.priceBeforeTax ?? FinalPrice;
-                                                        string roomNCurrency = string.IsNullOrWhiteSpace(matchedRoomN.currencyCode) ? roomCurrency : matchedRoomN.currencyCode;
-                                                        string roomNTypeId = matchedRoomN.roomType.id + "$$$" + matchedRoomN.ratePlan.id + "$$$" + roomNPrice.ToString(CultureInfo.InvariantCulture) + "$$$" + roomNCurrency + "$$$" + Guid.NewGuid().ToString().Substring(0, 4) + "$$$" + XmlNationality + "$$$" + (matchedRoomN.checksum ?? "") + "$$$" + (matchedRoomN.propertyId ?? hotelCode) + "$$$" + roomNPlacement;
-                                                        drExtraRoom["RoomTypeId"] = roomNTypeId;
-                                                        //string enRoomName = roomTypeEnNames != null && roomTypeEnNames.TryGetValue(roomStay.roomType?.id ?? "", out string? enN) ? enN : null;
-                                                        drHotelRoom["RoomTypeName"] = (!string.IsNullOrWhiteSpace(enRoomName) ? enRoomName : (roomStay.fullPlacementsName ?? string.Empty)).Replace("-", "_");
-                                                    }
                                                     dt_HotelRoom.Rows.Add(drExtraRoom);
                                                 }
                                                 #endregion
@@ -642,43 +598,6 @@ namespace XConnect.Supplier.Exely
                                                     addedDetailedCancellation = true;
                                                 }
 
-                                                // STEP 2: Room Stay API per hotel (GET /api/search/v1/properties/{propertyId}/room-stays)
-                                                // Search API cancellationPolicy 
-                                                if (!addedDetailedCancellation && includeDetailedCancellation && !string.IsNullOrWhiteSpace(exelyBaseUrl) && !string.IsNullOrWhiteSpace(Item.PassWord))
-                                                {
-                                                    if (!roomStaysByPropertyCache.TryGetValue(hotelCode, out SearchByPropertyResponse? propertyRoomStays))
-                                                    {
-                                                        propertyRoomStays = await GetRoomStaysByPropertyAsync(hotelCode, exelyBaseUrl, Item.PassWord, Item.SearchTimeOut, SearchParam, SearchParam.SearchKey);
-                                                        roomStaysByPropertyCache[hotelCode] = propertyRoomStays;
-                                                    }
-
-                                                    if (propertyRoomStays?.roomStays != null)
-                                                    {
-                                                        var matchedStay = propertyRoomStays.roomStays.FirstOrDefault(rs =>
-                                                            string.Equals(rs.roomType?.id, roomStay.roomType?.id, StringComparison.OrdinalIgnoreCase) &&
-                                                            string.Equals(rs.ratePlan?.id, roomStay.ratePlan?.id, StringComparison.OrdinalIgnoreCase));
-
-                                                        if (matchedStay?.cancellationPolicy != null)
-                                                        {
-                                                            string propertyCurrency = string.IsNullOrWhiteSpace(matchedStay.currencyCode) ? cancellationCurrency : matchedStay.currencyCode;
-                                                            List<ExelyCancellationSegment> propertySegments = BuildExelyCancellationSegments(
-                                                                matchedStay.cancellationPolicy,
-                                                                checkInDate,
-                                                                matchedStay.cancellationPolicy.penaltyAmount ?? companyBuyingPrice,
-                                                                cutOffDays,
-                                                                propertyCurrency);
-
-                                                            if (propertySegments.Count > 0)
-                                                            {
-                                                                AddExelyCancellationRows(dt_Cancellation, propertySegments, Item.Supplier, Convert.ToString(OwnsystemHotelId), 1, RoomTypeId, roomStay.mealPlanCode ?? "", SearchParam, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, Essen);
-                                                                addedDetailedCancellation = true;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                // STEP 3: Cancellation Rules API fallback (GET /api/content/v1/properties/{propertyId}/cancellation-rules)
-                                                // Room Stay API 
                                                 if (!addedDetailedCancellation && includeDetailedCancellation && !string.IsNullOrWhiteSpace(exelyBaseUrl) && !string.IsNullOrWhiteSpace(Item.PassWord))
                                                 {
                                                     if (!cancellationRulesCache.TryGetValue(hotelCode, out CancellationRulesResponse? rulesResponse))
@@ -2078,7 +1997,11 @@ namespace XConnect.Supplier.Exely
             {
                 if (cancellationPolicy.freeCancellationDeadlineLocal.HasValue)
                 {
-                    DateTime deadlineDate = cancellationPolicy.freeCancellationDeadlineLocal.Value.AddDays(cutOffDays).Date;
+                    DateTime deadlineDate = cancellationPolicy.freeCancellationDeadlineLocal.Value.AddDays(cutOffDays);
+                    string deadlineLocalStr = deadlineDate.ToString("yyyy-MM-ddTHH:mm");
+                    string deadlineUtcStr = cancellationPolicy.freeCancellationDeadlineUtc.HasValue
+                        ? cancellationPolicy.freeCancellationDeadlineUtc.Value.AddDays(cutOffDays).ToString("yyyy-MM-ddTHH:mm") + "Z"
+                        : "";
                     if (deadlineDate > startDate)
                     {
                         segments.Add(new ExelyCancellationSegment
