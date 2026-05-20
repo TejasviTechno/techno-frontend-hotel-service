@@ -2792,7 +2792,7 @@ namespace XConnect.API.Controllers
                                 _ = _exception.Error(x);
                             }
                             timer.Stop();
-                            return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, payload.SearchKey, EntryTime, Ref, IntRef, "", 200);
+                            return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.NotFound, RS, "application/json", data, RS, authData.tokenData, "Book_newversion", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, payload.SearchKey, EntryTime, Ref, IntRef, "", 200);
 
                         }
                         else
@@ -3475,12 +3475,12 @@ namespace XConnect.API.Controllers
                                 else
                                     RS.PreBookRS.Currency = authData.tokenData.SiteCurrency;
 
-                                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "PreBook", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200, null, timer.ElapsedMilliseconds);
+                                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.NotFound, RS, "application/json", data, RS, authData.tokenData, "PreBook", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200, null, timer.ElapsedMilliseconds);
                             }
                             else
                             {
                                 timer.Stop();
-                                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, RS, "application/json", data, RS, authData.tokenData, "PreBook", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200, null, timer.ElapsedMilliseconds);
+                                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.NotFound, RS, "application/json", data, RS, authData.tokenData, "PreBook", true, timer.Elapsed.ToString(), Error_Code, "0", IP, Convert.ToString(HotelId), "", "", 0, 0, 0, Seach_Key, EntryTime, "", "", "", 200, null, timer.ElapsedMilliseconds);
 
                             }
 
@@ -5722,7 +5722,8 @@ namespace XConnect.API.Controllers
                 commonRQ.token = _keySettings.agoda_apikey;
                 data.Request = commonRQ.ToString();
                 // if (AgodaAuthentication(ref tokenData, ref data))
-                AuthData authData = await _authenticationTokenAgent.Authenticate(tokenData, data, IP, userAgent);
+                //AuthData authData = await _authenticationTokenAgent.Authenticate(tokenData, data, IP, userAgent);
+                AuthData authData = await _authenticationTokenAgent.AgodaAuthentication(tokenData, data);
 
 
                 if (Convert.ToBoolean(authData.tokenData.AgentId))
@@ -5854,7 +5855,8 @@ namespace XConnect.API.Controllers
             string userAgent = _platformService.GetUserPlatform(IP);
 
             //var authResult = await _authenticationTokenAgent.Authenticate(Request.Headers["Authorization"], new TokenData(), new CommonRequest());
-            AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+            //AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+            AuthData authData = await _authenticationTokenAgent.AgodaAuthentication(TokenData, data);
 
 
             if (Convert.ToBoolean(authData.tokenData.AgentId))

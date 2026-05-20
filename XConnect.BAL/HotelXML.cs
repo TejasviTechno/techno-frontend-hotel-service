@@ -34320,7 +34320,8 @@ new SqlParameter("@AgentId", AgentId),
                                                         FinalPrice = priceCheckDidaDto.FinalPrice;
                                                         RefrenceNo = priceCheckDidaDto.ReferenceNo;
 
-                                                        bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus(RefrenceNo + "§§§" + FinalPrice, UserCartId);
+                                                        //bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus(RefrenceNo + "§§§" + FinalPrice, UserCartId);
+                                                        objdata.ShoppingCartDetails[0].EachoToken = RefrenceNo + "§§§" + FinalPrice;
                                                         if (Convert.ToDouble((FinalPrice).TruncateDecimalPlaces(0)) > (Math.Round(TotalRate / CurrencyFactorHotelWE_DMC, 2)).TruncateDecimalPlaces(0))
                                                         {
                                                             responsetype = "GeneralError";
@@ -34361,7 +34362,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             ProcessPriceTable(1 * BookNight, CityId, CountryId, ref dtPriceUpdateTable, ref serviceTot, CurerntPrice, isPerce, AgentMarkupAmount, AgentPercentage, SubAgentMarkup, IsParentId, B2CMarkup, dsCartDetails, 0, Provider_WE_DMC, TokenData);
                                                             #endregion
                                                         }
-                                                        if (FinalPrice == 0 || flag == 1 || flag == 2 || flag == 4 || IsSuccess == false)
+                                                        if (FinalPrice == 0 || flag == 1 || flag == 2 || flag == 4)
                                                         {
                                                             responsetype = "GeneralError";
                                                             dtPriceDetail = await ProcessPricePoupTable(true, PackageId, UserCartID, SupplierCurrency, 1 * BookNight, CityId, CountryId, dtPriceDetail, dsAgentDetails, IsB2C, isPerce, dtCountryCityMarkup, dsCartDetails, AgentMarkupAmount, 0, B2CMarkup, SubAgentMarkup, IsParentId, AgentPercentage, 0);
@@ -52231,7 +52232,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     else
                                                         agentVoucher.XMLResponse = ResponseDataHotelBedsV1;
 
-                                                    agentVoucher.RoomStatus = Convert.ToString(2);
+                                                    agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                     agentVoucher.SupplierName = suppliername;
                                                     agentVouchers.Add(agentVoucher);
                                                     //bookResponse_1.agentVouchers = agentVouchers;

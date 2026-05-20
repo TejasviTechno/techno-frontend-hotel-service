@@ -131,7 +131,11 @@ namespace XConnect.Analytics
 
                 var clientData = new ClientData
                 {
-                    ServiceName = QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Client_HotelService,
+                    //ServiceName = QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Client_HotelService,
+                    ServiceName = (analyticsData.Action.ToLower() == "availability" || analyticsData.Action.ToLower() == "availabilitywithcancellation"
+                                   || analyticsData.Action.ToLower() == "availabilitywithcancellationv2") ?
+                                   QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Client_HotelService
+                                   : QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Client_HotelService_noremove,
                     // clientTimeZone = string.IsNullOrEmpty(_userContextAccessor.ClientStats.clientsLocalTimeZone) ? clientsLocalTimeZone : _userContextAccessor.ClientStats.clientsLocalTimeZone,
                     clientTimeZone = string.IsNullOrEmpty(_userContextAccessor?.ClientStats?.clientsLocalTimeZone) ? (string.IsNullOrEmpty(clientsLocalTimeZone) ? null : clientsLocalTimeZone) : _userContextAccessor.ClientStats.clientsLocalTimeZone,
                     Description = analyticsData.Description,
@@ -441,7 +445,8 @@ namespace XConnect.Analytics
                         {
                             TechnologyPartner = analyticsData.TechName,
                             SupplierName = analyticsData.SupplierName.ToUpper(),
-                            ServiceName = QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Supplier_HotelService,
+                            ServiceName = QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Supplier_HotelService_noremove,
+                            //ServiceName = QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Supplier_HotelService,
                             clientTimeZone = string.IsNullOrEmpty(_userContextAccessor.ClientStats.clientsLocalTimeZone) ? clientsLocalTimeZone : _userContextAccessor.ClientStats.clientsLocalTimeZone,
                             Description = analyticsData.Description,
                             ApiInfo = apiInfo,

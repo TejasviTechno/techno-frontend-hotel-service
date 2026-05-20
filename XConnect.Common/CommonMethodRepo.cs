@@ -98,7 +98,7 @@ namespace XConnect.CommonUtilities
             _main3 = factory.GetDatabase("Main3");
             _supp = factory.GetDatabase("SuppLog");
             _roomMapping = factory.GetDatabase("RoomMapping");
-            _RowroomMapping = factory.GetDatabase("Row_RoomsForRoomMapping");
+            _RowroomMapping = factory.GetDatabase("Roommapping_Excption");
             _QRSLog = factory.GetDatabase("QRSLog");
             _SPRLog = factory.GetDatabase("SPR");
             _roomBookingC = factory.GetDatabase("BookingCRoomMapping");
