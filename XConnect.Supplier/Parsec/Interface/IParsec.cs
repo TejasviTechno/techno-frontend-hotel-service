@@ -19,8 +19,13 @@ namespace XConnect.Supplier.Parsec.Interface
 
         string ParsecOlympiaBooking(string AgentCode, DataTable dtPassengers, DataSet dsCartDetails, string UserName, string Password, string UserId, string UniqueNo, int j);
 
+        string ParsecOlympiaBooking_new(string AgentCode, DataTable dtPassengers, BookRequest_newversion bookRequest, string UserName, string Password, string UserId, string UniqueNo, int j);
+
         string ParsecBooking(string AgentCode, DataTable dtPassengers, DataSet dsCartDetails, string UserName, string Password, string UserId, string UniqueNo);
+        string ParsecBooking_new(string AgentCode, DataTable dtPassengers, BookRequest_newversion bookRequest, string UserName, string Password, string UserId, string UniqueNo);
 
         string ParsecCancellationRequest(string Booking_Ref, string UserName, string Password, string UserId);
+
+        
     }
 }

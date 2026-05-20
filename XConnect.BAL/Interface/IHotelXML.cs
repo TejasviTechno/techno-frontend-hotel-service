@@ -120,6 +120,10 @@ namespace XConnect.BAL.Interface
         Task<IActionResult> CreateResponseCompressed_agodabooking<T>(HttpContext context, int statusCode, T value, string mediaType,
            AgodaBookingRQ RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, string RefNo = "", string IntRefNo = "");
 
+        Task<AgodaBookingIDsRS> AgodaBookingIDsProcess(AgodaBookingIDsRQ agodaRQ, TokenData tokenData, Stopwatch Timer = null);
+        Task<IActionResult> CreateResponseCompressed_agodabookingIds<T>(HttpContext context, int statusCode, T value, string mediaType,
+           AgodaBookingIDsRQ RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId);
+
         #endregion
 
         Task<List<SupplierperformanceReport>> GetSupplierperformanceReport(SprRequest sprRequest);

@@ -17,6 +17,8 @@ namespace XConnect.Supplier.Welcomebeds.Interface
 
         Task<PriceCheckWelcomebedsDto> welcomebedsPriceCheck(DataSet dsCartDetails, DataRow[] welcombedsDetails, int j, double FinalPrice, double CurrencyFactorwelcombeds, string UniqueNo, string AgentUniqueNo, string SupplierName, int i, double CompanyBuyingPrice, DataTable dtRoE, int AgentId, TokenData TokenData, string Searchkey = "");
         string welcomebedsBookingRequest(DataSet dsCartDetails, DataRow[] WelcomebedsDetails, int i, int j, double resPrice, DataTable dtPassengers, ref string AgtRef, string CheckIn, string CheckOut, int UniqueNo, string BookToken, string AgentCode, string SearchKey = "");
+
+        string welcomebedsBookingRequest_new(BookRequest_newversion bookRequest, DataRow[] WelcomebedsDetails, int i, int j, double resPrice, DataTable dtPassengers, ref string AgtRef, string CheckIn, string CheckOut, int UniqueNo, string BookToken, string AgentCode, string SearchKey = "");
         string WelcomebedsBookingResponse(ref string Error, string Request, string url, string UserName, string Password, string Searchkey = "", Int32 TimeOut = 120000);
         string Getwelcombeds_BookingCancelRQ(string AgentVoucherNo, DataRow[] WelcomebedsDetails, string requestReferenceID, string Searchkey = "");
         string GetwelcomebedsResponse(ref string Error, string Request, string url, string UserName, string Password, int Timeout = 120000);

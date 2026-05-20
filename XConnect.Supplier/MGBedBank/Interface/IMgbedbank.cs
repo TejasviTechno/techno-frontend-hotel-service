@@ -22,6 +22,7 @@ namespace XConnect.Supplier.MGBedBank.Interface
 
         string Get_MgBedBank_BookingRequest(DataSet dsCartDetails, DataTable dtPassengers, DataRow[] MgBedBankDetails, string ExternalReference, bool IsPriceUpdate, int i, int j, string HasKey_IntCode, string PaxPassport, string cancallationpolicytype, string RoomTypeID, string RoomId, string SessionId, string BoardID, string Nationality, string IsAvail, string UniqNo);
 
+        string Get_MgBedBank_BookingRequest_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] MgBedBankDetails, string ExternalReference, bool IsPriceUpdate, int i, int j, string HasKey_IntCode, string PaxPassport, string cancallationpolicytype, string RoomTypeID, string RoomId, string SessionId, string BoardID, string Nationality, string IsAvail, string UniqNo);
         Task<ResponseDto> MGGetSupplierParallel(string strxmlRQRS, string strHost, string ErrorResponse, Int32 TimeOut, string Provider = "", string SearchKey = "");
 
 
