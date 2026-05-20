@@ -98,7 +98,7 @@ namespace XConnect.CommonUtilities
             _main3 = factory.GetDatabase("Main3");
             _supp = factory.GetDatabase("SuppLog");
             _roomMapping = factory.GetDatabase("RoomMapping");
-            _RowroomMapping = factory.GetDatabase("Row_RoomsForRoomMapping");
+            _RowroomMapping = factory.GetDatabase("Roommapping_Excption");
             _QRSLog = factory.GetDatabase("QRSLog");
             _SPRLog = factory.GetDatabase("SPR");
             _roomBookingC = factory.GetDatabase("BookingCRoomMapping");
@@ -5308,6 +5308,7 @@ namespace XConnect.CommonUtilities
                     case "genting":
                     case "goodwin":
                     case "quantum":
+                    case "exely":
                         //case "hotelbedsv1":
                         //case "travellanda":
                         return true;
@@ -6614,6 +6615,163 @@ namespace XConnect.CommonUtilities
             }
         }
 
+        public async Task FireAway_SPL_SQLAgoda(ConcurrentBag<HotelX> AllTask, int AgentId, HotelSearchParameter searchpara, bool isapi = true)
+        {
+            try
+            {
+                DataTable Supplierreport = HtmlExtensions.ConvertToDataTableforConcurrentBag(AllTask);
+                DataTable SupplierPerformancereport1 = Supplierreport.DefaultView.ToTable(true, "AgentID", "Supplier", "ReportType", "ResponseType", "RSTimeout", "ResponseStatus", "StrHotelIds", "Host"); //Host Added on 17-Dec-2025
+
+                #region Analytics
+                try
+                {
+                    string stage = "Search";
+                    //if (isapi)
+                    //{
+                    //    stage = "Search";
+                    //}
+                    //else
+                    //{
+                    //    stage = "SearchById";
+                    //}
+                    _analyticSupplier.PushHotelSearchSupplierDataForAnalyticsAsyc(new AnalyticsData
+                    {
+                        Result = AllTask,
+                        Action = "SupplierReportsearch",
+                        Version = "v1",
+                        HttpStatusCode = Convert.ToInt32(HttpStatusCode.OK),
+                        Stage = stage,
+                        Payload = searchpara,
+                        ElapsedTime = 0,
+                        Description = "Supplier request",
+                        StaticResult = null,
+                        Search_Key = searchpara.SearchKey,
+                    });
+                }
+                catch (Exception ex)
+                {
+                    await _exception.Error(ex);
+                }
+                #endregion
+
+                if (_mongoSettings.SupplierPerformanceReport_MongoDB == "1")//Update on 10-MAY-2025
+                {
+                    if (SupplierPerformancereport1 != null && SupplierPerformancereport1.Rows.Count > 0)//Correction 10-MAY-2025 add saprate if and remove from above if condition.
+                    {
+
+                        var collection = _SPRLog.GetCollection<SaveSPR_MongoDB>(_mongoSettings.MongoDB_CollectionName_SPR);//080525
+                        var documents = new List<SaveSPR_MongoDB>();
+                        DateTime EntryTime = DateTime.Now;
+                        //foreach (DataRow row in SupplierPerformancereport1.Rows)
+                        //{
+                        //    TimeSpan time = TimeSpan.TryParse(Convert.ToString(row["RSTimeout"]), out var parsed) ? parsed : TimeSpan.Zero; //added on 07-07-25
+
+                        //    // Convert to double (seconds.milliseconds)
+                        //    double roundedRSTimeout = Math.Round(time.TotalMilliseconds / 1000.0, 3);
+
+                        //    SaveSPR_MongoDB DataX = new SaveSPR_MongoDB
+                        //    {
+                        //        AgentId = AgentId,
+                        //        Supplier = Convert.ToString(row["Supplier"]),
+                        //        ResponseType = Convert.ToString(row["ResponseType"]),
+                        //        Date = EntryTime,
+                        //        RSTimeout = roundedRSTimeout//Added on 17-MAR-2025
+
+                        //    };
+                        //    await collection.InsertOneAsync(DataX);
+                        //}
+
+                        string hostName = System.Net.Dns.GetHostName(); //Added on 17-Dec-2025
+                        switch (hostName)
+                        {
+                            case "s12526947":
+                                hostName = "1";
+                                break;
+                            case "s12526948":
+                                hostName = "2";
+                                break;
+                            case "API1":
+                                hostName = "1";
+                                break;
+                            case "API2":
+                                hostName = "2";
+                                break;
+                            case "API3":
+                                hostName = "3";
+                                break;
+                            case "API4":
+                                hostName = "4";
+                                break;
+                            case "API5":
+                                hostName = "5";
+                                break;
+                            case "API6":
+                                hostName = "6";
+                                break;
+                            case "API-7":
+                                hostName = "7";
+                                break;
+                            default:
+                                break;
+                        }
+
+                        foreach (DataRow row in SupplierPerformancereport1.Rows) // Update on 13-NOV-2025 //Update ResStatusCod,Host on 17-Dec-2025
+                        {
+                            TimeSpan time = TimeSpan.TryParse(Convert.ToString(row["RSTimeout"]), out var parsed) ? parsed : TimeSpan.Zero;
+
+                            double roundedRSTimeout = Math.Round(time.TotalMilliseconds / 1000.0, 3);
+
+                            documents.Add(new SaveSPR_MongoDB
+                            {
+                                AgentId = AgentId,
+                                Supplier = Convert.ToString(row["Supplier"]),
+                                ResponseType = Convert.ToString(row["ResponseType"]),
+                                Date = EntryTime,
+                                RSTimeout = roundedRSTimeout,
+                                ResStatusCod = Convert.ToInt32(row["ResponseStatus"]),
+                                Host = Convert.ToString(hostName)
+                            });
+                        }
+
+                        if (documents.Count > 0)
+                        {
+                            await collection.InsertManyAsync(documents);
+                        }
+                    }
+                }
+                else
+                {
+                    SqlParameter[] para = new SqlParameter[] {
+                    new SqlParameter("@ReportType","SearchAvailability"),
+                    new SqlParameter("@AgentID",AgentId),
+                    new SqlParameter("@SupplierPerformancereport",SupplierPerformancereport1)
+                    };
+                    //DLConnection db = new DLConnection();
+                    //System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+                    //timerroomprocess.Start();
+                    //DataSet abc = db.GetDataSet_Limit("SupplierPerformanceReportData_api", para, 1);
+
+                    //dl.ExecuteNonQuery_SupplierLog_report("SupplierPerformanceReportData_api", para);
+                    //dl.ExecuteNonQuery_SupplierLog_report("SupplierPerformanceReportData_API_v2", para); // Adding Response Status Code
+                    //await _dlConnection.ExecuteNonQuery_SupplierLog_report("SupplierPerformanceReportData_API_v3", para); // for save Hotelids for CM and OTH
+                    _ = _dlConnection.ExecuteNonQuery_SupplierLog_report("SupplierPerformanceReportData_API_v3", para); // safe fire-and-forget
+
+
+
+                    //timerroomprocess.Stop();
+                    //string time = timerroomprocess.Elapsed.ToString();
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                await SaveErrorLogForSPReport("1# " + ex.Message + " #AgentID:" + Convert.ToString(AgentId));
+                if (Convert.ToString(_keySettings.SaveSupplier_Error_LogActive_95) == "1")
+                    await _exception.Error(ex);
+            }
+        }
+
         public async Task SaveErrorLogForSPReport(string Error)//@Added on 22-AUG-2024
         {
             try
@@ -7319,10 +7477,9 @@ namespace XConnect.CommonUtilities
 
                         string collectionName_ForUnMapp = "";
                         IMongoCollection<RoomInfo> collection_ForUnMapp = null;
-                        collectionName_ForUnMapp = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+                        collectionName_ForUnMapp = _mongoSettings.UnMapped_MongoDB_CollectionName_RoomMapping;
                         collection_ForUnMapp = GetRoomMappingCollection_Unmap(collectionName_ForUnMapp); //Add on 10FEB2026
                         _ = InsertRoomsBulkAsync_unmapp(collection_ForUnMapp, missingRoomList);
-
 
 
                     }
@@ -7350,7 +7507,7 @@ namespace XConnect.CommonUtilities
         }
         public IMongoCollection<RoomInfo> GetRoomMappingCollection_Unmap(string collectionName)
         {
-            return _roomMapping.GetCollection<RoomInfo>(collectionName);
+            return _RowroomMapping.GetCollection<RoomInfo>(collectionName);
         }
         public async Task<AvailHotelList_Comp> ConvertToFinalResponseList_RoomMapping_withoutEx(AvailHotelList finalResponse, string NewSearchKey, bool withcancellation = false, HotelSearchParameter SearchPara = null, string AgentCode = "", int Roommapping = 1, bool IsFromAPI = true) //Add int Roommapping=0 on 30MAY2025
 
@@ -7728,7 +7885,7 @@ namespace XConnect.CommonUtilities
 
                         string collectionName_ForUnMapp = "";
                         IMongoCollection<RoomInfo> collection_ForUnMapp = null;
-                        collectionName_ForUnMapp = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+                        collectionName_ForUnMapp = _mongoSettings.UnMapped_MongoDB_CollectionName_RoomMapping;
                         collection_ForUnMapp = GetRoomMappingCollection_Unmap(collectionName_ForUnMapp); //Add on 10FEB2026
                         _ = InsertRoomsBulkAsync_unmapp(collection_ForUnMapp, missingRoomList);
 
@@ -8107,7 +8264,7 @@ namespace XConnect.CommonUtilities
 
                         string collectionName_ForUnMapp = "";
                         IMongoCollection<RoomInfo> collection_ForUnMapp = null;
-                        collectionName_ForUnMapp = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+                        collectionName_ForUnMapp = _mongoSettings.UnMapped_MongoDB_CollectionName_RoomMapping;
                         collection_ForUnMapp = GetRoomMappingCollection_Unmap(collectionName_ForUnMapp); //Add on 10FEB2026
                         _ = InsertRoomsBulkAsync_unmapp(collection_ForUnMapp, missingRoomList);
 

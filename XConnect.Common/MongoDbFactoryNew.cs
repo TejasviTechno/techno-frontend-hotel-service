@@ -149,7 +149,7 @@ namespace XConnect.CommonUtilities
                                 ? GetBalancedRoomMappingDatabase()
                                 : _clientRoomMapping.GetDatabase(_settings.MongoDB_DatabaseName_RoomMapping),
 
-                "Row_RoomsForRoomMapping" => _clientUnMappedRoomMapping.GetDatabase(_settings.MongoDB_DatabaseName_UmMappedRoomMapping),
+                "Roommapping_Excption" => _clientUnMappedRoomMapping.GetDatabase(_settings.UnMapped_MongoDB_CollectionName_RoomMapping),
                 "QRSLog" => _clientQRSLog.GetDatabase(_settings.MongoDB_DatabaseName_SaveAPIRQRSLog),
                 "SPR" => _clientSPR.GetDatabase(_settings.MongoDB_DatabaseName_SPR),
                 "BookingCRoomMapping" => _clientRoomMapping.GetDatabase(_settings.MongoDB_DatabaseName_BookingC), //130625

@@ -60,6 +60,9 @@ namespace XConnect.Supplier.AgodaNew
         public async Task<List<Options>> XMLOut_HotelSearchWithRooms(string requestName, HotelX Item, CommonSearch commonSearch, DataSet GTAResponse, string HotelID, HotelSearchParameter SearchParam, DataTable dtAgentDetail, DataTable dtMarkupDetails, AdvancedOptions advancedOptions, DataSet DTChainCode, DataSet DTCountryblock)
         //public async Task<List> XMLOut_HotelSearchWithRooms(string requestName, HotelX Item, CommonSearch commonSearch, DataSet GTAResponse, string HotelID, HotelSearchParameter SearchParam, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtMarkupDetails, AdvancedOptions advancedOptions, DataSet DTChainCode)
         {
+            System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
+            timerroomx.Start();
+
             List<Options> options = new List<Options>();
             if (GTAResponse != null && GTAResponse.Tables.Count > 0 && GTAResponse.Tables[0].Rows.Count > 0)
             {
@@ -281,7 +284,23 @@ namespace XConnect.Supplier.AgodaNew
                                                 for (int chaincode = 0; chaincode < DTChainCode.Tables[0].Rows.Count; chaincode++)
                                                 {
 
-                                                    string ChainCode_Agoda = Convert.ToString(DTChainCode.Tables[0].Rows[chaincode]["chaincode"]);// Convert.ToString(chaincode);
+                                                    //string ChainCode_Agoda = Convert.ToString(DTChainCode.Tables[0].Rows[chaincode]["chaincode"]);// Convert.ToString(chaincode);
+
+                                                    string ChainCode_Agoda = Convert.ToString(DTChainCode.Tables[0].Rows[chaincode]["ChannelCode"]);
+                                                    bool supplierExists = DTChainCode.Tables[1].AsEnumerable().Any(r => Convert.ToString(r["Supplierid"])?.Trim() == SupplierID.Trim());
+
+                                                    if (supplierExists)
+                                                    {
+                                                        bool exists = DTChainCode.Tables[1].AsEnumerable().Any(r => Convert.ToString(r["Supplierid"])?.Trim() == SupplierID.Trim() && Convert.ToString(r["chaincode"])?.Trim() == ChainCode_Agoda);
+                                                        if (!exists)
+
+                                                        {
+
+                                                            continue;
+
+                                                        }
+                                                    }
+
 
                                                     #region countrycityrestrication
 
@@ -552,6 +571,35 @@ namespace XConnect.Supplier.AgodaNew
                             //if (ops != null)
                             //    options.Add(ops);
                         }
+                        else
+                        {
+                            Item.ResponseType = "NoCount";
+                            Item.ResponseStatus = 404;
+                            try
+                            {
+                                Item.SupplierResponseError = Item.RQRS[0].Response;
+                            }
+                            catch (Exception ex)
+                            {
+                                _exception.Error(ex);
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Item.ResponseType = "NoCount";
+                        Item.ResponseStatus = 404;
+                        try
+                        {
+                            Item.SupplierResponseError = Item.RQRS[0].Response;
+                        }
+                        catch (Exception ex)
+                        {
+                            _exception.Error(ex);
+
+                        }
+                        
                     }
                     return options;  //needtochange
                 }
@@ -563,11 +611,23 @@ namespace XConnect.Supplier.AgodaNew
                 finally
                 {
                     //GC.Collect();
+                    #region ResProcessTimer
+                    try
+                    {
+                        timerroomx.Stop();
+                        Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
+                    }
+                    catch (Exception ex)
+                    {
+                        await _exception.Error(ex);
+                    }
+                    #endregion
                 }
             }
             else
             {
                 Item.ResponseType = "NoCount";
+                Item.ResponseStatus = 204;
             }
             return options;
         }
@@ -601,6 +661,9 @@ namespace XConnect.Supplier.AgodaNew
 
         public async Task<List<Options>> XMLOut_HotelPreCheck(HotelX Item, CommonSearch commonSearch, DataSet GTAResponse, string HotelID, HotelSearchParameter SearchParam, DataTable dtAgentDetail, DataTable dtMarkupDetails, AdvancedOptions advancedOptions, string ratePlanCode)
         {
+            System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
+            timerroomx.Start();
+
             List<Options> options = new List<Options>();
             if (GTAResponse != null && GTAResponse.Tables.Count > 0 && GTAResponse.Tables[0].Rows.Count > 0)
             {
@@ -1001,6 +1064,48 @@ namespace XConnect.Supplier.AgodaNew
                                 //if (ops != null)
                                 //    options.Add(ops);
                             }
+                            else
+                            {
+                                Item.ResponseType = "NoCount";
+                                Item.ResponseStatus = 404;
+                                try
+                                {
+                                    Item.SupplierResponseError = Item.RQRS[0].Response;
+                                }
+                                catch (Exception ex)
+                                {
+                                    _exception.Error(ex);
+
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Item.ResponseType = "NoCount";
+                            Item.ResponseStatus = 404;
+                            try
+                            {
+                                Item.SupplierResponseError = Item.RQRS[0].Response;
+                            }
+                            catch (Exception ex)
+                            {
+                                _exception.Error(ex);
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Item.ResponseType = "NoCount";
+                        Item.ResponseStatus = 404;
+                        try
+                        {
+                            Item.SupplierResponseError = Item.RQRS[0].Response;
+                        }
+                        catch (Exception ex)
+                        {
+                            _exception.Error(ex);
+
                         }
                     }
                     return options;
@@ -1013,11 +1118,24 @@ namespace XConnect.Supplier.AgodaNew
                 finally
                 {
                     //GC.Collect();
+                    #region ResProcessTimer
+                    try
+                    {
+                        timerroomx.Stop();
+                        Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
+                    }
+                    catch (Exception ex)
+                    {
+                        await _exception.Error(ex);
+                    }
+                    #endregion
                 }
             }
             else
             {
-                //Item.ResponseType = "NoCount";
+                Item.ResponseType = "NoCount";
+                Item.ResponseStatus = 204;
+
             }
             return options;
         }
