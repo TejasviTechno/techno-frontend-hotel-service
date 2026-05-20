@@ -70154,8 +70154,10 @@ new SqlParameter("@AgentId", AgentId),
                             : $"{existing}, {clientIp}";
 
                         // Custom Header
-                        Request.Headers.Add("X-Custom-Host", "13");
-                        Request.Headers.Add("X-Time-Zone", "abc");
+                        Request.Headers.Add("X-Custom-Host", "AgodaReverse");
+                        //Request.Headers.Add("X-Custom-Host", "13");
+                        Request.Headers.Add("X-Time-Zone", "Arabian Standard Time");
+                        //Request.Headers.Add("X-Time-Zone", "abc");
                         Request.Headers.Add("X-Accept-Language", "abc");
                         Request.Headers.Add("User-Agent", "PostmanRuntime/7.51.1");
                         Request.Headers.Add("X-Forwarded-For", xForwardedFor);
@@ -70164,20 +70166,20 @@ new SqlParameter("@AgentId", AgentId),
                         {
                             HttpStatusCode = (int)responseMessage.StatusCode;
 
-                            Console.WriteLine("STATUS: " + HttpStatusCode);
+                           // Console.WriteLine("STATUS: " + HttpStatusCode);
 
                             // ✅ FIX: Direct read (auto decompressed)
                             responsedata = await responseMessage.Content.ReadAsStringAsync();
 
-                            Console.WriteLine("RESPONSE: " + responsedata);
+                            //Console.WriteLine("RESPONSE: " + responsedata);
 
-                            await _commonMethod.XMLRequestResponseTrack_agoda(
-                                finalUrl + " | " + strxmlRQRS,
-                                responsedata,
-                                "xmlout",
-                                "Proper",
-                                reqid
-                            );
+                            //await _commonMethod.XMLRequestResponseTrack_agoda(
+                            //    finalUrl + " | " + strxmlRQRS,
+                            //    responsedata,
+                            //    "xmlout",
+                            //    "Proper",
+                            //    reqid
+                            //);
                         }
                     }
                 }
