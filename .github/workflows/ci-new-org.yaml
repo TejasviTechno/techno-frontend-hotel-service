@@ -1,0 +1,21 @@
+name: Hotel Service CI - New Organization
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  ci:
+    uses: technoheaveninfra/cicd-configuration/.github/workflows/dotnet-ci-template.yml@main
+    with:
+      service_name: techno-frontend-hotel-service 
+      dockerfile: Dockerfile.dev
+      gitops_file: hotelservice.yaml
+      build_project: ./XConnect.API/XConnect.API.csproj
+      dotnet_version: "9.0.203"
+    secrets: inherit
