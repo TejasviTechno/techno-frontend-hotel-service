@@ -5926,6 +5926,50 @@ namespace XConnect.API.Controllers
 
         }
 
+        [Route("/v1.9/bookingIds")]
+        [HttpPost]
+        public async Task<IActionResult> bookingIds(AgodaBookingIDsRQ RQ)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            TokenData TokenData = new TokenData();
+            CommonRequest data = new CommonRequest();
+            data.AdvancedOptions = new AdvancedOptions();
+            try
+            {
+                string IP = _platformService.GetIPAddress();
+                string userAgent = _platformService.GetUserPlatform(IP);
+                //HotelXML.EnterBookingApiLogs(JsonConvert.SerializeObject(RQ), "", "");
+                data.Request = RQ.ToString();
+                //AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                AuthData authData = await _authenticationTokenAgent.AgodaAuthentication(TokenData, data);
+
+                if (!Convert.ToBoolean(authData.tokenData.AgentId))
+                {
+                    erroragoda = _hotelXML.GetAgodaErrorMsg("UNAUTHORIZED", _keySettings.AgodaVersion, "Access credential is incorrect");
+                    //erroragoda = _hotelXML.GetAgodaErrorMsg("UNAUTHORIZED", "", "Access credential is incorrect");
+                    return await _hotelXML.CreateResponseCompressed_agodabookingIds(HttpContext, 401, erroragoda, "application/json", RQ, erroragoda, TokenData, "bookingIds", EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0");
+                }
+                if (true || Convert.ToBoolean(TokenData.AgentId))
+                {
+                    AgodaBookingIDsRS agodaBookingIDsRS = new AgodaBookingIDsRS();
+                    agodaBookingIDsRS = await _hotelXML.AgodaBookingIDsProcess(RQ, TokenData, timer);
+
+                    return await _hotelXML.CreateResponseCompressed_agodabookingIds(HttpContext, 200, agodaBookingIDsRS, "application/json", RQ, erroragoda, TokenData, "bookingIds", EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0");
+                }
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+                erroragoda = _hotelXML.GetAgodaErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
+                //HotelXML.EnterBookingApiLogs(JsonConvert.SerializeObject(RQ), ex.Message, "");
+
+                return await _hotelXML.CreateResponseCompressed_agodabookingIds(HttpContext, 500, erroragoda, "application/json", RQ, erroragoda, TokenData, "bookingIds", EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0");
+            }
+            return null;
+        }
+
+
         #endregion
         [AllowAnonymous]
         [Route("GetRoomMappingHotelReport")]

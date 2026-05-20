@@ -127,7 +127,8 @@ namespace XConnect.Models
         public string? EndPointforprebook { get; set; } = String.Empty; //Added on 29-apr-26 
         public string? EndPointforbook { get; set; } = String.Empty; //Added on 29-apr-26 
         public string? EndPointforbookingdetail { get; set; } = String.Empty; //Added on 29-apr-26 
-        
+        public string? AgodaVersion { get; set; } = String.Empty; //Added on 17-may-26 
+
 
     }
 }

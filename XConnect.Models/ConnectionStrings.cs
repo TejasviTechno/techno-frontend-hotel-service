@@ -35,6 +35,8 @@ namespace XConnect.Models
         public string? connectionStr_Logserver2_TP { get; set; } = String.Empty; //Recheck - 270525
         public string? ConnectionStringforlogtrack_180VM { get; set; } = String.Empty; //Recheck - 270525
         public string? ConnectionStringforlog_180VM { get; set; } = String.Empty; //16/12/25
+        public string? connectionStr_RATEAURA_BookingServiceT1 { get; set; } = String.Empty;  //20052026
+        
 
     }
 }
