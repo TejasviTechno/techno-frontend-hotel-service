@@ -69898,36 +69898,36 @@ new SqlParameter("@AgentId", AgentId),
 
                 // added on 02052026
 
-                try
-                {
-                    if (_keySettings.SupplierPerformanceReport == "1")//&& IsErrorCountHigh == 0)//IsErrorCountHigh added on 22-AUG-2024 for disable SuppPerfLog is Sp take time
-                    {
-                        System.Diagnostics.Stopwatch timerroom3 = new System.Diagnostics.Stopwatch();
-                        timerroom3.Start();
+                //try
+                //{
+                //    if (_keySettings.SupplierPerformanceReport == "1")//&& IsErrorCountHigh == 0)//IsErrorCountHigh added on 22-AUG-2024 for disable SuppPerfLog is Sp take time
+                //    {
+                //        System.Diagnostics.Stopwatch timerroom3 = new System.Diagnostics.Stopwatch();
+                //        timerroom3.Start();
 
-                        // if (Convert.ToInt16(AgentId) == 4)
-                        {
-                            //string searchkey1 = AllTask.
+                //        // if (Convert.ToInt16(AgentId) == 4)
+                //        {
+                //            //string searchkey1 = AllTask.
 
-                           // _ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
-                            _ = Task.Run(() => _commonMethod.FireAway_SPL_SQLAgoda(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
-                            //SupplierPerformancereport(AllTask, AgentId);
-                        }
-                        timerroom3.Stop();
-                        SearchPara.SupplierTime += ",Finish:Supplier Perfomance Report " + "Execution Time :" + timerroom3.Elapsed.ToString();
-                    }
-                    else
-                    {
-                        //if (IsErrorCountHigh == 1)//Need to save history logs in table and send email
-                        //{
+                //           // _ = Task.Run(() => _commonMethod.FireAway_SPL_SQL(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
+                //            _ = Task.Run(() => _commonMethod.FireAway_SPL_SQLAgoda(AllTask, AgentId, SearchPara, tokenData.IsFromAPI));
+                //            //SupplierPerformancereport(AllTask, AgentId);
+                //        }
+                //        timerroom3.Stop();
+                //        SearchPara.SupplierTime += ",Finish:Supplier Perfomance Report " + "Execution Time :" + timerroom3.Elapsed.ToString();
+                //    }
+                //    else
+                //    {
+                //        //if (IsErrorCountHigh == 1)//Need to save history logs in table and send email
+                //        //{
 
-                        //}
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await _exception.Error(ex);
-                }
+                //        //}
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    await _exception.Error(ex);
+                //}
 
 
                 #endregion
@@ -70435,100 +70435,100 @@ new SqlParameter("@AgentId", AgentId),
                             hostName = System.Net.Dns.GetHostName();
 
                             #region Elastic
-                            try
-                            {
-                                //if (APIName.ToLower() == "hotelsearch"
-                                //     || APIName.ToLower() == "precheck"
-                                //     || APIName.ToLower() == "booking"
-                                //     || APIName.ToLower() == "bookingids"
-                                //     || APIName.ToLower() == "bookingdetail"
-                                //     || APIName.ToLower() == "cancel")
+                            //try
+                            //{
+                            //    //if (APIName.ToLower() == "hotelsearch"
+                            //    //     || APIName.ToLower() == "precheck"
+                            //    //     || APIName.ToLower() == "booking"
+                            //    //     || APIName.ToLower() == "bookingids"
+                            //    //     || APIName.ToLower() == "bookingdetail"
+                            //    //     || APIName.ToLower() == "cancel")
 
-                                if (APIName.ToLower() == "availability"
-                            || APIName.ToLower() == "availabilitywithcancellation"
-                            || APIName.ToLower() == "availabilitywithcancellationv2"
-                            || APIName.ToLower() == "recheck"
-                            || APIName.ToLower() == "prebook"
-                            || APIName.ToLower() == "book"
-                            || APIName.ToLower() == "book_newversion"
-                            || APIName.ToLower() == "cancelbooking")
-                                {
-                                    string stage = APIName;
-                                    switch (APIName.ToLower())
-                                    {
-                                        //case "hotelsearch":
-                                        case "availabilitywithcancellation":
-                                        case "availability":
-                                        case "availabilitywithcancellationv2":
-                                            stage = "Search";
-                                            //bool isapi = tokendata.IsFromAPI;
-                                            //if (isapi)
-                                            //{
-                                            //    stage = "Search";
-                                            //}
-                                            //else
-                                            //{
-                                            //    stage = "SearchById";
-                                            //}
-                                            break;
+                            //    if (APIName.ToLower() == "availability"
+                            //|| APIName.ToLower() == "availabilitywithcancellation"
+                            //|| APIName.ToLower() == "availabilitywithcancellationv2"
+                            //|| APIName.ToLower() == "recheck"
+                            //|| APIName.ToLower() == "prebook"
+                            //|| APIName.ToLower() == "book"
+                            //|| APIName.ToLower() == "book_newversion"
+                            //|| APIName.ToLower() == "cancelbooking")
+                            //    {
+                            //        string stage = APIName;
+                            //        switch (APIName.ToLower())
+                            //        {
+                            //            //case "hotelsearch":
+                            //            case "availabilitywithcancellation":
+                            //            case "availability":
+                            //            case "availabilitywithcancellationv2":
+                            //                stage = "Search";
+                            //                //bool isapi = tokendata.IsFromAPI;
+                            //                //if (isapi)
+                            //                //{
+                            //                //    stage = "Search";
+                            //                //}
+                            //                //else
+                            //                //{
+                            //                //    stage = "SearchById";
+                            //                //}
+                            //                break;
 
-                                        //case "recheck":
-                                        //    stage = "Recheck";
-                                        //    break;
+                            //            //case "recheck":
+                            //            //    stage = "Recheck";
+                            //            //    break;
 
-                                        //case "precheck":
-                                        case "prebook":
+                            //            //case "precheck":
+                            //            case "prebook":
 
-                                            stage = "Prebook";
-                                            break;
+                            //                stage = "Prebook";
+                            //                break;
 
-                                        case "cancel":
-                                            stage = "Cancel";
-                                            break;
-                                        case "booking":
-                                            stage = "Book";
-                                            break;
+                            //            case "cancel":
+                            //                stage = "Cancel";
+                            //                break;
+                            //            case "booking":
+                            //                stage = "Book";
+                            //                break;
 
-                                        default:
-                                            stage = APIName;
-                                            break;
-                                    }
-                                    bool isapi1 = tokendata.IsFromAPI;
-                                    //bool isfromagoda = tokendata.IsFromAgoda;
+                            //            default:
+                            //                stage = APIName;
+                            //                break;
+                            //        }
+                            //        bool isapi1 = tokendata.IsFromAPI;
+                            //        //bool isfromagoda = tokendata.IsFromAgoda;
 
-                                    string source = "APIOut";
-                                    //if (isapi1)
-                                    //{
-                                    //    source = "APIOut";
-                                    //}
-                                    //else
-                                    //{
-                                    //    source = "Web";
-                                    //}
+                            //        string source = "APIOut";
+                            //        //if (isapi1)
+                            //        //{
+                            //        //    source = "APIOut";
+                            //        //}
+                            //        //else
+                            //        //{
+                            //        //    source = "Web";
+                            //        //}
                                     
 
-                                    _analytic.PushHotelDetailsClientDataForAnalyticsAsyc(new AnalyticsData
-                                    {
-                                        Result = value,
-                                        Action = APIName,
-                                        HttpStatusCode = Convert.ToInt32(statusCodeagoda),
-                                        Stage = stage,
-                                        // Payload = payload,
-                                        Payload = RQ,
-                                        ElapsedTime = elapsedMilliseconds,
-                                        Description = ErrorCode,
-                                        Errorcode = ErrorCode,
-                                        //Search_Key = searchKeyRP,
-                                        Search_Key = Search_Key,
-                                        source = source
+                            //        _analytic.PushHotelDetailsClientDataForAnalyticsAsyc(new AnalyticsData
+                            //        {
+                            //            Result = value,
+                            //            Action = APIName,
+                            //            HttpStatusCode = Convert.ToInt32(statusCodeagoda),
+                            //            Stage = stage,
+                            //            // Payload = payload,
+                            //            Payload = RQ,
+                            //            ElapsedTime = elapsedMilliseconds,
+                            //            Description = ErrorCode,
+                            //            Errorcode = ErrorCode,
+                            //            //Search_Key = searchKeyRP,
+                            //            Search_Key = Search_Key,
+                            //            source = source
 
-                                    });
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                await _exception.Error(ex);
-                            }
+                            //        });
+                            //    }
+                            //}
+                            //catch (Exception ex)
+                            //{
+                            //    await _exception.Error(ex);
+                            //}
 
                             #endregion
 
@@ -71166,6 +71166,161 @@ new SqlParameter("@AgentId", AgentId),
             }
         }
 
+        #endregion
+
+        #region "New API For AGODA"
+        public async Task<AgodaBookingIDsRS> AgodaBookingIDsProcess(AgodaBookingIDsRQ agodaRQ, TokenData tokenData, Stopwatch Timer = null)
+        {
+            AgodaBookingIDsRS agodaBookingIDsRS = new AgodaBookingIDsRS();
+            try
+            {
+
+                SqlParameter[] para = new SqlParameter[]{
+    //new SqlParameter("@AgentId",tokenData.AgentId),
+    new SqlParameter("@FromDate",agodaRQ.from),
+    new SqlParameter("@ToDate",agodaRQ.to)
+    };
+
+                DataTable BookingDetail = await _dlConnection.GetDataTableAsync_RATEAURA_BookingServiceT1("getBookingDetails_API_BookingIds", para);
+                if (BookingDetail != null && BookingDetail.Rows.Count > 0)
+                {
+                    agodaBookingIDsRS.responseStatus = "SUCCESS";
+                    agodaBookingIDsRS.version = Convert.ToString(_keySettings.AgodaVersion);
+                    List<BookingId> bookingIdList = new List<BookingId>();
+                    foreach (DataRow row in BookingDetail.Rows)
+                    {
+                        BookingId bookingId = new BookingId();
+                        bookingId.supplierBookingId = row[1].ToString();
+                        bookingId.bookingReferenceId = row[2].ToString();
+                        bookingId.bookingStatus = row[3].ToString();
+
+                        bookingIdList.Add(bookingId);
+                    }
+                    agodaBookingIDsRS.bookingIds = bookingIdList;
+                }
+                else
+                {
+                    agodaBookingIDsRS.responseStatus = "SUCCESS";
+                    agodaBookingIDsRS.version = Convert.ToString(_keySettings.AgodaVersion);
+                    agodaBookingIDsRS.bookingIds = new List<BookingId>();
+                }
+                return agodaBookingIDsRS;
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+                agodaBookingIDsRS.responseStatus = "SUCCESS";
+                agodaBookingIDsRS.version = Convert.ToString(_keySettings.AgodaVersion);
+                agodaBookingIDsRS.bookingIds = new List<BookingId>();
+                return agodaBookingIDsRS;
+            }
+        }
+        public async Task<IActionResult> CreateResponseCompressed_agodabookingIds<T>(HttpContext context, int statusCode, T value, string mediaType,
+           AgodaBookingIDsRQ RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId)
+        {
+            try
+            {
+                var jsonString = "";
+
+                try
+                {
+                    string Website = "";
+                    string hostName = "";
+
+                    try
+                    {
+                        //Website = Convert.ToString(System.Web.HttpContext.Current.Request.Url.Host);
+                        Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
+                        hostName = System.Net.Dns.GetHostName();
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                    //string ipaddress = Common.GetIPAddress();
+                    //string MainURL = Convert.ToString(System.Web.HttpContext.Current.Request.Url.Host);
+                    if (true) //EnterLogs
+                    {
+                        //string Ipaddress = Common.GetIPAddress();
+                        //EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), RQ.token, APIName, "", tokendata.AgentId, ElapsedTime, ErrorCode, CityId, "", hostName, "", RefNo, IntRefNo);
+                        EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), "", APIName, "", "123", tokendata.AgentId, ElapsedTime, ErrorCode, CityId, "", hostName, "", "", "");
+
+
+                        #region Added on 17-04-26
+
+                        // newadded 17042026
+
+                        if (APIName.ToLower() == "availabilitywithcancellation" || APIName.ToLower() == "availability" || APIName.ToLower() == "availabilitywithcancellationv2")
+                        {
+                            var options = new JsonSerializerOptions
+                            {
+                                WriteIndented = true,  // For pretty printing
+                                                       //DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull  // Ignore null properties
+                            };
+
+                            jsonString = System.Text.Json.JsonSerializer.Serialize(value, options);
+                        }
+                        else
+                        {
+                            var settings = new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore,
+                                //MissingMemberHandling = MissingMemberHandling.Ignore,
+                            };
+
+
+                            jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(value, settings);
+                        }
+
+                        #endregion
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //Common.Error(ex);
+                    _exception.Error(ex);
+                }
+
+                // Choose compression method
+                string compressionMethod = "deflate"; // Or "gzip" if needed
+                                                      //string compressionMethod = "gzip"; // Or "gzip" if needed
+
+                // Serialize the value into a JSON string
+                //var jsonString = System.Text.Json.JsonSerializer.Serialize<T>(value);
+                var bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
+
+                // Compress the content
+                var compressedContent = Compress(bytes, compressionMethod);
+
+                // Set headers manually using the passed HttpContext
+                context.Response.Headers["Content-Encoding"] = compressionMethod;
+                context.Response.Headers["Content-Type"] = mediaType;
+                context.Response.Headers["Custom-ElapsedTime"] = ElapsedTime;
+                context.Response.Headers["ErrorCode"] = ErrorCode;
+                context.Response.Headers["CityId"] = CityId;
+                context.Response.StatusCode = statusCode;
+
+
+
+                //return resp;
+                return new FileContentResult(compressedContent, mediaType)
+                {
+                    FileDownloadName = $"{APIName}.json"
+                };
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+                return new ObjectResult(new
+                {
+                    message = "Internal server error",
+                    detail = ex.Message
+                })
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
+        }
         #endregion
 
     }

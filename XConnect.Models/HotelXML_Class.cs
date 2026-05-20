@@ -2808,5 +2808,25 @@ namespace XConnect.Models
 
     #endregion
 
+    #region "NEW API For AGODA"
+    public class AgodaBookingIDsRS
+    {
+        public string responseStatus { get; set; }
+        public string version { get; set; }
+        public List<BookingId> bookingIds { get; set; }
+    }
+    public class BookingId
+    {
+        public string supplierBookingId { get; set; }
+        public string bookingReferenceId { get; set; }
+        public string bookingStatus { get; set; }
+    }
+    public class AgodaBookingIDsRQ
+    {
+        public DateTime? from { get; set; }
+        public DateTime? to { get; set; }
+    }
+    #endregion
+
 }
 
