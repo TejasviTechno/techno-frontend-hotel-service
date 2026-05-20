@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Net;
 using XConnect.Models;
 using XConnect.Models.Hotel;
+using static Xconnect.BLL.HotelXML;
 
 
 namespace XConnect.BAL.Interface
@@ -123,6 +124,13 @@ namespace XConnect.BAL.Interface
         Task<AgodaBookingIDsRS> AgodaBookingIDsProcess(AgodaBookingIDsRQ agodaRQ, TokenData tokenData, Stopwatch Timer = null);
         Task<IActionResult> CreateResponseCompressed_agodabookingIds<T>(HttpContext context, int statusCode, T value, string mediaType,
            AgodaBookingIDsRQ RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId);
+        Task<CancelBookingResponse_agoda> CancelBooking_agoda(CancelBookingRequest RQ, TokenData tokenData, AdvancedOptions advancedOptions, string userAgent, string IP, string HostName);
+
+        Task<IActionResult> CreateResponseCompressed_agodacancel<T>(HttpContext context, int statusCode, T value, string mediaType,AgodaCancelRQ RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, HttpStatusCode statusCodeagoda, string Search_Key = "", long elapsedMilliseconds = 0);
+
+        Task<AgodaBookingDetailRSF.AgodaBookingDetailRS> AgodaBookingDetailProcess(AgodaBookingDetailRQ agodaRQ, TokenData tokenData, Stopwatch Timer = null);
+
+        Task<IActionResult> CreateResponseCompressed_AgodaBookingDetail<T>(HttpContext context, int statusCode, T value, string mediaType,AgodaBookingDetailRQ RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, string Search_Key = "", long elapsedMilliseconds = 0);
 
         #endregion
 
