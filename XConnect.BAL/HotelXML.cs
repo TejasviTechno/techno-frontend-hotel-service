@@ -66923,14 +66923,16 @@ new SqlParameter("@AgentId", AgentId),
             try
             {
                 SqlParameter[] para = new SqlParameter[] {
-             new SqlParameter("@Supplier", sprRequest.SupplierName),
+
                 new SqlParameter("@AgentId", sprRequest.AgentID),
                 new SqlParameter("@FromDate", sprRequest.FromDate),
                 new SqlParameter("@Todate", sprRequest.Todate),
                 new SqlParameter("@ReportType", sprRequest.ReportType),
-                new SqlParameter("@IsApi",Convert.ToInt32(sprRequest.IsApi))
+                 new SqlParameter("@Supplier", sprRequest.SupplierName),
+               new SqlParameter("@timeout",Convert.ToInt32(sprRequest.TimeOut)),
+               new SqlParameter("@IsApi",Convert.ToInt32(sprRequest.IsApi))
          };
-                DataTable dt = await _dlConnection.GetDataTableByConnectionStringAsync("SupplierperformanceReportLogs", para, _connectionStrings.ConnectionString);
+                DataTable dt = await _dlConnection.GetDataTableByConnectionStringAsync("SupplierperformanceReportList", para, _connectionStrings.ConnectionString);
 
                 List<SupplierperformanceReport> lst = HtmlExtensions.ToList<SupplierperformanceReport>(dt);
                 return lst;
