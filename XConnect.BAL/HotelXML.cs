@@ -17557,7 +17557,7 @@ new SqlParameter("@AgentId", AgentId),
                     //userCartDetails_Pre.EachoToken = Convert.ToString(objdata.ShoppingCartDetails[room].SPUI);
                     userCartDetails_Pre.RoomNo = Convert.ToInt32(objdata.ShoppingCartDetails[room].RoomNo);//Updated
 
-                    if (!objdata.IsCombineRoom || room == 0 || objdata.TechName?.ToLower() == "exely")
+                    if (!objdata.IsCombineRoom || room == 0)
                     {
                         #region SupplierRB
                         SupplierRateBreakUp_Prebook supplierRateBreakUp_Prebook = new SupplierRateBreakUp_Prebook();

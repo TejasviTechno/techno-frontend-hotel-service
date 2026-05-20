@@ -517,7 +517,9 @@ namespace XConnect.Supplier.Exely
                                                 if (roomStay.total.taxAmount > 0)
                                                     BookingConditions = $"+ {roomStay.total.taxAmount.ToString("F2", CultureInfo.InvariantCulture)} {roomCurrency} taxes paid at hotel";
                                                 string placementCode = string.Join("|", roomStay.roomType.placements?.Select(p => p.code) ?? Enumerable.Empty<string>());
-                                                string RoomTypeId = roomStay.roomType.id + "$$$" + roomStay.ratePlan.id + "$$$" + FinalPrice.ToString(CultureInfo.InvariantCulture) + "$$$" + roomCurrency + "$$$" + uniqno + "$$$" + XmlNationality + "$$$" + (roomStay.checksum ?? "") + "$$$" + (roomStay.propertyId ?? "") + "$$$" + placementCode;
+                                                int checkInHourVal = roomStay.stayDates?.arrivalDateTime.Hour ?? 14;
+                                                int checkOutHourVal = roomStay.stayDates?.departureDateTime.Hour ?? 12;
+                                                string RoomTypeId = roomStay.roomType.id + "$$$" + roomStay.ratePlan.id + "$$$" + FinalPrice.ToString(CultureInfo.InvariantCulture) + "$$$" + roomCurrency + "$$$" + uniqno + "$$$" + XmlNationality + "$$$" + (roomStay.checksum ?? "") + "$$$" + (roomStay.propertyId ?? "") + "$$$" + placementCode + "$$$" + checkInHourVal + "$$$" + checkOutHourVal;
 
                                                 #region "Room"
                                                 DataRow drHotelRoom = dt_HotelRoom.NewRow();
@@ -1198,6 +1200,9 @@ namespace XConnect.Supplier.Exely
                 string roomTypeCode = roomTypeParts.Length > 0 ? roomTypeParts[0] : "";
                 string ratePlanCode = roomTypeParts.Length > 1 ? roomTypeParts[1] : "";
                 string storedPlacementCode = roomTypeParts.Length > 8 ? roomTypeParts[8] : "";
+                int checkInHour = roomTypeParts.Length > 9 && int.TryParse(roomTypeParts[9], out int ciH) ? ciH : 14;
+                int checkOutHour = roomTypeParts.Length > 10 && int.TryParse(roomTypeParts[10], out int coH) ? coH : 12;
+
                 List<int> childAges = new List<int>();
                 for (int c = 0; c < noofchild; c++) childAges.Add(8);
 
@@ -1236,7 +1241,7 @@ namespace XConnect.Supplier.Exely
                         {
                             new BookingRoomStayRq
                             {
-                                stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(CheckIn).Date.AddHours(14), departureDateTime = ParseSearchDate(CheckOut).Date.AddHours(12) },
+                                stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(CheckIn).Date.AddHours(checkInHour), departureDateTime = ParseSearchDate(CheckOut).Date.AddHours(checkOutHour) },
                                 ratePlan = new BookingRatePlanRq { id = ratePlanCode },
                                 roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = placements },
                                 guests = guests,
@@ -1283,6 +1288,8 @@ namespace XConnect.Supplier.Exely
                     string ratePlanCode = parts.Length > 1 ? parts[1] : "";
                     string storedPlacementCode = parts.Length > 8 ? parts[8] : "";
                     string checksum = parts.Length > 6 ? parts[6] : "";
+                    int checkInHour = parts.Length > 9 && int.TryParse(parts[9], out int ciH) ? ciH : 14;
+                    int checkOutHour = parts.Length > 10 && int.TryParse(parts[10], out int coH) ? coH : 12;
                     string nationality = !string.IsNullOrWhiteSpace(room.Nationality) ? room.Nationality : XmlNationality;
 
                     List<int> childAges = new List<int>();
@@ -1302,7 +1309,7 @@ namespace XConnect.Supplier.Exely
 
                     roomStays.Add(new BookingRoomStayRq
                     {
-                        stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(room.CheckIn).Date.AddHours(14), departureDateTime = ParseSearchDate(room.CheckOut).Date.AddHours(12) },
+                        stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(room.CheckIn).Date.AddHours(checkInHour), departureDateTime = ParseSearchDate(room.CheckOut).Date.AddHours(checkOutHour) },
                         ratePlan = new BookingRatePlanRq { id = ratePlanCode },
                         roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = placements },
                         guests = guests,
@@ -1362,6 +1369,8 @@ namespace XConnect.Supplier.Exely
                     string ratePlanCode = parts.Length > 1 ? parts[1] : "";
                     string storedPlacementCode = parts.Length > 8 ? parts[8] : "";
                     string checksum = parts.Length > 6 ? parts[6] : "";
+                    int checkInHour = parts.Length > 9 && int.TryParse(parts[9], out int ciH) ? ciH : 14;
+                    int checkOutHour = parts.Length > 10 && int.TryParse(parts[10], out int coH) ? coH : 12;
 
                     List<int> childAges = new List<int>();
                     for (int c = 0; c < room.NoOfChild; c++) childAges.Add(8);
@@ -1380,7 +1389,7 @@ namespace XConnect.Supplier.Exely
 
                     roomStays.Add(new BookingRoomStayRq
                     {
-                        stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(room.CheckIn).Date.AddHours(14), departureDateTime = ParseSearchDate(room.CheckOut).Date.AddHours(12) },
+                        stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(room.CheckIn).Date.AddHours(checkInHour), departureDateTime = ParseSearchDate(room.CheckOut).Date.AddHours(checkOutHour) },
                         ratePlan = new BookingRatePlanRq { id = ratePlanCode },
                         roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = placements },
                         guests = guests,
@@ -1442,6 +1451,8 @@ namespace XConnect.Supplier.Exely
                 string roomTypeCode = roomTypeParts.Length > 0 ? roomTypeParts[0] : "";
                 string ratePlanCode = roomTypeParts.Length > 1 ? roomTypeParts[1] : "";
                 string storedPlacementCode = roomTypeParts.Length > 8 ? roomTypeParts[8] : "";
+                int checkInHour = roomTypeParts.Length > 9 && int.TryParse(roomTypeParts[9], out int ciH) ? ciH : 14;
+                int checkOutHour = roomTypeParts.Length > 10 && int.TryParse(roomTypeParts[10], out int coH) ? coH : 12;
 
                 int noOfAdults = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfAdults"]);
                 int noOfChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfChild"]);
@@ -1481,7 +1492,7 @@ namespace XConnect.Supplier.Exely
                         {
                             new BookingRoomStayRq
                             {
-                                stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(checkIn).Date.AddHours(14), departureDateTime = ParseSearchDate(checkOut).Date.AddHours(12) },
+                                stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(checkIn).Date.AddHours(checkInHour), departureDateTime = ParseSearchDate(checkOut).Date.AddHours(checkOutHour) },
                                 ratePlan = new BookingRatePlanRq { id = ratePlanCode },
                                 roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = placements },
                                 guests = guests,
@@ -1529,6 +1540,8 @@ namespace XConnect.Supplier.Exely
                 string roomTypeCode = roomTypeParts.Length > 0 ? roomTypeParts[0] : "";
                 string ratePlanCode = roomTypeParts.Length > 1 ? roomTypeParts[1] : "";
                 string storedPlacementCode = roomTypeParts.Length > 8 ? roomTypeParts[8] : "";
+                int checkInHour = roomTypeParts.Length > 9 && int.TryParse(roomTypeParts[9], out int ciH) ? ciH : 14;
+                int checkOutHour = roomTypeParts.Length > 10 && int.TryParse(roomTypeParts[10], out int coH) ? coH : 12;
 
                 List<int> childAges = new List<int>();
                 for (int c = 0; c < noOfChild; c++) childAges.Add(8);
@@ -1564,7 +1577,7 @@ namespace XConnect.Supplier.Exely
                         {
                             new BookingRoomStayRq
                             {
-                                stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(checkIn).Date.AddHours(14), departureDateTime = ParseSearchDate(checkOut).Date.AddHours(12) },
+                                stayDates = new BookingStayDates { arrivalDateTime = ParseSearchDate(checkIn).Date.AddHours(checkInHour), departureDateTime = ParseSearchDate(checkOut).Date.AddHours(checkOutHour) },
                                 ratePlan = new BookingRatePlanRq { id = ratePlanCode },
                                 roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = placements },
                                 guests = guests,
