@@ -242,7 +242,6 @@ namespace XConnect.Models
         public string HyperguestBookingURL { get; set; }
         public string Prebook_book { get; set; }
         
-        public string hyperguest_Currency { get; set; }
 
     }
 

@@ -2922,6 +2922,86 @@ namespace XConnect.CommonUtilities
             return responseDto;
         }
 
+
+        public async Task<ResponseDto> WelcomebedsBookingResponse_timeout( string Request, string url, string UserName, string Password, string CheckIn, string CheckOut, string Supplier, string referenceNumber, Int32 TimeOut = 120000)
+        {
+            ResponseDto responseDto = new ResponseDto();
+            string strOutput = "";
+            string Error = "";
+
+            System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+            timer.Start();
+            try
+            {
+
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                string Key = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserName + ":" + Password));
+                request.Method = "POST";
+                request.Headers.Add("Authorization", "Basic " + Key);
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                request.ContentType = "application/json";
+                request.Accept = "application/json";
+                request.KeepAlive = true;
+
+                ServicePointManager.DefaultConnectionLimit = 2000;
+
+                byte[] postBytes = Encoding.ASCII.GetBytes(Request);
+                using (Stream dataStream = request.GetRequestStream())
+                {
+                    dataStream.Write(postBytes, 0, postBytes.Length);
+                }
+                try
+                {
+                    HttpWebResponse Response = (HttpWebResponse)request.GetResponse();
+                    Stream responseStream = Response.GetResponseStream();
+                    StreamReader Reader = new StreamReader(responseStream, Encoding.UTF8);
+                    strOutput = Reader.ReadToEnd();
+                    responseStream.Close();
+                    Reader.Close();
+                    Response.Close();
+                    timer.Stop();
+                }
+                catch (WebException ex)
+                {
+                    _ = _exception.Error(ex);
+                    Error = ex.Message;
+
+                    if (ex.Response != null)
+                    {
+                        WebResponse errorResponse = ex.Response;
+                        using (Stream responseStream = errorResponse.GetResponseStream())
+                        {
+                            StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
+                            String errorText = reader.ReadToEnd();
+                            strOutput = errorText;
+                            Error = strOutput;
+                        }
+                    }
+                    try
+                    {
+                        #region Code For Timeout
+                        if (ex.Message.ToLower().Contains("timeout") || (ex.Message.ToLower().Contains("timed out")))
+                        {
+                            await Gettimeoutemail(referenceNumber, Supplier, CheckIn, CheckOut, CheckIn, Error);
+                        }
+                        #endregion
+                    }
+                    catch (WebException ex1)
+                    {
+                        _ = _exception.Error(ex);
+                        Error = ex.Message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                Error = ex.Message;
+            }
+            responseDto.Response = strOutput;
+            responseDto.Error = Error;
+            return responseDto;
+        }
         public string GenerateGTARequest(HotelSearchParameter objSearchPara)
         {
             try
