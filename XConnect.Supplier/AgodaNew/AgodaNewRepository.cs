@@ -287,9 +287,9 @@ namespace XConnect.Supplier.AgodaNew
                                                     //string ChainCode_Agoda = Convert.ToString(DTChainCode.Tables[0].Rows[chaincode]["chaincode"]);// Convert.ToString(chaincode);
 
                                                     string ChainCode_Agoda = Convert.ToString(DTChainCode.Tables[0].Rows[chaincode]["ChannelCode"]);
-                                                    bool supplierExists = DTChainCode.Tables[1].AsEnumerable().Any(r => Convert.ToString(r["Supplierid"])?.Trim() == SupplierID.Trim());
+                                                    //bool supplierExists = DTChainCode.Tables[1].AsEnumerable().Any(r => Convert.ToString(r["Supplierid"])?.Trim() == SupplierID.Trim());
 
-                                                    if (supplierExists)
+                                                    if (true)
                                                     {
                                                         bool exists = DTChainCode.Tables[1].AsEnumerable().Any(r => Convert.ToString(r["Supplierid"])?.Trim() == SupplierID.Trim() && Convert.ToString(r["chaincode"])?.Trim() == ChainCode_Agoda);
                                                         if (!exists)
@@ -313,7 +313,8 @@ namespace XConnect.Supplier.AgodaNew
                                                     {
                                                         continue;
                                                     }
-                                                    DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = 0");
+                                                   // DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = 0");
+                                                    DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}' AND channalcode = '{ChainCode_Agoda}'");
                                                     if (drCountry.GetLength(0) > 0)
                                                     {
                                                         continue;
@@ -1638,8 +1639,10 @@ namespace XConnect.Supplier.AgodaNew
                             : $"{existing}, {clientIp}";
 
                         // Custom Header
-                        Request.Headers.Add("X-Custom-Host", "13");
-                        Request.Headers.Add("X-Time-Zone", "abc");
+                        //Request.Headers.Add("X-Custom-Host", "13");
+                        Request.Headers.Add("X-Custom-Host", "AgodaReverse");
+                        //Request.Headers.Add("X-Time-Zone", "abc");
+                        Request.Headers.Add("X-Time-Zone", "Arabian Standard Time");
                         Request.Headers.Add("X-Accept-Language", "abc");
                         Request.Headers.Add("User-Agent", "PostmanRuntime/7.51.1");
                         Request.Headers.Add("X-Forwarded-For", xForwardedFor);
@@ -1655,12 +1658,12 @@ namespace XConnect.Supplier.AgodaNew
                         {
                             HttpStatusCode = (int)responseMessage.StatusCode;
 
-                            Console.WriteLine("STATUS: " + HttpStatusCode);
+                            //Console.WriteLine("STATUS: " + HttpStatusCode);
 
                             // ✅ FIX: Direct read (auto decompressed)
                             responsedata = await responseMessage.Content.ReadAsStringAsync();
 
-                            Console.WriteLine("RESPONSE: " + responsedata);
+                            // Console.WriteLine("RESPONSE: " + responsedata);
 
                             await _commonMethod.XMLRequestResponseTrack_agoda(
                                 finalUrl + " | " + strxmlRQRS,

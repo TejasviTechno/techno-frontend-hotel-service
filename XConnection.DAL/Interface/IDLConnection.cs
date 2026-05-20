@@ -114,7 +114,7 @@ namespace XConnect.DAL.Interface
         object GetExecuteScalarSP_88(String SPName, SqlParameter[] para);
         Task<DataTable> GetDataTableAsync_RATEAURA_BookingServiceT1(string SPName, SqlParameter[] para);
 
-
+        Task<DataSet> GetDataSetAsync_RATEAURA_BookingServiceT1(string SPName, SqlParameter[] para);
 
         #endregion
     }

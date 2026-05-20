@@ -2826,6 +2826,131 @@ namespace XConnect.Models
         public DateTime? from { get; set; }
         public DateTime? to { get; set; }
     }
+
+
+    public class AgodaBookingDetailRSF
+    {
+
+        public class AgodaBookingDetailRS
+        {
+            public string responseStatus { get; set; }
+            public string version { get; set; }
+            public string bookingReferenceId { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public string supplierBookingId { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public string bookingStatus { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public string hotel { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public string checkIn { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public string checkOut { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public string roomCode { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public string boardCode { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public string ratePlanCode { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public int channel { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public int quantity { get; set; }
+            //[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            //public string specialRequests { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public GuestCount GuestCount { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public Price Price { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public CancellationInfo CancellationInfo { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public List<int> benefits { get; set; }
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public string hotelConfirmationReference { get; set; }
+
+            [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+            public string remark { get; set; }
+        }
+        public class GuestCount
+        {
+            public int adults { get; set; }
+            public List<int> childrenAges { get; set; }
+        }
+        public class Price
+        {
+            public double payoutPrice { get; set; }
+            public string currency { get; set; }
+            public double commissionPercentage { get; set; }
+        }
+        public class CancellationInfo
+        {
+            public decimal cancellationFee { get; set; }
+            public string cancellationDate { get; set; }
+        }
+    }
+
+    public class AgodaBookingDetailRQ
+
+    {
+
+        public string bookingReferenceId { get; set; }
+
+    }
+
+
+    #endregion
+
+    #region agoda cancel
+    //public class HotelRoom_Cancel_agoda
+    //{
+    //    public string RoomTypeName { get; set; }
+    //    public string Message { get; set; }
+    //    public int CancelStatus { get; set; }
+    //    public double AgentCharge { get; set; }
+    //}
+    //public class HotelOption_Cancel_agoda
+    //{
+    //    public Int64 BookingId { get; set; }
+    //    public List<HotelRoom_Cancel_agoda> HotelRooms { get; set; }
+    //}
+    //public class CancelRS_agoda
+    //{
+    //    public HotelOption_Cancel_agoda HotelOption { get; set; }
+    //    public string Currency { get; set; }
+    //}
+
+    //public class CancelBookingResponse_agoda
+    //{
+    //    public CancelRS_agoda CancelRS { get; set; }
+    //    public List<XConnect.Models._Error> Error = new List<XConnect.Models._Error>();
+    //}
+    //public class AgodaCancelReturn
+    //{
+    //    public string ReturnStatus { get; set; }
+    //    public double AgentCancellationAmount { get; set; }
+    //}
+    //public class AgodaCancelRS
+    //{
+    //    public string responseStatus { get; set; }
+    //    public string version { get; set; }
+    //    public string referenceId { get; set; }
+    //    public double cancellationFees { get; set; }
+
+    //    public AgodaCancelRS()
+    //    {
+    //        responseStatus = "SUCCESS";
+    //        version = new AgodaVersion().Version;
+    //    }
+    //}
+    //public class AgodaCancelRQ
+    //{
+    //    public string referenceId { get; set; }
+
+    //    public string token { get; set; }
+    //    public TokenData TokenData { get; set; }
+
+    //}
     #endregion
 
 }

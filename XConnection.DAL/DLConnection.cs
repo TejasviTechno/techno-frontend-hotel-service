@@ -1890,6 +1890,43 @@ namespace XConnect.DAL
 
         }
 
+        public async Task<DataSet> GetDataSetAsync_RATEAURA_BookingServiceT1(string SPName, SqlParameter[] para)
+        {
+            using (SqlConnection con = new SqlConnection(_connectionStrings.connectionStr_RATEAURA_BookingServiceT1))
+            {
+                DataSet ds = new DataSet();
+
+                using (SqlCommand cmd = new SqlCommand(SPName, con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+
+                    foreach (SqlParameter par in para)
+                    {
+                        cmd.Parameters.Add(par);
+                    }
+                    try
+                    {
+                        await con.OpenAsync();
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                        {
+                            await Task.Run(() => da.Fill(ds));  // Use Task.Run to execute the filling operation asynchronously
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+                return ds;
+            }
+
+        }
+
         #endregion
     }
 }

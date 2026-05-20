@@ -420,9 +420,13 @@ namespace XConnect.Models
         public class CancelRQ
         {
             public int BookingId { get; set; }
+            public int BookingDetailId { get; set; }
+
             public string CancelCode { get; set; }
             public int CancelAll { get; set; }
             public string Reason { get; set; }
+
+            
         }
         public class Request
         {
@@ -456,10 +460,19 @@ namespace XConnect.Models
             public int CancelStatus { get; set; }
         }
 
-        //public class CancelBookingResponse
-        //{
-        //    public List<object> Error { get; set; }
-        //    public CancelRS CancelRS { get; set; }
-        //}
+        public class CancelBookingResponse
+        {
+            public List<object> Error { get; set; }
+            public CancelRS CancelRS { get; set; }
+        }
+
+        public class AgodaCancelRQ
+        {
+            public string referenceId { get; set; }
+
+            public string token { get; set; }
+            public TokenData TokenData { get; set; }
+
+        }
     }
 }

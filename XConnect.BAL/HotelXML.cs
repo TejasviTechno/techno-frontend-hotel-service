@@ -71327,5 +71327,1235 @@ new SqlParameter("@AgentId", AgentId),
         }
         #endregion
 
+        #region "Cancel API For Agoda"
+        public async Task<CancelBookingResponse_agoda> CancelBooking_agoda(CancelBookingRequest RQ, TokenData tokenData, AdvancedOptions advancedOptions, string userAgent, string IP, string HostName)
+        {
+            try
+            {
+                CancelBookingResponse_agoda cancelBookingResponse = new CancelBookingResponse_agoda();
+                CancelRS_agoda response = new CancelRS_agoda();
+                List<HotelRoom_Cancel_agoda> hotelRoom = new List<HotelRoom_Cancel_agoda>();
+                //HotelOption_Cancel hotel = new HotelOption_Cancel();
+                HotelOption_Cancel_agoda hotel = new HotelOption_Cancel_agoda();
+                CancelRQ request = RQ.CancelRQ;
+                {
+                    string CancelReson = Convert.ToString(request.Reason).Trim();
+                    Int64 BookingIdSearch = 0;
+                    string SearchBy = "internal";
+                    //DataTable DtCancellationError = GetCheckHotelCancellationCharges(tokenData.AgentId, BookingIdSearch, SearchBy, "", request.InternalReference);
+
+                    //comment and needtocall api
+                    // DataTable DtCancellationError = await _commonMethod.GetCheckHotelCancellationCharges_agoda(tokenData.AgentId, BookingIdSearch, SearchBy, "", request.InternalReference);
+                    //
+                    int AgentId = 0;
+                    //string AgentType = Convert.ToString(tokenData.Type).ToLower(); // 18052026
+                    //string AgentVoucherNo = "";
+                    if (Convert.ToString(tokenData.Type) == null)
+                        AgentId = tokenData.AgentId;
+                    else
+                        AgentId = Convert.ToString(tokenData.Type).ToLower() == "subagent" ? Convert.ToInt32(tokenData.ParentId) : Convert.ToInt32(tokenData.AgentId);
+                    DataSet dsAgentDetails = new DataSet();
+                    int IsShowSupplier = 0;
+                    dsAgentDetails = new DataSet();
+                    // dsAgentDetails = Common.IsSubAgent(AgentId, 1, 0, "", 0, tokenData.Type, tokenData.SubUserId, IsShowSupplier);  needtochange
+                    bool NotAllow = false;
+                    //for (int i = 0; i < DtCancellationError.Rows.Count; i++)
+                    //{
+                    //    string DetailId = Convert.ToString(DtCancellationError.Rows[i]["BookingDetailsId"]);
+                    //    string status = Convert.ToString(DtCancellationError.Rows[i]["BookingStatus"]);
+                    //    if (status == "" || status == "2" || status == "3")
+                    //        NotAllow = true;
+                    //    decimal RefundAmount = Convert.ToDecimal(DtCancellationError.Rows[i]["RefundableAmount"]);
+                    //}
+                    if (NotAllow == false)
+                    {
+                        //for (int p = 0; p < DtCancellationError.Rows.Count; p++)
+                        for (int p = 0; p < 1; p++)
+                        {
+                            // Int64 DetailId = Convert.ToInt64(DtCancellationError.Rows[p]["BookingDetailsId"]);  //18052026
+                            string bookingStatus = "";// Convert.ToString(DtCancellationError.Rows[p]["BookingStatus"]); //18052026
+
+                            AgodaCancelReturn status_new = new AgodaCancelReturn();
+
+                            double AgentCancellationAmount = 0; //Convert.ToDouble(DtCancellationError.Rows[p]["AgentChargeAmount"]); //18052026
+                                                                //if (bookingStatus == "" || bookingStatus == "2" || bookingStatus == "3" || bookingStatus == "1")
+                                                                //{
+                                                                //    HotelRoom_Cancel_agoda room = new HotelRoom_Cancel_agoda();
+                                                                //    room.RoomTypeName = "";//Convert.ToString(DtCancellationError.Rows[p]["RoomType"]); //18052026
+                                                                //    room.AgentCharge = AgentCancellationAmount;
+                                                                //    room.Message = "Room already Cancelled!!!";
+                                                                //    room.CancelStatus = 0;
+                                                                //    hotelRoom.Add(room);
+                                                                //}
+                                                                //else
+                            {
+                                HotelRoom_Cancel_agoda room = new HotelRoom_Cancel_agoda();
+                                // room.RoomTypeName = Convert.ToString(DtCancellationError.Rows[p]["RoomType"]); //18052026
+                                room.Message = "Error";
+                                room.CancelStatus = 0;
+                                //bookingStatus = await SaveHotelCancellationData_agoda(DtCancellationError, p, dsAgentDetails, Convert.ToInt32(DetailId), AgentId, request.Reason, AgentType, advancedOptions, request.CancelOldBooking, userAgent, IP, HostName, tokenData);
+                                //AgodaCancelReturn Status = (await SaveHotelCancellationData_agoda(DtCancellationError, p, dsAgentDetails, Convert.ToInt32(DetailId), AgentId, request.Reason, AgentType, request.InternalReference));
+                                //AgodaCancelReturn Status = (await SaveHotelCancellationData_agoda( p, dsAgentDetails, AgentId, request.Reason, AgentType, request.InternalReference));
+                                AgodaCancelReturn Status = (await SaveHotelCancellationData_agoda(p, dsAgentDetails, AgentId, request.Reason, request.InternalReference));
+                                if (Status.ReturnStatus == "Room  Cancelled Successfully!!!")
+                                {
+                                    room.AgentCharge = status_new.AgentCancellationAmount;
+                                    room.Message = status_new.ReturnStatus;
+                                    room.CancelStatus = 1;
+                                }
+                                if (Status.ReturnStatus == "Error")
+                                {
+                                    List<XConnect.Models._Error> Error = new List<XConnect.Models._Error>();
+                                    XConnect.Models._Error Er = new XConnect.Models._Error();
+                                    Er.type = "1";
+                                    Er.code = "1";
+                                    Er.description = "Error";
+                                    Error.Add(Er);
+                                    cancelBookingResponse.Error = Error;
+                                }
+                                hotelRoom.Add(room);
+                            }
+                        }
+                    }
+                    hotel.BookingId = BookingIdSearch;
+                    hotel.HotelRooms = hotelRoom;
+                    response.HotelOption = hotel;
+
+                    cancelBookingResponse.CancelRS = response;
+                    return cancelBookingResponse;
+                }
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+
+                return null;
+            }
+        }
+        public async Task<AgodaCancelReturn> SaveHotelCancellationData_agoda(int p, DataSet dsAgentDetails, int AgentId, string CancelReson, string InternalReference)
+        {
+            AgodaCancelReturn agodaCancelReturn = new AgodaCancelReturn();
+
+            agodaCancelReturn.ReturnStatus = "";
+            agodaCancelReturn.AgentCancellationAmount = 10000;
+
+            try
+            {
+                int IsBothB2BB2C = 0;
+                bool IsAmend = false;
+                bool IsPackage = false;
+                HotelRepository calls = new HotelRepository();
+                // HotelCancellation data = new HotelCancellation(); //needtochange 16052026
+                string UserNameType = "";
+
+                //decimal CancellationAmounts = Convert.ToDecimal(DtCancellation.Rows[p]["CancellationCharge"]);  // 18052026
+                //decimal AgentCancellationAmount = Convert.ToDecimal(DtCancellation.Rows[p]["AgentChargeAmount"]); // 18052026
+                //string Supplier = Convert.ToString(DtCancellation.Rows[p]["Provider"]).ToLower();  // 18052026
+
+                //agodaCancelReturn.AgentCancellationAmount = Convert.ToDouble(AgentCancellationAmount);
+                agodaCancelReturn.AgentCancellationAmount = 0; //Convert.ToDouble(AgentCancellationAmount); // 18052026
+
+                string CancellationXML = "";
+                string ResponseData = "";
+                #region "Get Search Config"
+
+                //if(tokenData)
+                //UserNameType = Convert.ToString(dsAgentDetails.Tables[0].Rows[0]["AgentCode"]);
+
+                //string AgentVoucherNo_Cancle = Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]); // 18052026
+                //string PNRNO_Cancel = Convert.ToString(DtCancellation.Rows[p]["PNRNo"]); // 18052026
+
+
+                #endregion
+                //if (AgentVoucherNo_Cancle.ToLower() != "on request")
+                //{
+
+                //if (IsPackage == true)  //needtochange 16052026
+                //{
+                //    agodaCancelReturn.ReturnStatus = Convert.ToString(HttpUtility.UrlEncode(AES.Encrypt(PNRNO_Cancel, Encoding.ASCII.GetBytes("0123456789"))).Replace(' ', '+'));
+                //    return agodaCancelReturn;
+                //} 
+
+                if (true)// (Supplier.ToLower() == "oth")
+                {
+                    //return agodaCancelReturn;
+
+                    //CheckHotelCancellationCharges
+                    CommonXMLOutCheckHotelCancellationChargesRequest.CheckHotelCancellationChargesRequest checkHotelCancellationChargesRequest = new CommonXMLOutCheckHotelCancellationChargesRequest.CheckHotelCancellationChargesRequest();
+
+                    CommonXMLOutCheckHotelCancellationChargesRequest.Request request = new CommonXMLOutCheckHotelCancellationChargesRequest.Request();
+
+                    CommonXMLOutCheckHotelCancellationChargesRequest.CheckHotelCancellationChargesRQ checkHotelCancellationChargesRQ = new CommonXMLOutCheckHotelCancellationChargesRequest.CheckHotelCancellationChargesRQ();
+                    checkHotelCancellationChargesRQ.BookingId = 0;
+                    //checkHotelCancellationChargesRQ.InternalReference = "Agoda_" + InternalReference;
+                    checkHotelCancellationChargesRQ.InternalReference = InternalReference;
+
+                    checkHotelCancellationChargesRQ.ReferenceNo = "";
+
+                    request.CheckHotelCancellationChargesRQ = checkHotelCancellationChargesRQ;
+
+                    CommonXMLOutCheckHotelCancellationChargesRequest.AdvancedOptions advancedOptions = new CommonXMLOutCheckHotelCancellationChargesRequest.AdvancedOptions();
+                    advancedOptions.Currency = "";
+
+                    //checkHotelCancellationChargesRequest.Token = _keySettings.out_agoda_token;
+                    checkHotelCancellationChargesRequest.Token = "";
+
+                    checkHotelCancellationChargesRequest.Request = request;
+                    checkHotelCancellationChargesRequest.AdvancedOptions = advancedOptions;
+
+                    //Call XMLOut CheckHotelCancellationCharges request
+                    HotelX item = new HotelX();
+                    RQRS rQRS = new RQRS();
+                    rQRS.Request = JsonConvert.SerializeObject(checkHotelCancellationChargesRequest);
+                    rQRS.Response = "";
+                    item.SearchTimeOut = 120000;
+                    List<RQRS> RS = new List<RQRS>();
+                    RS.Add(rQRS);
+
+                    item.RQRS = RS;
+
+                    //Call CheckHotelCancellationCharges
+                    //string responseCheckHotelCancellationCharges = Task.Run(() => ThirdPartyXML.GetSupplierResponseFinalNew(item, "CheckHotelCancellationCharges")).GetAwaiter().GetResult();
+                    string responseCheckHotelCancellationCharges = Task.Run(() => GetSupplierResponseFinalNew_new(item, "CheckHotelCancellationCharges")).GetAwaiter().GetResult();
+
+                    //needtoadd line from response
+
+                    //
+
+                    if (!string.IsNullOrEmpty(responseCheckHotelCancellationCharges))
+                    {
+                        CommonXMLOutCheckHotelCancellationChargesResponse.CheckHotelCancellationChargesResponse checkHotelCancellationChargesResponse = new CommonXMLOutCheckHotelCancellationChargesResponse.CheckHotelCancellationChargesResponse();
+                        checkHotelCancellationChargesResponse = JsonConvert.DeserializeObject<CommonXMLOutCheckHotelCancellationChargesResponse.CheckHotelCancellationChargesResponse>(responseCheckHotelCancellationCharges);
+
+                        if (checkHotelCancellationChargesResponse != null && checkHotelCancellationChargesResponse.Error.Count > 0)
+                        {
+                            agodaCancelReturn.ReturnStatus = "Error";
+                            return agodaCancelReturn;
+                        }
+                        else
+                        {
+                            CommonXMLOutCancelBookingRequest.CancelBookingRequest cancelBookingRequest = new CommonXMLOutCancelBookingRequest.CancelBookingRequest();
+                            CommonXMLOutCancelBookingRequest.Request request1 = new CommonXMLOutCancelBookingRequest.Request();
+                            CommonXMLOutCancelBookingRequest.CancelRQ cancelRQ = new CommonXMLOutCancelBookingRequest.CancelRQ();
+                            cancelRQ.BookingId = checkHotelCancellationChargesResponse.CheckHotelCancellationChargesRS.HotelOption.BookingId;
+                            cancelRQ.BookingDetailId = 0; //need to pass 0 bcoz seperate room cancel at once
+                            cancelRQ.CancelCode = checkHotelCancellationChargesResponse.CheckHotelCancellationChargesRS.HotelOption.CancelCode;
+                            cancelRQ.CancelAll = 1;
+                            cancelRQ.Reason = CancelReson;
+                            request1.CancelRQ = cancelRQ;
+
+                            CommonXMLOutCancelBookingRequest.AdvancedOptions advancedOptions1 = new CommonXMLOutCancelBookingRequest.AdvancedOptions();
+                            advancedOptions1.Currency = checkHotelCancellationChargesResponse.CheckHotelCancellationChargesRS.Currency;
+
+                            //cancelBookingRequest.Token = _keySettings.out_agoda_token;
+                            cancelBookingRequest.Token = "";
+
+                            cancelBookingRequest.Request = request1;
+                            cancelBookingRequest.AdvancedOptions = advancedOptions1;
+
+                            HotelX itemBD = new HotelX();
+                            RQRS rQRSBD = new RQRS();
+                            rQRSBD.Request = JsonConvert.SerializeObject(cancelBookingRequest);
+                            rQRSBD.Response = "";
+                            itemBD.SearchTimeOut = 120000;
+                            List<RQRS> RSBD = new List<RQRS>();
+                            RSBD.Add(rQRSBD);
+
+                            itemBD.RQRS = RSBD;
+                            //Call CancelBooking
+                            string responseCancelBooking = Task.Run(() => GetSupplierResponseFinalNew_new(itemBD, "CancelBooking")).GetAwaiter().GetResult();
+                            if (!string.IsNullOrEmpty(responseCancelBooking))
+                            {
+                                CommonXMLOutCancelBookingResponse.CancelBookingResponse cancelBookingResponse = new CommonXMLOutCancelBookingResponse.CancelBookingResponse(); cancelBookingResponse = JsonConvert.DeserializeObject<CommonXMLOutCancelBookingResponse.CancelBookingResponse>(responseCancelBooking);
+
+                                if (cancelBookingResponse != null && cancelBookingResponse.Error.Count > 0)
+                                {
+                                    agodaCancelReturn.ReturnStatus = "Error";
+                                    return agodaCancelReturn;
+                                }
+                                else if (cancelBookingResponse != null && cancelBookingResponse.Error.Count == 0)
+                                {
+                                    if (cancelBookingResponse.CancelRS.HotelOption.HotelRooms[0].CancelStatus == 1)
+                                    {
+                                        agodaCancelReturn.ReturnStatus = "Room  Cancelled Successfully!!!";
+                                        return agodaCancelReturn;
+                                    }
+                                    else
+                                    {
+                                        agodaCancelReturn.ReturnStatus = "Error";
+                                        return agodaCancelReturn;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    return agodaCancelReturn;
+                }
+                #region"TravelClick"
+                //else if (Supplier.ToUpper() == "TRAVELCLICK")
+                //{
+                //    try
+                //    {
+                //        #region Booking Cancel RQ, URL
+
+
+                //        DataRow[] TravelClickDetails = null;
+                //        if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                //            TravelClickDetails = dsAgentDetails.Tables[1].Select("SupplierName='TravelClick'");
+
+                //        string UserName = Convert.ToString(TravelClickDetails[0]["UserName"]);
+                //        string Password = Convert.ToString(TravelClickDetails[0]["Password"]);
+                //        string suppliername = Convert.ToString(TravelClickDetails[0]["SupplierName"]);
+                //        string RoomTypeId = Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]);
+                //        string BookUrl = Convert.ToString(TravelClickDetails[0]["WebSiteURL"]);
+                //        string TravelClickBookingCancelRS = "";
+                //        string TravelClickBookingCancelRQ = "";
+                //        string referenceNumber = "";
+                //        if (true)
+                //        {
+                //            DataTable DtPassengerDetails = ThirdPartyXML.GetPassengerDetail_Travelclick(DetailId);
+                //            TravelClickBookingCancelRQ = ThirdPartyXML.Get_TravelClick_BookingCancelRQ(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Password, suppliername, RoomTypeId, DtCancellation, DtPassengerDetails, referenceNumber);
+                //            calls.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(TravelClickBookingCancelRQ), "-", "After Request hit bookingcancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "TravelClick");
+                //            if (TravelClickBookingCancelRQ == "")
+                //            {
+                //                //calls.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(rategainBookingCancelRQ), Convert.ToString(rategainBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RateGain");
+                //                agodaCancelReturn.ReturnStatus = "Error";
+                //                return agodaCancelReturn;
+                //            }
+
+                //            #endregion
+                //            string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                //            string Roomid = spitid[0].ToString();
+                //            string RatePlanCode = spitid[1].ToString();
+                //            string currencycode = spitid[2].ToString();
+                //            string ExtrabedPrice = spitid[3].ToString();
+                //            string ExtrabedQuantity = spitid[4].ToString();
+                //            string CountryId = spitid[5].ToString();
+
+                //            #region Booking Cancel RS
+                //            string Error = "";
+                //            TravelClickBookingCancelRS = ThirdPartyXML.GetTravelClick_SupplierResponse(ref Error, BookUrl, TravelClickBookingCancelRQ);
+                //        }
+                //        calls.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(TravelClickBookingCancelRQ), Convert.ToString(TravelClickBookingCancelRS), "After Response hit bookingcancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "TravelClick");
+                //        DataSet dsTravelClick_RS = new DataSet();
+                //        bool IsTrue = false;
+                //        if (TravelClickBookingCancelRS != string.Empty && TravelClickBookingCancelRS != "" && TravelClickBookingCancelRS != null && !TravelClickBookingCancelRS.Contains("error"))
+                //        {
+                //            dsTravelClick_RS = Common.GetDataSetFromXMLString(TravelClickBookingCancelRS);
+                //            string statuscancel = Convert.ToString(dsTravelClick_RS.Tables["HotelReservation"].Rows[0]["ResStatus"]);
+                //            if (statuscancel.ToLower() == "canceled")
+                //            {
+                //                IsTrue = true;
+
+                //            }
+                //        }
+
+                //        #endregion
+
+                //        #region Response Error Block 
+                //        if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() != "TRAVELCLICK" && TravelClickBookingCancelRS.ToLower().Contains("error"))
+                //        {
+                //            calls.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(TravelClickBookingCancelRQ), Convert.ToString(TravelClickBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "TravelClick");
+                //            agodaCancelReturn.ReturnStatus = "Error";
+                //            return agodaCancelReturn;
+                //        }
+
+                //        if (IsTrue == false)
+                //        {
+                //            calls.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(TravelClickBookingCancelRQ), Convert.ToString(TravelClickBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "TravelClick");
+                //            agodaCancelReturn.ReturnStatus = "Error";
+                //            return agodaCancelReturn;
+                //        }
+                //        #endregion
+
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        Common.Error(ex);
+                //        agodaCancelReturn.ReturnStatus = "Error";
+                //        return agodaCancelReturn;
+                //    }
+                //}
+
+                #endregion
+                #region RateGain
+                //else if (Supplier.ToUpper() == "RATEGAIN")
+                //{
+                //    try
+                //    {
+                //        #region Booking Cancel RQ, URL
+
+
+                //        DataRow[] rategainDetails = null;
+                //        if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                //            rategainDetails = dsAgentDetails.Tables[1].Select("SupplierName='RateGain'");
+
+                //        string UserName = Convert.ToString(rategainDetails[0]["UserName"]);
+                //        string Password = Convert.ToString(rategainDetails[0]["Password"]);
+                //        string suppliername = Convert.ToString(rategainDetails[0]["SupplierName"]);
+                //        string RoomTypeId = Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]);
+                //        string RoomTypeName = Convert.ToString(DtCancellation.Rows[0]["RoomType"]);
+                //        string rategainBookingCancelRS = "";
+                //        string rategainBookingCancelRQ = "";
+                //        if (true)
+                //        {
+                //            // Int32 OnlineBookingMasterId = Convert.ToInt32(DtCancellation.Rows[0]["OnlineBookingMasterId"]);
+                //            DataTable DtPassengerDetails = ThirdPartyXML.GetPassengerDetail_Rategain(DetailId);
+                //            string HotelCode = string.Empty;
+                //            HotelCode = Convert.ToString(DtPassengerDetails.Rows[0]["ProductId"]);
+                //            rategainBookingCancelRQ = ThirdPartyXML.Get_Rategain_BookingCancelRQ(Convert.ToString(DtCancellation.Rows[p]["AgentVoucherNo"]), UserName, Password, suppliername, RoomTypeId, RoomTypeName, DtCancellation, DtPassengerDetails);
+
+                //            calls.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(rategainBookingCancelRQ), "-", "After Request hit bookingcancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RateGain");
+                //            if (rategainBookingCancelRQ == "")
+                //            {
+                //                calls.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(rategainBookingCancelRQ), Convert.ToString(rategainBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RateGain");
+                //                agodaCancelReturn.ReturnStatus = "Error";
+                //                return agodaCancelReturn;
+                //            }
+                //            // string Url = Convert.ToString(HotelRunnerDetails[0]["WebSiteURL"]);
+                //            #endregion
+                //            string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                //            string Roomid = spitid[0].ToString();
+                //            string RatePlanCode = spitid[1].ToString();
+                //            string currencycode = spitid[2].ToString();
+                //            string ExtrabedPrice = spitid[3].ToString();
+                //            string ExtrabedQuantity = spitid[4].ToString();
+                //            string CountryId = spitid[5].ToString();
+                //            string Url = "";
+                //            //Url = Common.Get_HotelRunner_BookURL(CountryId);
+                //            string BookUrl = Convert.ToString(rategainDetails[0]["WebSiteURL"]); //"https://rzhospicert.rategain.com/otaresvpushapi/reservation/receive/WEEH"; 
+
+                //            #region Booking Cancel RS
+                //            string Error = "";
+                //            rategainBookingCancelRS = ThirdPartyXML.GetRateGain_SupplierResponse(rategainBookingCancelRQ, BookUrl, 180000, "RateGain");
+                //        }
+                //        calls.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(rategainBookingCancelRQ), Convert.ToString(rategainBookingCancelRS), "After Response hit bookingcancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RateGain");
+                //        DataSet dsrategain_RS = new DataSet();
+                //        bool IsTrue = false;
+                //        if (rategainBookingCancelRS != string.Empty && rategainBookingCancelRS != "" && rategainBookingCancelRS != null && !rategainBookingCancelRS.Contains("error"))
+                //        {
+                //            dsrategain_RS = Common.GetDataSetFromXMLString(rategainBookingCancelRS);
+
+                //            string ResId_Value = "";
+                //            if (dsrategain_RS.Tables["OTA_HotelResNotifRS"].Columns.Contains("Success"))
+                //            {
+                //                IsTrue = true;
+                //            }
+                //        }
+                //        #endregion
+                //        #region Response Error Block 
+                //        if (DtCancellation.Rows[0]["Provider"].ToString().ToUpper() != "RateGain" && rategainBookingCancelRS.ToLower().Contains("error"))
+                //        {
+                //            calls.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(rategainBookingCancelRQ), Convert.ToString(rategainBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RateGain");
+                //            agodaCancelReturn.ReturnStatus = "Error";
+                //            return agodaCancelReturn;
+                //        }
+
+                //        if (IsTrue == false)
+                //        {
+                //            calls.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(rategainBookingCancelRQ), Convert.ToString(rategainBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellation.Rows[0]["PNRNo"]), "RateGain");
+                //            agodaCancelReturn.ReturnStatus = "Error";
+                //            return agodaCancelReturn;
+                //        }
+                //        #endregion
+
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        _exception.Error();
+                //        agodaCancelReturn.ReturnStatus = "Error";
+                //        return agodaCancelReturn;
+                //    }
+                //}
+                #endregion
+
+                //else
+                //{
+                //    agodaCancelReturn.ReturnStatus = "Error";
+                //    return agodaCancelReturn;
+                //}
+
+                // bool updateResult = data.CancelHotelBooking(DetailId, CancellationAmounts, Convert.ToString(CancelReson), AgentCancellationAmount, Convert.ToString(CancellationXML), Convert.ToString(ResponseData), IsAmend);  //needtochange 16052026
+
+
+                //DataTable dtagentlimit = Common.SetAgentCreditlimit();
+                #region "Code Added for generating acknoledgement no. using service"
+                //Common.GenerateAcknowledgeId(PNRNO_Cancel, Convert.ToInt32(Common.getSession("UserId")), "cancellation", BookingId);
+                // Common.SaveBillingPostingDetails(PNRNO_Cancel, Convert.ToInt32(AgentId), "hotelcancellation", 0, DetailId);  //needtochange
+                #endregion
+                //AgentType =UserNameType
+                // calls.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentType), Convert.ToString(CancellationXML), Convert.ToString(ResponseData), "Tally Confirmed", Convert.ToString(Supplier), "Response Confirm", PNRNO_Cancel, "API Out");  //needtochange
+
+
+                //  if (updateResult == true)  //needtochange
+                //{
+                #region comment  
+
+                //int BillSet = Common.SetBillData(PNRNO_Cancel, AgentCancellationAmount, 76, "Hotel");
+                //DataSet dsCancellation = new DataSet();
+                //if (!IsAmend)
+                //{
+                //    dsCancellation = data.GetCancellationData(DetailId);
+
+
+                //    string toEmail = "", fromEmail = "", CCEmail = "", BCCEmail = "";
+                //    // fromEmail = ConfigurationManager.AppSettings["FromEmailId"].ToString();
+                //    if (Convert.ToInt32(IsBothB2BB2C) == 2)
+                //        fromEmail = ConfigurationManager.AppSettings["B2CBookingEmailId"].ToString();
+                //    else
+                //        fromEmail = ConfigurationManager.AppSettings["FromEmailId"].ToString();
+
+                //    // DataTable dtMail = Common.GetEmailIds(Convert.ToInt32(Common.getSession("UserId")));
+                //    DataTable dtMail = Common.GetEmailIdsBranchWise(Convert.ToInt32(AgentId), Convert.ToInt32(DtCancellation.Rows[p]["CityId"]));
+                //    string name = string.Empty;
+                //    List<Email_Details> emailList = new List<Email_Details>();
+                //    if (dtMail.Rows.Count != 0)
+                //    {
+                //        dtMail.Rows[0]["EmployeeEmailId"] = String.IsNullOrEmpty(Convert.ToString(dtMail.Rows[0]["EmployeeEmailId"])) ? ConfigurationManager.AppSettings["AdminEmail"] : Convert.ToString(dtMail.Rows[0]["EmployeeEmailId"]);
+                //        dtMail.Rows[0]["BranchEmail"] = String.IsNullOrEmpty(Convert.ToString(dtMail.Rows[0]["BranchEmail"])) ? ConfigurationManager.AppSettings["AdminEmail"] : Convert.ToString(dtMail.Rows[0]["BranchEmail"]);
+                //        string branchemail = Convert.ToString(dtMail.Rows[0]["BranchEmail"]);
+                //        toEmail = dtMail.Rows[0]["AgentMailId"].ToString();
+                //        BCCEmail = dtMail.Rows[0]["EmployeeEmailId"].ToString();
+                //        CCEmail = string.IsNullOrEmpty(Convert.ToString(dtMail.Rows[0]["ParentEmail"])) ? dtMail.Rows[0]["EmployeeEmailId"].ToString() : Convert.ToString(dtMail.Rows[0]["ParentEmail"]);
+
+                //        if (dsCancellation != null && dsCancellation.Tables[0].Rows.Count > 0)
+                //            toEmail = Convert.ToString(dsCancellation.Tables[0].Rows[0]["EmailId"]);
+                //        // string Bodytext = Common.GetAllVouchers(PNRNO_Cancel);
+                //        int countryid = 0;
+                //        string Subject = "Booking Cancellation " + ConfigurationManager.AppSettings["WLUserCompanyName"] + " : " + PNRNO_Cancel;
+                //        string AgentEmailId = string.Empty;
+                //        string SubagentAgentEmailId = string.Empty;
+                //        string SubUserEmailId = string.Empty;
+                //        string Bodytext = Common.GetBookingCancellationMail_new(PNRNO_Cancel, DetailId, ref countryid, ref Subject, ref AgentEmailId, ref SubagentAgentEmailId, ref SubUserEmailId, AgentId);
+                //        DataTable dtMail1 = Common.GetEmailIdsBranchWise(Convert.ToInt32(AgentId), countryid);
+
+                //        if (dtMail1.Rows.Count > 0)
+                //        {
+                //            if (!String.IsNullOrEmpty(Convert.ToString(dtMail1.Rows[0]["BranchEmail"])))
+                //                branchemail = Convert.ToString(dtMail1.Rows[0]["BranchEmail"]);
+                //            if (!String.IsNullOrEmpty(Convert.ToString(dtMail1.Rows[0]["EmployeeEmailId"])))
+                //                CCEmail = Convert.ToString(dtMail1.Rows[0]["EmployeeEmailId"]);
+                //        }
+                //        if (!string.IsNullOrEmpty(SubagentAgentEmailId))
+                //        {
+                //            toEmail = SubagentAgentEmailId;
+                //            if (!string.IsNullOrEmpty(CCEmail))
+                //                CCEmail = CCEmail + "," + AgentEmailId;
+                //            else
+                //                CCEmail = AgentEmailId;
+                //        }
+                //        else if (!string.IsNullOrEmpty(SubUserEmailId))
+                //        {
+                //            toEmail = SubUserEmailId;
+                //            if (!string.IsNullOrEmpty(CCEmail))
+                //                CCEmail = CCEmail + "," + AgentEmailId;
+                //            else
+                //                CCEmail = AgentEmailId;
+                //        }
+                //        else
+                //            toEmail = AgentEmailId;
+
+                //        emailList.Add(new Email_Details
+                //        {
+                //            FromId = branchemail,
+                //            ToId = toEmail,
+                //            CcId = CCEmail,
+                //            BccId = "",
+                //            Subject = Subject,
+                //            EmailText = Bodytext,
+                //            EmailType = "Booking",
+                //            ServiceType = "Hotel",
+                //            Website = Convert.ToString(HttpContext.Current.Request.Url.Host),
+                //            CompanyId = 1,// Convert.ToInt32(System.Web.HttpContext.Current.Session["CompanyId"]),
+                //            IsRayna = 1,// Convert.ToInt32(Common.getSession("IsRayna") == "true" ? 1 : 0),
+                //            UserHost = ConfigurationManager.AppSettings["WLUserHost"],
+                //            UserPassword = ConfigurationManager.AppSettings["WLUserPassword"],
+                //            UserPort = ConfigurationManager.AppSettings["WLUserPort"],
+                //            UserEmail = ConfigurationManager.AppSettings["WLUserEmail"],
+                //            CompanyName = ConfigurationManager.AppSettings["WLUserCompanyName"],
+                //            refno = PNRNO_Cancel
+                //        });
+
+                //    }
+                //    if (Convert.ToInt32(ConfigurationManager.AppSettings["IsLive"]) == 1)
+                //    {
+                //        Common.SaveMailSendingDetails(emailList);
+                //    }
+                //    // return PNRNO_Cancel;
+                //}
+
+                #endregion
+
+                // Common.SendEmailToSupplierForCancellation(PNRNO_Cancel, 79, Convert.ToString(BookingId));
+                agodaCancelReturn.ReturnStatus = "Room  Cancelled Successfully!!!";
+                return agodaCancelReturn;
+                // return Convert.ToString(HttpUtility.UrlEncode(AES.Encrypt(PNRNO_Cancel, passForcancel)).Replace(' ', '+'));
+
+                // }
+
+                //else
+                //{
+                //    agodaCancelReturn.ReturnStatus = "Room already Cancelled!!!";
+                //    return agodaCancelReturn;
+                //}
+
+
+                // }
+            }
+            catch (Exception ex)
+            {
+                // _exception.Error();
+                agodaCancelReturn.ReturnStatus = "Error";
+                return agodaCancelReturn;
+            }
+        }
+
+        public async Task<IActionResult> CreateResponseCompressed_agodacancel<T>(HttpContext context, int statusCode, T value, string mediaType,
+ AgodaCancelRQ RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, HttpStatusCode statusCodeagoda, string Search_Key = "", long elapsedMilliseconds = 0)
+        {
+            try
+            {
+                var jsonString = "";
+
+                try
+                {
+
+                    if (EnterLogs)
+                    {
+                        string hostName = "";
+
+                        try
+                        {
+                            // Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
+                            string Website = "";
+
+                            hostName = System.Net.Dns.GetHostName();
+
+                            #region Elastic
+                            try
+                            {
+                                //if (APIName.ToLower() == "hotelsearch"
+                                //     || APIName.ToLower() == "precheck"
+                                //     || APIName.ToLower() == "booking"
+                                //     || APIName.ToLower() == "bookingids"
+                                //     || APIName.ToLower() == "bookingdetail"
+                                //     || APIName.ToLower() == "cancel")
+
+                                if (APIName.ToLower() == "availability"
+                            || APIName.ToLower() == "availabilitywithcancellation"
+                            || APIName.ToLower() == "availabilitywithcancellationv2"
+                            || APIName.ToLower() == "recheck"
+                            || APIName.ToLower() == "prebook"
+                            || APIName.ToLower() == "book"
+                            || APIName.ToLower() == "book_newversion"
+                            || APIName.ToLower() == "cancelbooking")
+                                {
+                                    string stage = APIName;
+                                    switch (APIName.ToLower())
+                                    {
+                                        //case "hotelsearch":
+                                        case "availabilitywithcancellation":
+                                        case "availability":
+                                        case "availabilitywithcancellationv2":
+                                            stage = "Search";
+                                            //bool isapi = tokendata.IsFromAPI;
+                                            //if (isapi)
+                                            //{
+                                            //    stage = "Search";
+                                            //}
+                                            //else
+                                            //{
+                                            //    stage = "SearchById";
+                                            //}
+                                            break;
+
+                                        //case "recheck":
+                                        //    stage = "Recheck";
+                                        //    break;
+
+                                        //case "precheck":
+                                        case "prebook":
+
+                                            stage = "Prebook";
+                                            break;
+
+                                        case "cancel":
+                                            stage = "Cancel";
+                                            break;
+                                        case "booking":
+                                            stage = "Book";
+                                            break;
+
+                                        default:
+                                            stage = APIName;
+                                            break;
+                                    }
+                                    bool isapi1 = tokendata.IsFromAPI;
+                                    //bool isfromagoda = tokendata.IsFromAgoda;
+
+                                    string source = "APIOut";
+                                    //if (isapi1)
+                                    //{
+                                    //    source = "APIOut";
+                                    //}
+                                    //else
+                                    //{
+                                    //    source = "Web";
+                                    //}
+
+
+                                    _analytic.PushHotelDetailsClientDataForAnalyticsAsyc(new AnalyticsData
+                                    {
+                                        Result = value,
+                                        Action = APIName,
+                                        HttpStatusCode = Convert.ToInt32(statusCodeagoda),
+                                        Stage = stage,
+                                        // Payload = payload,
+                                        Payload = RQ,
+                                        ElapsedTime = elapsedMilliseconds,
+                                        Description = ErrorCode,
+                                        Errorcode = ErrorCode,
+                                        //Search_Key = searchKeyRP,
+                                        Search_Key = Search_Key,
+                                        source = source
+
+                                    });
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                await _exception.Error(ex);
+                            }
+
+                            #endregion
+
+
+
+
+
+                            #region Added on 17-04-26
+
+                            //var options = new JsonSerializerOptions
+                            //{
+                            //    WriteIndented = true,  // For pretty printing
+                            //    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull  // Ignore null properties
+                            //};
+                            //string res = System.Text.Json.JsonSerializer.Serialize(RS, options);
+
+                            // newadded 17042026
+
+                            if (APIName.ToLower() == "availabilitywithcancellation" || APIName.ToLower() == "availability" || APIName.ToLower() == "availabilitywithcancellationv2")
+                            {
+                                var options = new JsonSerializerOptions
+                                {
+                                    WriteIndented = true,  // For pretty printing
+                                                           //DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull  // Ignore null properties
+                                };
+
+                                jsonString = System.Text.Json.JsonSerializer.Serialize(value, options);
+                                Task.Run(() => EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), RQ.token, APIName, Search_Key, "", tokendata.AgentId, ElapsedTime, ErrorCode, CityId, "", hostName, "")); //MainURL
+
+                            }
+                            else
+                            {
+                                var settings = new JsonSerializerSettings
+                                {
+                                    NullValueHandling = NullValueHandling.Ignore,
+                                    //MissingMemberHandling = MissingMemberHandling.Ignore,
+                                };
+
+
+                                jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(value, settings);
+                            }
+
+                            #endregion
+
+
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                        //string ipaddress = _platformService.GetIPAddress();
+                        //string MainURL = Convert.ToString(System.Web.HttpContext.Current.Request.Url.Host);
+                        string MainURL = "Unknown Host"; //needtochange
+
+                        //Task.Run(() => HotelXML.EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), RQ.token, APIName, ipaddress, tokendata.AgentId, ElapsedTime, ErrorCode, CityId, ipaddress, hostName, MainURL));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _exception.Error(ex);
+
+                }
+
+                //string compres = "deflate";//"gzip"
+                // string compres = "gzip";//"deflate"
+                //// HttpResponseMessage resp = Request.CreateResponse(statusCode, (value), mediaType);
+                // var resp = Compress(bytes, compressionMethod);
+
+                // var content = resp.Content;
+                // var bytes = content == null ? null : content.ReadAsByteArrayAsync().Result;
+                // var zlibbedContent = bytes == null ? new byte[0] :
+                // Compress(bytes, compres);
+                // resp.Content = new ByteArrayContent(zlibbedContent);
+                // resp.Content.Headers.Remove("Content-Type");
+                // resp.Content.Headers.Add("Content-encoding", compres);
+                // resp.Content.Headers.Add("Content-Type", mediaType);
+                // return resp;
+
+
+                // Choose compression method
+                string compressionMethod = "deflate"; // Or "gzip" if needed
+                                                      //string compressionMethod = "gzip"; // Or "gzip" if needed
+
+                // Serialize the value into a JSON string
+                //var jsonString = System.Text.Json.JsonSerializer.Serialize<T>(value);
+                var bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
+
+                // Compress the content
+                var compressedContent = Compress(bytes, compressionMethod);
+
+                // Set headers manually using the passed HttpContext
+                context.Response.Headers["Content-Encoding"] = compressionMethod;
+                context.Response.Headers["Content-Type"] = mediaType;
+                context.Response.Headers["Custom-ElapsedTime"] = ElapsedTime;
+                context.Response.Headers["ErrorCode"] = ErrorCode;
+                context.Response.Headers["CityId"] = CityId;
+                context.Response.StatusCode = statusCode;
+
+                //if (!string.IsNullOrWhiteSpace(IP))
+                //{
+                //    context.Response.Headers["Client-IP"] = IP;
+                //}
+                // Return the compressed content
+                return new FileContentResult(compressedContent, mediaType)
+                {
+                    FileDownloadName = $"{APIName}.json"
+                };
+
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+                return null;
+            }
+        }
+
+
+        public async Task<AgodaBookingDetailRSF.AgodaBookingDetailRS> AgodaBookingDetailProcess(AgodaBookingDetailRQ agodaRQ, TokenData tokenData, Stopwatch Timer = null)
+        {
+            AgodaBookingDetailRSF.AgodaBookingDetailRS agodaBookingDetailRS = new AgodaBookingDetailRSF.AgodaBookingDetailRS();
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+          new SqlParameter("@AgentId",tokenData.AgentId),
+          new SqlParameter("@InternalRefNo",agodaRQ.bookingReferenceId)
+          };
+
+                DataSet BookingDetail = await _dlConnection.GetDataSetAsync_RATEAURA_BookingServiceT1("getBookingDetails_API_AgodaDetail", para);
+                if (BookingDetail != null && BookingDetail.Tables.Count > 0 && BookingDetail.Tables[0] != null && BookingDetail.Tables[0].Rows.Count > 0)
+                {
+                    agodaBookingDetailRS.responseStatus = "SUCCESS";
+                    agodaBookingDetailRS.version = Convert.ToString(_keySettings.AgodaVersion);
+                    agodaBookingDetailRS.bookingReferenceId = Convert.ToString(BookingDetail.Tables[0].Rows[0]["supplierBookingId"]);
+                    agodaBookingDetailRS.supplierBookingId = Convert.ToString(BookingDetail.Tables[0].Rows[0]["bookingReferenceId"]);
+                    agodaBookingDetailRS.bookingStatus = Convert.ToString(BookingDetail.Tables[0].Rows[0]["bookingStatus"]);
+                    agodaBookingDetailRS.hotel = Convert.ToString(BookingDetail.Tables[0].Rows[0]["hotel"]);
+                    //agodaBookingDetailRS.checkIn = Convert.ToString(BookingDetail.Tables[0].Rows[0]["checkIn"]);
+
+                    string originalCheckIn = Convert.ToString(BookingDetail.Tables[0].Rows[0]["checkIn"]);
+                    DateTime checkInDate;
+                    if (DateTime.TryParseExact(originalCheckIn, "M/d/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out checkInDate))
+                    {
+                        agodaBookingDetailRS.checkIn = checkInDate.ToString("yyyy-MM-dd");
+                    }
+                    else
+                    {
+                        agodaBookingDetailRS.checkIn = null;
+                    }
+
+                    //agodaBookingDetailRS.checkOut = Convert.ToString(BookingDetail.Tables[0].Rows[0]["checkOut"]);
+                    string originalCheckOut = Convert.ToString(BookingDetail.Tables[0].Rows[0]["checkOut"]);
+                    DateTime checkOutDate;
+                    if (DateTime.TryParseExact(originalCheckOut, "M/d/yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out checkOutDate))
+                    {
+                        agodaBookingDetailRS.checkOut = checkOutDate.ToString("yyyy-MM-dd");
+                    }
+                    else
+                    {
+                        agodaBookingDetailRS.checkOut = null;
+                    }
+
+                    agodaBookingDetailRS.roomCode = Convert.ToString(BookingDetail.Tables[0].Rows[0]["roomCode"]);
+                    agodaBookingDetailRS.boardCode = Convert.ToString(BookingDetail.Tables[0].Rows[0]["boardCode"]);
+                    agodaBookingDetailRS.ratePlanCode = Convert.ToString(BookingDetail.Tables[0].Rows[0]["ratePlanCode"]);
+                    agodaBookingDetailRS.channel = Convert.ToInt16(BookingDetail.Tables[0].Rows[0]["channel"]);
+                    agodaBookingDetailRS.quantity = Convert.ToInt16(BookingDetail.Tables[0].Rows[0]["quantity"]);
+                    agodaBookingDetailRS.remark = null;
+
+                    if (BookingDetail.Tables[1] != null && BookingDetail.Tables[1].Rows.Count > 0)
+                    {
+                        AgodaBookingDetailRSF.GuestCount guest = new AgodaBookingDetailRSF.GuestCount();
+                        foreach (DataRow row in BookingDetail.Tables[1].Rows)
+                        {
+                            guest.childrenAges = new List<int>();
+
+                            guest.adults += Convert.ToInt16(row[0]);
+                            if (Convert.ToInt16(row[1]) > 0)
+                                guest.childrenAges.Add(Convert.ToInt16(row[1]));
+                            if (Convert.ToInt16(row[2]) > 0)
+                                guest.childrenAges.Add(Convert.ToInt16(row[2]));
+
+                        }
+                        agodaBookingDetailRS.GuestCount = guest;
+                    }
+
+                    AgodaBookingDetailRSF.Price price = new AgodaBookingDetailRSF.Price();
+                    price.payoutPrice = Convert.ToDouble(BookingDetail.Tables[0].Rows[0]["payoutPrice"]);
+                    price.currency = Convert.ToString(BookingDetail.Tables[0].Rows[0]["currency"]);
+                    price.commissionPercentage = Convert.ToDouble(BookingDetail.Tables[0].Rows[0]["commissionPercentage"]);
+                    agodaBookingDetailRS.Price = price;
+
+                    AgodaBookingDetailRSF.CancellationInfo cancellationInfo = new AgodaBookingDetailRSF.CancellationInfo();
+                    if (Convert.ToString(BookingDetail.Tables[0].Rows[0]["bookingStatus"]).ToLower() == "cancelled")
+                    {
+                        cancellationInfo.cancellationFee = Convert.ToDecimal(BookingDetail.Tables[0].Rows[0]["cancellationFee"]);
+                        //cancellationInfo.cancellationDate = Convert.ToString(BookingDetail.Tables[0].Rows[0]["cancellationDate"]);
+                        string originalCancellationDate = Convert.ToString(BookingDetail.Tables[0].Rows[0]["cancellationDate"]);
+                        DateTime parsedDate;
+                        if (DateTime.TryParseExact(originalCancellationDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
+                        {
+                            TimeSpan offset = TimeSpan.FromHours(8);
+                            DateTimeOffset dateWithOffset = new DateTimeOffset(parsedDate, offset);
+                            cancellationInfo.cancellationDate = dateWithOffset.ToString("yyyy-MM-ddTHH:mm:sszzz");
+                        }
+                        else
+                        {
+                            cancellationInfo.cancellationDate = null;
+                        }
+                        agodaBookingDetailRS.CancellationInfo = cancellationInfo;
+                    }
+                    else
+                    {
+                        agodaBookingDetailRS.CancellationInfo = null;
+                    }
+                }
+                else
+                {
+                    agodaBookingDetailRS = new AgodaBookingDetailRSF.AgodaBookingDetailRS();
+                    agodaBookingDetailRS.responseStatus = "BOOKING_NOT_EXISTS";
+                    agodaBookingDetailRS.version = Convert.ToString(_keySettings.AgodaVersion);
+                    agodaBookingDetailRS.bookingReferenceId = agodaRQ.bookingReferenceId;
+                    agodaBookingDetailRS.remark = "Booking details does not exist";
+                }
+                return agodaBookingDetailRS;
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+                agodaBookingDetailRS = new AgodaBookingDetailRSF.AgodaBookingDetailRS();
+                agodaBookingDetailRS.responseStatus = "BOOKING_NOT_EXISTS";
+                agodaBookingDetailRS.version = Convert.ToString(_keySettings.AgodaVersion);
+                agodaBookingDetailRS.bookingReferenceId = agodaRQ.bookingReferenceId;
+                agodaBookingDetailRS.remark = "Booking details does not exist";
+                return agodaBookingDetailRS;
+            }
+            finally
+            {
+                agodaBookingDetailRS = null;
+            }
+        }
+
+        public async Task<IActionResult> CreateResponseCompressed_AgodaBookingDetail<T>(HttpContext context, int statusCode, T value, string mediaType,AgodaBookingDetailRQ RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, string Search_Key = "", long elapsedMilliseconds = 0)
+        {
+            try
+            {
+                var jsonString = "";
+
+                try
+                {
+
+                    if (EnterLogs)
+                    {
+                        string Website = "";
+                        string hostName = "";
+
+                        try
+                        {
+                            //Website = Convert.ToString(System.Web.HttpContext.Current.Request.Url.Host);
+                            Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
+                            hostName = System.Net.Dns.GetHostName();
+
+
+                            #region Elastic
+                            try
+                            {
+                                //if (APIName.ToLower() == "hotelsearch"
+                                //     || APIName.ToLower() == "precheck"
+                                //     || APIName.ToLower() == "booking"
+                                //     || APIName.ToLower() == "bookingids"
+                                //     || APIName.ToLower() == "bookingdetail"
+                                //     || APIName.ToLower() == "cancel")
+
+                                if (APIName.ToLower() == "availability"
+                            || APIName.ToLower() == "availabilitywithcancellation"
+                            || APIName.ToLower() == "availabilitywithcancellationv2"
+                            || APIName.ToLower() == "recheck"
+                            || APIName.ToLower() == "prebook"
+                            || APIName.ToLower() == "book"
+                            || APIName.ToLower() == "book_newversion"
+                            || APIName.ToLower() == "cancelbooking")
+                                {
+                                    string stage = APIName;
+                                    switch (APIName.ToLower())
+                                    {
+                                        //case "hotelsearch":
+                                        case "availabilitywithcancellation":
+                                        case "availability":
+                                        case "availabilitywithcancellationv2":
+                                            bool isapi = tokendata.IsFromAPI;
+                                            if (isapi)
+                                            {
+                                                stage = "Search";
+                                            }
+                                            else
+                                            {
+                                                stage = "SearchById";
+                                            }
+                                            break;
+
+                                        //case "recheck":
+                                        //    stage = "Recheck";
+                                        //    break;
+
+                                        //case "precheck":
+                                        case "prebook":
+
+                                            stage = "Prebook";
+                                            break;
+
+                                        case "cancel":
+                                            stage = "Cancel";
+                                            break;
+                                        case "booking":
+                                            stage = "Book";
+                                            break;
+
+                                        default:
+                                            stage = APIName;
+                                            break;
+                                    }
+                                    bool isapi1 = tokendata.IsFromAPI;
+                                    //bool isfromagoda = tokendata.IsFromAgoda;
+
+                                    string source = "";
+                                    if (isapi1)
+                                    {
+                                        source = "APIOut";
+                                    }
+                                    else
+                                    {
+                                        source = "Web";
+                                    }
+                                    //else
+                                    //{
+                                    //    source = "Agoda";
+                                    //}
+
+                                    _analytic.PushHotelDetailsClientDataForAnalyticsAsyc(new AnalyticsData
+                                    {
+                                        Result = value,
+                                        Action = APIName,
+                                        HttpStatusCode = Convert.ToInt32(statusCode),
+                                        Stage = stage,
+                                        // Payload = payload,
+                                        Payload = RQ,
+                                        ElapsedTime = elapsedMilliseconds,
+                                        Description = ErrorCode,
+                                        Errorcode = ErrorCode,
+                                        //Search_Key = searchKeyRP,
+                                        Search_Key = Search_Key,
+                                        source = source
+
+                                    });
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                await _exception.Error(ex);
+                            }
+
+                            #endregion
+
+
+                            //Task.Run(() => EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), RQ.token, APIName, "", tokendata.AgentId, ElapsedTime, ErrorCode, CityId, "", hostName, "")); //MainURL
+
+
+                            #region Added on 17-04-26
+
+                            //var options = new JsonSerializerOptions
+                            //{
+                            //    WriteIndented = true,  // For pretty printing
+                            //    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull  // Ignore null properties
+                            //};
+                            //string res = System.Text.Json.JsonSerializer.Serialize(RS, options);
+
+                            // newadded 17042026
+
+                            if (APIName.ToLower() == "availabilitywithcancellation" || APIName.ToLower() == "availability" || APIName.ToLower() == "availabilitywithcancellationv2")
+                            {
+                                var options = new JsonSerializerOptions
+                                {
+                                    WriteIndented = true,  // For pretty printing
+                                                           //DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull  // Ignore null properties
+                                };
+
+                                jsonString = System.Text.Json.JsonSerializer.Serialize(value, options);
+                                Task.Run(() => EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), "", APIName, Search_Key, "", tokendata.AgentId, ElapsedTime, ErrorCode, CityId, "", hostName, "")); //MainURL
+
+                            }
+                            else
+                            {
+                                var settings = new JsonSerializerSettings
+                                {
+                                    NullValueHandling = NullValueHandling.Ignore,
+                                    //MissingMemberHandling = MissingMemberHandling.Ignore,
+                                };
+
+
+                                jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(value, settings);
+                            }
+
+                            #endregion
+
+
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                        //string ipaddress = _platformService.GetIPAddress();
+                        //string MainURL = Convert.ToString(System.Web.HttpContext.Current.Request.Url.Host);
+                        string MainURL = "Unknown Host"; //needtochange
+
+                        //Task.Run(() => HotelXML.EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), RQ.token, APIName, ipaddress, tokendata.AgentId, ElapsedTime, ErrorCode, CityId, ipaddress, hostName, MainURL));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _exception.Error(ex);
+
+                }
+
+                //string compres = "deflate";//"gzip"
+                // string compres = "gzip";//"deflate"
+                //// HttpResponseMessage resp = Request.CreateResponse(statusCode, (value), mediaType);
+                // var resp = Compress(bytes, compressionMethod);
+
+                // var content = resp.Content;
+                // var bytes = content == null ? null : content.ReadAsByteArrayAsync().Result;
+                // var zlibbedContent = bytes == null ? new byte[0] :
+                // Compress(bytes, compres);
+                // resp.Content = new ByteArrayContent(zlibbedContent);
+                // resp.Content.Headers.Remove("Content-Type");
+                // resp.Content.Headers.Add("Content-encoding", compres);
+                // resp.Content.Headers.Add("Content-Type", mediaType);
+                // return resp;
+
+
+                // Choose compression method
+                string compressionMethod = "deflate"; // Or "gzip" if needed
+                                                      //string compressionMethod = "gzip"; // Or "gzip" if needed
+
+                // Serialize the value into a JSON string
+                //var jsonString = System.Text.Json.JsonSerializer.Serialize<T>(value);
+                var bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
+
+                // Compress the content
+                var compressedContent = Compress(bytes, compressionMethod);
+
+                // Set headers manually using the passed HttpContext
+                context.Response.Headers["Content-Encoding"] = compressionMethod;
+                context.Response.Headers["Content-Type"] = mediaType;
+                context.Response.Headers["Custom-ElapsedTime"] = ElapsedTime;
+                context.Response.Headers["ErrorCode"] = ErrorCode;
+                context.Response.Headers["CityId"] = CityId;
+                context.Response.StatusCode = statusCode;
+
+                //if (!string.IsNullOrWhiteSpace(IP))
+                //{
+                //    context.Response.Headers["Client-IP"] = IP;
+                //}
+                // Return the compressed content
+                return new FileContentResult(compressedContent, mediaType)
+                {
+                    FileDownloadName = $"{APIName}.json"
+                };
+
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+                return null;
+            }
+        }
+
+
+        #region agoda cancel
+        public class HotelRoom_Cancel_agoda
+        {
+            public string RoomTypeName { get; set; }
+            public string Message { get; set; }
+            public int CancelStatus { get; set; }
+            public double AgentCharge { get; set; }
+        }
+        public class HotelOption_Cancel_agoda
+        {
+            public Int64 BookingId { get; set; }
+            public List<HotelRoom_Cancel_agoda> HotelRooms { get; set; }
+        }
+        public class CancelRS_agoda
+        {
+            public HotelOption_Cancel_agoda HotelOption { get; set; }
+            public string Currency { get; set; }
+        }
+
+        public class CancelBookingResponse_agoda
+        {
+            public CancelRS_agoda CancelRS { get; set; }
+            public List<XConnect.Models._Error> Error = new List<XConnect.Models._Error>();
+        }
+        public class AgodaCancelReturn
+        {
+            public string ReturnStatus { get; set; }
+            public double AgentCancellationAmount { get; set; }
+        }
+        public class AgodaCancelRS
+        {
+            public string responseStatus { get; set; }
+            public string version { get; set; }
+            public string referenceId { get; set; }
+            public double cancellationFees { get; set; }
+
+            public AgodaCancelRS()
+            {
+                responseStatus = "SUCCESS";
+                version = new AgodaVersion().Version;
+            }
+        }
+        public class AgodaCancelRQ
+        {
+            public string referenceId { get; set; }
+
+            public string token { get; set; }
+            public TokenData TokenData { get; set; }
+
+        }
+        #endregion
+        #endregion
+
+
     }
 }
