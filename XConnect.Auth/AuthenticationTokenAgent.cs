@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System.Data;
@@ -34,8 +35,9 @@ namespace Xconnect.Auth
 
         private readonly IUserContextAccessor _userContextAccessor;
         private readonly RemoteServices _remoteServices;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthenticationTokenAgent(IDLConnection dlConnection, IMemoryCache cache, IException exception, IOptions<KeySettings> keySettings, ICommonMethod commonMethod, ITokenReaderService jwt, IUserContextAccessor userContextAccessor, IOptions<RemoteServices> remoteServices)
+        public AuthenticationTokenAgent(IDLConnection dlConnection, IMemoryCache cache, IException exception, IOptions<KeySettings> keySettings, ICommonMethod commonMethod, ITokenReaderService jwt, IUserContextAccessor userContextAccessor, IOptions<RemoteServices> remoteServices, IHttpContextAccessor httpContextAccessor)
         {
             _dlConnection = dlConnection;
             _cache = cache;
@@ -45,6 +47,8 @@ namespace Xconnect.Auth
             _jwt = jwt;
             _userContextAccessor = userContextAccessor;
             _remoteServices = remoteServices.Value;
+            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public async Task<AuthData> Authenticate(TokenData TokenData, CommonRequest data, string IP = "", string IUserAgent = "", bool IsRefereshCache = false)
@@ -624,5 +628,119 @@ namespace Xconnect.Auth
             }
             return agentid;
         }
+
+        public async Task<AuthData> AgodaAuthentication(TokenData tokenData, CommonRequest commonRequest)
+        {
+            AuthData authData = new AuthData();
+
+            try
+            {
+                string Headrertoken = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
+                commonRequest.Token = _keySettings.agoda_token;
+                authData = await Authenticate_agoda(tokenData, commonRequest);
+
+                if (Headrertoken != "Basic " + _keySettings.agoda_apikey + "")
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return null;
+            }
+            return authData;
+        }
+
+        public async Task<AuthData> Authenticate_agoda(TokenData TokenData, CommonRequest data)
+        {
+            AuthData authData = new AuthData();
+
+            try
+            {
+                TokenData = await GetDataFromTokenAgoda(data.Token, data.IsMobile);
+                authData.tokenData = TokenData;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return null;
+
+            }
+            return authData;
+        }
+
+        public async Task<TokenData> GetDataFromTokenAgoda(string token, int ismobile)
+        {
+            TokenData data = new TokenData();
+            try
+            {
+
+                data.AgentCode = "RA-003";
+                data.CreditLimitCurrency = 5;
+                data.CreditLimitCurrencyName = "USD";
+                data.ApiTimeOut = 2000;
+                data.CompanyId = 1;
+                //DtRoeNew dtroe = listips.mainconfig.dtROENew.Where(x => x.currencyCode.Trim() == data.CreditLimitCurrencyName).First();
+                CurrencyNames apiCurrency = SetCurrencySessionNew_agoda(data.CreditLimitCurrencyName, null);
+
+                data.apiCurrency = apiCurrency;
+                data.SubUserId = 0;
+                data.AgentId = 18;
+                data.RateCategoryId = 0;
+                data.URL = "";
+                data.Type = "Agent";
+                data.ParentId = 0;
+
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return data;
+            }
+            return data;
+        }
+
+        public CurrencyNames SetCurrencySessionNew_agoda(string currencyname, DtRoeNew dtRoe) //051125
+        {
+            try
+            {
+                CurrencyNames objCur = new CurrencyNames();
+
+                if (dtRoe != null)
+                {
+                    objCur.BuyingCurrencyFactor = 1;
+                    objCur.SellingCurrencyFactor = 1;
+                    objCur.CurrencyMarkup = 1;// Convert.ToDecimal(dr[0]["MarkupPercentage"]);
+                    objCur.SellingCurrencyMarkup = 1;// Convert.ToDecimal(dr[0]["SellingMarkupPercentage"]);
+                    objCur.CurrencyShortname = "USD";
+                    objCur.CurrencyCode = "1";
+                    objCur.CurrencySymbol = ""; // Convert.ToString(dr[0]["CurrencySymbol"]);
+                }
+                else
+                {
+                    objCur.BuyingCurrencyFactor = 1;
+                    objCur.SellingCurrencyFactor = 1;
+                    objCur.CurrencyMarkup = 0;
+                    objCur.SellingCurrencyMarkup = 0;
+                    objCur.CurrencyShortname = "USD";// currencyname"";
+                    objCur.CurrencySymbol = "";
+
+                    try
+                    {
+                        //Common.getException_v1("currencyname:" + currencyname, "SetCurrencySession", dr.Length.ToString(), "XMLOUT", "", "");
+                    }
+                    catch (Exception ex)
+                    {
+                        //Common.getException_v1(ex.ToString(), "SetCurrencySession", Convert.ToString(ex.GetType().Name), "XMLOUT", "", "");
+                    }
+                }
+                return objCur;
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+            }
+            return null;
+        }
+
     }
 }

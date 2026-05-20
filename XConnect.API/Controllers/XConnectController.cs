@@ -5722,7 +5722,8 @@ namespace XConnect.API.Controllers
                 commonRQ.token = _keySettings.agoda_apikey;
                 data.Request = commonRQ.ToString();
                 // if (AgodaAuthentication(ref tokenData, ref data))
-                AuthData authData = await _authenticationTokenAgent.Authenticate(tokenData, data, IP, userAgent);
+                //AuthData authData = await _authenticationTokenAgent.Authenticate(tokenData, data, IP, userAgent);
+                AuthData authData = await _authenticationTokenAgent.AgodaAuthentication(tokenData, data);
 
 
                 if (Convert.ToBoolean(authData.tokenData.AgentId))
@@ -5854,7 +5855,8 @@ namespace XConnect.API.Controllers
             string userAgent = _platformService.GetUserPlatform(IP);
 
             //var authResult = await _authenticationTokenAgent.Authenticate(Request.Headers["Authorization"], new TokenData(), new CommonRequest());
-            AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+            //AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+            AuthData authData = await _authenticationTokenAgent.AgodaAuthentication(TokenData, data);
 
 
             if (Convert.ToBoolean(authData.tokenData.AgentId))
