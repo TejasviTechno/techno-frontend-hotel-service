@@ -162,17 +162,21 @@ namespace XConnect.Models
     }
     public class SupplierperformanceReport
     {
-        public int Id { get; set; }
-        public int AgentID { get; set; }
+        public int totalcount { get; set; }
+        public string suppliername { get; set; }
+        public string NoCount { get; set; }
+        public string SuccessCount { get; set; }
+        //public string TooManyRQ { get; set; }
+        public string TimeoutCount { get; set; }
+        public string PriceChangeCount { get; set; }
+        public string MappingCount { get; set; }
+        public decimal NoCountPer { get; set; }
+        public decimal SuccessPer { get; set; }
+        public decimal TimeOutPer { get; set; }
+        public decimal PriceChangePer { get; set; }
+        public decimal MappingPer { get; set; }
 
-        public string SupplierName { get; set; }
-        public string Request { get; set; }
-        public string Response { get; set; }
-        public string ResponseType { get; set; }
-        public string ReportType { get; set; }
-        public string RSTimeout { get; set; }
-        public DateTime Entrydate { get; set; }
-        public string IsApi { get; set; }
+        public string Avg { get; set; }
     }
     public class SprRequest
     {
@@ -182,7 +186,7 @@ namespace XConnect.Models
         public DateTime Todate { get; set; }
 
         public string ReportType { get; set; }
-
+        public decimal TimeOut { get; set; }
         public string IsApi { get; set; }
     }
 
