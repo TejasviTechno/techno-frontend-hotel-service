@@ -52801,10 +52801,10 @@ new SqlParameter("@AgentId", AgentId),
                                                                 else
                                                                     agentVoucher.XMLResponse = ResponsebookWE;
 
-                                                                agentVoucher.RoomStatus = Convert.ToString(2);
+                                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                                 agentVoucher.SupplierName = suppliername;
                                                                 agentVouchers.Add(agentVoucher);
-                                                                //bookResponse_1.agentVouchers = agentVouchers;
+                                                                bookResponse_1.agentVouchers = agentVouchers;
                                                                 #endregion
 
                                                                 // dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[rr]["UserCartDetailId"]), AgentVoucherNo, Withinearth_DMCBookReq, ResponsebookWE, Convert.ToString(dsCartDetails.Tables[1].DefaultView[rr]["SupplierName"]), bookingStatus));
@@ -52873,10 +52873,10 @@ new SqlParameter("@AgentId", AgentId),
                                                                 else
                                                                     agentVoucher.XMLResponse = ResponsebookWE;
 
-                                                                agentVoucher.RoomStatus = Convert.ToString(2);
+                                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                                 agentVoucher.SupplierName = suppliername;
                                                                 agentVouchers.Add(agentVoucher);
-                                                                //bookResponse_1.agentVouchers = agentVouchers;
+                                                                bookResponse_1.agentVouchers = agentVouchers;
                                                                 #endregion
                                                                 // dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[b]["UserCartDetailId"]), AgentVoucherNo, Withinearth_DMCBookReq, ResponsebookWE, Convert.ToString(dsCartDetails.Tables[1].DefaultView[b]["SupplierName"]), bookingStatus));
                                                             }
@@ -52923,10 +52923,10 @@ new SqlParameter("@AgentId", AgentId),
                                                             else
                                                                 agentVoucher.XMLResponse = ResponsebookWE;
 
-                                                            agentVoucher.RoomStatus = Convert.ToString(2);
+                                                            agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                             agentVoucher.SupplierName = suppliername;
                                                             agentVouchers.Add(agentVoucher);
-                                                            //bookResponse_1.agentVouchers = agentVouchers;
+                                                            bookResponse_1.agentVouchers = agentVouchers;
                                                             #endregion
 
 
@@ -52999,10 +52999,10 @@ new SqlParameter("@AgentId", AgentId),
                                                                 else
                                                                     agentVoucher.XMLResponse = ResponsebookWE;
 
-                                                                agentVoucher.RoomStatus = Convert.ToString(2);
+                                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                                 agentVoucher.SupplierName = suppliername;
                                                                 agentVouchers.Add(agentVoucher);
-                                                                //bookResponse_1.agentVouchers = agentVouchers;
+                                                                bookResponse_1.agentVouchers = agentVouchers;
                                                                 #endregion
                                                                 //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), AgentVoucherNo, Withinearth_DMCBookReq, ResponsebookWE, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus));
                                                             }
@@ -53046,10 +53046,10 @@ new SqlParameter("@AgentId", AgentId),
                                                     else
                                                         agentVoucher.XMLResponse = "";
 
-                                                    agentVoucher.RoomStatus = Convert.ToString(2);
+                                                    agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                     agentVoucher.SupplierName = suppliername;
                                                     agentVouchers.Add(agentVoucher);
-                                                    //bookResponse_1.agentVouchers = agentVouchers;
+                                                    bookResponse_1.agentVouchers = agentVouchers;
                                                     #endregion
 
                                                     //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[rr]["UserCartDetailId"]), AgentVoucherNo, Withinearth_DMCBookReq, ResponsebookWE, Convert.ToString(dsCartDetails.Tables[1].DefaultView[rr]["SupplierName"]), bookingStatus));
@@ -53086,10 +53086,10 @@ new SqlParameter("@AgentId", AgentId),
                                             else
                                                 agentVoucher.XMLResponse = "";
 
-                                            agentVoucher.RoomStatus = Convert.ToString(2);
+                                            agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                             agentVoucher.SupplierName = suppliername;
                                             agentVouchers.Add(agentVoucher);
-                                            //bookResponse_1.agentVouchers = agentVouchers;
+                                            bookResponse_1.agentVouchers = agentVouchers;
                                             #endregion
 
 
@@ -55081,19 +55081,20 @@ new SqlParameter("@AgentId", AgentId),
                                         string SpitIdRoomName = spitid[0].ToString();
 
 
-                                        bool IsRoomupdate = await _commonMethod.GetRoomNameUpdate(SpitIdRoomName, UserCartId);
-
+                                        //bool IsRoomupdate = await _commonMethod.GetRoomNameUpdate(SpitIdRoomName, UserCartId);
 
                                         #endregion
 
                                         #region PriceCkeck, Booking RQ, Booking URL
                                         string PaxPassPort = "", ErrorResponse = "";
-                                        //if (true)
-                                        //{
-                                        //    DataRow[] CartResponse = dsCartDetails.Tables[1].Select("UserCartID='" + UserCartId + "'");
-                                        //    string HasKey1 = Convert.ToString(CartResponse[0]["Eachotoken"]);
-                                        //    BookingRequestM = _mgbedbank.Get_MgBedBank_BookingRequest(dsCartDetails, dtPassengers, MgBedBankDetails, ExternalReference, false, i, j, ReqHasKey, PaxPassPort, cancallationpolicytype, RoomTypeId, RoomId, SessionId, BoardID, Nationality, IsAvail, UniqNo);
-                                        //}
+                                        if (true)
+                                        {
+                                            //DataRow[] CartResponse = dsCartDetails.Tables[1].Select("UserCartID='" + UserCartId + "'");
+                                            //string HasKey1 = Convert.ToString(CartResponse[0]["Eachotoken"]);
+                                            string HasKey1 = bookRequest.userCart.UserCartDetails[j].EachoToken;
+                                            //BookingRequestM = _mgbedbank.Get_MgBedBank_BookingRequest(dsCartDetails, dtPassengers, MgBedBankDetails, ExternalReference, false, i, j, ReqHasKey, PaxPassPort, cancallationpolicytype, RoomTypeId, RoomId, SessionId, BoardID, Nationality, IsAvail, UniqNo);
+                                            BookingRequestM = _mgbedbank.Get_MgBedBank_BookingRequest_newversion(bookRequest, dtPassengers, XPDetails, ExternalReference, false, 0, j, ReqHasKey, PaxPassPort, cancallationpolicytype, RoomTypeId, RoomId, SessionId, BoardID, Nationality, IsAvail, UniqNo);
+                                        }
                                         _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequestM, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", Convert.ToString(ReferenceNo), "WithinEarth", bookRequest.SearchKey);
 
                                         System.Diagnostics.Stopwatch timerroomprocess_mg = new System.Diagnostics.Stopwatch();
