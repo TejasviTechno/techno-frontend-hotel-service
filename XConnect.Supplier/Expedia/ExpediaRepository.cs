@@ -580,7 +580,7 @@ namespace XConnect.Expedia
                 //    JsonRQ.Append("&billing_terms="  +_supplierConfig.Expedia.EAN_Billing_Terms);
                 string DomesticContryCode = _keySettings.DomesticContryCode;//added 20-may-2026
 
-                if(SupplierName.ToLower()=="ean_b2b" || SupplierName.ToLower() == "ean_pkg")
+                if(SupplierName.ToLower()=="ean_b2b" || SupplierName.ToLower() == "ean_pkg" || SupplierName.ToLower() == "ean_b2bv3" || SupplierName.ToLower() == "ean_pkgv3")
                 {
                     JsonRQ.Append("&billing_terms=");
                     JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms);
