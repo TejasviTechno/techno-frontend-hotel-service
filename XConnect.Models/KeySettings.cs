@@ -131,7 +131,7 @@ namespace XConnect.Models
 
         public bool MultiexpediaIsActive { get; set; } = false; //Added on 20-may-26
         public string? DomesticContryCode { get; set; } = String.Empty;//Added on 20-may-26
-
+        public string? AgodaVersion { get; set; } = String.Empty;
 
     }
 }

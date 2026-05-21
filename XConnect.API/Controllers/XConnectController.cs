@@ -6315,7 +6315,63 @@ namespace XConnect.API.Controllers
 
         }
 
+        [Route("GetHotelGuestReview")]
+        [HttpPost]
+        public async Task<IActionResult> GetHotelGuestReview(CommonRequest data)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            TokenData TokenData = new TokenData();
 
+            try
+            {
+                //string IP = HttpContext.Items["ClientIp"]?.ToString();
+                //var userAgent = HttpContext.Items["User-Agent"]?.ToString();
+
+                string IP = _platformService.GetIPAddress();
+                //string userAgent = _platformService.GetBrowserInfo(_platformService.GetRequest());
+
+                string userAgent = _platformService.GetUserPlatform(IP);
+                string MainURL = _platformService.GetHostName();
+
+                //bool IsRefereshCache = data.AdvancedOptions.CustomerIpAddress == "777" ? true : false;
+
+                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                //if (Convert.ToBoolean(authData.tokenData.AgentId))
+                if (true)
+                {
+                    HotelReviewRequest payload = Newtonsoft.Json.JsonConvert.DeserializeObject<HotelReviewRequest>(data.Request.ToString());
+
+                    // List<StaticData> lstFiltOption = await _hotelXML.GetCitiesWithHotel(payload.CityName);
+                    List<GuestReviewModel> lstFiltOption = await _hotelXML.GetHotelGuestReviewAsync(payload.HotelId, data.AdvancedOptions);
+                    if (lstFiltOption != null)
+                    {
+                        timer.Stop();
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, TokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.HotelId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+
+                    }
+                    else
+                    {
+                        timer.Stop();
+                        error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.InternalError, payload.HotelId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+                    }
+                }
+                else
+                {
+                    timer.Stop();
+                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, 401, "application/json", data, "", authData.tokenData, "GetCitiesWithHotel", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "", IP, "", "", "", 0, 0, 0, "", null);
+                }
+            }
+            catch (Exception ex)
+            {
+                timer.Stop();
+                error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
+                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "", "", "", "", "", 0, 0, 0, "", null);
+
+            }
+
+        }
 
     }
 }

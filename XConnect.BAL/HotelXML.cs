@@ -72638,6 +72638,139 @@ new SqlParameter("@AgentId", AgentId),
         #endregion
         #endregion
 
+        public async Task<List<GuestReviewModel>> GetHotelGuestReviewAsync(int hotelId, AdvancedOptions advancedOptions)
+        {
+            try
+            {
+                // STEP 1 → Validate input
+                if (hotelId <= 0)
+                    return new List<GuestReviewModel>();
 
+                // STEP 2 → Get EanHotelId from DB
+                string eanHotelId = await GetEanHotelIdFromDb(hotelId);
+                if (string.IsNullOrWhiteSpace(eanHotelId))
+                    return new List<GuestReviewModel>();
+
+                // Read essential config
+                var baseUrl = _configuration["SupplierConfiguration:Expedia:GuestReviewBaseUrl"];
+                var apiKey = _configuration["SupplierConfiguration:Expedia:GuestReviewApiKey"];
+                var secret = _configuration["SupplierConfiguration:Expedia:GuestReviewSecret"];
+                var platformName = _configuration["SupplierConfiguration:Expedia:GuestReviewPlatformName"];
+                var customerIp = "103.19.248.44";// advancedOptions.CustomerIpAddress;
+                var billingTerms = _configuration["SupplierConfiguration:Expedia:GuestReviewBillingTerms"];
+                var paymentTerms = _configuration["SupplierConfiguration:Expedia:GuestReviewPaymentTerms"];
+                var partnerPOS = _configuration["SupplierConfiguration:Expedia:GuestReviewPartnerPointOfSale"];
+                string language = "en-US";
+
+                var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                long unixTime = (long)(DateTime.UtcNow - epoch).TotalSeconds;
+
+                // STEP 4 → Build string to hash and compute SHA512 signature
+                var toBeHashed = apiKey + secret + unixTime;
+                byte[] bytes = Encoding.UTF8.GetBytes(toBeHashed);
+                string signature;
+                using (var hash = SHA512.Create())
+                {
+                    byte[] hashedBytes = hash.ComputeHash(bytes);
+                    var sb = new StringBuilder(hashedBytes.Length * 2);
+                    foreach (var b in hashedBytes)
+                        sb.Append(b.ToString("X2"));
+                    signature = sb.ToString();
+                }
+
+                // STEP 5 → Build Authorization header
+                string authHeaderValue = $"EAN APIKey={apiKey},Signature={signature},timestamp={unixTime}";
+
+                // Prepare HttpRequestMessage
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, $"{baseUrl}/v3/properties/{eanHotelId}/guest-reviews" +
+                    $"?language={language}" +
+                    $"&billing_terms={billingTerms}" +
+                    $"&payment_terms={paymentTerms}" +
+                    $"&partner_point_of_sale={partnerPOS}" +
+                    $"&platform_name={platformName}");
+
+                request.Headers.Add("Authorization", authHeaderValue);
+                request.Headers.Add("User-Agent", platformName);
+                request.Headers.Add("Customer-Ip", customerIp);
+                request.Headers.Add("Accept-Encoding", "json");
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // STEP 9 → Send request
+                using var _httpClient = new HttpClient(); // create a temporary client
+                using var response = await _httpClient.SendAsync(request);
+                if (!response.IsSuccessStatusCode)
+                    return new List<GuestReviewModel>();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(responseContent))
+                    return new List<GuestReviewModel>();
+                // STEP 10 → Parse JSON into GuestReviewModel
+                var result = new List<GuestReviewModel>();
+                var json = JObject.Parse(responseContent);
+                var reviews = json["verified"]?["recent"];
+
+                if (reviews != null)
+                {
+                    foreach (var item in reviews)
+                    {
+                        result.Add(new GuestReviewModel
+                        {
+                            ReviewerName = item["reviewer_name"]?.ToString(),
+                            Rating = item["rating"]?.ToString(),
+                            ReviewText = item["text"]?.ToString(),
+                            VerificationSource = item["verification_source"]?.ToString(),
+                            StayDate = item["stay_date"]?.ToString(),
+                            TravelCompanion = item["travel_companion"]?.ToString(),
+                            TripReason = item["trip_reason"]?.ToString(),
+                            ReviewSubmitDate = item["date_submitted"]?.ToString(),
+                            Title = item["title"]?.ToString(),
+
+                            ManagementResponses = item["management_responses"] != null
+                                ? item["management_responses"]
+                                    .Children()
+                                    .Select(r => new ManagementResponse
+                                    {
+                                        Date = DateTime.TryParse(r["date"]?.ToString(), out var d)
+                                            ? d
+                                            : default,
+
+                                        Text = r["text"]?.ToString()
+                                    })
+                                    .ToList()
+                                : new List<ManagementResponse>()
+                        });
+                    }
+                }
+
+                if (result.Count == 0)
+                    return new List<GuestReviewModel>();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex); // log the exception
+                return new List<GuestReviewModel>();
+            }
+        }
+        private async Task<string> GetEanHotelIdFromDb(int hotelId)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]
+                {
+         new SqlParameter("@HotelId",hotelId)
+                };
+
+                string x = Convert.ToString(await _dlConnection.GetExecuteScalarQry("SELECT TOP 1 SupplierHotelID as EanHotelId FROM SupplierHotelMappings WITH(NOLOCK) WHERE HotelSupplierMasterId=1 AND UnifiedMappingToolId=1 AND IsDeleted=0 AND SystemHotelId=@HotelId", para));
+
+                return x ?? "";
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+                return "";
+            }
+        }
     }
 }
