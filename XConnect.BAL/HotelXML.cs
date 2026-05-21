@@ -13774,7 +13774,7 @@ new SqlParameter("@AgentId", AgentId),
                                 }
                                 if (TechName.ToLower() == "exely")
                                 {
-                                    essential = await _iExely.Get_Exely_EInfo(ItemCode, dtSuplierMarkup, dsAgentDetails.Tables[2], Provider, SearchKey, roomex.RoomTypeId);
+                                    essential = await _iExely.Get_Exely_EInfo(ItemCode, dtSuplierMarkup, dsAgentDetails.Tables[2], Provider, SearchKey, roomex.RoomTypeId, SearchPara);
                                 }
                                 //if (selectedRoom.EssentialInformation == "N/A" && roomex.SupplierName.ToLower().IndexOf("hotelbedsv1") >= 0)//Due to Recheck api this method only read EssentialInfo
                                 //{
