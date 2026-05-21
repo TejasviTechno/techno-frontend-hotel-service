@@ -1054,7 +1054,7 @@ namespace XConnect.Supplier.MGBedBank
                                                         RoomName = RoomName + roomlist[p].RoomCount + " X " + roomlist[p].RoomName + " ";
                                                 }
                                                 #endregion
-                                                string RoomTypeId = RoomCodeMain + "$$$" + XMLNationality + "$$$" + CancelType + "$$$" + Type + "$$$" + SessionId + "$$$" + MealId + "$$$" + IsAvail + "$$$" + IsPackageRate;
+                                                string RoomTypeId = RoomCodeMain + "$$$" + XMLNationality + "$$$" + CancelType + "$$$" + Type + "$$$" + SessionId + "$$$" + MealId + "$$$" + IsAvail + "$$$" + IsPackageRate + "$$$" + ItemCode;  //added ItemCode
                                                 #region RateBreakup
                                                 //double FinalPrice = NetPrice / SearchParam.NoofNights;
                                                 //DateTime dtCheckInDateForRate = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
@@ -1504,7 +1504,7 @@ namespace XConnect.Supplier.MGBedBank
             }
         }
 
-        public string Get_MgBedBank_Policy_PriceCheckRQ(DataSet dsCartDetails, int UserCartID, string UserId, string UserName, string Password, string PaxPassport, string HotelId, string RoomTypeId, string CheckIn, string CheckOut, string Type, string XMLCityId, string XMLCountryId, string RoomId, string CancallationPolicytype, string BoardID, string SessionId, string MainNationality, string IsAvail, bool IsPackageRate, string MgBedBankCurrency)
+        public string Get_MgBedBank_Policy_PriceCheckRQ(DataSet dsCartDetails, int UserCartID, string UserId, string UserName, string Password, string PaxPassport, string HotelId, string RoomTypeId, string CheckIn, string CheckOut, string Type, string XMLCityId, string XMLCountryId, string RoomId, string CancallationPolicytype, string BoardID, string SessionId, string MainNationality, string IsAvail, bool IsPackageRate,string MgBedBankCurrency)
         {
             try
             {
@@ -1789,86 +1789,142 @@ namespace XConnect.Supplier.MGBedBank
                 return "";
             }
         }
+
         public string Get_MgBedBank_BookingRequest_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] MgBedBankDetails, string ExternalReference, bool IsPriceUpdate, int i, int j, string HasKey_IntCode, string PaxPassport, string cancallationpolicytype, string RoomTypeID, string RoomId, string SessionId, string BoardID, string Nationality, string IsAvail, string UniqNo)
         {
             try
             {
                 #region Booking RQ
+
                 string MgBedBankCurrency = Convert.ToString(MgBedBankDetails[0]["CurrencyShortName"]);
+
                 string UserID = Convert.ToString(MgBedBankDetails[0]["UserId"]);
+
                 string UserName = Convert.ToString(MgBedBankDetails[0]["UserName"]);
+
                 string Password = Convert.ToString(MgBedBankDetails[0]["Password"]);
+
                 string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckInDate);
+
                 //CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+
                 string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[0].CheckOutDate);
+
                 //CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
 
                 DateTime checkInDate = DateTime.Parse(CheckIn);
+
                 DateTime checkOutDate = DateTime.Parse(CheckOut);
 
                 // Convert to "yyyy-MM-dd" format
-                 CheckIn = checkInDate.ToString("yyyy-MM-dd");
-                 CheckOut = checkOutDate.ToString("yyyy-MM-dd");
+
+                CheckIn = checkInDate.ToString("yyyy-MM-dd");
+
+                CheckOut = checkOutDate.ToString("yyyy-MM-dd");
 
                 string MealId = Convert.ToString(bookRequest.userCart.UserCartDetails[0].MealPlan);
+
                 //string CancellationPolicyType = cancallationpolicytype;
+
                 //string PackageRate = "false";
+
                 string OnHold = "false";
+
                 //string AvailFlag = IsAvail;
+
                 string EN = "EN";
+
                 string DetailLevel = "Full";
+
                 string RoomType = "";
+
                 string RoomTypeId = RoomTypeID;
+                string HotelId = "";
+
                 bool IsPackageRate = false;
+
                 //string Rkey = "", HasKey = "", Key = "", Ratekey1 = "", RateKeyMain = "";
+
                 if (IsPriceUpdate)
+
                     RoomType = "";
+
                 else
                 {
+
                     RoomType = Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId);
-                    RoomTypeId = Get_MgBedBank_RoomTypeID(RoomType, ref UniqNo, ref PaxPassport, ref cancallationpolicytype, ref HasKey_IntCode, ref SessionId, ref MealId, ref IsAvail, ref IsPackageRate);
+
+                    RoomTypeId = Get_MgBedBank_RoomTypeID_new(RoomType, ref UniqNo, ref PaxPassport, ref cancallationpolicytype, ref HasKey_IntCode, ref SessionId, ref MealId, ref IsAvail, ref IsPackageRate,ref HotelId);
+
                 }
+
                 string InternalCode = "";
-                string HotelId = Convert.ToString("");//dsCartDetails.Tables[0].Rows[i]["XMLHotelId"]
+
+                 //HotelId = Convert.ToString("");//dsCartDetails.Tables[0].Rows[i]["XMLHotelId"]
+
                 int UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].UserCartId);
+
                 //double Price = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
                 //string RoomName = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["purchaseToken"]);
                 //string RateKey = Get_MgBedBank_RateKey(HasKey_IntCode, ref Rkey, ref HasKey, ref Key, ref Ratekey1);
+
                 StringBuilder BookRQ = new StringBuilder();
+
                 BookRQ.Append("<BookHotel>");
+
                 BookRQ.Append("<Login><AgencyCode>" + UserID + "</AgencyCode><Username>" + UserName + "</Username><Password>" + Password + "</Password></Login>");
+
                 BookRQ.Append("<SessionID>" + SessionId + "</SessionID>");
+
                 InternalCode = ExternalReference;
 
                 BookRQ.Append("<AgencyBookingID>" + InternalCode + "</AgencyBookingID>");
+
                 BookRQ.Append("<Nationality>" + PaxPassport + "</Nationality>");
+
                 BookRQ.Append("<CheckIn>" + CheckIn + "</CheckIn>");
+
                 BookRQ.Append("<CheckOut>" + CheckOut + "</CheckOut>");
+
                 BookRQ.Append("<HotelCode>" + HotelId + "</HotelCode>");
+
                 BookRQ.Append("<RoomDetails Code =\"" + RoomTypeId + "\" MealPlan =\"" + MealId + "\" CancellationPolicyType =\"" + cancallationpolicytype + "\" PackageRate =\"" + IsPackageRate.ToString().ToLower() + "\" />");
+
                 BookRQ.Append("<Rooms>");
-               
+
                 //DataRow[] drCartPaasenger = dsCartDetails.Tables[1].Select("UserCartId='" + UserCartId + "'");
 
-         
-
                 //for (int x = 0; x < drCartPaasenger.Length; x++)
-                for(int x=0; x< bookRequest.userCart.UserCartDetails.Count; x++)
+
+                for (int x = 0; x < bookRequest.userCart.UserCartDetails.Count; x++)
                 {
+
                     int NoOfAdult = 0;
+
                     int NoOfChild = 0;
+
                     //int Childage1 = 0;
+
                     //int Childage2 = 0;
+
                     string extrabed = "false";
+
                     NoOfAdult = Convert.ToInt32(bookRequest.userCart.UserCartDetails[x].NoofAdult);
+
                     NoOfChild = Convert.ToInt32(bookRequest.userCart.UserCartDetails[x].NoofChild);
-                   // Childage1 = Convert.ToInt32(drCartPaasenger[x]["ChildAge1"]);
+
+                    //Childage1 = Convert.ToInt32(drCartPaasenger[x]["ChildAge1"]);
+
                     //Childage2 = Convert.ToInt32(drCartPaasenger[x]["ChildAge2"]);
+
                     string RoomNo = Convert.ToString(bookRequest.userCart.UserCartDetails.Count);
+
                     string RoomTypeName = "";
+
                     RoomTypeName = Get_MgBedBank_RoomType(NoOfAdult);
+
                     #region Room
-                    
+
 
                     string[] TypeManage = HasKey_IntCode.Split(new String[] { "###" }, StringSplitOptions.None);
 
@@ -1878,41 +1934,115 @@ namespace XConnect.Supplier.MGBedBank
 
 
                     dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[0].RoomTypeId) + "' and (RoomNo=" + (x + 1) + ")";
+
                     #region PaxDetails
+
                     BookRQ.Append("<PaxDetails>");
+
                     for (int y = 0; y < dtPassengers.DefaultView.Count; y++)
                     {
-
                         string Name = Convert.ToString(dtPassengers.DefaultView[y]["FirstName"]);
+
                         string SurName = Convert.ToString(dtPassengers.DefaultView[y]["LastName"]);
+
                         string PreFix = Convert.ToString(dtPassengers.DefaultView[y]["Prefix"]);
+
                         string Age = Convert.ToString(dtPassengers.DefaultView[y]["ChildAge"]);
+
                         BookRQ.Append("<Pax Salutation=\"" + PreFix + "\" FirstName=\"" + Name + "\" LastName=\"" + SurName + "\" Age=\"" + Age + "\" />");
+
                     }
+
                     BookRQ.Append("</PaxDetails>");
+
                     #endregion
+
                     BookRQ.Append("</Room>");
+
                     #endregion
+
                 }
+
                 BookRQ.Append("</Rooms>");
+
                 BookRQ.Append("<OnHold>" + OnHold + "</OnHold>");
+
                 BookRQ.Append("<AvailFlag>" + IsAvail + "</AvailFlag>");
+
                 BookRQ.Append("<Currency>" + MgBedBankCurrency + "</Currency>");
+
                 BookRQ.Append("<Language>" + EN + "</Language>");
+
                 BookRQ.Append("<DetailLevel>" + DetailLevel + "</DetailLevel>");
+
                 BookRQ.Append("</BookHotel>");
 
                 string BookingRQ = BookRQ.ToString();
 
                 return BookingRQ;
+
                 #endregion
+
             }
+
             catch (Exception ex)
             {
+
                 _ = _exception.Error(ex);
+
                 return "";
+
             }
+
         }
+
+        public string Get_MgBedBank_RoomTypeID_new(string RoomTypeId, ref string UniqNo, ref string Nationality, ref string CancelType, ref string RateKey, ref string SessionId, ref string MealId, ref string IsAvail, ref bool IsPackageRate, ref string HotelId)
+
+        {
+
+            try
+
+            {
+
+                string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+
+                string MgBedBank_RoomId = spitid[0].ToString();
+
+                UniqNo = spitid[1].ToString();
+
+                Nationality = spitid[2].ToString();
+
+                CancelType = spitid[3].ToString();
+
+                RateKey = spitid[4].ToString();
+
+                SessionId = spitid[5].ToString();
+
+                MealId = spitid[6].ToString();
+
+                IsAvail = spitid[7].ToString();
+
+                IsPackageRate = Convert.ToBoolean(spitid[8]);
+
+                HotelId = spitid[9].ToString();
+
+                return MgBedBank_RoomId;
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                _ = _exception.Error(ex);
+
+                return "";
+
+            }
+
+        }
+
+
 
     }
 

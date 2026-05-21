@@ -52801,10 +52801,10 @@ new SqlParameter("@AgentId", AgentId),
                                                                 else
                                                                     agentVoucher.XMLResponse = ResponsebookWE;
 
-                                                                agentVoucher.RoomStatus = Convert.ToString(2);
+                                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                                 agentVoucher.SupplierName = suppliername;
                                                                 agentVouchers.Add(agentVoucher);
-                                                                //bookResponse_1.agentVouchers = agentVouchers;
+                                                                bookResponse_1.agentVouchers = agentVouchers;
                                                                 #endregion
 
                                                                 // dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[rr]["UserCartDetailId"]), AgentVoucherNo, Withinearth_DMCBookReq, ResponsebookWE, Convert.ToString(dsCartDetails.Tables[1].DefaultView[rr]["SupplierName"]), bookingStatus));
@@ -52873,10 +52873,10 @@ new SqlParameter("@AgentId", AgentId),
                                                                 else
                                                                     agentVoucher.XMLResponse = ResponsebookWE;
 
-                                                                agentVoucher.RoomStatus = Convert.ToString(2);
+                                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                                 agentVoucher.SupplierName = suppliername;
                                                                 agentVouchers.Add(agentVoucher);
-                                                                //bookResponse_1.agentVouchers = agentVouchers;
+                                                                bookResponse_1.agentVouchers = agentVouchers;
                                                                 #endregion
                                                                 // dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[b]["UserCartDetailId"]), AgentVoucherNo, Withinearth_DMCBookReq, ResponsebookWE, Convert.ToString(dsCartDetails.Tables[1].DefaultView[b]["SupplierName"]), bookingStatus));
                                                             }
@@ -52923,10 +52923,10 @@ new SqlParameter("@AgentId", AgentId),
                                                             else
                                                                 agentVoucher.XMLResponse = ResponsebookWE;
 
-                                                            agentVoucher.RoomStatus = Convert.ToString(2);
+                                                            agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                             agentVoucher.SupplierName = suppliername;
                                                             agentVouchers.Add(agentVoucher);
-                                                            //bookResponse_1.agentVouchers = agentVouchers;
+                                                            bookResponse_1.agentVouchers = agentVouchers;
                                                             #endregion
 
 
@@ -52999,10 +52999,10 @@ new SqlParameter("@AgentId", AgentId),
                                                                 else
                                                                     agentVoucher.XMLResponse = ResponsebookWE;
 
-                                                                agentVoucher.RoomStatus = Convert.ToString(2);
+                                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                                 agentVoucher.SupplierName = suppliername;
                                                                 agentVouchers.Add(agentVoucher);
-                                                                //bookResponse_1.agentVouchers = agentVouchers;
+                                                                bookResponse_1.agentVouchers = agentVouchers;
                                                                 #endregion
                                                                 //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), AgentVoucherNo, Withinearth_DMCBookReq, ResponsebookWE, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), bookingStatus));
                                                             }
@@ -53046,10 +53046,10 @@ new SqlParameter("@AgentId", AgentId),
                                                     else
                                                         agentVoucher.XMLResponse = "";
 
-                                                    agentVoucher.RoomStatus = Convert.ToString(2);
+                                                    agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                     agentVoucher.SupplierName = suppliername;
                                                     agentVouchers.Add(agentVoucher);
-                                                    //bookResponse_1.agentVouchers = agentVouchers;
+                                                    bookResponse_1.agentVouchers = agentVouchers;
                                                     #endregion
 
                                                     //dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[rr]["UserCartDetailId"]), AgentVoucherNo, Withinearth_DMCBookReq, ResponsebookWE, Convert.ToString(dsCartDetails.Tables[1].DefaultView[rr]["SupplierName"]), bookingStatus));
@@ -53086,10 +53086,10 @@ new SqlParameter("@AgentId", AgentId),
                                             else
                                                 agentVoucher.XMLResponse = "";
 
-                                            agentVoucher.RoomStatus = Convert.ToString(2);
+                                            agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                             agentVoucher.SupplierName = suppliername;
                                             agentVouchers.Add(agentVoucher);
-                                            //bookResponse_1.agentVouchers = agentVouchers;
+                                            bookResponse_1.agentVouchers = agentVouchers;
                                             #endregion
 
 
@@ -55081,8 +55081,7 @@ new SqlParameter("@AgentId", AgentId),
                                         string SpitIdRoomName = spitid[0].ToString();
 
 
-                                        bool IsRoomupdate = await _commonMethod.GetRoomNameUpdate(SpitIdRoomName, UserCartId);
-
+                                        //bool IsRoomupdate = await _commonMethod.GetRoomNameUpdate(SpitIdRoomName, UserCartId);
 
                                         #endregion
 
@@ -66923,14 +66922,16 @@ new SqlParameter("@AgentId", AgentId),
             try
             {
                 SqlParameter[] para = new SqlParameter[] {
-             new SqlParameter("@Supplier", sprRequest.SupplierName),
+
                 new SqlParameter("@AgentId", sprRequest.AgentID),
                 new SqlParameter("@FromDate", sprRequest.FromDate),
                 new SqlParameter("@Todate", sprRequest.Todate),
                 new SqlParameter("@ReportType", sprRequest.ReportType),
-                new SqlParameter("@IsApi",Convert.ToInt32(sprRequest.IsApi))
+                 new SqlParameter("@Supplier", sprRequest.SupplierName),
+               new SqlParameter("@timeout",Convert.ToInt32(sprRequest.TimeOut)),
+               new SqlParameter("@IsApi",Convert.ToInt32(sprRequest.IsApi))
          };
-                DataTable dt = await _dlConnection.GetDataTableByConnectionStringAsync("SupplierperformanceReportLogs", para, _connectionStrings.ConnectionString);
+                DataTable dt = await _dlConnection.GetDataTableByConnectionStringAsync("SupplierperformanceReportList", para, _connectionStrings.ConnectionString);
 
                 List<SupplierperformanceReport> lst = HtmlExtensions.ToList<SupplierperformanceReport>(dt);
                 return lst;
