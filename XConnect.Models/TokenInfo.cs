@@ -53,6 +53,8 @@ namespace XConnect.Models
         public List<DtRoeNew> dtROENew { get; set; } //051125
 
         public bool IsFromAPI { get; set; } //4-FEB-26
+        public bool IsPackage { get; set; } //20-may-26
+        public bool IsFromB2B { get; set; } //20-may-26
 
     }
 

@@ -496,6 +496,10 @@ namespace XConnect.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public int IsSendMail { get; set; } = 0;
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public bool IsPackage { get; set; } //added 20-may-2026
+        public bool IsFromB2B { get; set; } //added 20-may-2026
+
 
     }
 
