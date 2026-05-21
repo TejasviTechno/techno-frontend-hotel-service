@@ -152,6 +152,7 @@ namespace XConnect.Analytics
                     SiteType = _userContextAccessor?.SiteType??"",
                     SearchAvailTrace= SearchAvailTrace,
                     Source = analyticsData.source,
+                    ActualDescription = analyticsData?.ActualDescription??""
                 };
 
 
@@ -570,7 +571,9 @@ namespace XConnect.Analytics
         {
             return new UserInformation
             {
-                AgentName = _userContextAccessor.DecodedJwt?.UserName ?? "anonymous",
+                //AgentName = _userContextAccessor.DecodedJwt?.UserName ?? "anonymous",
+                AgentName = !string.IsNullOrEmpty(_userContextAccessor.DecodedJwt?.UserName) ? _userContextAccessor.DecodedJwt.UserName : !string.IsNullOrEmpty(_analyticsData.AgentName)
+                            ? _analyticsData.AgentName : "anonymous",
                 AgentType = _userContextAccessor.DecodedJwt?.UserType ?? "Agent",
                 AgentId = _userContextAccessor.DecodedJwt?.AgentId ?? 0
             };
