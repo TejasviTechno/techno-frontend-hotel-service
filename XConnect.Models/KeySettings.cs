@@ -102,6 +102,7 @@ namespace XConnect.Models
         public string? CreditCardCharges { get; set; } = String.Empty;//Added on 16 DEC 2025
         public string? siteCurrency { get; set; } = String.Empty;//Added on 26-FEB-26
         public bool IsActivejsonfile { get; set; } = false; //Added on 16-april-26
+        
         public string? agoda_apikey { get; set; } = String.Empty; //Added on 18-march-26
         public string? out_agoda_token { get; set; } = String.Empty; //Added on 18-march-26  
         public string? agoda_token { get; set; } = String.Empty; //Added on 27-march-26 
@@ -127,7 +128,10 @@ namespace XConnect.Models
         public string? EndPointforprebook { get; set; } = String.Empty; //Added on 29-apr-26 
         public string? EndPointforbook { get; set; } = String.Empty; //Added on 29-apr-26 
         public string? EndPointforbookingdetail { get; set; } = String.Empty; //Added on 29-apr-26 
-        
+
+        public bool MultiexpediaIsActive { get; set; } = false; //Added on 20-may-26
+        public string? DomesticContryCode { get; set; } = String.Empty;//Added on 20-may-26
+
 
     }
 }

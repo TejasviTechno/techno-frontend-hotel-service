@@ -2330,7 +2330,7 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                                         #endregion
                                         if (CountryXMLCode != "")
                                         {
-                                            _expedia.GetEANRequestOnly_async_new(SearchByOneID, commonSearchList.commonHotelCodes.EAN_Codes, lstRating, EANSearchConfig, EANDetails, dtPreferredDataHotel, EchoToken, Platform, AgentCode, SearchPara, IsB2B, IsHotelWiseSearch, ref AllTask, CountryXMLCode, dataForSearch.xmlCity, dtROE, tokenData, false, EANProfit);
+                                            _expedia.GetEANRequestOnly_async_new(SearchByOneID, commonSearchList.commonHotelCodes.EAN_Codes, lstRating, EANSearchConfig, EANDetails, dtPreferredDataHotel, EchoToken, Platform, AgentCode, SearchPara, tokenData.IsFromB2B, IsHotelWiseSearch, ref AllTask, CountryXMLCode, dataForSearch.xmlCity, dtROE, tokenData,tokenData.IsPackage, EANProfit);
                                         }
                                     }
                                 }
@@ -55088,12 +55088,13 @@ new SqlParameter("@AgentId", AgentId),
 
                                         #region PriceCkeck, Booking RQ, Booking URL
                                         string PaxPassPort = "", ErrorResponse = "";
-                                        //if (true)
-                                        //{
-                                        //    DataRow[] CartResponse = dsCartDetails.Tables[1].Select("UserCartID='" + UserCartId + "'");
-                                        //    string HasKey1 = Convert.ToString(CartResponse[0]["Eachotoken"]);
-                                        //    BookingRequestM = _mgbedbank.Get_MgBedBank_BookingRequest(dsCartDetails, dtPassengers, MgBedBankDetails, ExternalReference, false, i, j, ReqHasKey, PaxPassPort, cancallationpolicytype, RoomTypeId, RoomId, SessionId, BoardID, Nationality, IsAvail, UniqNo);
-                                        //}
+                                        if (true)
+                                        {
+                                            //DataRow[] CartResponse = dsCartDetails.Tables[1].Select("UserCartID='" + UserCartId + "'");
+                                            //string HasKey1 = Convert.ToString(CartResponse[0]["Eachotoken"]);
+                                            string HasKey1 = bookRequest.userCart.UserCartDetails[j].EachoToken;
+                                            BookingRequestM = _mgbedbank.Get_MgBedBank_BookingRequest_newversion(bookRequest, dtPassengers, XPDetails, ExternalReference, false, 0, j, ReqHasKey, PaxPassPort, cancallationpolicytype, RoomTypeId, RoomId, SessionId, BoardID, Nationality, IsAvail, UniqNo);
+                                        }
                                         _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequestM, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", Convert.ToString(ReferenceNo), "WithinEarth", bookRequest.SearchKey);
 
                                         System.Diagnostics.Stopwatch timerroomprocess_mg = new System.Diagnostics.Stopwatch();

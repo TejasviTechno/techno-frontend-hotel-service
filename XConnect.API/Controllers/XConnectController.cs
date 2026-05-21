@@ -493,6 +493,8 @@ namespace XConnect.API.Controllers
                 AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent, IsRefereshCache);
                 if (Convert.ToBoolean(authData.tokenData.AgentId))
                 {
+                    authData.tokenData.IsPackage = data.IsPackage;
+                    authData.tokenData.IsFromB2B = data.IsFromB2B;
 
                     string tick = DateTime.Now.Ticks.ToString().ReverseString();
                     Search_Key = authData.tokenData.AgentCode + "_" + Guid.NewGuid().ToString().Substring(0, 5) + "_" + tick;//Added on 1-MAR-2025
