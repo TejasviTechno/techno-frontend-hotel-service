@@ -68345,8 +68345,10 @@ new SqlParameter("@AgentId", AgentId),
 
                     if (DTChainCode.Tables.Count > 0 && DTChainCode.Tables[0].Rows.Count > 0)
                     {
+                        //var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        //    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
                         var cacheEntryOptions = new MemoryCacheEntryOptions()
-                            .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+    .SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
 
                         _cache.Set(keydata, DTChainCode, cacheEntryOptions);
                     }
@@ -68375,8 +68377,10 @@ new SqlParameter("@AgentId", AgentId),
 
                     if (DTChainCode.Tables[0].Rows.Count > 0)
                     {
+                        //var cacheOptions = new MemoryCacheEntryOptions()
+                        //    .SetAbsoluteExpiration(TimeSpan.FromHours(24));
                         var cacheOptions = new MemoryCacheEntryOptions()
-                            .SetAbsoluteExpiration(TimeSpan.FromHours(24));
+                            .SetAbsoluteExpiration(TimeSpan.FromHours(1));
 
                         _cache.Set(keydata1, ds7, cacheOptions);
                     }
@@ -68404,7 +68408,7 @@ new SqlParameter("@AgentId", AgentId),
                         //var cacheOptions = new MemoryCacheEntryOptions()
                         //    .SetAbsoluteExpiration(TimeSpan.FromHours(24));  cmt14052026
                         var cacheOptions = new MemoryCacheEntryOptions()
-    .SetAbsoluteExpiration(TimeSpan.FromMinutes(6));
+    .SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
                         _cache.Set(keydata2, DTCountryblock, cacheOptions);
                     }
                 }
