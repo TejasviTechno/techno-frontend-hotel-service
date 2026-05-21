@@ -477,7 +477,8 @@ namespace XConnect.API.Controllers
 
             DateTime EntryTime = DateTime.Now;
 
-            //string language = Request.Headers["language"].ToString();
+            string XSiteType = Request.Headers["X-Site-Type"].ToString();
+            bool IsFromB2B = XSiteType != null && XSiteType.Trim().Equals("B2B", StringComparison.OrdinalIgnoreCase);
 
             string IP = _platformService.GetIPAddress();
             //string IP = Convert.ToString(_userContextAccessor.ClientStats.ClientIp);
@@ -494,8 +495,8 @@ namespace XConnect.API.Controllers
                 AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent, IsRefereshCache);
                 if (Convert.ToBoolean(authData.tokenData.AgentId))
                 {
-                    authData.tokenData.IsPackage = data.IsPackage;
-                    authData.tokenData.IsFromB2B = data.IsFromB2B;
+                    authData.tokenData.IsPackage = false;
+                    authData.tokenData.IsFromB2B = IsFromB2B;
 
                     string tick = DateTime.Now.Ticks.ToString().ReverseString();
                     Search_Key = authData.tokenData.AgentCode + "_" + Guid.NewGuid().ToString().Substring(0, 5) + "_" + tick;//Added on 1-MAR-2025
