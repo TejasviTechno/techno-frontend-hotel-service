@@ -64791,6 +64791,89 @@ new SqlParameter("@AgentId", AgentId),
                             }
                             #endregion
                             break;
+                        case "DINGUS":
+                            #region "Dingus"
+
+                            try
+                            {
+                                #region Booking Cancel RQ, URL
+                                string language = "en";
+
+                                string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+                                string suppliername = Convert.ToString(SupplierDetailsCommon[0]["SupplierName"]);
+
+                                string RoomTypeId = Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]);
+                                string[] Roomidsplit = RoomTypeId.Split(new String[] { "##$$" }, StringSplitOptions.None);
+
+                                string[] Roomids = Roomidsplit[0].Split(new String[] { "$$$" }, StringSplitOptions.None);
+
+                                string HotelCode = Roomids[5].ToString();
+                                string ChainCode = Roomids[7].ToString();
+
+                                string DingusBookingCancelRS = "";
+                                string DingusBookingCancelRQ = "";
+                                string CheckIn = Convert.ToString(DtCancellation.Rows[0]["BookingDate"]);
+                                string CheckOut = Convert.ToString(DtCancellation.Rows[0]["BookingToDate"]);
+                                string AgentVoucherNo = AgentVoucherNo_Cancle;
+
+                                if (true)
+                                {
+                                    DingusBookingCancelRQ = _dingus.Get_Dingus_BookingCancelRQ(AgentVoucherNo, UserName, Password, HotelCode, ChainCode, language);
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, UserName, Convert.ToString(DingusBookingCancelRQ), "-", "After Request hit bookingcancel", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "Nites");
+
+
+
+                                    #region Booking Cancel RS
+
+                                    ResponseDto responseDto = await _dingus.Get_Dingus_Response_v1(Url, DingusBookingCancelRQ, suppliername, PNRNO_Cancel, CheckIn, CheckOut, Error, HostName);
+
+
+                                }
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(DingusBookingCancelRQ), Convert.ToString(DingusBookingCancelRS), "After Response hit bookingcancel", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "Nites");
+                                DataSet dsDingus_RS = new DataSet();
+                                bool IsTrue = false;
+                                if (DingusBookingCancelRS != string.Empty && DingusBookingCancelRS != "" && DingusBookingCancelRS != null && !DingusBookingCancelRS.Contains("error"))
+                                {
+                                    dsDingus_RS = _commonMethod.GetDataSetFromXMLString(DingusBookingCancelRS);
+
+                                    if (dsDingus_RS.Tables["OTA_CancelRS"].Columns.Contains("Status"))
+                                    {
+                                        string Status = Convert.ToString(dsDingus_RS.Tables["OTA_CancelRS"].Rows[0]["Status"]);
+                                        if (Status.ToLower() == "cancelled")
+                                            IsTrue = true;
+                                    }
+
+                                }
+
+
+                                #endregion
+
+                                #region Response Error Block 
+                                if (Supplier.ToUpper() != "DINGUS" && DingusBookingCancelRS.ToLower().Contains("error"))
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(DingusBookingCancelRQ), Convert.ToString(DingusBookingCancelRS), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", Convert.ToString(PNRNO_Cancel), "Nites");
+                                    return null;
+                                }
+
+                                if (IsTrue == false)
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(DingusBookingCancelRQ), Convert.ToString(DingusBookingCancelRS), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", Convert.ToString(PNRNO_Cancel), "Nites");
+                                    return null;
+                                }
+                                #endregion
+
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                return null;
+                            }
+                            #endregion
+
+                            #endregion
+                            break;
                         default:
                             return "";
                             break;
