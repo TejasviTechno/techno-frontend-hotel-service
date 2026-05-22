@@ -2313,18 +2313,25 @@ namespace XConnect.Expedia
                                                                     Dictionary<string, FeeDetail> totals = kvp.Value.totals;
 
                                                                     #region DataRaw and Variable Declaration
-                                                                    double Price = 0;
-                                                                    if (totals.ContainsKey("inclusive"))
-                                                                        Price = Convert.ToDouble(totals["inclusive"].billable_currency.value);
+                                                                    //double Price = 0;
+                                                                    //if (totals.ContainsKey("inclusive"))
+                                                                    double Price = Convert.ToDouble(totals["inclusive"].billable_currency.value);
 
-                                                                    if (!totals.ContainsKey("gross_profit") || totals["gross_profit"].billable_currency == null || totals["gross_profit"].billable_currency.value == null)//added on 30JAN2024
+                                                                    //if (!totals.ContainsKey("gross_profit") || totals["gross_profit"].billable_currency == null || totals["gross_profit"].billable_currency.value == null)//added on 30JAN2024
+                                                                    //{
+                                                                    //    continue;
+                                                                    //}
+                                                                    double Profit = 0;
+                                                                    //added 04-12-2025
+                                                                    if (totals.ContainsKey("marketing_fee"))
                                                                     {
-                                                                        continue;
+                                                                        Profit = Convert.ToDouble(totals["marketing_fee"].billable_currency.value);
                                                                     }
 
-                                                                    double Profit = 0;
-                                                                    if (totals.ContainsKey("gross_profit"))
-                                                                        Profit = Convert.ToDouble(totals["gross_profit"].billable_currency.value) * Convert.ToInt32(ItemEN.EanProfit) / 100;
+
+                                                                    //double Profit = 0;
+                                                                    //if (totals.ContainsKey("gross_profit"))
+                                                                    //    Profit = Convert.ToDouble(totals["gross_profit"].billable_currency.value) * Convert.ToInt32(ItemEN.EanProfit) / 100;
 
                                                                     double StrikeTrough = 0;
                                                                     if (totals.ContainsKey("strikethrough"))
@@ -2511,7 +2518,8 @@ namespace XConnect.Expedia
 
 
 
-                                                        if (Provider.ToLower() == "ean_b2b" || Provider.ToLower() == "ean_pkg")
+                                                        //if (Provider.ToLower() == "ean_b2b" || Provider.ToLower() == "ean_pkg")
+                                                        if (false)
                                                         {
                                                             #region Cancellation Policy
 
