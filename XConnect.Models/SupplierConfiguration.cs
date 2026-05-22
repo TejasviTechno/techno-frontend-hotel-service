@@ -50,7 +50,13 @@ namespace XConnect.Models
         public int EAN_Rate_Plan_Count_250 { get; set; }
         public int EAN_Rate_Plan_Count_1 { get; set; }
 
+        public string EAN_Partner_Point_Of_Sale_B2B_International { get; set; }
         public string EAN_Partner_Point_Of_Sale { get; set; }
+        public string EAN_Partner_Point_Of_Sale_B2B_Domestic { get; set; }
+        public string EAN_Partner_Point_Of_Sale_B2C_Domestic { get; set; }
+        public string EAN_Partner_Point_Of_Sale_B2C_Cross_Sell_Domestic { get; set; }
+        public string EAN_Partner_Point_Of_Sale_B2C_International { get; set; }
+        public string EAN_Partner_Point_Of_Sale_B2C_Cross_Sell_International { get; set; }
         public string EAN_Partner_Point_Of_Sale_COMP { get; set; }
 
         public string EAN_Rate_Option_Member { get; set; }
@@ -60,8 +66,14 @@ namespace XConnect.Models
         public string EAN_Include_All_Rates { get; set; }
         public string EAN_Sort_Type_Preferred { get; set; }
         public string EAN_Billing_Terms_EAC { get; set; }
-        public string EAN_Payment_Terms_0 { get; set; }
-        public string EAN_Payment_Terms_2 { get; set; }
+        public string EAN_Billing_Terms { get; set; }
+        public string EAN_Payment_Terms { get; set; }
+        public string EAN_Payment_Terms_B2B_International { get; set; }
+        public string EAN_Payment_Terms_B2B_Domestic { get; set; }
+        public string EAN_Payment_Terms_B2C_Domestic { get; set; }
+        public string EAN_Payment_Terms_B2C_Cross_Sell_Domestic { get; set; }
+        public string EAN_Payment_Terms_B2C_Cross_Sell_International { get; set; }
+        public string EAN_Payment_Terms_B2C_International { get; set; }
 
         public string creditCardNumber_Xpedia { get; set; }
         public string creditCardExpirationMonth_Xpedia { get; set; }
@@ -80,6 +92,7 @@ namespace XConnect.Models
         public string address1_Xpedia { get; set; }
         public string area_code_Xpedia { get; set; }
         public string number_Xpedia { get; set; }
+        public string EAN_Rate_Option_Cross_sell { get; set; }//added 20-may-2026
     }
 
     public class ETGConfig

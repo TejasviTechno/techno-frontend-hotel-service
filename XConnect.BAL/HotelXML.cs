@@ -2331,7 +2331,7 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                                         #endregion
                                         if (CountryXMLCode != "")
                                         {
-                                            _expedia.GetEANRequestOnly_async_new(SearchByOneID, commonSearchList.commonHotelCodes.EAN_Codes, lstRating, EANSearchConfig, EANDetails, dtPreferredDataHotel, EchoToken, Platform, AgentCode, SearchPara, IsB2B, IsHotelWiseSearch, ref AllTask, CountryXMLCode, dataForSearch.xmlCity, dtROE, tokenData, false, EANProfit);
+                                            _expedia.GetEANRequestOnly_async_new(SearchByOneID, commonSearchList.commonHotelCodes.EAN_Codes, lstRating, EANSearchConfig, EANDetails, dtPreferredDataHotel, EchoToken, Platform, AgentCode, SearchPara, tokenData.IsFromB2B, IsHotelWiseSearch, ref AllTask, CountryXMLCode, dataForSearch.xmlCity, dtROE, tokenData,tokenData.IsPackage, EANProfit);
                                         }
                                     }
                                 }
@@ -55126,7 +55126,6 @@ new SqlParameter("@AgentId", AgentId),
                                             //DataRow[] CartResponse = dsCartDetails.Tables[1].Select("UserCartID='" + UserCartId + "'");
                                             //string HasKey1 = Convert.ToString(CartResponse[0]["Eachotoken"]);
                                             string HasKey1 = bookRequest.userCart.UserCartDetails[j].EachoToken;
-                                            //BookingRequestM = _mgbedbank.Get_MgBedBank_BookingRequest(dsCartDetails, dtPassengers, MgBedBankDetails, ExternalReference, false, i, j, ReqHasKey, PaxPassPort, cancallationpolicytype, RoomTypeId, RoomId, SessionId, BoardID, Nationality, IsAvail, UniqNo);
                                             BookingRequestM = _mgbedbank.Get_MgBedBank_BookingRequest_newversion(bookRequest, dtPassengers, XPDetails, ExternalReference, false, 0, j, ReqHasKey, PaxPassPort, cancallationpolicytype, RoomTypeId, RoomId, SessionId, BoardID, Nationality, IsAvail, UniqNo);
                                         }
                                         _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequestM, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", Convert.ToString(ReferenceNo), "WithinEarth", bookRequest.SearchKey);
@@ -65619,6 +65618,89 @@ new SqlParameter("@AgentId", AgentId),
                             }
                             #endregion
                             break;
+                        case "DINGUS":
+                            #region "Dingus"
+
+                            try
+                            {
+                                #region Booking Cancel RQ, URL
+                                string language = "en";
+
+                                string UserName = Convert.ToString(SupplierDetailsCommon[0]["UserName"]);
+                                string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]);
+                                string suppliername = Convert.ToString(SupplierDetailsCommon[0]["SupplierName"]);
+
+                                string RoomTypeId = Convert.ToString(DtCancellation.Rows[0]["RoomTypeId"]);
+                                string[] Roomidsplit = RoomTypeId.Split(new String[] { "##$$" }, StringSplitOptions.None);
+
+                                string[] Roomids = Roomidsplit[0].Split(new String[] { "$$$" }, StringSplitOptions.None);
+
+                                string HotelCode = Roomids[5].ToString();
+                                string ChainCode = Roomids[7].ToString();
+
+                                string DingusBookingCancelRS = "";
+                                string DingusBookingCancelRQ = "";
+                                string CheckIn = Convert.ToString(DtCancellation.Rows[0]["BookingDate"]);
+                                string CheckOut = Convert.ToString(DtCancellation.Rows[0]["BookingToDate"]);
+                                string AgentVoucherNo = AgentVoucherNo_Cancle;
+
+                                if (true)
+                                {
+                                    DingusBookingCancelRQ = _dingus.Get_Dingus_BookingCancelRQ(AgentVoucherNo, UserName, Password, HotelCode, ChainCode, language);
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, UserName, Convert.ToString(DingusBookingCancelRQ), "-", "After Request hit bookingcancel", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "Nites");
+
+
+
+                                    #region Booking Cancel RS
+
+                                    ResponseDto responseDto = await _dingus.Get_Dingus_Response_v1(Url, DingusBookingCancelRQ, suppliername, PNRNO_Cancel, CheckIn, CheckOut, Error, HostName);
+
+
+                                }
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(DingusBookingCancelRQ), Convert.ToString(DingusBookingCancelRS), "After Response hit bookingcancel", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "Nites");
+                                DataSet dsDingus_RS = new DataSet();
+                                bool IsTrue = false;
+                                if (DingusBookingCancelRS != string.Empty && DingusBookingCancelRS != "" && DingusBookingCancelRS != null && !DingusBookingCancelRS.Contains("error"))
+                                {
+                                    dsDingus_RS = _commonMethod.GetDataSetFromXMLString(DingusBookingCancelRS);
+
+                                    if (dsDingus_RS.Tables["OTA_CancelRS"].Columns.Contains("Status"))
+                                    {
+                                        string Status = Convert.ToString(dsDingus_RS.Tables["OTA_CancelRS"].Rows[0]["Status"]);
+                                        if (Status.ToLower() == "cancelled")
+                                            IsTrue = true;
+                                    }
+
+                                }
+
+
+                                #endregion
+
+                                #region Response Error Block 
+                                if (Supplier.ToUpper() != "DINGUS" && DingusBookingCancelRS.ToLower().Contains("error"))
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(DingusBookingCancelRQ), Convert.ToString(DingusBookingCancelRS), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", Convert.ToString(PNRNO_Cancel), "Nites");
+                                    return null;
+                                }
+
+                                if (IsTrue == false)
+                                {
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(DingusBookingCancelRQ), Convert.ToString(DingusBookingCancelRS), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", Convert.ToString(PNRNO_Cancel), "Nites");
+                                    return null;
+                                }
+                                #endregion
+
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                return null;
+                            }
+                            #endregion
+
+                            #endregion
+                            break;
                         default:
                             return "";
                             break;
@@ -68297,8 +68379,10 @@ new SqlParameter("@AgentId", AgentId),
 
                     if (DTChainCode.Tables.Count > 0 && DTChainCode.Tables[0].Rows.Count > 0)
                     {
+                        //var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        //    .SetAbsoluteExpiration(TimeSpan.FromHours(1));
                         var cacheEntryOptions = new MemoryCacheEntryOptions()
-                            .SetAbsoluteExpiration(TimeSpan.FromHours(1));
+    .SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
 
                         _cache.Set(keydata, DTChainCode, cacheEntryOptions);
                     }
@@ -68327,8 +68411,10 @@ new SqlParameter("@AgentId", AgentId),
 
                     if (DTChainCode.Tables[0].Rows.Count > 0)
                     {
+                        //var cacheOptions = new MemoryCacheEntryOptions()
+                        //    .SetAbsoluteExpiration(TimeSpan.FromHours(24));
                         var cacheOptions = new MemoryCacheEntryOptions()
-                            .SetAbsoluteExpiration(TimeSpan.FromHours(24));
+                            .SetAbsoluteExpiration(TimeSpan.FromHours(1));
 
                         _cache.Set(keydata1, ds7, cacheOptions);
                     }
@@ -68356,7 +68442,7 @@ new SqlParameter("@AgentId", AgentId),
                         //var cacheOptions = new MemoryCacheEntryOptions()
                         //    .SetAbsoluteExpiration(TimeSpan.FromHours(24));  cmt14052026
                         var cacheOptions = new MemoryCacheEntryOptions()
-    .SetAbsoluteExpiration(TimeSpan.FromMinutes(6));
+    .SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
                         _cache.Set(keydata2, DTCountryblock, cacheOptions);
                     }
                 }
@@ -70207,13 +70293,13 @@ new SqlParameter("@AgentId", AgentId),
 
                             //Console.WriteLine("RESPONSE: " + responsedata);
 
-                            //await _commonMethod.XMLRequestResponseTrack_agoda(
-                            //    finalUrl + " | " + strxmlRQRS,
-                            //    responsedata,
-                            //    "xmlout",
-                            //    "Proper",
-                            //    reqid
-                            //);
+                            await _commonMethod.XMLRequestResponseTrack_agoda(
+                                finalUrl + " | " + strxmlRQRS,
+                                responsedata,
+                                "xmlout",
+                                "Proper",
+                                reqid
+                            );
                         }
                     }
                 }
@@ -72590,6 +72676,139 @@ new SqlParameter("@AgentId", AgentId),
         #endregion
         #endregion
 
+        public async Task<List<GuestReviewModel>> GetHotelGuestReviewAsync(int hotelId, AdvancedOptions advancedOptions)
+        {
+            try
+            {
+                // STEP 1 → Validate input
+                if (hotelId <= 0)
+                    return new List<GuestReviewModel>();
 
+                // STEP 2 → Get EanHotelId from DB
+                string eanHotelId = await GetEanHotelIdFromDb(hotelId);
+                if (string.IsNullOrWhiteSpace(eanHotelId))
+                    return new List<GuestReviewModel>();
+
+                // Read essential config
+                var baseUrl = _configuration["SupplierConfiguration:Expedia:GuestReviewBaseUrl"];
+                var apiKey = _configuration["SupplierConfiguration:Expedia:GuestReviewApiKey"];
+                var secret = _configuration["SupplierConfiguration:Expedia:GuestReviewSecret"];
+                var platformName = _configuration["SupplierConfiguration:Expedia:GuestReviewPlatformName"];
+                var customerIp = "103.19.248.44";// advancedOptions.CustomerIpAddress;
+                var billingTerms = _configuration["SupplierConfiguration:Expedia:GuestReviewBillingTerms"];
+                var paymentTerms = _configuration["SupplierConfiguration:Expedia:GuestReviewPaymentTerms"];
+                var partnerPOS = _configuration["SupplierConfiguration:Expedia:GuestReviewPartnerPointOfSale"];
+                string language = "en-US";
+
+                var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                long unixTime = (long)(DateTime.UtcNow - epoch).TotalSeconds;
+
+                // STEP 4 → Build string to hash and compute SHA512 signature
+                var toBeHashed = apiKey + secret + unixTime;
+                byte[] bytes = Encoding.UTF8.GetBytes(toBeHashed);
+                string signature;
+                using (var hash = SHA512.Create())
+                {
+                    byte[] hashedBytes = hash.ComputeHash(bytes);
+                    var sb = new StringBuilder(hashedBytes.Length * 2);
+                    foreach (var b in hashedBytes)
+                        sb.Append(b.ToString("X2"));
+                    signature = sb.ToString();
+                }
+
+                // STEP 5 → Build Authorization header
+                string authHeaderValue = $"EAN APIKey={apiKey},Signature={signature},timestamp={unixTime}";
+
+                // Prepare HttpRequestMessage
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, $"{baseUrl}/v3/properties/{eanHotelId}/guest-reviews" +
+                    $"?language={language}" +
+                    $"&billing_terms={billingTerms}" +
+                    $"&payment_terms={paymentTerms}" +
+                    $"&partner_point_of_sale={partnerPOS}" +
+                    $"&platform_name={platformName}");
+
+                request.Headers.Add("Authorization", authHeaderValue);
+                request.Headers.Add("User-Agent", platformName);
+                request.Headers.Add("Customer-Ip", customerIp);
+                request.Headers.Add("Accept-Encoding", "json");
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // STEP 9 → Send request
+                using var _httpClient = new HttpClient(); // create a temporary client
+                using var response = await _httpClient.SendAsync(request);
+                if (!response.IsSuccessStatusCode)
+                    return new List<GuestReviewModel>();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                if (string.IsNullOrWhiteSpace(responseContent))
+                    return new List<GuestReviewModel>();
+                // STEP 10 → Parse JSON into GuestReviewModel
+                var result = new List<GuestReviewModel>();
+                var json = JObject.Parse(responseContent);
+                var reviews = json["verified"]?["recent"];
+
+                if (reviews != null)
+                {
+                    foreach (var item in reviews)
+                    {
+                        result.Add(new GuestReviewModel
+                        {
+                            ReviewerName = item["reviewer_name"]?.ToString(),
+                            Rating = item["rating"]?.ToString(),
+                            ReviewText = item["text"]?.ToString(),
+                            VerificationSource = item["verification_source"]?.ToString(),
+                            StayDate = item["stay_date"]?.ToString(),
+                            TravelCompanion = item["travel_companion"]?.ToString(),
+                            TripReason = item["trip_reason"]?.ToString(),
+                            ReviewSubmitDate = item["date_submitted"]?.ToString(),
+                            Title = item["title"]?.ToString(),
+
+                            ManagementResponses = item["management_responses"] != null
+                                ? item["management_responses"]
+                                    .Children()
+                                    .Select(r => new ManagementResponse
+                                    {
+                                        Date = DateTime.TryParse(r["date"]?.ToString(), out var d)
+                                            ? d
+                                            : default,
+
+                                        Text = r["text"]?.ToString()
+                                    })
+                                    .ToList()
+                                : new List<ManagementResponse>()
+                        });
+                    }
+                }
+
+                if (result.Count == 0)
+                    return new List<GuestReviewModel>();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex); // log the exception
+                return new List<GuestReviewModel>();
+            }
+        }
+        private async Task<string> GetEanHotelIdFromDb(int hotelId)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]
+                {
+         new SqlParameter("@HotelId",hotelId)
+                };
+
+                string x = Convert.ToString(await _dlConnection.GetExecuteScalarQry("SELECT TOP 1 SupplierHotelID as EanHotelId FROM SupplierHotelMappings WITH(NOLOCK) WHERE HotelSupplierMasterId=1 AND UnifiedMappingToolId=1 AND IsDeleted=0 AND SystemHotelId=@HotelId", para));
+
+                return x ?? "";
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex);
+                return "";
+            }
+        }
     }
 }

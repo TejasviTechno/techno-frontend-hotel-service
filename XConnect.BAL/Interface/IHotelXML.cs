@@ -135,8 +135,6 @@ namespace XConnect.BAL.Interface
         #endregion
 
         Task<List<SupplierperformanceReport>> GetSupplierperformanceReport(SprRequest sprRequest);
-
-
-
+        Task<List<GuestReviewModel>> GetHotelGuestReviewAsync(int HotelId, AdvancedOptions advancedOptions); 
     }
 }

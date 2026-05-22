@@ -29,13 +29,15 @@ namespace XConnect.Supplier.MGBedBank
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
-        public MgbedbankRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings)
+        private readonly SupplierConfiguration _supplierConfig;//Added on 26-FEB-26
+        public MgbedbankRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _exception = exception;
             _keySettings = keySettings.Value;
+            _supplierConfig = supplierConfig.Value;
         }
 
         public void GetMgBedBankRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, string SupplierName, HotelSearchParameter SearchPara, List<SupplierDetails> MgBedBankDetails, List<SupplierSearchConfig> MgBedBankSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string XMLCountry, string Xmlnationality, int Hit, CommonSearchList commonSearchList)
@@ -356,10 +358,11 @@ namespace XConnect.Supplier.MGBedBank
 
                                                                     //xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURL) + MGBedbackStaticInfo.Searchs;
                                                                     if (_keySettings.SupplierProxy == "0")
-                                                                        xhotel.URL = Convert.ToString(MGBedbackStaticInfo.WebSiteURL) + MGBedbackStaticInfo.Searchs; //Added Static on 14-OCT 2025 Tkt 62064
+                                                                        //xhotel.URL = Convert.ToString(MGBedbackStaticInfo.WebSiteURL) + MGBedbackStaticInfo.Searchs; //Added Static on 14-OCT 2025 Tkt 62064
+                                                                        xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURL) + _supplierConfig.MGBedBank.Searchs; //Added Static on 14-OCT 2025 Tkt 62064
                                                                     else
-                                                                        xhotel.URL = Convert.ToString(MGBedbackStaticInfo.WebSiteURLforAPI) + MGBedbackStaticInfo.Searchs;  //Added Static on 14-OCT 2025 Tkt 62064
-
+                                                                        xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURLforAPI) + _supplierConfig.MGBedBank.Searchs;  //Added Static on 14-OCT 2025 Tkt 6206
+                                                                   
                                                                     xhotel.UserId = Convert.ToString(MgBedBankDetails.UserID);
                                                                     xhotel.UserName = Convert.ToString(MgBedBankDetails.UserName);
                                                                     xhotel.PassWord = Convert.ToString(MgBedBankDetails.Password);
@@ -402,9 +405,10 @@ namespace XConnect.Supplier.MGBedBank
                                                                 //xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURL) + MGBedbackStaticInfo.Searchs;
 
                                                                 if (_keySettings.SupplierProxy == "0")
-                                                                    xhotel.URL = Convert.ToString(MGBedbackStaticInfo.WebSiteURL) + MGBedbackStaticInfo.Searchs; //Added Static on 14-OCT 2025 Tkt 62064
+                                                                    //xhotel.URL = Convert.ToString(MGBedbackStaticInfo.WebSiteURL) + MGBedbackStaticInfo.Searchs; 
+                                                                    xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURL) + _supplierConfig.MGBedBank.Searchs; 
                                                                 else
-                                                                    xhotel.URL = Convert.ToString(MGBedbackStaticInfo.WebSiteURLforAPI) + MGBedbackStaticInfo.Searchs; //Added Static on 14-OCT 2025 Tkt 62064
+                                                                    xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURLforAPI) + _supplierConfig.MGBedBank.Searchs; 
 
                                                                 xhotel.UserId = Convert.ToString(MgBedBankDetails.UserID);
                                                                 xhotel.UserName = Convert.ToString(MgBedBankDetails.UserName);
@@ -455,7 +459,8 @@ namespace XConnect.Supplier.MGBedBank
                                                                     //if (Hit > 0)
                                                                     xhotel.ProcessTimeout = Convert.ToInt32(MgBedBankSearchConfig[k].HotelSearchTimeOut2);
 
-                                                                    xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURL) + MGBedbackStaticInfo.Searchs;
+                                                                    // xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURL) + MGBedbackStaticInfo.Searchs;
+                                                                    xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURL) + _supplierConfig.MGBedBank.Searchs;
                                                                     xhotel.UserId = Convert.ToString(MgBedBankDetails.UserID);
                                                                     xhotel.UserName = Convert.ToString(MgBedBankDetails.UserName);
                                                                     xhotel.PassWord = Convert.ToString(MgBedBankDetails.Password);
@@ -495,7 +500,8 @@ namespace XConnect.Supplier.MGBedBank
                                                                 //if (Hit > 0)
                                                                 xhotel.ProcessTimeout = Convert.ToInt32(MgBedBankSearchConfig[k].HotelSearchTimeOut2);
 
-                                                                xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURL) + MGBedbackStaticInfo.Searchs;
+                                                                //xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURL) + MGBedbackStaticInfo.Searchs;
+                                                                xhotel.URL = Convert.ToString(MgBedBankDetails.WebSiteURL) + _supplierConfig.MGBedBank.Searchs;
                                                                 xhotel.UserId = Convert.ToString(MgBedBankDetails.UserID);
                                                                 xhotel.UserName = Convert.ToString(MgBedBankDetails.UserName);
                                                                 xhotel.PassWord = Convert.ToString(MgBedBankDetails.Password);
@@ -938,7 +944,7 @@ namespace XConnect.Supplier.MGBedBank
                                             else
                                             {
                                                 if (j > CacheMaster.RoomLimit_10)
-                                                        break;
+                                                    break;
                                             }
 
                                             int RoomDetails_Id = Convert.ToInt32(drRoom[j]["RoomDetails_Id"]);
@@ -1208,9 +1214,9 @@ namespace XConnect.Supplier.MGBedBank
                     Item.CodeProcessingTimeSupplier = timer_room_Mgbedbank.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_Mgbedbank.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                        
+
                         SearchParam.SupplierTime += ",|Finish:MgBedbank Process Response  " + "|Time :" + timer_room_Mgbedbank.Elapsed.ToString();
-                        _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Mgbedbank.Elapsed.ToString(), "MgBedbank", SearchParam.SearchKey, 1, SearchParam.AgentID));
+                        _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_Mgbedbank.Elapsed.ToString(), "MgBedbank", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }
                 }
                 catch (Exception x)
@@ -1224,7 +1230,7 @@ namespace XConnect.Supplier.MGBedBank
         }
 
 
-        public async Task<PriceCheckCMDto> Get_MgBedBank_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] MgBedBankDetails, string PaxPassPort, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string HasKey_IntCode, string IsPrcCheck_Book, string Supplier, string Searchkey = "", int AgentId = 0,TokenData tokenData=null)
+        public async Task<PriceCheckCMDto> Get_MgBedBank_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] MgBedBankDetails, string PaxPassPort, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string HasKey_IntCode, string IsPrcCheck_Book, string Supplier, string Searchkey = "", int AgentId = 0, TokenData tokenData = null)
         {
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
 
@@ -1498,30 +1504,6 @@ namespace XConnect.Supplier.MGBedBank
             }
         }
 
-        public string Get_MgBedBank_RoomTypeID_new(string RoomTypeId, ref string UniqNo, ref string Nationality, ref string CancelType, ref string RateKey, ref string SessionId, ref string MealId, ref string IsAvail, ref bool IsPackageRate, ref string HotelId)
-        {
-            try
-            {
-                string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
-                string MgBedBank_RoomId = spitid[0].ToString();
-                UniqNo = spitid[1].ToString();
-                Nationality = spitid[2].ToString();
-                CancelType = spitid[3].ToString();
-                RateKey = spitid[4].ToString();
-                SessionId = spitid[5].ToString();
-                MealId = spitid[6].ToString();
-                IsAvail = spitid[7].ToString();
-                IsPackageRate = Convert.ToBoolean(spitid[8]);
-                HotelId = spitid[9].ToString();
-                return MgBedBank_RoomId;
-            }
-            catch (Exception ex)
-            {
-                _ = _exception.Error(ex);
-                return "";
-            }
-        }
-
         public string Get_MgBedBank_Policy_PriceCheckRQ(DataSet dsCartDetails, int UserCartID, string UserId, string UserName, string Password, string PaxPassport, string HotelId, string RoomTypeId, string CheckIn, string CheckOut, string Type, string XMLCityId, string XMLCountryId, string RoomId, string CancallationPolicytype, string BoardID, string SessionId, string MainNationality, string IsAvail, bool IsPackageRate,string MgBedBankCurrency)
         {
             try
@@ -1674,7 +1656,7 @@ namespace XConnect.Supplier.MGBedBank
 
         }
 
-        
+
 
         public string Get_MgBedBank_BookingRequest(DataSet dsCartDetails, DataTable dtPassengers, DataRow[] MgBedBankDetails, string ExternalReference, bool IsPriceUpdate, int i, int j, string HasKey_IntCode, string PaxPassport, string cancallationpolicytype, string RoomTypeID, string RoomId, string SessionId, string BoardID, string Nationality, string IsAvail, string UniqNo)
         {
@@ -2014,5 +1996,56 @@ namespace XConnect.Supplier.MGBedBank
 
         }
 
+        public string Get_MgBedBank_RoomTypeID_new(string RoomTypeId, ref string UniqNo, ref string Nationality, ref string CancelType, ref string RateKey, ref string SessionId, ref string MealId, ref string IsAvail, ref bool IsPackageRate, ref string HotelId)
+
+        {
+
+            try
+
+            {
+
+                string[] spitid = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+
+                string MgBedBank_RoomId = spitid[0].ToString();
+
+                UniqNo = spitid[1].ToString();
+
+                Nationality = spitid[2].ToString();
+
+                CancelType = spitid[3].ToString();
+
+                RateKey = spitid[4].ToString();
+
+                SessionId = spitid[5].ToString();
+
+                MealId = spitid[6].ToString();
+
+                IsAvail = spitid[7].ToString();
+
+                IsPackageRate = Convert.ToBoolean(spitid[8]);
+
+                HotelId = spitid[9].ToString();
+
+                return MgBedBank_RoomId;
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                _ = _exception.Error(ex);
+
+                return "";
+
+            }
+
+        }
+
+
+
     }
+
+
+
 }

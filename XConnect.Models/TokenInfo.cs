@@ -53,6 +53,8 @@ namespace XConnect.Models
         public List<DtRoeNew> dtROENew { get; set; } //051125
 
         public bool IsFromAPI { get; set; } //4-FEB-26
+        public bool IsPackage { get; set; } //20-may-26
+        public bool IsFromB2B { get; set; } //20-may-26
 
     }
 
@@ -191,4 +193,28 @@ namespace XConnect.Models
     }
 
     #endregion
+    public class HotelReviewRequest
+    {
+        public int HotelId { get; set; }
+    }
+    public class GuestReviewModel
+    {
+        public string ReviewerName { get; set; }
+        public string Rating { get; set; }
+        public string ReviewText { get; set; }
+        public string VerificationSource { get; set; }
+        public string StayDate { get; set; }
+        public string TravelCompanion { get; set; }
+        public string TripReason { get; set; }
+        public string ReviewSubmitDate { get; set; }
+        public string Title { get; set; }
+
+        public List<ManagementResponse> ManagementResponses { get; set; }
+    }
+
+    public class ManagementResponse
+    {
+        public DateTime Date { get; set; }
+        public string Text { get; set; }
+    }
 }
