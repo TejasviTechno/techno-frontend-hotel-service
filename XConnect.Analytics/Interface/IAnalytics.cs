@@ -18,6 +18,7 @@ namespace XConnect.Analytics.Interface
     {
         void PushHotelDetailsClientDataForAnalyticsAsyc(AnalyticsData analyticsData);
         //void PushRestaurantSearchClientDataForAnalyticsAsyc(AnalyticsData analyticsData);
+        void PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(AnalyticsData analyticsData);
     }
    
     public interface IPushAnalyticsSupplier

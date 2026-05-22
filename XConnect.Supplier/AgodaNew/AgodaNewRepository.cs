@@ -310,26 +310,74 @@ namespace XConnect.Supplier.AgodaNew
 
                                                     #region countrycityrestrication
 
+                                                    // int CountryId = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["CountryId"]);
+                                                    // int CityId = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["CityId"]);
+                                                    // int chainid = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["HotelChainId"]);
+
+                                                    // DataRow[] drsChinn = DTCountryblock.Tables[0].Select($"chainid = {chainid} AND channalcode = '{ChainCode_Agoda}'");
+                                                    // if (drsChinn.GetLength(0) > 0)
+                                                    // {
+                                                    //     continue;
+                                                    // }
+                                                    //// DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = 0");
+                                                    // DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}' AND channalcode = '{ChainCode_Agoda}'");
+                                                    // if (drCountry.GetLength(0) > 0)
+                                                    // {
+                                                    //     continue;
+                                                    // }
+                                                    // DataRow[] drCity = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}'");
+                                                    // if (drCity.GetLength(0) > 0)
+                                                    // {
+                                                    //     continue;
+                                                    // }
+
+                                                    #region countrycityrestrication
+
                                                     int CountryId = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["CountryId"]);
+
                                                     int CityId = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["CityId"]);
+
                                                     int chainid = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["HotelChainId"]);
 
                                                     DataRow[] drsChinn = DTCountryblock.Tables[0].Select($"chainid = {chainid} AND channalcode = '{ChainCode_Agoda}'");
+
                                                     if (drsChinn.GetLength(0) > 0)
+
                                                     {
+
                                                         continue;
+
                                                     }
-                                                   // DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = 0");
-                                                    DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}' AND channalcode = '{ChainCode_Agoda}'");
+
+                                                    // DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = 0");
+
+                                                    int Cids = 0;
+
+                                                    //DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}' AND channalcode = '{ChainCode_Agoda}'");
+
+                                                    DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{Cids}' AND channalcode = '{ChainCode_Agoda}'");
+
                                                     if (drCountry.GetLength(0) > 0)
+
                                                     {
+
                                                         continue;
+
                                                     }
-                                                    DataRow[] drCity = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}'");
+
+                                                    //DataRow[] drCity = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}'");
+
+                                                    DataRow[] drCity = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}' AND channalcode = '{ChainCode_Agoda}'");
+
                                                     if (drCity.GetLength(0) > 0)
+
                                                     {
+
                                                         continue;
+
                                                     }
+
+                                                    #endregion
 
                                                     #endregion
 
