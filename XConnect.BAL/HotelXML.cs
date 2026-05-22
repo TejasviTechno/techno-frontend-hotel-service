@@ -1475,16 +1475,16 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
 
                         //int Roommapping = 0;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
                         int Roommapping = 1;// 2 for Gimo , 1 vervo; //Add ON 30MAY2025
-                       if (ActiveRoomMAppingwithoutException) //onlyroommapping no added roomid no exeception 
+                        if (ActiveRoomMAppingwithoutException) //onlyroommapping no added roomid no exeception 
                         {
                             //finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_Dag2(finalResponse, NewSearchKey, withcancellation, SearchPara); //convert to final response // No RoomMapping
                             //need to write code for inserting excetion 
-                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping_withoutEx(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode,Roommapping, Tokendata.IsFromAPI);
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMapping_withoutEx(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping, Tokendata.IsFromAPI);
 
                         }
                         else if (ActiveRoomId)//roomid no exeception 
                         {
-                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMappingv2(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping,Tokendata.IsFromAPI); //convert to final response //RoomMapping  //ADD on 29-JAN-2025
+                            finalResponse_Comp = await _commonMethod.ConvertToFinalResponseList_RoomMappingv2(finalResponse, NewSearchKey, withcancellation, SearchPara, Tokendata.AgentCode, Roommapping, Tokendata.IsFromAPI); //convert to final response //RoomMapping  //ADD on 29-JAN-2025
 
                         }
                         else if (ActiveRoomMApping)//no roomid ,but roomapping + exeception will return 
@@ -2331,7 +2331,7 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                                         #endregion
                                         if (CountryXMLCode != "")
                                         {
-                                            _expedia.GetEANRequestOnly_async_new(SearchByOneID, commonSearchList.commonHotelCodes.EAN_Codes, lstRating, EANSearchConfig, EANDetails, dtPreferredDataHotel, EchoToken, Platform, AgentCode, SearchPara, tokenData.IsFromB2B, IsHotelWiseSearch, ref AllTask, CountryXMLCode, dataForSearch.xmlCity, dtROE, tokenData,tokenData.IsPackage, EANProfit);
+                                            _expedia.GetEANRequestOnly_async_new(SearchByOneID, commonSearchList.commonHotelCodes.EAN_Codes, lstRating, EANSearchConfig, EANDetails, dtPreferredDataHotel, EchoToken, Platform, AgentCode, SearchPara, tokenData.IsFromB2B, IsHotelWiseSearch, ref AllTask, CountryXMLCode, dataForSearch.xmlCity, dtROE, tokenData, tokenData.IsPackage, EANProfit);
                                         }
                                     }
                                 }
@@ -2814,7 +2814,7 @@ new SqlParameter("@AgentId",Tokendata.AgentId),
                             #region"GRNC"
                             if (GRNCDetails != null && GRNCSearchConfig != null && GRNCDetails.Count > 0 && GRNCSearchConfig.Count > 0)
                             {
-                                if ((SearchPara.Filters.IsShowRooms == 1 ) || SearchPara.Filters.IsShowRooms == 0)//&& SearchByOneID
+                                if ((SearchPara.Filters.IsShowRooms == 1) || SearchPara.Filters.IsShowRooms == 0)//&& SearchByOneID
                                 {
                                     if (commonSearchList.commonHotelCodes.GRNC_Codes != null)
                                         _grnc.GRNCRequestOnly_async(commonSearchList.commonHotelCodes.GRNC_Codes, lstRating, SearchPara, GRNCDetails, GRNCSearchConfig, dtPreferredDataHotel, ref AllTask, hit, dtROE, tokenData, dtXMLCity);
@@ -7321,7 +7321,7 @@ new SqlParameter("@AgentId", AgentId),
                             };
                             Request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                            if(TechName.ToLower()== "techno_new")
+                            if (TechName.ToLower() == "techno_new")
                                 Request.Headers.Add("Authorization", "Bearer " + Password);
                             break;
                         case "hotelbedsv1_new":
@@ -10991,7 +10991,7 @@ new SqlParameter("@AgentId", AgentId),
 
 
                         if (_keySettings.UseLocalDatabase == "1")
-                           // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
+                            // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
                             dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                         else
                         {
@@ -10999,7 +10999,7 @@ new SqlParameter("@AgentId", AgentId),
                                 //dsIsSubAgent_Agent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
                                 dsIsSubAgent_Agent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                             else
-                               // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
+                                // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
                                 dsIsSubAgent_Agent = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                         }
 
@@ -11288,16 +11288,16 @@ new SqlParameter("@AgentId", AgentId),
                             };
 
                         if (_keySettings.UseLocalDatabase == "1")
-                           // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                            // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
                             dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
                         else
                         {
                             if (_keySettings.Use_ReplicationDB == "1")
                                 dsIsSubAgent_Agent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
-                               // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                            // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_ReplicationDB("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
                             else
                                 dsIsSubAgent_Agent = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
-                               // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
+                            // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_Limit("IsSubAgent_V1_Xconnect_ForCache_HID_new9", para, Timeout);
                         }
 
                         if (dsIsSubAgent_Agent.Tables[0].Rows.Count > 0)
@@ -14197,7 +14197,7 @@ new SqlParameter("@AgentId", AgentId),
                 DataTable dtAgentDetail = dsAgentDetails.Tables[0];// (dsAgentDetails != null ? dsAgentDetails.Tables[0] : objhotel.IsSubAgent(AgentId).Tables[0]);
                 //DataTable dtMarkupDetails = Common.GetCommonMarkup(Convert.ToInt32(SearchPara.CountryID), SearchPara.CityID, TariffID, AgentId);
                 DataTable dtMarkupDetails = dsAgentDetails.Tables[7] != null ? dsAgentDetails.Tables[7] : await _markup.GetCommonMarkup(Convert.ToInt32(SearchPara.CountryID), SearchPara.CityID, TariffID, AgentId);
-                
+
                 //Added on 11-may-26
                 if (dsAgentDetails.Tables[12] != null && dsAgentDetails.Tables[12].Rows.Count > 0) //Added on 01-may-26
                 {
@@ -14447,18 +14447,18 @@ new SqlParameter("@AgentId", AgentId),
                     #region "_techno"
                     case "techno":
                     case "techno_new":
-                    //case "travab_dmc":
-                    //case "bedlinker_techno":
-                    //case "travelbullz_techno":
-                    //case "hotelinx_techno":
-                    //case "rayna_techno":
-                    //case "khayi_techno":
-                    //case "farhat_techno":
+                        //case "travab_dmc":
+                        //case "bedlinker_techno":
+                        //case "travelbullz_techno":
+                        //case "hotelinx_techno":
+                        //case "rayna_techno":
+                        //case "khayi_techno":
+                        //case "farhat_techno":
                         dsHotelData.Tables[2].DefaultView.RowFilter = "OwnsystemHotelId=" + hotelid + "and RoomTypeId='" + roomtypeid + "' and RoomNo='" + roomno + "'";
                         if (dsHotelData.Tables[2].DefaultView.Count == 0)
                         {
 
-                            cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData ,TechName);
+                            cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData, TechName);
                         }
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
@@ -16659,7 +16659,7 @@ new SqlParameter("@AgentId", AgentId),
                 for (int i = 0; i < prebookRQ.HotelOption.HotelRooms.Count; i++)
                 {
                     CacheRoomToken cacheRoomToken = prebookRQ.HotelOption.HotelRooms[i].RoomToken.DecryptCacheRoomToken();
-                    
+
                     List<_FinalRoomList> selectedRoomSequence = selectedOption.HotelRooms[cacheRoomToken.Room_seqno];
                     _FinalRoomList selectedRoom = selectedRoomSequence[cacheRoomToken.roomno];
                     PreBookRoom preBookRoom = new PreBookRoom();
@@ -23526,7 +23526,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     bool IsErrors1 = false;
                                                     double itemprice = 0;
                                                     string BookingCode = "";
-                                                    PriceCheckCMDto priceCheckCMDto = await _iboosy.MethaBookPriceCheck(AvailabilityCode, dtCheckPriceReqStructure, dsCartDetails, MethaBookDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice1, IsErrors1, itemprice, BookingCode, MealCode, TokenData,Searchkey, AgentId);
+                                                    PriceCheckCMDto priceCheckCMDto = await _iboosy.MethaBookPriceCheck(AvailabilityCode, dtCheckPriceReqStructure, dsCartDetails, MethaBookDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice1, IsErrors1, itemprice, BookingCode, MealCode, TokenData, Searchkey, AgentId);
                                                     bool IsPriceUpdates1 = priceCheckCMDto.Flag;
                                                     itemprice = priceCheckCMDto.ItemPrice;
                                                     IsErrors1 = priceCheckCMDto.IsError;
@@ -27512,7 +27512,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     #endregion
                                                 }
                                                 break;
-                                            #endregion
+                                                #endregion
                                         }
 
                                         #region Comment Code
@@ -28164,14 +28164,14 @@ new SqlParameter("@AgentId", AgentId),
                                             Supplier = "xpedia";
                                         if (Supplier.IndexOf("_xtg") >= 0)
                                             Supplier = "xtg";
-                                       
+
                                         //if (IsVervoActive == false || (_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier) ||
                                         //    (Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]) == UnicaId
                                         //    && Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]) == XMLHotelCode
                                         //    && ProvideFmly.ToLower() == MapSupplierName.ToLower()
                                         //    )))
-                                        if(true)
-                                            {
+                                        if (true)
+                                        {
                                             switch (TechName.ToLower())
                                             {
                                                 #region "Withinearth"
@@ -32797,7 +32797,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         bool IsErrors1 = false;
                                                         double itemprice = 0;
                                                         string BookingCode = "";
-                                                        PriceCheckCMDto priceCheckCMDto = await _iboosy.MethaBookPriceCheck(AvailabilityCode, dtCheckPriceReqStructure, dsCartDetails, MethaBookDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice1, IsErrors1, itemprice, BookingCode, MealCode, TokenData,Searchkey, AgentId);
+                                                        PriceCheckCMDto priceCheckCMDto = await _iboosy.MethaBookPriceCheck(AvailabilityCode, dtCheckPriceReqStructure, dsCartDetails, MethaBookDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice1, IsErrors1, itemprice, BookingCode, MealCode, TokenData, Searchkey, AgentId);
                                                         bool IsPriceUpdates1 = priceCheckCMDto.Flag;
                                                         itemprice = priceCheckCMDto.ItemPrice;
                                                         IsErrors1 = priceCheckCMDto.IsError;
@@ -33241,7 +33241,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                           // _ = _commonMethod.AnalyticsPrebookandbookData(Supplier, "PreBook", responsetype, time, Searchkey, TechName);
+                                                            // _ = _commonMethod.AnalyticsPrebookandbookData(Supplier, "PreBook", responsetype, time, Searchkey, TechName);
                                                             _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
                                                         }
                                                         catch (Exception e)
@@ -33857,7 +33857,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                             if (1 == 1)
                                                             {
-                                                                PriceCheckCMDto priceCheckCMDto = await _restel.Get_Restel_PriceCheck(dsCartDetails, RestelDetails, i, 0, UniqueNo, AgentUniqueNo, FinalPrice, UserName, CompanyBuyingPrice, PreBookingToken, dtCheckPriceReqStructure, Searchkey, AgentId, TokenData,TechName);
+                                                                PriceCheckCMDto priceCheckCMDto = await _restel.Get_Restel_PriceCheck(dsCartDetails, RestelDetails, i, 0, UniqueNo, AgentUniqueNo, FinalPrice, UserName, CompanyBuyingPrice, PreBookingToken, dtCheckPriceReqStructure, Searchkey, AgentId, TokenData, TechName);
                                                                 ispriceupdate = priceCheckCMDto.Flag;
                                                                 FinalPrice = priceCheckCMDto.ItemPrice;
                                                             }
@@ -33951,7 +33951,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]);
                                                         double CompanyBuyPrice_g = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]);
                                                         bool PolicyChange_g = false;
-                                                        PriceCheckCMDto priceCheckCMDto = await _goglobal.PriceCheckGoGlobal(i, dtCheckPriceReqStructure, dsCartDetails, GoGlobalDetails, UniqueNo, AgentUniqueNo, "P", IsErrors_g, Supplier, CompanyBuyPrice_g, itemprice_g, PolicyChange_g, AgentId, Searchkey,TechName);
+                                                        PriceCheckCMDto priceCheckCMDto = await _goglobal.PriceCheckGoGlobal(i, dtCheckPriceReqStructure, dsCartDetails, GoGlobalDetails, UniqueNo, AgentUniqueNo, "P", IsErrors_g, Supplier, CompanyBuyPrice_g, itemprice_g, PolicyChange_g, AgentId, Searchkey, TechName);
 
                                                         bool IsPriceUpdates_g = priceCheckCMDto.Flag;
                                                         IsErrors_g = priceCheckCMDto.IsError;
@@ -34343,7 +34343,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         //string SearchKey = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["PurchaseToken"]);
                                                         int j = 0;
                                                         bool IsCombine = Convert.ToBoolean(dsCartDetails.Tables[1].DefaultView[0]["IsCombineRoom"]);
-                                                        PriceCheckDidaDto priceCheckDidaDto = await _techno.Get_Withinearth_DMC_PreBookingReqRes(Supplier, IsCombine, dsCartDetails, RefrenceNo, UserID, Password, HotelCode, RoomCode, CheckInDate, CheckOutDate, URL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, UniqueNo, AgentUniqueNo, isForBooking, RoomNo, SupplierSearchKey, HotelOptionId, WE_DMCCurrency, CurrencyFactorHotelWE_DMC, Searchkey, AgentId, IP,TechName);
+                                                        PriceCheckDidaDto priceCheckDidaDto = await _techno.Get_Withinearth_DMC_PreBookingReqRes(Supplier, IsCombine, dsCartDetails, RefrenceNo, UserID, Password, HotelCode, RoomCode, CheckInDate, CheckOutDate, URL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, UniqueNo, AgentUniqueNo, isForBooking, RoomNo, SupplierSearchKey, HotelOptionId, WE_DMCCurrency, CurrencyFactorHotelWE_DMC, Searchkey, AgentId, IP, TechName);
 
                                                         int flag = priceCheckDidaDto.Flag;
                                                         FinalPrice = priceCheckDidaDto.FinalPrice;
@@ -35447,7 +35447,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             int NoOfAdults = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfAdults"]);
                                                             int NoofChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoofChild"]);
                                                             string iwtxprice = "";
-                                                            PriceCheckCMDto priceCheckCMDto = await _iwtx.PriceUpdate_IWTX(/*ListIWTX,*/ RoomTypeCode, MealPlanCode, RoomType, ContractTokenId, XmlCity, Uniqueid, NoOfAdults, NoofChild, Child1Age, Child2Age, RoomConfigurationId, dtCheckPriceReqStructure, dsCartDetails, IWTXDetails, UniqueNo, AgentUniqueNo, i, j, "P", CompanyBuyPrice, IsErrors, itemprice, iwtxprice, AgentId, Searchkey, TokenData, Supplier,TechName);
+                                                            PriceCheckCMDto priceCheckCMDto = await _iwtx.PriceUpdate_IWTX(/*ListIWTX,*/ RoomTypeCode, MealPlanCode, RoomType, ContractTokenId, XmlCity, Uniqueid, NoOfAdults, NoofChild, Child1Age, Child2Age, RoomConfigurationId, dtCheckPriceReqStructure, dsCartDetails, IWTXDetails, UniqueNo, AgentUniqueNo, i, j, "P", CompanyBuyPrice, IsErrors, itemprice, iwtxprice, AgentId, Searchkey, TokenData, Supplier, TechName);
                                                             bool IsPriceUpdates = priceCheckCMDto.Flag;
                                                             itemprice = priceCheckCMDto.ItemPrice;
                                                             IsErrors = priceCheckCMDto.IsError;
@@ -36047,7 +36047,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         double FinalPrice = 0;
                                                         double CompanyBuyingPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]);
                                                         //bool IsPrice_Update = Common.Get_Ostrovok_Prebook(dsCartDetails, OstrovokDetails, ref FinalPrice, CompanyBuyingPrice, TokenData, Searchkey);
-                                                        PriceCheckCMDto priceCheckCMDto = await _etg.Get_Ostrovok_Prebook_new(objdata, dsCartDetails, ratehawk_Details, FinalPrice, CompanyBuyingPrice, TokenData, Searchkey, AgentId, i, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]),TechName);
+                                                        PriceCheckCMDto priceCheckCMDto = await _etg.Get_Ostrovok_Prebook_new(objdata, dsCartDetails, ratehawk_Details, FinalPrice, CompanyBuyingPrice, TokenData, Searchkey, AgentId, i, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), TechName);
 
                                                         bool IsPrice_Update = priceCheckCMDto.Flag;
                                                         FinalPrice = priceCheckCMDto.ItemPrice;
@@ -36451,7 +36451,7 @@ new SqlParameter("@AgentId", AgentId),
 
 
 
-                                                            PriceCheckCMDto priceCheckCMDto = await _letsfly.GetLetsflyPriceCheckREQRES_newversion(objdata, dsCartDetails, letsflyDetails, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData, Searchkey,TechName);
+                                                            PriceCheckCMDto priceCheckCMDto = await _letsfly.GetLetsflyPriceCheckREQRES_newversion(objdata, dsCartDetails, letsflyDetails, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData, Searchkey, TechName);
                                                             ErrorPop = priceCheckCMDto.Flag;
                                                             FinalPrice = priceCheckCMDto.ItemPrice;
 
@@ -37063,7 +37063,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             double CompanyBuyingPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
                                                             bool ErrorPop = false;
                                                             string[] HBArray = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
-                                                            PriceCheckCMDto priceCheckCMDto = await _directcontracting.GetDCEPriceCheckREQRES(dsCartDetails, DCE_Details, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData,Searchkey);
+                                                            PriceCheckCMDto priceCheckCMDto = await _directcontracting.GetDCEPriceCheckREQRES(dsCartDetails, DCE_Details, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData, Searchkey);
                                                             ErrorPop = priceCheckCMDto.Flag;
                                                             FinalPrice = priceCheckCMDto.ItemPrice;
                                                             if (Convert.ToDouble(Math.Round(FinalPrice, 2)) > (Math.Round(Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]), 2)))
@@ -37153,7 +37153,7 @@ new SqlParameter("@AgentId", AgentId),
 
 
 
-                                    #endregion
+                                        #endregion
                                         break;
 
                                 }
@@ -37482,7 +37482,7 @@ new SqlParameter("@AgentId", AgentId),
             public static string byBookingid = "bookingid";
             public static string byreference = "reference";
         }
-                                #endregion
+        #endregion
 
 
 
@@ -49770,8 +49770,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                             _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString(), "", SearchKey);
                                                                         }
                                                                         break;
-                                                                    #endregion
-                                                                    #endregion
+                                                                        #endregion
+                                                                        #endregion
                                                                 }
                                                             }
                                                             catch (Exception ex)
@@ -50571,7 +50571,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                 //responsetype = "GeneralError";
                                                 // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                                _ = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, ENRq, ENRs, Error, bookRequest.SearchKey,TechName);
+                                                _ = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, ENRq, ENRs, Error, bookRequest.SearchKey, TechName);
                                             }
                                             catch (Exception e)
                                             {
@@ -50605,7 +50605,7 @@ new SqlParameter("@AgentId", AgentId),
                                             Error = ex.Message;
                                             responsetype = "GeneralError";
                                             time = "00:00:00.000000";
-                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey,TechName);
+                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey, TechName);
                                         }
                                         catch (Exception e)
                                         {
@@ -50868,7 +50868,7 @@ new SqlParameter("@AgentId", AgentId),
                                         {
                                             //responsetype = "GeneralError";
                                             // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, DidaBookRequest, DidaResponse, Error, bookRequest.SearchKey,TechName);
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, DidaBookRequest, DidaResponse, Error, bookRequest.SearchKey, TechName);
                                         }
                                         catch (Exception e)
                                         {
@@ -50886,7 +50886,7 @@ new SqlParameter("@AgentId", AgentId),
                                             Error = ex.Message + ex.StackTrace.ToString();
                                             responsetype = "GeneralError";
                                             time = "00:00:00.000000";
-                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, DidaBookRequest, DidaResponse, Error, bookRequest.SearchKey,TechName);
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, DidaBookRequest, DidaResponse, Error, bookRequest.SearchKey, TechName);
                                         }
                                         catch (Exception e)
                                         {
@@ -51115,7 +51115,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                     try
                                                     {
-                                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "Book", tokenData.AgentId, time, responsetype, BookingRequest_restel, ResponseDatatest, Error, bookRequest.SearchKey,TechName);
+                                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "Book", tokenData.AgentId, time, responsetype, BookingRequest_restel, ResponseDatatest, Error, bookRequest.SearchKey, TechName);
                                                     }
                                                     catch (Exception e)
                                                     {
@@ -51148,7 +51148,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 Error = ex.Message + ex.StackTrace.ToString();
                                                 responsetype = "GeneralError";
                                                 time = "00:00:00.000000";
-                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey,TechName);
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey, TechName);
                                             }
                                             catch (Exception e)
                                             {
@@ -51451,7 +51451,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     }
                                                     try
                                                     {
-                                                        string abc =await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, EtgBookingFSReqest, EtgBookingFSResponse, Error, bookRequest.SearchKey,TechName);
+                                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, EtgBookingFSReqest, EtgBookingFSResponse, Error, bookRequest.SearchKey, TechName);
                                                     }
                                                     catch (Exception e)
                                                     {
@@ -51468,7 +51468,7 @@ new SqlParameter("@AgentId", AgentId),
                                             {
                                                 Error = ex.Message + ex.StackTrace.ToString();
                                                 responsetype = "GeneralError";
-                                                String abc =await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey,TechName);
+                                                String abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey, TechName);
                                             }
                                             catch (Exception e)
                                             {
@@ -51772,7 +51772,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 }
                                                 try
                                                 {
-                                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, IWTXBookRequest, Responsebook, Error, bookRequest.SearchKey,TechName);
+                                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, IWTXBookRequest, Responsebook, Error, bookRequest.SearchKey, TechName);
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -51802,7 +51802,7 @@ new SqlParameter("@AgentId", AgentId),
                                             {
                                                 Error = ex.Message + ex.StackTrace.ToString();
                                                 responsetype = "GeneralError";
-                                                string abc  =await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book",tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey,TechName);
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey, TechName);
                                             }
                                             catch (Exception e)
                                             {
@@ -52051,7 +52051,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 try
                                                 {
                                                     //responsetype = "GeneralError";
-                                                    string abc= await  _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, letsflyBookingReq, LetsFlyBookingRes, Error, bookRequest.SearchKey,TechName);
+                                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, letsflyBookingReq, LetsFlyBookingRes, Error, bookRequest.SearchKey, TechName);
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -52071,7 +52071,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 responsetype = "GeneralError";
                                                 time = "00:00:00.000000";
                                                 // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey,TechName);
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey, TechName);
 
                                                 #region BookingData
                                                 AgentVoucher agentVoucher = new AgentVoucher();
@@ -54563,7 +54563,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                     try
                                                     {
-                                                        string abc =  await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, GoGlobalBookingRequest, GGResponse, Error);
+                                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, GoGlobalBookingRequest, GGResponse, Error);
                                                     }
                                                     catch (Exception e)
                                                     {
@@ -54719,7 +54719,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                     try
                                                     {
-                                                        string abc  = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, GoGlobalBookingRequest, GGResponse, Error);
+                                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, GoGlobalBookingRequest, GGResponse, Error);
                                                     }
                                                     catch (Exception e)
                                                     {
@@ -54763,7 +54763,7 @@ new SqlParameter("@AgentId", AgentId),
                                             responsetype = "GeneralError";
                                             time = "00:00:00.000000";
                                             // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                            string abc= await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
 
                                             #region BookingData
                                             AgentVoucher agentVoucher = new AgentVoucher();
@@ -55617,15 +55617,15 @@ new SqlParameter("@AgentId", AgentId),
                                         //for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
                                         int j = 0;
                                         {
-                                            
+
                                             //string hyperguestCurrency = Convert.ToString(ConfigurationManager.AppSettings["hyperguest_Currency"]);
                                             //string hyperguestCurrency = Convert.ToString(_supplierConfig.Hyperguest.hyperguest_Currency);
                                             UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                            
+
                                             //DataTable dtInrCurrency = Common.GetCountryCurrency(hyperguestCurrency);
                                             //double CurrencyFactorhyperguest = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
                                             bookingStatus = 6;
-                                            
+
                                             string BookUrl = Convert.ToString(_supplierConfig.Hyperguest.HyperguestBookingURL);
                                             string URL = BookUrl + "booking/create";
                                             //Allocation Enqiry
@@ -55637,7 +55637,7 @@ new SqlParameter("@AgentId", AgentId),
                                             //int UserCartId1 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartID"]);
                                             //int UserCartDetailId = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
 
-                                            
+
                                             int UserCartId1 = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
                                             int UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
 
@@ -55663,7 +55663,7 @@ new SqlParameter("@AgentId", AgentId),
                                             string AGTRef = "";
                                             //hyperguestBookingRequest = _hyperguest.hyperguestBookingRequest(bookRequest, XPDetails, 0, j, ResPrice, dtPassengers, ref AGTRef, CheckIn, CheckOut, UserCartDetailId, InternalRefNo);
                                             bool IsPruvo = false;
-                                            hyperguestBookingRequest = _hyperguest.hyperguestBookingRequest_new(bookRequest, XPDetails, 0, j, ResPrice, dtPassengers, ref AGTRef, CheckIn, CheckOut, UserCartDetailId, AgentCode , IsPruvo);
+                                            hyperguestBookingRequest = _hyperguest.hyperguestBookingRequest_new(bookRequest, XPDetails, 0, j, ResPrice, dtPassengers, ref AGTRef, CheckIn, CheckOut, UserCartDetailId, AgentCode, IsPruvo);
 
                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), hyperguestBookingRequest, "-", "Before Block Request hit booking [FinalPrice=" + FinalPrice + "]", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm j=" + j + "", ReferenceNo, "WithinEarth");
 
@@ -55782,7 +55782,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     }
                                                 }
 
-                                                
+
 
                                             }
                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), hyperguestBookingRequest, BookingResponse, "After Block Request hit booking...", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), Convert.ToString(bookingStatus), AgentVoucherNo, "WithinEarth");
@@ -55835,7 +55835,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     bookingStatus = 6;
                                                     UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
                                                     string AgentCode = Convert.ToString(tokenData.AgentCode);
-                                                    string ParsecBookingRequest = _parsec.ParsecOlympiaBooking_new(AgentCode, dtPassengers,  bookRequest, Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), Convert.ToString(XPDetails[0]["UserId"]), UniqueNo, j);
+                                                    string ParsecBookingRequest = _parsec.ParsecOlympiaBooking_new(AgentCode, dtPassengers, bookRequest, Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), Convert.ToString(XPDetails[0]["UserId"]), UniqueNo, j);
                                                     _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ParsecBookingRequest, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "RaynaB2B");
 
                                                     string ParsecResponse = "";
@@ -55851,7 +55851,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         System.Diagnostics.Stopwatch timerparsec = new System.Diagnostics.Stopwatch();
                                                         timerparsec.Start();
 
-                                                        ResponseDto responseDto2 = await _commonMethod.AbreuOnlineResponse_Supplier(ParsecBookingRequest,Convert.ToString(XPDetails[0]["WebSiteURL"]) + URLContent, Convert.ToInt32(180000));
+                                                        ResponseDto responseDto2 = await _commonMethod.AbreuOnlineResponse_Supplier(ParsecBookingRequest, Convert.ToString(XPDetails[0]["WebSiteURL"]) + URLContent, Convert.ToInt32(180000));
                                                         ParsecResponse = responseDto2.Response;
 
                                                         timerparsec.Stop();
@@ -56024,7 +56024,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
 
                                                     bookResponse_1.agentVouchers = agentVouchers;
-                                                    
+
                                                 }
                                                 else
                                                 {
@@ -56131,7 +56131,7 @@ new SqlParameter("@AgentId", AgentId),
 
 
                                             string purchaseToken = Convert.ToString(bookRequest.userCart.UserCartDetails[j].PurchaseToken);
-                                            string EachoToken = Convert.ToString(bookRequest.userCart.UserCartDetails[j].EachoToken); 
+                                            string EachoToken = Convert.ToString(bookRequest.userCart.UserCartDetails[j].EachoToken);
 
                                             string AGTRef = "";
                                             //string InternalRefNo = "";
@@ -56146,7 +56146,7 @@ new SqlParameter("@AgentId", AgentId),
                                             //}
 
                                             //BookingResponse = WelcomebedsBookingResponse(ref Error, WelcomebedsBookingRequest, URL, UserName, Password, 120000);
-                                            ResponseDto responseDto = await _commonMethod.WelcomebedsBookingResponse_timeout( WelcomebedsBookingRequest, URL, UserName, Password, CheckIn, CheckOut, bookRequest.userCart.UserCartDetails[j].SupplierName, ReferenceNo, 120000); //1507
+                                            ResponseDto responseDto = await _commonMethod.WelcomebedsBookingResponse_timeout(WelcomebedsBookingRequest, URL, UserName, Password, CheckIn, CheckOut, bookRequest.userCart.UserCartDetails[j].SupplierName, ReferenceNo, 120000); //1507
                                             BookingResponse = responseDto.Response;
 
                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), WelcomebedsBookingRequest, BookingResponse + Error, "After Block Request hit booking.", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "WithinEarth");
@@ -56362,7 +56362,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                             }
                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), WelcomebedsBookingRequest, BookingResponse, "After Block Request hit booking...", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), Convert.ToString(bookingStatus), AgentVoucherNo, "WithinEarth");
-                                            
+
                                         }
                                         #region SupplierPR Booking
                                         if (bookingStatus == 6)
@@ -65641,8 +65641,10 @@ new SqlParameter("@AgentId", AgentId),
 
                                 string DingusBookingCancelRS = "";
                                 string DingusBookingCancelRQ = "";
-                                string CheckIn = Convert.ToString(DtCancellation.Rows[0]["BookingDate"]);
-                                string CheckOut = Convert.ToString(DtCancellation.Rows[0]["BookingToDate"]);
+                                // string CheckIn = Convert.ToString(DtCancellation.Rows[0]["BookingDate"]);
+                                //string CheckOut = Convert.ToString(DtCancellation.Rows[0]["BookingToDate"]);
+                                string CheckIn = "";
+                                string CheckOut = "";
                                 string AgentVoucherNo = AgentVoucherNo_Cancle;
 
                                 if (true)
@@ -65655,7 +65657,7 @@ new SqlParameter("@AgentId", AgentId),
                                     #region Booking Cancel RS
 
                                     ResponseDto responseDto = await _dingus.Get_Dingus_Response_v1(Url, DingusBookingCancelRQ, suppliername, PNRNO_Cancel, CheckIn, CheckOut, Error, HostName);
-
+                                    DingusBookingCancelRS = responseDto.Response;
 
                                 }
                                 _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(DingusBookingCancelRQ), Convert.ToString(DingusBookingCancelRS), "After Response hit bookingcancel", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "Nites");
@@ -68420,7 +68422,7 @@ new SqlParameter("@AgentId", AgentId),
                     }
                 }
 
-               
+
 
 
                 string keydata2 = "GetAgodaCountryblockdata" + Convert.ToString(SearchPara.Filters.HotelIDs);
@@ -68434,7 +68436,7 @@ new SqlParameter("@AgentId", AgentId),
                 //new SqlParameter("@Hotelid", Convert.ToInt32(SearchPara.Filters.HotelIDs)) cmt14052026
                     };
 
-                    DTCountryblock = await _dlConnection.GetDataSet("Agoda_HDC_chcek", para3);  
+                    DTCountryblock = await _dlConnection.GetDataSet("Agoda_HDC_chcek", para3);
                     //DTCountryblock = await _dlConnection.GetDataSet("GetAgodaCountryblockdata", para3);  cmt14052026
 
                     if (DTCountryblock.Tables[0].Rows.Count > 0)
@@ -68935,7 +68937,7 @@ new SqlParameter("@AgentId", AgentId),
                             }
                             #endregion
                             break;
-                       
+
 
                         case 4:
                             // #region"withinearth_techno" //needtochange
@@ -69776,7 +69778,7 @@ new SqlParameter("@AgentId", AgentId),
                                     {
                                         if (requestName.ToLower() == "availability")
                                         {
-                                        
+
                                             dataTable.Add(Task.Run(async () =>
                                             {
                                                 List<Options> result = null;
@@ -69787,27 +69789,27 @@ new SqlParameter("@AgentId", AgentId),
 
                                                     //string Hotelids = "598586";
                                                     string Hotelids = SearchPara.Filters.HotelIDs; //"176";
-                                                     result = await _agodanew.XMLOut_HotelSearchWithRooms(
-                                                        requestName,
-                                                        item,
-                                                        commonSearch,
-                                                        item.dsTemp,
-                                                        Hotelids,
-                                                        SearchPara,
-                                                        dtAgentDetail,
-                                                        dtMarkupDetails,
-                                                        advancedOptions,
-                                                        DTChainCode,
-                                                        DTCountryblock
-                                                    );
+                                                    result = await _agodanew.XMLOut_HotelSearchWithRooms(
+                                                       requestName,
+                                                       item,
+                                                       commonSearch,
+                                                       item.dsTemp,
+                                                       Hotelids,
+                                                       SearchPara,
+                                                       dtAgentDetail,
+                                                       dtMarkupDetails,
+                                                       advancedOptions,
+                                                       DTChainCode,
+                                                       DTCountryblock
+                                                   );
 
                                                     item.dtHotelRoom = result;
                                                     return result;
                                                 }
                                                 catch (Exception ex)
                                                 {
-                                                   
-                                                   // _logger.LogError(ex, "newhotelsearch_agoda", result);
+
+                                                    // _logger.LogError(ex, "newhotelsearch_agoda", result);
                                                     _logger.LogError(ex, "newhotelsearch_agoda {@Result}", result);
                                                     _exception.Error(ex);
                                                     return null;
@@ -70286,7 +70288,7 @@ new SqlParameter("@AgentId", AgentId),
                         {
                             HttpStatusCode = (int)responseMessage.StatusCode;
 
-                           // Console.WriteLine("STATUS: " + HttpStatusCode);
+                            // Console.WriteLine("STATUS: " + HttpStatusCode);
 
                             // ✅ FIX: Direct read (auto decompressed)
                             responsedata = await responseMessage.Content.ReadAsStringAsync();
@@ -70444,7 +70446,7 @@ new SqlParameter("@AgentId", AgentId),
                                 }
                             }
                         }
-                        
+
                     }
                 }
             }
@@ -70553,7 +70555,7 @@ new SqlParameter("@AgentId", AgentId),
 
                         try
                         {
-                           // Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
+                            // Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
                             string Website = "";
 
                             hostName = System.Net.Dns.GetHostName();
@@ -70629,7 +70631,7 @@ new SqlParameter("@AgentId", AgentId),
                             //        //{
                             //        //    source = "Web";
                             //        //}
-                                    
+
 
                             //        _analytic.PushHotelDetailsClientDataForAnalyticsAsyc(new AnalyticsData
                             //        {
@@ -70770,10 +70772,10 @@ new SqlParameter("@AgentId", AgentId),
         }
 
 
-        
 
-            public void EnterApiLogs(string RequestId, string Request, string Response, string Token, string ApiName, string Search_Key, string IpAddress, int AgentId,
-            string ElapsedTime, string ErrorCode, string CityId, string CustomerIpAddress, string hostName = "", string MainURL = "", string RefNo = "", string IntRefNo = "")
+
+        public void EnterApiLogs(string RequestId, string Request, string Response, string Token, string ApiName, string Search_Key, string IpAddress, int AgentId,
+        string ElapsedTime, string ErrorCode, string CityId, string CustomerIpAddress, string hostName = "", string MainURL = "", string RefNo = "", string IntRefNo = "")
         {
             try
             {
@@ -72388,7 +72390,7 @@ new SqlParameter("@AgentId", AgentId),
             }
         }
 
-        public async Task<IActionResult> CreateResponseCompressed_AgodaBookingDetail<T>(HttpContext context, int statusCode, T value, string mediaType,AgodaBookingDetailRQ RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, string Search_Key = "", long elapsedMilliseconds = 0)
+        public async Task<IActionResult> CreateResponseCompressed_AgodaBookingDetail<T>(HttpContext context, int statusCode, T value, string mediaType, AgodaBookingDetailRQ RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, string Search_Key = "", long elapsedMilliseconds = 0)
         {
             try
             {
