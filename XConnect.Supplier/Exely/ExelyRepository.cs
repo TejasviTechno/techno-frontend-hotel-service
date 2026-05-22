@@ -560,8 +560,8 @@ namespace XConnect.Supplier.Exely
                                                 _markup.ProcessHotelRoom_WithMarkup(roomCurrencyFactor, roomCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref roomLevelTotal, ref drHotelRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
                                                 drHotelRoom["SupplierName"] = Item.Supplier;
                                                 drHotelRoom["BoardTypeID"] = roomStay.mealPlanCode;
-                                                string enRoomName = roomTypeEnNames != null && roomTypeEnNames.TryGetValue(roomStay.roomType?.id ?? "", out string? enN) ? enN : null;
-                                                drHotelRoom["RoomTypeName"] = (!string.IsNullOrWhiteSpace(enRoomName) ? enRoomName : (roomStay.fullPlacementsName ?? string.Empty)).Replace("-", "_");
+                                                drHotelRoom["RoomTypeName"] = BuildExelyRoomDisplayName(roomStay).Replace("-", "_");
+
                                                 if (roomTypeCategoryNames != null && roomTypeCategoryNames.TryGetValue(roomStay.roomType?.id ?? "", out string? catN) && !string.IsNullOrWhiteSpace(catN))
                                                     drHotelRoom["Type"] = catN;
                                                 dt_HotelRoom.Rows.Add(drHotelRoom);
@@ -2152,6 +2152,67 @@ namespace XConnect.Supplier.Exely
                 .Where(segment => segment.ToDate > segment.FromDate)
                 .ToList();
         }
+
+        private string BuildExelyRoomDisplayName(ShortRoomStay roomStay)
+        {
+            string placementName = BuildExelyPlacementName(roomStay);
+
+            return !string.IsNullOrWhiteSpace(placementName)
+                ? placementName
+                : (roomStay.fullPlacementsName ?? string.Empty).Trim();
+        }
+
+        private string BuildExelyPlacementName(ShortRoomStay roomStay)
+        {
+            if (roomStay.roomType?.placements != null && roomStay.roomType.placements.Count > 0)
+            {
+                List<string> placementParts = roomStay.roomType.placements
+                    .Where(placement => placement.count > 0)
+                    .Select(BuildExelyPlacementPart)
+                    .Where(part => !string.IsNullOrWhiteSpace(part))
+                    .ToList();
+                if (placementParts.Count > 0)
+                    return string.Join(", ", placementParts);
+            }
+            int adults = roomStay.guestCount?.adultCount ?? 0;
+            List<int> childAges = roomStay.guestCount?.childAges?.Where(age => age >= 0).ToList() ?? new List<int>();
+            List<string> parts = new List<string>();
+            if (adults > 0)
+                parts.Add($"{adults} {(adults == 1 ? "adult" : "adults")} on main beds");
+
+            if (childAges.Count > 0)
+            {
+                string childText = childAges.Count == 1 ? "1 child" : $"{childAges.Count} children";
+                string agesText = string.Join(", ", childAges);
+                parts.Add($"{childText} (age {agesText})");
+            }
+
+            return string.Join(", ", parts);
+        }
+
+        private string BuildExelyPlacementPart(Placement placement)
+        {
+            string ageInfo = "";
+            if (placement.minAge.HasValue || placement.maxAge.HasValue)
+            {
+                string minAge = placement.minAge?.ToString(CultureInfo.InvariantCulture) ?? "0";
+                string maxAge = placement.maxAge?.ToString(CultureInfo.InvariantCulture) ?? "";
+                ageInfo = string.IsNullOrWhiteSpace(maxAge)
+                    ? $" (age {minAge}+)"
+                    : $" (age {minAge}-{maxAge})";
+            }
+
+            return placement.kind switch
+            {
+                BookingPlacementKind.Adult => $"{placement.count} {(placement.count == 1 ? "adult" : "adults")} on main beds",
+                BookingPlacementKind.ExtraAdult => $"{placement.count} {(placement.count == 1 ? "adult" : "adults")} on an extra beds",
+                BookingPlacementKind.Child => $"{placement.count} {(placement.count == 1 ? "child" : "children")} on main beds{ageInfo}",
+                BookingPlacementKind.ExtraChild => $"{placement.count} {(placement.count == 1 ? "child" : "children")} on an extra beds{ageInfo}",
+                BookingPlacementKind.ChildBandWithoutBed => $"{placement.count} {(placement.count == 1 ? "child" : "children")} without bed{ageInfo}",
+                _ => ""
+            };
+        }
+
 
         private void AddExelyCancellationRows(DataTable dtHotelCancellation, IEnumerable<ExelyCancellationSegment> segments, string supplier, string ownsystemid, int roomno, string roomtypeid, string optionCode, HotelSearchParameter searchPara, bool isPerce, double b2cMarkup, double agentPercentage, double agentMarkupAmount, int isParentId, double subAgentMarkup, string essen, DataTable dtROE)
         {
