@@ -1092,7 +1092,7 @@ namespace XConnect.Supplier.Exely
                     var responseDto = await ExelyResponseNew(verifyRQ, verifyUrl, bookingTimeout, password, Searchkey);
                     responseData = responseDto.Response;
 
-                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData + "|ERR:" + responseDto.Error, "After Exely PreBook Verify", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
+                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData + "|ERR:" + responseDto.Error, "After Exely PreBook Verify", supplierName, "Response confirm", "-", "NomadsB2B", Searchkey);
 
                     priceCheckCMDto.IsError = false;
                     priceCheckCMDto.Flag = false;

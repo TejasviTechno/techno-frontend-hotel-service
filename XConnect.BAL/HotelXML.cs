@@ -12548,6 +12548,34 @@ new SqlParameter("@AgentId", AgentId),
 
         }
 
+        private string GetExelyCreateBookingTokenFromRoomTypeId(string roomTypeId)
+        {
+            if (string.IsNullOrWhiteSpace(roomTypeId))
+                return string.Empty;
+
+            string[] parts = roomTypeId.Split("$$$");
+            if (parts.Length > 11 && !string.IsNullOrWhiteSpace(parts[11]))
+                return parts[11].Trim();
+
+            return string.Empty;
+        }
+
+        private string GetCommonExelyCreateBookingToken(IEnumerable<string> roomTypeIds)
+        {
+            string token = string.Empty;
+            foreach (var roomTypeId in roomTypeIds)
+            {
+                string currentToken = GetExelyCreateBookingTokenFromRoomTypeId(roomTypeId);
+                if (string.IsNullOrWhiteSpace(currentToken))
+                    return string.Empty;
+                if (string.IsNullOrWhiteSpace(token))
+                    token = currentToken;
+                else if (!string.Equals(token, currentToken, StringComparison.Ordinal))
+                    return string.Empty;
+            }
+            return token;
+        }
+
         private const string CompressionType = "deflate";
 
         public async Task<IActionResult> CreateResponseCompressedAsync<T>(HttpContext context, HttpStatusCode statusCode, T value, string mediaType, CommonRequest RQ, object RS, TokenData tokendata, string APIName, bool EnterLogs, string ElapsedTime, string ErrorCode, string CityId, string IP = "", string HotelID = "", string CheckInDate = "", string CheckOutDate = "", int NoofNights = 0, int Rooms = 0, int LogId = 0, string Search_Key = "", DateTime? EntryTime = null, string ReferenceNo = "", string InternalReference = "", string MainURL = "", int StatusCode = 200, HotelSearchParameter payload = null, long elapsedMilliseconds = 0)
@@ -49657,18 +49685,23 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 int exelyNoOfAdults = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfAdults"]);
                                                                                 int exelyNoOfChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfChild"]);
                                                                                 string exelyHotelIdForVerify = exelyRtParts.Length > 7 && !string.IsNullOrWhiteSpace(exelyRtParts[7]) ? exelyRtParts[7] : xMLHotelId;
-                                                                                string exelyVerifyRQ = _iExely.Get_Exely_VerifyBookingRQ(exelyNoOfAdults, exelyNoOfChild, exelyHotelIdForVerify, checkIn, checkOut, exelyRoomTypeId, Nationality, checksum, dtPassengers);
-                                                                                string exelyVerifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
-                                                                                ResponseDto exelyVerifyDto = await _iExely.ExelyResponseNew(exelyVerifyRQ, exelyVerifyUrl, 120000, password, SearchKey);
-                                                                                var exelyVerifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(exelyVerifyDto.Response ?? "");
-                                                                                var exelyVerifyBooking = exelyVerifyResult?.booking ?? exelyVerifyResult?.alternativeBooking;
-                                                                                string exelyCreateBookingToken = exelyVerifyBooking?.createBookingToken ?? "";
-                                                                                string exelyPropertyId = exelyVerifyBooking?.propertyId ?? exelyHotelIdForVerify;
+                                                                                string exelyCreateBookingToken = GetExelyCreateBookingTokenFromRoomTypeId(exelyRoomTypeId);
+                                                                                string exelyPropertyId = exelyHotelIdForVerify;
+                                                                                if (string.IsNullOrWhiteSpace(exelyCreateBookingToken))
+                                                                                {
+                                                                                    string exelyVerifyRQ = _iExely.Get_Exely_VerifyBookingRQ(exelyNoOfAdults, exelyNoOfChild, exelyHotelIdForVerify, checkIn, checkOut, exelyRoomTypeId, Nationality, checksum, dtPassengers);
+                                                                                    string exelyVerifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
+                                                                                    ResponseDto exelyVerifyDto = await _iExely.ExelyResponseNew(exelyVerifyRQ, exelyVerifyUrl, 120000, password, SearchKey);
+                                                                                    var exelyVerifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(exelyVerifyDto.Response ?? "");
+                                                                                    var exelyVerifyBooking = exelyVerifyResult?.booking ?? exelyVerifyResult?.alternativeBooking;
+                                                                                    exelyCreateBookingToken = exelyVerifyBooking?.createBookingToken ?? string.Empty;
+                                                                                    exelyPropertyId = exelyVerifyBooking?.propertyId ?? exelyHotelIdForVerify;
+                                                                                }
 
                                                                                 string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, exelyCreateBookingToken, exelyPropertyId, checkIn, checkOut, exelyCurrency, Nationality, tokenData.AgentCode, checksum, exelyRoomTypeId, exelyNoOfAdults, exelyNoOfChild);
                                                                                 string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.CreateBooking.TrimStart('/');
 
-                                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Request Confirm", ReferenceNo, "WithinEarth");
+                                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ExelyBookRequest, "-", "Before Block Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Request Confirm", ReferenceNo, "NomadsB2B");
                                                                                 Error = "";
                                                                                 timerroomprocess.Start();
 
@@ -49682,7 +49715,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 timerroomprocess.Stop();
                                                                                 time = timerroomprocess.Elapsed.ToString();
 
-                                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ExelyBookRequest, ExelyBookResponse + Error, "After Block Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Response Confirm", ReferenceNo, "WithinEarth");
+                                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ExelyBookRequest, ExelyBookResponse + Error, "After Block Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Response Confirm", ReferenceNo, "NomadsB2B");
 
                                                                                 #region Booking Response Handle
                                                                                 bookingStatus = 2;
@@ -55336,26 +55369,37 @@ new SqlParameter("@AgentId", AgentId),
                                         string groupNationality = exelyRoomInfoList[0].Nationality;
                                         UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[0].UserCartDetailId);
 
-                                        // STEP 1: Single verify for all rooms (group booking "all or nothing")
-                                        string exelyVerifyRQ = _iExely.Get_Exely_VerifyBookingRQ(exelyRoomInfoList, groupPropertyId, groupNationality, dtPassengers);
-                                        string exelyVerifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
-                                        _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, "-", "Before Exely Group Verify", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B");
-                                        ResponseDto exelyVerifyDto = await _iExely.ExelyResponseNew(exelyVerifyRQ, exelyVerifyUrl, 120000, password, bookRequest.SearchKey);
-                                        var exelyVerifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(exelyVerifyDto.Response ?? "");
-                                        var exelyVerifyBooking = exelyVerifyResult?.booking ?? exelyVerifyResult?.alternativeBooking;
-                                        string groupToken = exelyVerifyBooking?.createBookingToken ?? "";
-                                        string exelyPropertyId = exelyVerifyBooking?.propertyId ?? groupPropertyId;
-                                        _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, (exelyVerifyDto.Response ?? "") + (exelyVerifyDto.Error ?? ""), "After Exely Group Verify", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
+                                        string groupToken = GetCommonExelyCreateBookingToken(bookRequest.userCart.UserCartDetails.Select(r => r.RoomTypeId));
+                                        string exelyPropertyId = groupPropertyId;
+                                        string exelyVerifyRQ = string.Empty;
+                                        ResponseDto exelyVerifyDto = null;
+                                        if (string.IsNullOrWhiteSpace(groupToken))
+                                        {
+                                            // STEP 1: Single verify for all rooms (group booking "all or nothing")
+                                            exelyVerifyRQ = _iExely.Get_Exely_VerifyBookingRQ(exelyRoomInfoList, groupPropertyId, groupNationality, dtPassengers);
+                                            string exelyVerifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, "-", "Before Exely Group Verify", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B");
+                                            exelyVerifyDto = await _iExely.ExelyResponseNew(exelyVerifyRQ, exelyVerifyUrl, 120000, password, bookRequest.SearchKey);
+                                            var exelyVerifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(exelyVerifyDto.Response ?? "");
+                                            var exelyVerifyBooking = exelyVerifyResult?.booking ?? exelyVerifyResult?.alternativeBooking;
+                                            groupToken = exelyVerifyBooking?.createBookingToken ?? string.Empty;
+                                            exelyPropertyId = exelyVerifyBooking?.propertyId ?? groupPropertyId;
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, (exelyVerifyDto.Response ?? "") + (exelyVerifyDto.Error ?? ""), "After Exely Group Verify", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
+                                        }
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, string.Empty, string.Empty, "Using existing Exely createBookingToken from prebook", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B");
+                                        }
                                         if (string.IsNullOrWhiteSpace(groupToken))
                                         {
                                             // Verify failed — all rooms in the group fail together ("all or nothing")
                                             RequestSPR = exelyVerifyRQ;
-                                            ReponseSPR = exelyVerifyDto.Response;
-                                            Error = exelyVerifyDto.Error;
+                                            ReponseSPR = exelyVerifyDto?.Response;
+                                            Error = exelyVerifyDto?.Error;
                                             time = "00:00:00.000000";
                                             responsetype = "GeneralError";
-                                            
-                                            try { _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, exelyVerifyRQ, exelyVerifyDto.Response, Error); }
+
+                                            try { _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, exelyVerifyRQ, exelyVerifyDto?.Response, Error); }
                                             catch { }
                                             for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
                                             {
@@ -61651,36 +61695,32 @@ new SqlParameter("@AgentId", AgentId),
 
                                 string cancellationDateTimeUtc = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
                                 string exelyURL = baseUrl + _supplierConfig.Exely.CalculateCancellationPenalty.Replace("{number}", bookingNumber) + "?cancellationDateTimeUtc=" + cancellationDateTimeUtc;
-                                ResponseDto responseDto = await _iExely.ExelyResponseNew(CancellationXMLcharge, exelyURL, 120000, password);
+                                ResponseDto responseDto = await _iExely.ExelyResponseNew(CancellationXMLcharge, exelyURL, 120000, password, "", "GET");
                                 ResponseData = responseDto.Response;
                                 Error = responseDto.Error;
 
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit CalculateCancellationPenalty", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
 
-                                /*if (string.IsNullOrWhiteSpace(ResponseData))
-                                {
-                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(exelyURL), Convert.ToString(Error), "From Cancellation Page - Empty Penalty Response", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "NomadsB2B");
-                                    return "";
-                                }*/
-
                                 var result = JsonConvert.DeserializeObject<ResultOfCalculatePenalty>(ResponseData);
-                                double Amount = result?.penaltyAmount ?? 0;
+                                double Amount = result.penaltyAmount ?? 0;
 
                                 //cancel request 
                                 CancellationXML = JsonConvert.SerializeObject(new BookingCancellationRq
                                 {
-                                    reason = "Cancelled by customer",
+                                    reason = string.IsNullOrWhiteSpace(CancelReson) ? "Cancelled by customer" : CancelReson,
                                     expectedPenaltyAmount = Amount
                                 });
 
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit CancelBooking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
-
                                 string cancelexelyurl = baseUrl + _supplierConfig.Exely.CancelBooking.Replace("{number}", bookingNumber);
+                                string cancelBookingRequestLog = cancelexelyurl + " body-json " + CancellationXML;
+
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(cancelBookingRequestLog), "-", "Before Request hit CancelBooking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
+
                                 ResponseDto responseDto1 = await _iExely.ExelyResponseNew(CancellationXML, cancelexelyurl, 120000, password);
                                 string CancelResponseData = responseDto1.Response;
                                 Error = responseDto1.Error;
 
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), Convert.ToString(CancelResponseData), "After Request hit CancelBooking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(cancelBookingRequestLog), Convert.ToString(CancelResponseData), "After Request hit CancelBooking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
 
                                 if (CancelResponseData == "")
                                 {
@@ -61689,18 +61729,12 @@ new SqlParameter("@AgentId", AgentId),
                                 }
                                 else
                                 {
-                                    var Result = JsonConvert.DeserializeObject<CreateBookingResult>(CancelResponseData);
-                                    var cancellation = Result?.booking?.cancellation;
-                                    double? penalty = cancellation?.penaltyAmount;
-                                    string Messages = cancellation?.reason;
-                                    DateTime cancelledTime = cancellation?.cancelledUtc ?? DateTime.MinValue;
-                                    int status = Result?.booking?.status == BookingStatus.Cancelled ? 1 : 0;
-                                    if (status == 1)
-                                    {
-
-                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
-                                    }
-                                    else
+                                    var Result = JsonConvert.DeserializeObject<BookingCancellation>(CancelResponseData);
+                                    double? penalty = Result.penaltyAmount;
+                                    string Messages = Result.reason;
+                                    DateTime cancelledTime = Result.cancelledUtc;
+                                    int status = Result != null ? 1 : 0;
+                                    if (status != 1)
                                     {
                                         _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "NomadsB2B");
                                         return "";
@@ -65543,7 +65577,7 @@ new SqlParameter("@AgentId", AgentId),
                                 //cancel request 
                                 CancellationXML = JsonConvert.SerializeObject(new BookingCancellationRq
                                 {
-                                    reason = "Cancelled by customer",
+                                    reason = string.IsNullOrWhiteSpace(CancelReson) ? "Cancelled by customer" : CancelReson,
                                     expectedPenaltyAmount = Amount
                                 });
                                 room.xmlrequest = CancellationXML;
