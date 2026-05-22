@@ -497,8 +497,9 @@ namespace XConnect.Supplier.Exely
                                                 string uniqno = Guid.NewGuid().ToString().Substring(0, 4);
                                                 string SpecialOfferText = string.Empty;
                                                 string BookingConditions = string.Empty;
+                                                double roomCurrencyFactor = _commonMethod.GetROEByCurrency(roomCurrency, dtROE);
                                                 FinalPrice = roomStay.total.priceBeforeTax;
-                                                double roomLevelTotal = FinalPrice * Factor;
+                                                double roomLevelTotal = FinalPrice * roomCurrencyFactor;
                                                 double companyBuyingPrice = roomLevelTotal;
                                                 if (roomStay.total.taxAmount > 0)
                                                     BookingConditions = $"+ {roomStay.total.taxAmount.ToString("F2", CultureInfo.InvariantCulture)} {roomCurrency} taxes paid at hotel";
@@ -556,7 +557,7 @@ namespace XConnect.Supplier.Exely
                                                 if (!string.IsNullOrEmpty(BookingConditions)) essentialParts.Add(BookingConditions);
                                                 if (essentialParts.Count > 0)
                                                     drHotelRoom["EssentialInformation"] = "</br>" + string.Join("</br>", essentialParts);
-                                                _markup.ProcessHotelRoom_WithMarkup(Factor, roomCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref roomLevelTotal, ref drHotelRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
+                                                _markup.ProcessHotelRoom_WithMarkup(roomCurrencyFactor, roomCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref roomLevelTotal, ref drHotelRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
                                                 drHotelRoom["SupplierName"] = Item.Supplier;
                                                 drHotelRoom["BoardTypeID"] = roomStay.mealPlanCode;
                                                 string enRoomName = roomTypeEnNames != null && roomTypeEnNames.TryGetValue(roomStay.roomType?.id ?? "", out string? enN) ? enN : null;
@@ -601,7 +602,7 @@ namespace XConnect.Supplier.Exely
                                                 List<ExelyCancellationSegment> liveSegments = BuildExelyCancellationSegments(
                                                     roomStay.cancellationPolicy,
                                                     checkInDate,
-                                                    roomStay.cancellationPolicy?.penaltyAmount ?? companyBuyingPrice,
+                                                    FinalPrice,
                                                     cutOffDays,
                                                     cancellationCurrency);
                                                 if (liveSegments.Count > 0)
@@ -621,7 +622,8 @@ namespace XConnect.Supplier.Exely
                                                         AgentMarkupAmount,
                                                         commonSearch.IsParentId,
                                                         commonSearch.SubAgentMarkup,
-                                                        Essen);
+                                                        Essen,
+                                                        dtROE);
                                                     addedDetailedCancellation = true;
                                                 }
 
@@ -651,7 +653,8 @@ namespace XConnect.Supplier.Exely
                                                             AgentMarkupAmount,
                                                             commonSearch.IsParentId,
                                                             commonSearch.SubAgentMarkup,
-                                                            Essen);
+                                                            Essen,
+                                                            dtROE);
                                                         addedDetailedCancellation = true;
                                                     }
                                                 }
@@ -2083,7 +2086,9 @@ namespace XConnect.Supplier.Exely
                 return new List<ExelyCancellationSegment>();
 
             string segmentCurrency = string.IsNullOrWhiteSpace(currencyCode) ? "USD" : currencyCode;
-            double penaltyAmount = Math.Max(0, cancellationPolicy.penaltyAmount ?? fallbackPenaltyAmount);
+            double penaltyAmount = fallbackPenaltyAmount > 0
+                ? fallbackPenaltyAmount
+                : Math.Max(0, cancellationPolicy.penaltyAmount ?? 0);
             List<ExelyCancellationSegment> segments = new List<ExelyCancellationSegment>();
 
             if (cancellationPolicy.freeCancellationPossible)
@@ -2148,11 +2153,11 @@ namespace XConnect.Supplier.Exely
                 .ToList();
         }
 
-        private void AddExelyCancellationRows(DataTable dtHotelCancellation, IEnumerable<ExelyCancellationSegment> segments, string supplier, string ownsystemid, int roomno, string roomtypeid, string optionCode, HotelSearchParameter searchPara, bool isPerce, double b2cMarkup, double agentPercentage, double agentMarkupAmount, int isParentId, double subAgentMarkup, string essen)
+        private void AddExelyCancellationRows(DataTable dtHotelCancellation, IEnumerable<ExelyCancellationSegment> segments, string supplier, string ownsystemid, int roomno, string roomtypeid, string optionCode, HotelSearchParameter searchPara, bool isPerce, double b2cMarkup, double agentPercentage, double agentMarkupAmount, int isParentId, double subAgentMarkup, string essen, DataTable dtROE)
         {
             foreach (ExelyCancellationSegment segment in segments.OrderBy(item => item.FromDate))
             {
-                double currencyFactor = GetExelyCurrencyFactor(segment.Currency);
+                double currencyFactor = _commonMethod.GetROEByCurrency(segment.Currency, dtROE);
                 double vatOnPolicy = 0;
                 double penaltyConverted = segment.PenaltyAmount * currencyFactor;
                 double mainAgentCharge = penaltyConverted;
