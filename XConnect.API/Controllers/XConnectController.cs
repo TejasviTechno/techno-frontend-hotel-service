@@ -6122,7 +6122,9 @@ namespace XConnect.API.Controllers
             {
                 //HotelXML.EnterBookingApiLogs(JsonConvert.SerializeObject(RQ), "", "");
                 data.Request = RQ.ToString();
-                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                //AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                AuthData authData = await _authenticationTokenAgent.AgodaAuthentication(TokenData, data);
+
                 if (!Convert.ToBoolean(authData.tokenData.AgentId))
                 {
                     erroragoda = _hotelXML.GetAgodaErrorMsg("UNAUTHORIZED", _keySettings.AgodaVersion, "Access credential is incorrect");
@@ -6171,8 +6173,8 @@ namespace XConnect.API.Controllers
                 cancelRQ.token = _keySettings.agoda_apikey;
                 data.Request = cancelRQ.ToString();
 
-                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
-
+               // AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                AuthData authData = await _authenticationTokenAgent.AgodaAuthentication(TokenData, data);
                 //if (Convert.ToBoolean(authData.tokenData.AgentId))
 
                 //{

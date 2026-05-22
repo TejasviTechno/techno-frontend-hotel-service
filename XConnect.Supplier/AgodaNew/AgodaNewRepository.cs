@@ -95,12 +95,12 @@ namespace XConnect.Supplier.AgodaNew
                             {
 
                                 int MasterSupplierID = 0;
-                                string SupplierID = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[0].HotelOptionId.Split('|')[Convert.ToInt16(_cacheHotelOption.supplierId)];
-                                if (SupplierID == "")
-                                {
-                                    SupplierID = "162";
-                                }
-                                MasterSupplierID = Convert.ToInt32(SupplierID);
+                                //string SupplierID = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[0].HotelOptionId.Split('|')[Convert.ToInt16(_cacheHotelOption.supplierId)];
+                                //if (SupplierID == "")
+                                //{
+                                //    SupplierID = "162";
+                                //}
+                                //MasterSupplierID = Convert.ToInt32(SupplierID);
                                 SearchKeyRP = availabilityResponse.AvailabilityRS.SearchKey;
                                 //HotelOptionIdRP = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelOptionId;
 
@@ -145,6 +145,12 @@ namespace XConnect.Supplier.AgodaNew
                                 DtHotel.Rows.Add(drXmlHotel);
                                 for (int i = 0; i < availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption.Count(); i++)
                                 {
+                                    string SupplierID = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelOptionId.Split('|')[Convert.ToInt16(_cacheHotelOption.supplierId)];
+                                    if (SupplierID == "")
+                                    {
+                                        SupplierID = "162";
+                                    }
+                                    MasterSupplierID = Convert.ToInt32(SupplierID);
                                     HotelOptionIdRP = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelOptionId;
 
                                     //ROOM

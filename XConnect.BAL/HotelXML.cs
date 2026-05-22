@@ -70259,13 +70259,13 @@ new SqlParameter("@AgentId", AgentId),
 
                             //Console.WriteLine("RESPONSE: " + responsedata);
 
-                            //await _commonMethod.XMLRequestResponseTrack_agoda(
-                            //    finalUrl + " | " + strxmlRQRS,
-                            //    responsedata,
-                            //    "xmlout",
-                            //    "Proper",
-                            //    reqid
-                            //);
+                            await _commonMethod.XMLRequestResponseTrack_agoda(
+                                finalUrl + " | " + strxmlRQRS,
+                                responsedata,
+                                "xmlout",
+                                "Proper",
+                                reqid
+                            );
                         }
                     }
                 }
