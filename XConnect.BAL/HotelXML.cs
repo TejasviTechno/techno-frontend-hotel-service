@@ -70237,13 +70237,13 @@ new SqlParameter("@AgentId", AgentId),
                         {
                             Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutCancellationChargesTimeOut);
 
-                            finalUrl = $"{_keySettings.EndPointXMLOut.TrimEnd('/')}/{_keySettings.CheckHotelCancellationChargesXMLOut.TrimStart('/')}";
+                            finalUrl = $"{_keySettings.EndPointforCheckHotelCancellationCharges.TrimEnd('/')}/{_keySettings.CheckHotelCancellationChargesXMLOut.TrimStart('/')}";
                         }
                         else if (requestName == "cancelbooking")
                         {
                             Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutCancelBookingTimeOut);
 
-                            finalUrl = $"{_keySettings.EndPointXMLOut.TrimEnd('/')}/{_keySettings.CancelBookingXMLOut.TrimStart('/')}";
+                            finalUrl = $"{_keySettings.EndPointforCancelBooking.TrimEnd('/')}/{_keySettings.CancelBookingXMLOut.TrimStart('/')}";
                         }
 
                         // 🔥 Debug log (VERY IMPORTANT)
