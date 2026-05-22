@@ -49689,13 +49689,21 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 string exelyPropertyId = exelyHotelIdForVerify;
                                                                                 if (string.IsNullOrWhiteSpace(exelyCreateBookingToken))
                                                                                 {
-                                                                                    string exelyVerifyRQ = _iExely.Get_Exely_VerifyBookingRQ(exelyNoOfAdults, exelyNoOfChild, exelyHotelIdForVerify, checkIn, checkOut, exelyRoomTypeId, Nationality, checksum, dtPassengers);
-                                                                                    string exelyVerifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
-                                                                                    ResponseDto exelyVerifyDto = await _iExely.ExelyResponseNew(exelyVerifyRQ, exelyVerifyUrl, 120000, password, SearchKey);
-                                                                                    var exelyVerifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(exelyVerifyDto.Response ?? "");
-                                                                                    var exelyVerifyBooking = exelyVerifyResult?.booking ?? exelyVerifyResult?.alternativeBooking;
-                                                                                    exelyCreateBookingToken = exelyVerifyBooking?.createBookingToken ?? string.Empty;
-                                                                                    exelyPropertyId = exelyVerifyBooking?.propertyId ?? exelyHotelIdForVerify;
+                                                                                    Error = "Exely createBookingToken missing from prebook response.";
+                                                                                    RequestSPR = string.Empty;
+                                                                                    ReponseSPR = string.Empty;
+                                                                                    time = "00:00:00.000000";
+                                                                                    responsetype = "GeneralError";
+                                                                                    try
+                                                                                    {
+                                                                                        _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                                                    }
+                                                                                    catch (Exception e)
+                                                                                    {
+                                                                                        _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", SearchKey);
+                                                                                    }
+                                                                                    dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), "", RequestSPR, Error, Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), 2, voucherpackageid));
+                                                                                    continue;
                                                                                 }
 
                                                                                 string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, exelyCreateBookingToken, exelyPropertyId, checkIn, checkOut, exelyCurrency, Nationality, tokenData.AgentCode, checksum, exelyRoomTypeId, exelyNoOfAdults, exelyNoOfChild);
@@ -55370,20 +55378,9 @@ new SqlParameter("@AgentId", AgentId),
 
                                         string groupToken = GetCommonExelyCreateBookingToken(bookRequest.userCart.UserCartDetails.Select(r => r.RoomTypeId));
                                         string exelyPropertyId = groupPropertyId;
-                                        string exelyVerifyRQ = string.Empty;
-                                        ResponseDto exelyVerifyDto = null;
                                         if (string.IsNullOrWhiteSpace(groupToken))
                                         {
-                                            // STEP 1: Single verify for all rooms (group booking "all or nothing")
-                                            exelyVerifyRQ = _iExely.Get_Exely_VerifyBookingRQ(exelyRoomInfoList, groupPropertyId, groupNationality, dtPassengers);
-                                            string exelyVerifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, "-", "Before Exely Group Verify", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B");
-                                            exelyVerifyDto = await _iExely.ExelyResponseNew(exelyVerifyRQ, exelyVerifyUrl, 120000, password, bookRequest.SearchKey);
-                                            var exelyVerifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(exelyVerifyDto.Response ?? "");
-                                            var exelyVerifyBooking = exelyVerifyResult?.booking ?? exelyVerifyResult?.alternativeBooking;
-                                            groupToken = exelyVerifyBooking?.createBookingToken ?? string.Empty;
-                                            exelyPropertyId = exelyVerifyBooking?.propertyId ?? groupPropertyId;
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, exelyVerifyRQ, (exelyVerifyDto.Response ?? "") + (exelyVerifyDto.Error ?? ""), "After Exely Group Verify", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, string.Empty, "Exely createBookingToken missing from prebook response.", "Exely Group Book token missing", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
                                         }
                                         else
                                         {
@@ -55391,14 +55388,13 @@ new SqlParameter("@AgentId", AgentId),
                                         }
                                         if (string.IsNullOrWhiteSpace(groupToken))
                                         {
-                                            // Verify failed — all rooms in the group fail together ("all or nothing")
-                                            RequestSPR = exelyVerifyRQ;
-                                            ReponseSPR = exelyVerifyDto?.Response;
-                                            Error = exelyVerifyDto?.Error;
+                                            RequestSPR = string.Empty;
+                                            ReponseSPR = string.Empty;
+                                            Error = "Exely createBookingToken missing from prebook response.";
                                             time = "00:00:00.000000";
                                             responsetype = "GeneralError";
 
-                                            try { _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, exelyVerifyRQ, exelyVerifyDto?.Response, Error); }
+                                            try { _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error); }
                                             catch { }
                                             for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
                                             {
@@ -55407,8 +55403,8 @@ new SqlParameter("@AgentId", AgentId),
                                                     UserCartId = bookRequest.userCart.UserCartDetails[j].UserCartId,
                                                     UserCartDetailId = bookRequest.userCart.UserCartDetails[j].UserCartDetailId,
                                                     AgentVoucherNo = "",
-                                                    XMLRequest = exelyVerifyRQ,
-                                                    XMLResponse = exelyVerifyDto.Response,
+                                                    XMLRequest = RequestSPR,
+                                                    XMLResponse = Error,
                                                     RoomStatus = "2",
                                                     SupplierName = suppliername
                                                 });
