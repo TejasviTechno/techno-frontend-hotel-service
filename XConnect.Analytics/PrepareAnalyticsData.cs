@@ -169,7 +169,142 @@ namespace XConnect.Analytics
             }
         }
 
-      
+        public void PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(AnalyticsData analyticsData)
+        {
+            try
+            {
+                var isDebugMode = _configuration.GetValue<bool>("EnvironmentType:isDebug");
+                //if (isDebugMode)
+                //{
+                //    _logger.LogError("Entry at PushHotelDetailsClientDataForAnalyticsAsyc");
+                //}
+
+
+                var resultData = analyticsData.Result as AvailHotelList_Comp;  // response 
+
+                var mainSearchPayload = analyticsData.Payload as HotelSearchParameter; // request
+
+
+                var clientsLocalTimeZone = _configuration.GetValue<string>("EnvironmentType:clientsLocalTimeZone") ?? "Arabian Standard Time";
+
+                var locationItem = resultData?.AvailabilityRS?.HotelResult?.FirstOrDefault();
+
+
+
+                var locationInfo = new AnalyticsLocationInfo
+                {
+
+                    City = mainSearchPayload?.CityName ?? "anonymous",
+                    Country = mainSearchPayload?.CountryCode ?? "anonymous",
+                    Lat = 0,
+                    Long = 0,
+                    IsoCountry = mainSearchPayload?.CountryCode ?? "anonymous",
+                    IsoNationality = mainSearchPayload?.Nationality ?? "anonymous",
+                    LocationType = mainSearchPayload?.CountryCode ?? "anonymous",
+                    Nationality = mainSearchPayload?.Nationality ?? "anonymous",
+
+                };
+
+
+                var productInfo = new AnalyticsProductInfo
+                {
+                    Name = mainSearchPayload?.CityName ?? "anonymous",
+
+                    //Name = resultData?.AvailabilityRS?.SearchKey ?? "anonymous",//productDetail?.RestaurantNameDefault ?? "anonymous",
+                    City = mainSearchPayload?.CityName ?? "anonymous",
+                    Country = mainSearchPayload?.CountryCode ?? "anonymous",
+                };
+
+                //var productInfo = new AnalyticsProductInfo();
+
+                var fareDetails = new AnalyticsFareInformation
+                {
+                    TotalProducts = Convert.ToInt32(resultData?.AvailabilityRS?.Count ?? 0),
+                    Volume = 0
+                };
+
+                int NoofAdults = 0;
+                int NoofChild = 0;
+                for (int i = 0; i < mainSearchPayload?.Rooms?.Count; i++)
+                {
+                    NoofAdults = NoofAdults + mainSearchPayload.Rooms[i]?.NoofAdults ?? 0;
+                    NoofChild = NoofChild + mainSearchPayload.Rooms[i]?.NoofChild ?? 0;
+                }
+
+                var paxDetails = new AnalyticsPaxInformation
+                {
+                    Adults = NoofAdults,
+                    Children = NoofChild,
+                    Nights = mainSearchPayload?.NoofNights ?? 0,
+                };
+
+
+                var service = new ClientSearchDataService(_userContextAccessor, mainSearchPayload, locationInfo, analyticsData, productInfo, fareDetails, paxDetails);
+
+
+                var browserInfo = service.GetBrowserInfo();
+                var apiInfo = service.GetApiInfo();
+                var userInfo = service.GetUserInfo();
+                var paxInfo = service.GetPaxAndDurationInfo(NoofAdults, NoofChild);
+                var requestInfo = service.GetRequestInfo(isDebugMode);
+                var locationDetails = service.GetLocationDetails();
+
+                var clientDetails = service.GetClientDetails();
+                var search = service.GetSearchPayload();
+                var productDetails = service.GetProductDetails();
+                /*var productDetails = "";*/// resultData?.detail != null ? service.GetProductDetails() : null;
+
+                var fareInfo = service.GetFareInfo();
+                var SearchAvailTrace = service.GetSearchAvailTrace();
+
+                //if (isDebugMode)
+                //{
+                //    _logger.LogError("Entry2  at PushHotelDetailsClientDataForAnalyticsAsyc");
+                //}
+
+
+                var clientData = new ClientData
+                {
+                    ServiceName = QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Reverse_Client_errors,
+                    //ServiceName = (analyticsData.Action.ToLower() == "availability" || analyticsData.Action.ToLower() == "availabilitywithcancellation"
+                    //|| analyticsData.Action.ToLower() == "availabilitywithcancellationv2") ?
+                    //QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Client_HotelService
+                    //: QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Client_HotelService_noremove,
+                    // clientTimeZone = string.IsNullOrEmpty(_userContextAccessor.ClientStats.clientsLocalTimeZone) ? clientsLocalTimeZone : _userContextAccessor.ClientStats.clientsLocalTimeZone,
+                    clientTimeZone = string.IsNullOrEmpty(_userContextAccessor?.ClientStats?.clientsLocalTimeZone) ? (string.IsNullOrEmpty(clientsLocalTimeZone) ? null : clientsLocalTimeZone) : _userContextAccessor.ClientStats.clientsLocalTimeZone,
+                    Description = analyticsData.Description,
+                    ApiInfo = apiInfo,
+                    UserInfo = userInfo,
+                    PaxAndDuration = paxInfo,
+                    RqRsDetails = requestInfo,
+                    Location = locationDetails,
+                    Products = productDetails != null && productDetails.Any() ? productDetails : [new SearchProductDetails()],
+                    TransferLocationDetails = null, //transferDetails,
+                    FareInfo = fareInfo,
+                    client = clientDetails,
+                    BrowserAgent = browserInfo,
+                    SiteType = _userContextAccessor?.SiteType ?? "",
+                    SearchAvailTrace = SearchAvailTrace,
+                    Source = analyticsData.source,
+                    ActualDescription = analyticsData.ActualDescription
+
+                };
+
+
+
+                _pushAnalytics.PushClientDataForAnalyticsAsyc(clientData);
+
+
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error at PushHotelDetailsClientDataForAnalyticsAsyc");
+
+            }
+        }
+
+
 
     }
 
