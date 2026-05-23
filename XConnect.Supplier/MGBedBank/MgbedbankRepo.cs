@@ -19,6 +19,7 @@ using Options = XConnect.Models.Options;
 using MathNet.Numerics;
 using static XConnect.Supplier.Booking.Com.preebookrs;
 using System.Net;
+using static XConnect.Models.ErrorLog;
 
 namespace XConnect.Supplier.MGBedBank
 {
@@ -2042,6 +2043,53 @@ namespace XConnect.Supplier.MGBedBank
 
         }
 
+        public string Get_MgBedBank_BookingCancelRQ(string AgentVoucherNo, DataRow[] SupplierDetails, string BookingAmt, string RefundableAmount)
+        {
+            string CancellationRQ = "";
+            try
+            {
+                #region Booking Cancel RQ
+                string UserID = Convert.ToString(SupplierDetails[0]["UserId"]);
+                string UserName = Convert.ToString(SupplierDetails[0]["UserName"]);
+                string Password = Convert.ToString(SupplierDetails[0]["Password"]);
+                string Id = "";
+                string Voucher = "";
+                string ExternalReference = "";
+                string ResNo = "";
+                string EN = "EN";
+                string BAmt = BookingAmt;
+                string RefAmt = RefundableAmount;
+
+
+                string[] spitid = AgentVoucherNo.Split(new String[] { "###" }, StringSplitOptions.None);
+                string MGBookingID = spitid[0].ToString();
+                string AgencyBookingID = spitid[1].ToString();
+
+
+                StringBuilder CancelRQ = new StringBuilder();
+                CancelRQ.Append("<CancelReservation> ");
+                CancelRQ.Append("<Login>");
+                CancelRQ.Append("<AgencyCode>" + UserID + "</AgencyCode>");
+                CancelRQ.Append("<Username>" + UserName + "</Username>");
+                CancelRQ.Append("<Password>" + Password + "</Password>");
+                CancelRQ.Append("</Login>");
+                CancelRQ.Append("<MGBookingID>" + MGBookingID + "</MGBookingID>");
+                CancelRQ.Append("<AgencyBookingID>" + AgencyBookingID + "</AgencyBookingID>");
+                CancelRQ.Append("<SimulationFlag>" + '0' + "</SimulationFlag>");
+                CancelRQ.Append("<CancelDate>" + DateTime.Now.Date + "</CancelDate>");
+                CancelRQ.Append("<Language>" + EN + "</Language>");
+                CancelRQ.Append("<DetailLevel>" + "Full" + "</DetailLevel>");
+                CancelRQ.Append("</CancelReservation> ");
+                CancellationRQ = CancelRQ.ToString();
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                return "";
+            }
+            return CancellationRQ;
+        }
 
 
     }

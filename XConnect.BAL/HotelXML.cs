@@ -52112,33 +52112,33 @@ new SqlParameter("@AgentId", AgentId),
                                         {
                                             Error = "";
                                             bookingStatus = 6;
-                                            
+
                                             UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
                                             bool IsErrors = false;
-                                           
+
                                             bool IsPriceUpdates = false;
                                             string HBV1BookingReq = _hotelbeds.HotelBedsdV1BookindgRequest_newversion(dtPassengers, bookRequest, IsPriceUpdates, IsErrors, j, DateSTR_IntRef);
                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), HBV1BookingReq, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "API Out");
                                             string ResponseDataHotelBedsV1 = "";
 
-                                                System.Diagnostics.Stopwatch timerbookprocess = new System.Diagnostics.Stopwatch();
-                                                timerbookprocess.Start();
+                                            System.Diagnostics.Stopwatch timerbookprocess = new System.Diagnostics.Stopwatch();
+                                            timerbookprocess.Start();
 
-                                              ResponseDto responseDto = await _hotelbeds.GetHotelBedsSupplierResponse(Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings, Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), 180000, HBV1BookingReq, "POST", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, bookRequest.SearchKey);
-                                        
-                                                ResponseDataHotelBedsV1 = responseDto.Response;
-                                                Error = responseDto.Error;
+                                            ResponseDto responseDto = await _hotelbeds.GetHotelBedsSupplierResponse(Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings, Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), 180000, HBV1BookingReq, "POST", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, bookRequest.SearchKey);
 
-                                                RequestSPR = HBV1BookingReq;
-                                                ReponseSPR = ResponseDataHotelBedsV1;
-                                                timerbookprocess.Stop();
-                                                time = timerbookprocess.Elapsed.ToString();
-                                            
+                                            ResponseDataHotelBedsV1 = responseDto.Response;
+                                            Error = responseDto.Error;
+
+                                            RequestSPR = HBV1BookingReq;
+                                            ReponseSPR = ResponseDataHotelBedsV1;
+                                            timerbookprocess.Stop();
+                                            time = timerbookprocess.Elapsed.ToString();
+
                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), HBV1BookingReq, ResponseDataHotelBedsV1, "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "API Out");
                                             if (ResponseDataHotelBedsV1 == null || HBV1BookingReq == "" || ResponseDataHotelBedsV1.Trim() == string.Empty)
                                             {
                                                 bookingStatus = 2;
-                                               
+
                                                 if (isNonRefundable)
                                                     bookingStatus = 1;
                                                 #region SupplierPR Booking
@@ -52147,9 +52147,9 @@ new SqlParameter("@AgentId", AgentId),
                                                 else
                                                     responsetype = "GeneralError";
 
-                                                
+
                                                 #endregion
-                                           
+
                                                 #region BookingData
                                                 AgentVoucher agentVoucher = new AgentVoucher();
                                                 agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
@@ -52164,7 +52164,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 agentVoucher.RoomStatus = Convert.ToString(2);
                                                 agentVoucher.SupplierName = suppliername;
                                                 agentVouchers.Add(agentVoucher);
-                                             
+
                                                 #endregion
                                             }
                                             else
@@ -52189,7 +52189,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     if (dsHotelBeds.Tables.Contains("booking") == true)
                                                     {
                                                         string APIbookingStatus = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["status"]);
-                                                       
+
                                                         if (dsHotelBeds.Tables["booking"].Rows.Count > 0 && (APIbookingStatus.ToLower() == "confirmed" || APIbookingStatus.ToLower() == "preconfirmed"))
                                                         {
                                                             AgentVoucherNo = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["reference"]);
@@ -52248,7 +52248,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                     agentVoucher.SupplierName = suppliername;
                                                     agentVouchers.Add(agentVoucher);
-                                                  
+
                                                     #endregion
                                                 }
                                                 catch (Exception ex)
@@ -65669,6 +65669,132 @@ new SqlParameter("@AgentId", AgentId),
 
                             #endregion
                             break;
+                        case "MGBEDBANK":
+                            #region "MgBedBank"
+                            //if (DtCancellation.Rows[p]["Provider"].ToString().ToUpper() == "MGBEDBANK")
+                            {
+                                try
+                                {
+                                    #region Booking Cancel RQ, URL
+                                    //XMLHotelBookingCommon objxml = new XMLHotelBookingCommon();
+
+                                    //if (dsAgentDetails != null & dsAgentDetails.Tables[1] != null && dsAgentDetails.Tables[1].Rows.Count > 0)
+                                    //    SupplierDetailsCommon = dsAgentDetails.Tables[1].Select("SupplierName='MgBedBank'");
+
+                                    string MgBedBankBookingCancelRS = "";
+                                    string MgBedBankBookingCancelRQ = "";
+                                    string bookingStatus = "";
+                                    string ResponseDatatest = "";
+                                    string ErrorResponse = "";
+                                    //string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + XMLHotelBookingCommon.CancelBooking;
+                                    string Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + _supplierConfig.MGBedBank.CancelBooking;
+                                    //string BookingAmt = Convert.ToString(DtCancellation.Rows[p]["BookingAmount"]);
+                                    //string RefundableAmount = Convert.ToString(DtCancellation.Rows[p]["RefundableAmount"]);
+                                    //string BookingStatus = Convert.ToString(DtCancellation.Rows[p]["BookingStatus"]);
+                                    if (true)
+                                    {
+                                        MgBedBankBookingCancelRQ = _mgbedbank.Get_MgBedBank_BookingCancelRQ(AgentVoucherNo_Cancle, SupplierDetailsCommon, "", "");
+                                        //MgBedBankBookingCancelRQ = _mgbedbank.Get_MgBedBank_BookingCancelRQ(AgentVoucherNo_Cancle, SupplierDetailsCommon, BookingAmt, RefundableAmount);
+                                        _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(MgBedBankBookingCancelRQ), "-", "Before Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "WithinEarth");
+                                        //calls.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(MgBedBankBookingCancelRQ), "-", "Before Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "WithinEarth");
+                                        #endregion
+
+                                        #region Booking Cancel RS
+
+                                        ResponseDto responseDto = await _mgbedbank.MGGetSupplierParallel(MgBedBankBookingCancelRQ, Url, ErrorResponse, 20000, "MgBedBank");
+                                        MgBedBankBookingCancelRS = responseDto.Response;
+                                        Error = responseDto.Error;
+                                        //ResponseDatatest = _mgbedbank.MGGetSupplierParallel(ref Error, MgBedBankBookingCancelRQ, Url, ref ErrorResponse, 20000, "MgBedBank");
+                                        if (ErrorResponse != string.Empty)
+                                        {
+                                            _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(MgBedBankBookingCancelRQ), MgBedBankBookingCancelRS + ErrorResponse, "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Response Confirm", PNRNO_Cancel, "WithinEarth");
+                                        }
+                                        else
+                                        {
+                                            _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(MgBedBankBookingCancelRQ), MgBedBankBookingCancelRS + Error + ErrorResponse, "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Response Confirm", PNRNO_Cancel, "WithinEarth");
+                                        }
+                                    }
+                                    #endregion
+
+                                    #region Response Error Block 
+                                    string StatusCancelled = "";
+
+                                    MgBedBankBookingCancelRS = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(MgBedBankBookingCancelRS, "root").InnerXml;
+                                    DataSet dsMgBedBank_RS = _commonMethod.GetDataSetFromXMLString(MgBedBankBookingCancelRS);
+                                    //DataSet dsMgBedBank_RS = Common.GetDataSetFromXMLString(ResponseDatatest);
+                                    if (DtCancellation.Rows[p]["Provider"].ToString().ToUpper() != "MGBEDBANK")
+                                    {
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(MgBedBankBookingCancelRQ), Convert.ToString(MgBedBankBookingCancelRS), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "WithinEarth");
+                                        return "";
+                                    }
+                                    //if (ResponseDatatest.Contains("ErrorCD") != true)
+                                    if (MgBedBankBookingCancelRS.Contains("ErrorCD") != true)
+                                    {
+                                        StatusCancelled = Convert.ToString(dsMgBedBank_RS.Tables["BookingDetails"].Rows[0]["Status"]);
+                                    }
+
+                                    #region MyRegion
+                                    //switch (BookingStatus)
+                                    //{
+                                    //    case "6":
+                                    //        bookingStatus = "CANCELCONF";
+                                    //        break;
+                                    //    case "2":
+                                    //        bookingStatus = "CANCEL";
+                                    //        break;
+                                    //    case "1":
+                                    //        bookingStatus = "CANCELCHARGE";
+                                    //        break;
+                                    //    default:
+                                    //        bookingStatus = "CANCELCHARGE";
+                                    //        break;
+                                    //} 
+                                    #endregion
+                                    if (StatusCancelled != "")
+                                    {
+                                        if (StatusCancelled.ToUpper() != "CANCELCONF" && StatusCancelled.ToUpper() != "CANCEL" && StatusCancelled.ToUpper() != "CANCELCHARGE")
+                                        {
+                                            _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(AgentId), Convert.ToString(MgBedBankBookingCancelRQ), Convert.ToString(MgBedBankBookingCancelRS + ResponseDatatest), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "WithinEarth");
+                                            return "";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return "";
+                                    }
+
+                                    //if (StatusCancelled.ToUpper() != "CANCELCONF")
+                                    //if (StatusCancelled.ToUpper() != "CANCEL")
+                                    //if (StatusCancelled.ToUpper() != "CANCELCHARGE")
+
+                                    //if (StatusCancelled.ToUpper() != "CANCELCONF")
+                                    //{
+                                    //    calls.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellationError.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(MgBedBankBookingCancelRQ), Convert.ToString(ResponseDatatest), "From Cancellation Page", Convert.ToString(DtCancellationError.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellationError.Rows[0]["PNRNo"]), "WithinEarth");
+                                    //    return "";
+                                    //}
+                                    //if (StatusCancelled.ToUpper() != "CANCEL")
+                                    //{
+                                    //    calls.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellationError.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(MgBedBankBookingCancelRQ), Convert.ToString(ResponseDatatest), "From Cancellation Page", Convert.ToString(DtCancellationError.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellationError.Rows[0]["PNRNo"]), "WithinEarth");
+                                    //    return "";
+                                    //}
+                                    //if (StatusCancelled.ToUpper() != "CANCELCHARGE")
+                                    //{
+                                    //    calls.ThirdPartyErrorInCancellationHistory(Convert.ToString(DtCancellationError.Rows[0]["AgentVoucherNo"]), Convert.ToString(HttpContext.Current.Session["UserName"]), Convert.ToString(MgBedBankBookingCancelRQ), Convert.ToString(ResponseDatatest), "From Cancellation Page", Convert.ToString(DtCancellationError.Rows[0]["Provider"]), "Hotel", Convert.ToString(DtCancellationError.Rows[0]["PNRNo"]), "WithinEarth");
+                                    //    return "";
+                                    //}
+
+                                    #endregion
+                                }
+                                catch (Exception ex)
+                                {
+                                    _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CheckHotelCancellationCharges + " , " + CancellationXML), Convert.ToString(ex.ToString()), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", Convert.ToString(PNRNO_Cancel), "WithinEarth");
+                                    return "";
+                                }
+                            }
+                            #endregion
+                            break;
+
                         default:
                             return "";
                             break;
@@ -67693,105 +67819,31 @@ new SqlParameter("@AgentId", AgentId),
         {
             try
             {
-                string hotelId = apiRequest?.HotelId?.Trim();
-                string roomName = apiRequest?.RoomName?.Trim();
+                SqlParameter[] para = new SqlParameter[] {
 
-                string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+     new SqlParameter("@HotelId", apiRequest.HotelId),
+     new SqlParameter("@RoomName", apiRequest.RoomName)
 
-                IMongoCollection<BsonDocument> collection =
-                    _commonMethod.GetRoomMappingCollection(collectionName);
+                };
 
-                var filterBuilder = Builders<BsonDocument>.Filter;
-                var filter = filterBuilder.Empty;
+                DataTable dt = await _dlConnection
+                    .GetDataTableByConnectionStringAsync(
+                        "GetCheckRoomFromGimmoix",
+                        para,
+                        _connectionStrings.ConnectionString);
 
-                // Filter by HotelId
-                if (!string.IsNullOrWhiteSpace(hotelId))
-                {
-                    filter &= filterBuilder.Regex(
-                        "_id",
-                        new BsonRegularExpression(
-                            "^" + Regex.Escape(hotelId) + @"\$\$\$",
-                            "i"
-                        )
-                    );
-                }
+                List<RoomMappingReport> lstrm =
+                    HtmlExtensions.ToList<RoomMappingReport>(dt);
 
-                // Filter by Room Name
-                if (!string.IsNullOrWhiteSpace(roomName))
-                {
-                    filter &= filterBuilder.Regex(
-                        "s",
-                        new BsonRegularExpression(
-                            Regex.Escape(roomName),
-                            "i"
-                        )
-                    );
-                }
-
-                // Only string _id
-                filter &= filterBuilder.Type("_id", BsonType.String);
-
-                // Projection (fetch only required fields)
-                var projection = Builders<BsonDocument>.Projection
-                    .Include("_id")
-                    .Include("s")
-                    .Include("r");
-
-                var result = await collection
-                    .Find(filter)
-                    .Project(projection)
-                    .Limit(500) // prevent huge data load
-                    .ToListAsync();
-
-                return result.Select(x => new RoomMappingReport
-                {
-                    RateuaraHotelId =
-                        x.Contains("_id") &&
-                        x["_id"].BsonType == BsonType.String
-                            ? x["_id"]
-                                .AsString
-                                .Split(new[] { "$$$" }, StringSplitOptions.None)
-                                .FirstOrDefault()
-                            : string.Empty,
-                    //                ProviderHotelId =
-                    //x.Contains("_id") &&
-                    //x["_id"].BsonType == BsonType.String
-                    //    ? x["_id"].AsString
-                    //    : string.Empty,
-
-                    RoomName =
-                        x.Contains("s") &&
-                        x["s"].BsonType == BsonType.String
-                            ? x["s"].AsString
-                            : string.Empty,
-
-                    RoomCode =
-                        x.Contains("r") &&
-                        x["r"].BsonType == BsonType.String
-                            ? x["r"].AsString
-                            : string.Empty
-
-                }).ToList();
-            }
-            catch (MongoConnectionException ex)
-            {
-                _ = _exception.Error(ex);
-
-                return new List<RoomMappingReport>();
-            }
-            catch (TimeoutException ex)
-            {
-                _ = _exception.Error(ex);
-
-                return new List<RoomMappingReport>();
+                return lstrm;
             }
             catch (Exception ex)
             {
                 _ = _exception.Error(ex);
-
-                return new List<RoomMappingReport>();
+                return null;
             }
         }
+
 
         public async Task<List<SupplierperformanceReport>> GetSupplierperformanceReport(SprRequest sprRequest)
         {
