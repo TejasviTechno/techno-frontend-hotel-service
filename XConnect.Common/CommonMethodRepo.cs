@@ -4888,6 +4888,7 @@ namespace XConnect.CommonUtilities
             }
             return HotelBedsResponse;
         }
+       
 
         public async Task FireAway_APILOG(string RequestId, string Request, string Response, string Token, string ApiName, string IpAddress, int AgentId,
             string ElapsedTime, string ErrorCode, string CityId, string CustomerIpAddress, Int64 HotelId, string HotelName, string provider

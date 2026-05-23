@@ -66849,154 +66849,36 @@ new SqlParameter("@AgentId", AgentId),
                 return null;
             }
         }
-        //public async Task<List<RoomMappingReport>> GetRoomMappingHotelReport(ApiRequestRoomMapping apiRequest)
-        //{
-        //    try
-        //    {
-        //        //string hotelId = apiRequest?.HotelId?.Trim();
-        //        //string roomName = apiRequest?.RoomName?.Trim();
+       
 
-        //        //var filterBuilder = Builders<RoomMappingMongo>.Filter;
-        //        //var filter = filterBuilder.Empty;
-
-        //        //// Filter by HotelId (prefix match instead of regex)
-        //        //if (!string.IsNullOrEmpty(hotelId))
-        //        //{
-        //        //    filter &= filterBuilder.Where(x => x._id.StartsWith(hotelId + "$$$"));
-        //        //}
-
-        //        //// Filter by Room Name (case-insensitive)
-        //        //if (!string.IsNullOrEmpty(roomName))
-        //        //{
-        //        //    filter &= filterBuilder.Regex(
-        //        //        x => x.s,
-        //        //        new BsonRegularExpression(roomName, "i")
-        //        //    );
-        //        //}
-
-        //        //var collection = _mongoDatabase.GetCollection<RoomMappingMongo>("RoomMapping");
-
-        //        //var result = await collection
-        //        //    .Find(filter)
-        //        //    .ToListAsync();
-
-        //        //// Map to response model
-        //        //return result.Select(x => new RoomMappingReport
-        //        //{
-        //        //    ProviderHotelId = x._id?.Split(new[] { "$$$" }, StringSplitOptions.None)[0], // clean HotelId
-        //        //    RoomName = x.s,
-        //        //    RoomCode = x.r
-        //        //}).ToList();
-        //        return new List<RoomMappingReport>(); // avoid returning null
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _ = _exception.Error(ex);
-        //        return new List<RoomMappingReport>(); // avoid returning null
-        //    }
-        //}
+       
 
         public async Task<List<RoomMappingReport>> GetRoomMappingHotelReport(ApiRequestRoomMapping apiRequest)
         {
             try
             {
-                string hotelId = apiRequest?.HotelId?.Trim();
-                string roomName = apiRequest?.RoomName?.Trim();
+                SqlParameter[] para = new SqlParameter[] {
 
-                string collectionName = _mongoSettings.MongoDB_CollectionName_RoomMapping;
+            new SqlParameter("@HotelId", apiRequest.HotelId),
+            new SqlParameter("@RoomName", apiRequest.RoomName)
 
-                IMongoCollection<BsonDocument> collection =
-                    _commonMethod.GetRoomMappingCollection(collectionName);
+        };
 
-                var filterBuilder = Builders<BsonDocument>.Filter;
-                var filter = filterBuilder.Empty;
+                DataTable dt = await _dlConnection
+                    .GetDataTableByConnectionStringAsync(
+                        "GetCheckRoomFromGimmoix",
+                        para,
+                        _connectionStrings.ConnectionString);
 
-                // Filter by HotelId
-                if (!string.IsNullOrWhiteSpace(hotelId))
-                {
-                    filter &= filterBuilder.Regex(
-                        "_id",
-                        new BsonRegularExpression(
-                            "^" + Regex.Escape(hotelId) + @"\$\$\$",
-                            "i"
-                        )
-                    );
-                }
+                List<RoomMappingReport> lstrm =
+                    HtmlExtensions.ToList<RoomMappingReport>(dt);
 
-                // Filter by Room Name
-                if (!string.IsNullOrWhiteSpace(roomName))
-                {
-                    filter &= filterBuilder.Regex(
-                        "s",
-                        new BsonRegularExpression(
-                            Regex.Escape(roomName),
-                            "i"
-                        )
-                    );
-                }
-
-                // Only string _id
-                filter &= filterBuilder.Type("_id", BsonType.String);
-
-                // Projection (fetch only required fields)
-                var projection = Builders<BsonDocument>.Projection
-                    .Include("_id")
-                    .Include("s")
-                    .Include("r");
-
-                var result = await collection
-                    .Find(filter)
-                    .Project(projection)
-                    .Limit(500) // prevent huge data load
-                    .ToListAsync();
-
-                return result.Select(x => new RoomMappingReport
-                {
-                    RateuaraHotelId =
-                        x.Contains("_id") &&
-                        x["_id"].BsonType == BsonType.String
-                            ? x["_id"]
-                                .AsString
-                                .Split(new[] { "$$$" }, StringSplitOptions.None)
-                                .FirstOrDefault()
-                            : string.Empty,
-                    //                ProviderHotelId =
-                    //x.Contains("_id") &&
-                    //x["_id"].BsonType == BsonType.String
-                    //    ? x["_id"].AsString
-                    //    : string.Empty,
-
-                    RoomName =
-                        x.Contains("s") &&
-                        x["s"].BsonType == BsonType.String
-                            ? x["s"].AsString
-                            : string.Empty,
-
-                    RoomCode =
-                        x.Contains("r") &&
-                        x["r"].BsonType == BsonType.String
-                            ? x["r"].AsString
-                            : string.Empty
-
-                }).ToList();
-            }
-            catch (MongoConnectionException ex)
-            {
-                _ = _exception.Error(ex);
-
-                return new List<RoomMappingReport>();
-            }
-            catch (TimeoutException ex)
-            {
-                _ = _exception.Error(ex);
-
-                return new List<RoomMappingReport>();
+                return lstrm;
             }
             catch (Exception ex)
             {
                 _ = _exception.Error(ex);
-
-                return new List<RoomMappingReport>();
+                return null;
             }
         }
 

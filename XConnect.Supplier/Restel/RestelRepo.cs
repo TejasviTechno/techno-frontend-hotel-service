@@ -1798,6 +1798,7 @@ namespace XConnect.Supplier.Restel
                 ResponseData = ResponseData.Replace("<!DOCTYPE respuesta SYSTEM \"http://xml.hotelresb2b.com/xml/dtd/res_disponibilidad_110.dtd\">", "");
                 ResponseData = ResponseData.Replace("<![CDATA[", "");
                 ResponseData = ResponseData.Replace("]]>", "");
+                ResponseData = ResponseData.Replace("[ARROBA]", "@").Replace("&", "&amp;");
 
                 DataSet Restel_Response = _commonMethod.GetDataSetFromXMLString(ResponseData);
                 if (Convert.ToInt32(Restel_Response.Tables["reg"].Rows.Count) == 0)
