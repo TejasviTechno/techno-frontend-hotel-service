@@ -67810,52 +67810,9 @@ new SqlParameter("@AgentId", AgentId),
                 return null;
             }
         }
-        //public async Task<List<RoomMappingReport>> GetRoomMappingHotelReport(ApiRequestRoomMapping apiRequest)
-        //{
-        //    try
-        //    {
-        //        //string hotelId = apiRequest?.HotelId?.Trim();
-        //        //string roomName = apiRequest?.RoomName?.Trim();
+       
 
-        //        //var filterBuilder = Builders<RoomMappingMongo>.Filter;
-        //        //var filter = filterBuilder.Empty;
-
-        //        //// Filter by HotelId (prefix match instead of regex)
-        //        //if (!string.IsNullOrEmpty(hotelId))
-        //        //{
-        //        //    filter &= filterBuilder.Where(x => x._id.StartsWith(hotelId + "$$$"));
-        //        //}
-
-        //        //// Filter by Room Name (case-insensitive)
-        //        //if (!string.IsNullOrEmpty(roomName))
-        //        //{
-        //        //    filter &= filterBuilder.Regex(
-        //        //        x => x.s,
-        //        //        new BsonRegularExpression(roomName, "i")
-        //        //    );
-        //        //}
-
-        //        //var collection = _mongoDatabase.GetCollection<RoomMappingMongo>("RoomMapping");
-
-        //        //var result = await collection
-        //        //    .Find(filter)
-        //        //    .ToListAsync();
-
-        //        //// Map to response model
-        //        //return result.Select(x => new RoomMappingReport
-        //        //{
-        //        //    ProviderHotelId = x._id?.Split(new[] { "$$$" }, StringSplitOptions.None)[0], // clean HotelId
-        //        //    RoomName = x.s,
-        //        //    RoomCode = x.r
-        //        //}).ToList();
-        //        return new List<RoomMappingReport>(); // avoid returning null
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _ = _exception.Error(ex);
-        //        return new List<RoomMappingReport>(); // avoid returning null
-        //    }
-        //}
+       
 
         public async Task<List<RoomMappingReport>> GetRoomMappingHotelReport(ApiRequestRoomMapping apiRequest)
         {
