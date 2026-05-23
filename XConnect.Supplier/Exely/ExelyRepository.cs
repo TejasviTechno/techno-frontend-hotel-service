@@ -336,13 +336,14 @@ namespace XConnect.Supplier.Exely
                                 ? Item.CurrencyCode
                                 : result.roomStays[i].currencyCode;
 
-                            double Factor = 1;
-                            if (!string.IsNullOrEmpty(currency))
-                            {
-                                Factor = _commonMethod.GetROEByCurrency(currency, dtROE);
-                            }
+                            //double Factor = 1;
+                            //if (!string.IsNullOrEmpty(currency))
+                            //{
+                            //    Factor = _commonMethod.GetROEByCurrency(currency, dtROE);
+                            //}
 
-                            double FinalTotal = result.roomStays[i].total.priceBeforeTax * Factor;
+                            //double FinalTotal = result.roomStays[i].total.priceBeforeTax * Factor;
+                            double FinalTotal = result.roomStays[i].total.priceBeforeTax ;
                             if (Pricenew < FinalTotal)
                             {
                                 Pricenew = FinalTotal;
@@ -1009,8 +1010,8 @@ namespace XConnect.Supplier.Exely
                     recheckTimer.Stop();
                     responseData = responseDto.Response;
 
-                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData + "|ERR:" + responseDto.Error, "After Exely Recheck", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
-                    await _commonMethod.XMLRequestResponseTrack_Error(recheckUrl, responseData + "|ERR:" + responseDto.Error, supplierName, recheckTimer.Elapsed.ToString(), "ExelyReCheckRoomStaysByProperty", Searchkey);
+                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData, "After Exely Recheck", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
+                    await _commonMethod.XMLRequestResponseTrack_Error(recheckUrl, responseData, supplierName, recheckTimer.Elapsed.ToString(), "ExelyReCheckRoomStaysByProperty", Searchkey);
 
                     priceCheckCMDto.IsError = false;
                     priceCheckCMDto.Flag = false;
@@ -1100,7 +1101,7 @@ namespace XConnect.Supplier.Exely
                     var responseDto = await ExelyResponseNew(verifyRQ, verifyUrl, bookingTimeout, password, Searchkey);
                     responseData = responseDto.Response;
 
-                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData + "|ERR:" + responseDto.Error, "After Exely PreBook Verify", supplierName, "Response confirm", "-", "NomadsB2B", Searchkey);
+                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData, "After Exely PreBook Verify", supplierName, "Response confirm", "-", "NomadsB2B", Searchkey);
 
                     priceCheckCMDto.IsError = true;
                     priceCheckCMDto.Flag = true;
@@ -1108,7 +1109,7 @@ namespace XConnect.Supplier.Exely
 
                     if (string.IsNullOrWhiteSpace(responseData) || responseData.ToLower().Contains("\"error\"") || !string.IsNullOrWhiteSpace(responseDto.Error))
                     {
-                        _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData + "|ERR:" + responseDto.Error, "Exely PreBook Verify failed - book again required", supplierName, "Response confirm", "-", "NomadsB2B", Searchkey);
+                        _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData, "Exely PreBook Verify failed - book again required", supplierName, "Response confirm", "-", "NomadsB2B", Searchkey);
                     }
                     else
                     {
