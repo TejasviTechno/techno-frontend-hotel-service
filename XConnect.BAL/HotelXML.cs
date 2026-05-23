@@ -49689,21 +49689,35 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 string exelyPropertyId = exelyHotelIdForVerify;
                                                                                 if (string.IsNullOrWhiteSpace(exelyCreateBookingToken))
                                                                                 {
-                                                                                    Error = "Exely createBookingToken missing from prebook response.";
-                                                                                    RequestSPR = string.Empty;
-                                                                                    ReponseSPR = string.Empty;
-                                                                                    time = "00:00:00.000000";
-                                                                                    responsetype = "GeneralError";
+                                                                                    // Try to recheck prebook to obtain createBookingToken
                                                                                     try
                                                                                     {
-                                                                                        _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                                                        dtCheckPriceReqStructure = _commonMethod.getCheckPriceReqTableStructure();
+                                                                                        PriceCheckCMDto retryPriceCheck = await _iExely.Get_Exely_RecheckPreBookRQRS(dsCartDetails, SupplierDetailsCommon, i, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, true, 0, exelyPropertyId, "P", false, 0, SearchKey, AgentId, tokenData);
+                                                                                        // attempt to read token again from roomTypeId after recheck
+                                                                                        string refreshedRoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]);
+                                                                                        exelyCreateBookingToken = GetExelyCreateBookingTokenFromRoomTypeId(refreshedRoomTypeId);
                                                                                     }
-                                                                                    catch (Exception e)
+                                                                                    catch { }
+
+                                                                                    if (string.IsNullOrWhiteSpace(exelyCreateBookingToken))
                                                                                     {
-                                                                                        _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", SearchKey);
+                                                                                        Error = "Exely createBookingToken missing from prebook response.";
+                                                                                        RequestSPR = string.Empty;
+                                                                                        ReponseSPR = string.Empty;
+                                                                                        time = "00:00:00.000000";
+                                                                                        responsetype = "GeneralError";
+                                                                                        try
+                                                                                        {
+                                                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                                                        }
+                                                                                        catch (Exception e)
+                                                                                        {
+                                                                                            _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", SearchKey);
+                                                                                        }
+                                                                                        dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), "", RequestSPR, Error, Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), 2, voucherpackageid));
+                                                                                        continue;
                                                                                     }
-                                                                                    dtAgentVoucher.Rows.Add(AddBookingDataRow(dtAgentVoucher.NewRow(), Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]), "", RequestSPR, Error, Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), 2, voucherpackageid));
-                                                                                    continue;
                                                                                 }
 
                                                                                 string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(dtPassengers, exelyCreateBookingToken, exelyPropertyId, checkIn, checkOut, exelyCurrency, Nationality, tokenData.AgentCode, checksum, exelyRoomTypeId, exelyNoOfAdults, exelyNoOfChild);
@@ -55351,14 +55365,37 @@ new SqlParameter("@AgentId", AgentId),
                                         string exelyPropertyId = groupPropertyId;
                                         if (string.IsNullOrWhiteSpace(groupToken))
                                         {
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, string.Empty, "Exely createBookingToken missing from prebook response.", "Exely Group Book token missing", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
+                                            // Attempt a verify call to obtain a createBookingToken for the group
+                                            try
+                                            {
+                                                string verifyRQ = _iExely.Get_Exely_VerifyBookingRQ(exelyRoomInfoList, groupPropertyId, groupNationality, null);
+                                                string verifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
+                                                ResponseDto verifyResp = await _iExely.ExelyResponseNew(verifyRQ, verifyUrl, 120000, password, bookRequest.SearchKey);
+                                                string verifyResponse = verifyResp.Response;
+                                                if (!string.IsNullOrWhiteSpace(verifyResponse))
+                                                {
+                                                    var verifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(verifyResponse);
+                                                    if (verifyResult?.booking != null && !string.IsNullOrWhiteSpace(verifyResult.booking.createBookingToken))
+                                                    {
+                                                        groupToken = verifyResult.booking.createBookingToken;
+                                                        // append token to each room's RoomTypeId
+                                                        for (int k = 0; k < bookRequest.userCart.UserCartDetails.Count; k++)
+                                                        {
+                                                            string rt = bookRequest.userCart.UserCartDetails[k].RoomTypeId ?? string.Empty;
+                                                            var parts = rt.Split("$$$").ToList();
+                                                            while (parts.Count <= 11) parts.Add(string.Empty);
+                                                            parts[11] = groupToken;
+                                                            bookRequest.userCart.UserCartDetails[k].RoomTypeId = string.Join("$$$", parts);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            catch { }
                                         }
-                                        else
-                                        {
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, string.Empty, string.Empty, "Using existing Exely createBookingToken from prebook", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B");
-                                        }
+
                                         if (string.IsNullOrWhiteSpace(groupToken))
                                         {
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, string.Empty, "Exely createBookingToken missing from prebook response.", "Exely Group Book token missing", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
                                             RequestSPR = string.Empty;
                                             ReponseSPR = string.Empty;
                                             Error = "Exely createBookingToken missing from prebook response.";
@@ -55384,6 +55421,11 @@ new SqlParameter("@AgentId", AgentId),
                                         }
                                         else
                                         {
+                                            /*if (string.IsNullOrWhiteSpace(RequestSPR))
+                                            {
+                                                _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, string.Empty, string.Empty, "Using existing Exely createBookingToken from prebook/verify", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B");
+                                            }*/
+
                                             // STEP 2: Single book for all rooms using the group token
                                             string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(exelyRoomInfoList, dtPassengers, groupToken, exelyPropertyId, groupNationality);
                                             string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.CreateBooking.TrimStart('/');
