@@ -61707,7 +61707,7 @@ new SqlParameter("@AgentId", AgentId),
                                 ResponseData = responseDto.Response;
                                 Error = responseDto.Error;
 
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit CalculateCancellationPenalty", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(exelyURL), Convert.ToString(ResponseData), "After Request hit CalculateCancellationPenalty", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
 
                                 var result = JsonConvert.DeserializeObject<ResultOfCalculatePenalty>(ResponseData);
                                 double Amount = result.penaltyAmount ?? 0;
@@ -65577,7 +65577,7 @@ new SqlParameter("@AgentId", AgentId),
                                 ResponseData = responseDto.Response;
                                 Error = responseDto.Error;
 
-                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXMLcharge), Convert.ToString(ResponseData), "After Request hit CalculateCancellationPenalty", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
+                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(exelyURL), Convert.ToString(ResponseData), "After Request hit CalculateCancellationPenalty", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
 
                                 var result = JsonConvert.DeserializeObject<ResultOfCalculatePenalty>(ResponseData);
                                 double Amount = result.penaltyAmount ?? 0;
@@ -65612,12 +65612,7 @@ new SqlParameter("@AgentId", AgentId),
                                     string Messages = Result.reason;
                                     DateTime cancelledTime = Result.cancelledUtc;
                                     int status = Result != null ? 1 : 0;
-                                    if (status == 1)
-                                    {
-
-                                        _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "After Request hit booking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");
-                                    }
-                                    else
+                                    if (status != 1)
                                     {
                                         _commonMethod.ThirdPartyErrorInCancellationHistory(Convert.ToString(AgentRef), UserNameType, Convert.ToString(cancelexelyurl), Convert.ToString(CancelResponseData), "From Cancellation Page", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Hotel", PNRNO_Cancel, "NomadsB2B");
                                         return "";
