@@ -143,18 +143,12 @@ namespace XConnect.Models
 
     public class RoomMappingReport
     {
-        public Int64 Id { get; set; }
-        public string RoomName { get; set; }
-        public string Response { get; set; }
-        public string Provider { get; set; }
-        public string ProviderHotelId { get; set; }
-        public string BoardBasis { get; set; }
-        public string RateuaraHotelId { get; set; }
-        public string CityId { get; set; }
-        public string GVSupplierId { get; set; }
-        public string GVRoomName { get; set; }
-        public string RoomCode { get; set; }
-       
+        public int Id { get; set; }
+        public int HotelId { get; set; }
+        public int SupplierId { get; set; }
+        public int RoomId { get; set; }
+        public string SupplierRoomName { get; set; }
+        public string StandardRoomName { get; set; }
     }
     public class RoomMappingMongo
     {
