@@ -343,7 +343,7 @@ namespace XConnect.Supplier.Exely
                             //}
 
                             //double FinalTotal = result.roomStays[i].total.priceBeforeTax * Factor;
-                            double FinalTotal = result.roomStays[i].total.priceBeforeTax ;
+                            double FinalTotal = result.roomStays[i].total.priceBeforeTax;
                             if (Pricenew < FinalTotal)
                             {
                                 Pricenew = FinalTotal;
@@ -1446,7 +1446,7 @@ namespace XConnect.Supplier.Exely
                 int noOfChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfChild"]);
                 List<int> childAges = new List<int>();
                 for (int c = 0; c < noOfChild; c++) childAges.Add(8);
-                var placements = BuildBookingPlacements(storedPlacementCode,noOfAdults, noOfChild);
+                var placements = BuildBookingPlacements(storedPlacementCode, noOfAdults, noOfChild);
 
                 List<BookingGuest> guests = new List<BookingGuest>();
                 foreach (DataRow pax in dtPassengers.Rows)
@@ -1532,7 +1532,7 @@ namespace XConnect.Supplier.Exely
 
                 List<int> childAges = new List<int>();
                 for (int c = 0; c < noOfChild; c++) childAges.Add(8);
-                var placements = BuildBookingPlacements(storedPlacementCode,noOfAdults, noOfChild);
+                var placements = BuildBookingPlacements(storedPlacementCode, noOfAdults, noOfChild);
 
                 List<BookingGuest> guests = new List<BookingGuest>();
                 foreach (DataRow pax in dtPassengers.Rows)
@@ -2129,9 +2129,9 @@ namespace XConnect.Supplier.Exely
                 return new List<ExelyCancellationSegment>();
 
             string segmentCurrency = string.IsNullOrWhiteSpace(currencyCode) ? "USD" : currencyCode;
-            double penaltyAmount = fallbackPenaltyAmount > 0
-                ? fallbackPenaltyAmount
-                : Math.Max(0, cancellationPolicy.penaltyAmount ?? 0);
+            double penaltyAmount = cancellationPolicy.penaltyAmount.HasValue && cancellationPolicy.penaltyAmount.Value > 0
+                ? cancellationPolicy.penaltyAmount.Value
+                : fallbackPenaltyAmount;
             List<ExelyCancellationSegment> segments = new List<ExelyCancellationSegment>();
 
             if (cancellationPolicy.freeCancellationPossible)
