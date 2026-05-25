@@ -1381,7 +1381,7 @@ namespace XConnect.Supplier.AgodaNew
                         //bookingRequest.Token = WebConfigurationManager.AppSettings["out_agoda_token"];
                         //bookingRequest.Token = _keySettings.out_agoda_token;
                         bookingRequest.Token = _keySettings.out_agoda_token;
-                        //bookingRequest.Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZ2VudElkIjo1LCJhZ2VudENvZGUiOiJURUNIIiwidXNlck5hbWUiOiJwaW5ha2luIiwiZW1haWwiOiJwaW5ha2luQHRlY2hub2hlYXZlbi5uZXQiLCJwaG9uZU5vIjoiKzkxIDg2OTU3NDE1ODUiLCJ1c2VySWQiOjUsInN1YlVzZXJJZCI6MCwidXNlclR5cGVJZCI6MSwidXNlclR5cGUiOiJBZ2VudCIsInVzZXJDb2RlIjoiQWdlbnQiLCJwYXltZW50VHlwZSI6MCwicGF5bWVudFR5cGVWYWx1ZSI6IlBvc3RQYWlkIiwiZGlzcGxheUN1cnJlbmN5SWQiOjUsImNyZWRpdGxpbWl0Q3VycmVuY3lJZCI6NSwiY3JlZGl0bGltaXRDdXJyZW5jeUNvZGUiOiJVU0QiLCJyYXRlQ2F0ZWdvcnlJZCI6MSwidGVuYW50SWQiOiIzMDM3MTA4NC03MjU4LUZDQjctMTBERi0zQTFGRDVBQkEyMjEiLCJpc0Zyb21BcGkiOnRydWUsInNlc3Npb25JZCI6ImZkOGYzNjI2LThjODktNGE1Yi1iMGU2LTUxYzQwYTg5YWI1YyIsInNlcnZpY2VUeXBlIjpbIkhvdGVsIl0sInJld2FyZFBvaW50cyI6W10sInBlcm1pc3Npb25UeXBlIjpbIkZ1bGwgQWNjZXNzIFBlcm1pc3Npb24iLCJDYW4gVm91Y2hlciIsIkFsbG93IGJvb2tpbmcgd2l0aGluIGNhbmNlbGxhdGlvbiIsIkFsbG93IEJvb2tpbmciLCJTaG93IFN1cHBsaWVyIl0sImlzcyI6IlRFQ0hfMzAzNzEwODQtNzI1OC1GQ0I3LTEwREYtM0ExRkQ1QUJBMjIxIiwiaWF0IjoxNzc2ODMxNzYxfQ.KArXTf9Dn - JMCANVSrE7eavMmYrsT0AfK0cgBfFTB2Q";
+                        bookingRequest.Token = "";
 
                         //bookingRequest.Token = _keySettings?.out_agoda_token;
                         CommonXMLBookRequest.Request request = new CommonXMLBookRequest.Request();

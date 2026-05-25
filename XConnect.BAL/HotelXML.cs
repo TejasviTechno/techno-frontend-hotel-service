@@ -72163,45 +72163,48 @@ new SqlParameter("@AgentId", AgentId),
                             #endregion
 
 
-
-
-
-                            #region Added on 17-04-26
-
-                            //var options = new JsonSerializerOptions
-                            //{
-                            //    WriteIndented = true,  // For pretty printing
-                            //    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull  // Ignore null properties
-                            //};
-                            //string res = System.Text.Json.JsonSerializer.Serialize(RS, options);
-
-                            // newadded 17042026
-
-                            if (APIName.ToLower() == "availabilitywithcancellation" || APIName.ToLower() == "availability" || APIName.ToLower() == "availabilitywithcancellationv2")
+                            if (true) //EnterLogs
                             {
-                                var options = new JsonSerializerOptions
+                                EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), "", APIName, "", "123", tokendata.AgentId, ElapsedTime, ErrorCode, CityId, "", hostName, "", "", "");
+
+
+                                #region Added on 17-04-26
+
+                                //var options = new JsonSerializerOptions
+                                //{
+                                //    WriteIndented = true,  // For pretty printing
+                                //    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull  // Ignore null properties
+                                //};
+                                //string res = System.Text.Json.JsonSerializer.Serialize(RS, options);
+
+                                // newadded 17042026
+
+                                if (APIName.ToLower() == "availabilitywithcancellation" || APIName.ToLower() == "availability" || APIName.ToLower() == "availabilitywithcancellationv2")
                                 {
-                                    WriteIndented = true,  // For pretty printing
-                                                           //DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull  // Ignore null properties
-                                };
+                                    var options = new JsonSerializerOptions
+                                    {
+                                        WriteIndented = true,  // For pretty printing
+                                                               //DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull  // Ignore null properties
+                                    };
 
-                                jsonString = System.Text.Json.JsonSerializer.Serialize(value, options);
-                                Task.Run(() => EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), RQ.token, APIName, Search_Key, "", tokendata.AgentId, ElapsedTime, ErrorCode, CityId, "", hostName, "")); //MainURL
+                                    jsonString = System.Text.Json.JsonSerializer.Serialize(value, options);
+                                    Task.Run(() => EnterApiLogs(Website, JsonConvert.SerializeObject(RQ), JsonConvert.SerializeObject(RS), RQ.token, APIName, Search_Key, "", tokendata.AgentId, ElapsedTime, ErrorCode, CityId, "", hostName, "")); //MainURL
 
-                            }
-                            else
-                            {
-                                var settings = new JsonSerializerSettings
+                                }
+                                else
                                 {
-                                    NullValueHandling = NullValueHandling.Ignore,
-                                    //MissingMemberHandling = MissingMemberHandling.Ignore,
-                                };
+                                    var settings = new JsonSerializerSettings
+                                    {
+                                        NullValueHandling = NullValueHandling.Ignore,
+                                        //MissingMemberHandling = MissingMemberHandling.Ignore,
+                                    };
 
 
-                                jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(value, settings);
+                                    jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(value, settings);
+                                }
+
+                                #endregion
                             }
-
-                            #endregion
 
 
                         }
