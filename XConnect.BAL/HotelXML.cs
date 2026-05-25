@@ -28177,12 +28177,12 @@ new SqlParameter("@AgentId", AgentId),
                                         if (Supplier.IndexOf("_xtg") >= 0)
                                             Supplier = "xtg";
 
-                                        //if (IsVervoActive == false || (_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier) ||
-                                        //    (Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]) == UnicaId
-                                        //    && Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]) == XMLHotelCode
-                                        //    && ProvideFmly.ToLower() == MapSupplierName.ToLower()
-                                        //    )))
-                                        if (true)
+                                        if (IsVervoActive == false || (_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier) ||
+                                            (Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]) == UnicaId
+                                            && Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]) == XMLHotelCode
+                                            && ProvideFmly.ToLower() == MapSupplierName.ToLower()
+                                            )))
+                                           // if (true)
                                         {
                                             switch (TechName.ToLower())
                                             {
