@@ -1171,7 +1171,9 @@ namespace XConnect.Supplier
                             int loop = 1;
                             string checkin2 = Convert.ToString(SearchPara.CheckInDate);
                             DateTime dtCheckin1 = DateTime.ParseExact(checkin2, "dd/MM/yyyy", null);
-
+                            DateTime Policydate = DateTime.Now.Date;
+                            DateTime canceldate = DateTime.Now.Date;
+                            string LastCancellationDeadline = "";
                             Paneltyrule = Paneltyrule.OrderBy(item => item.dateFrom).ToList();
                             for (int m = 0; m < Paneltyrule.Count; m++)
                             {
@@ -1218,7 +1220,13 @@ namespace XConnect.Supplier
                                 }
                                 double VatOnPolicy = 0;
                                 double cancellationChargeAmount = _markup.ProcessHotelCancelationPrice_WithMarkup(ref cancellationamt, SearchPara.NoofNights, SearchPara.CityID, SearchPara.CountryID.ToString(), cancellationamt, isPerce, XMLHotelBookingCommon.B2CMarkup, AgentPercentage, AgentMarkupAmount, Convert.ToInt32(dtAgentDetail.Rows[0]["IsParentId"]), Convert.ToDouble(dtAgentDetail.Rows[0]["B2CMarkupPer"]), ref VatOnPolicy);
-                                DateTime canceldate = Convert.ToDateTime(Paneltyrule[m].dateFrom);
+                                 canceldate = Convert.ToDateTime(Paneltyrule[m].dateFrom);
+                                if (m == 0)
+                                    Policydate = canceldate;
+                                else if (canceldate < Policydate)
+                                    Policydate = canceldate;
+
+                                LastCancellationDeadline = Policydate.ToString("dd/MM/yyyy");
                                 DateTime currentdate = DateTime.Now.Date;
                                 if (loop <= Paneltyrule.Count - 1)
                                 {
@@ -1238,15 +1246,15 @@ namespace XConnect.Supplier
                                     if (m == 0)
                                     {
                                         double Zero = 0;
-                                        dtMethaBookCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref Zero, dtMethaBookCancellation.NewRow(), 1, MethaBookCurrency, provider, ownsystemid, Convert.ToString(1), roomtypeid, RoomName, MealCode, currentdate, canceldate.AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59), 0, 0, MealCode, 0, "", "No", "", EssentialInfo, "", ""));
+                                        dtMethaBookCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref Zero, dtMethaBookCancellation.NewRow(), 1, MethaBookCurrency, provider, ownsystemid, Convert.ToString(1), roomtypeid, RoomName, MealCode, currentdate, canceldate.AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59), 0, 0, MealCode, 0, "", "No", LastCancellationDeadline, EssentialInfo, "", ""));
                                         dtMethaBookCancellation.AcceptChanges();
                                     }
-                                    dtMethaBookCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref cancellationamt, dtMethaBookCancellation.NewRow(), 1, MethaBookCurrency, provider, ownsystemid, Convert.ToString(1), roomtypeid, RoomName, MealCode, canceldate, Todate, cancellationChargeAmount, cancellationChargeAmount, MealCode, 0, "", "No", "", EssentialInfo, "", ""));
+                                    dtMethaBookCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref cancellationamt, dtMethaBookCancellation.NewRow(), 1, MethaBookCurrency, provider, ownsystemid, Convert.ToString(1), roomtypeid, RoomName, MealCode, canceldate, Todate, cancellationChargeAmount, cancellationChargeAmount, MealCode, 0, "", "No", LastCancellationDeadline, EssentialInfo, "", ""));
                                     dtMethaBookCancellation.AcceptChanges();
                                 }
                                 else
                                 {
-                                    dtMethaBookCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref cancellationamt, dtMethaBookCancellation.NewRow(), 1, MethaBookCurrency, provider, ownsystemid, Convert.ToString(1), roomtypeid, RoomName, MealCode, canceldate, dtCheckin1, cancellationChargeAmount, cancellationChargeAmount, MealCode, 0, "", "No", "", EssentialInfo, "", ""));
+                                    dtMethaBookCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref cancellationamt, dtMethaBookCancellation.NewRow(), 1, MethaBookCurrency, provider, ownsystemid, Convert.ToString(1), roomtypeid, RoomName, MealCode, canceldate, dtCheckin1, cancellationChargeAmount, cancellationChargeAmount, MealCode, 0, "", "No", LastCancellationDeadline, EssentialInfo, "", ""));
                                     dtMethaBookCancellation.AcceptChanges();
                                 }
                                 loop++;
@@ -1476,6 +1484,48 @@ namespace XConnect.Supplier
                         priceCheckCMDto.ItemPrice = itemprice;
                         return priceCheckCMDto;
                     }
+                }
+                string LastCancellationDeadline = "";
+                string purchaseToken1 = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["purchaseToken"]);
+                //string NonRefundable = Convert.ToString(MethaBookResponse.valuationRS.availability.nonRefundable);
+                if (MethaBookResponse.valuationRS.availability.cancellationPolicy != null)
+                {
+                    List<MethaBook.PenaltyRule> Paneltyrule = new List<MethaBook.PenaltyRule>(MethaBookResponse.valuationRS.availability.cancellationPolicy.penaltyRules);
+                    Paneltyrule = Paneltyrule.OrderBy(item => item.dateFrom).ToList();
+
+                    DateTime Policydate = DateTime.Now.Date;
+                    for (int m = 0; m < Paneltyrule.Count; m++)
+                    {
+                        DateTime canceldate = Convert.ToDateTime(Paneltyrule[m].dateFrom);
+
+                        if (m == 0)
+                            Policydate = canceldate;
+                        else if (canceldate < Policydate)
+                            Policydate = canceldate;
+
+
+                    }
+                    LastCancellationDeadline = Policydate.ToString("dd/MM/yyyy");
+                }
+
+                if (LastCancellationDeadline != purchaseToken1)
+                {
+
+                    try
+                    {
+                        responsetype = "GeneralError";
+                        ResponseData = "#Policy Changed " + "#Old Policy = " + purchaseToken1 + " #New Policy = " + LastCancellationDeadline + " #Response= " + ResponseData;
+
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PriceCheckRequest, ResponseData, Error);
+                    }
+                    catch (Exception e)
+                    {
+                        _ = _exception.Error(e, Searchkey);
+                    }
+
+                    priceCheckCMDto.Flag = false;
+                    priceCheckCMDto.ItemPrice = 0;
+                    return priceCheckCMDto;
                 }
                 try
                 {

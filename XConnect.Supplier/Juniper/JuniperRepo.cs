@@ -2096,7 +2096,7 @@ namespace XConnect.Supplier.Juniper
                     string ResponseData = responseDto.Response;
                     Error = responseDto.Error;
 
-                    _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(RoomTypeId_Own), Convert.ToString(ownsystemid), searchRQString, Convert.ToString(ResponseData), "After Get Policy", provider, "Response", "-", "");
+                    _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(RoomTypeId_Own), Convert.ToString(ownsystemid), searchRQString, Convert.ToString(ResponseData), "After Get Policy", provider, "Response", SearchKey, "");
                     if (ResponseData == string.Empty || ResponseData.Contains("Error"))
                     {
                         cancellationDto.dsHotelData = null;

@@ -428,7 +428,10 @@ namespace XConnect.Markup
                     {
                         Supplier = "GoGlobal";
                     }
-                    
+                    if (Supplier.ToLower() == "pricetraveluop_xtg" ||   Supplier.ToLower() == "pricetravelop_xtg")
+                            Supplier = "pricetravel";
+                  
+
                     //need 
                     double AgentMarkupAmount = 0.0;
                     Boolean isPerce = true;
