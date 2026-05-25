@@ -5751,6 +5751,8 @@ namespace XConnect.API.Controllers
 
                     if (!filterUsed.ratePlanSearch)
                     {
+                        Stopwatch timerforagodaconvert = new Stopwatch();
+                        timerforagodaconvert.Start();
                         AgodaListResponse lstFiltOption = new AgodaListResponse();
                         //File.WriteAllText(Path.Combine("D:\\Karnav\\Agoda API", "WriteFile_HotelResult.txt"), Convert.ToString(finalResponse.AvailabilityRS.HotelResult.Count));
                         if (finalResponse.AvailabilityRS != null && finalResponse.AvailabilityRS.HotelResult.Count > 0)
@@ -5760,6 +5762,7 @@ namespace XConnect.API.Controllers
                             //lstFiltOption = await _hotelXML.ConvertToFinalResponseListForAgoda(finalResponse,filterUsed, Convert.ToString(tokenData.apiCurrency.CurrencyShortname), requestName, _NoofRoom); //convert to final response
                             lstFiltOption = await _hotelXML.ConvertToFinalResponseListForAgoda(finalResponse, filterUsed, authData.tokenData.apiCurrency.CurrencyShortname, requestName, _NoofRoom); //needtochange
                         }
+                        timerforagodaconvert.Stop();
                         timer.Stop();
                         if (lstFiltOption != null)
                         {
@@ -5787,7 +5790,7 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription =  erroragoda.remark,
-                                        CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5815,7 +5818,7 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription = "SUCCESSFULL",
-                                        CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5847,7 +5850,7 @@ namespace XConnect.API.Controllers
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription =  erroragoda.remark,
-                                    CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                    CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
                                 });
                             }
                             catch (Exception exx)
@@ -5861,6 +5864,8 @@ namespace XConnect.API.Controllers
                     }
                     else
                     {
+                        Stopwatch timerforagodaconvert2 = new Stopwatch();
+                        timerforagodaconvert2.Start();
                         //AgodaMainPrecheck lstFiltOption = new AgodaMainPrecheck();
                         AgodaListResponse lstFiltOption = new AgodaListResponse();
 
@@ -5871,6 +5876,7 @@ namespace XConnect.API.Controllers
                             lstFiltOption = await _hotelXML.ConvertToFinalResponseListForAgoda(finalResponse, filterUsed, authData.tokenData.apiCurrency.CurrencyShortname, requestName, _NoofRoom); //needtochange
 
                         }
+                        timerforagodaconvert2.Stop();
                         timer.Stop();
                         if (lstFiltOption != null)
                         {
@@ -5898,7 +5904,7 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription =  erroragoda.remark,
-                                        CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5925,7 +5931,7 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription = "SUCCESSFULL",
-                                        CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5960,7 +5966,7 @@ namespace XConnect.API.Controllers
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription =  erroragoda.remark,
-                                    CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                    CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
                                 });
                             }
                             catch (Exception exx)
@@ -5989,8 +5995,7 @@ namespace XConnect.API.Controllers
                             Errorcode = "UNAUTHORIZED",
                             source = "APIOut",
                             AgentName = "Agoda",
-                            ActualDescription = erroragoda.remark,
-                            CodeProcessingTimenew = timer.ElapsedMilliseconds
+                            ActualDescription = erroragoda.remark
                         });
                     }
                     catch (Exception exx)
@@ -6018,8 +6023,7 @@ namespace XConnect.API.Controllers
                         Errorcode = "INTERNAL_ERROR",
                         source = "APIOut",
                         AgentName = "Agoda",
-                        ActualDescription =  erroragoda.remark,
-                        CodeProcessingTimenew = timer.ElapsedMilliseconds
+                        ActualDescription =  erroragoda.remark
                     });
                 }
                 catch (Exception exx)
