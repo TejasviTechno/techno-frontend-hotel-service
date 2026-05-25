@@ -228,7 +228,7 @@ namespace XConnect.Expedia
                                                                     RQRS objrq = new RQRS();
                                                                     List<RoomDetails> serchRooms = new List<RoomDetails>();
                                                                     serchRooms.Add(SearchPara.Rooms[rr]);
-                                                                    objrq.Request = XMLEANRequestOnly_async(SearchByOneID, "1", "5", xhotel.URL, xhotel.UserId, xhotel.UserName, xhotel.PassWord, xhotel.SearchTimeOut, SearchPara, Convert.ToInt32(EXPSearchConfig[k].Noofrecords), Convert.ToString(EANChild[x].version), Ids, EchoToken, Platform, Convert.ToString(EANChild[x].SupplierName), XMLCOUNTRYCode, XMLCITY, ISPKG,IsB2B, AgentCode, xhotel.ReturnRooms, xhotel.CurrencyCode);
+                                                                    objrq.Request = XMLEANRequestOnly_async(SearchByOneID, "1", "5", xhotel.URL, xhotel.UserId, xhotel.UserName, xhotel.PassWord, xhotel.SearchTimeOut, SearchPara, Convert.ToInt32(EXPSearchConfig[k].Noofrecords), Convert.ToString(EANChild[x].version), Ids, EchoToken, Platform, Convert.ToString(EANChild[x].SupplierName), XMLCOUNTRYCode, XMLCITY, ISPKG,IsB2B,tokenData.IsPackage, AgentCode, xhotel.ReturnRooms, xhotel.CurrencyCode);
                                                                     objrq.Response = ""; RQRS.Add(objrq);
                                                                 }
                                                                 xhotel.RQRS = RQRS;
@@ -386,7 +386,7 @@ namespace XConnect.Expedia
                                         RQRS objrq = new RQRS();
                                         List<RoomDetails> serchRooms = new List<RoomDetails>();
                                         serchRooms.Add(SearchPara.Rooms[rr]);
-                                        objrq.Request = XMLEANRequestOnly_async(SearchByOneID, "1", "5", xhotel.URL, xhotel.UserId, xhotel.UserName, xhotel.PassWord, xhotel.SearchTimeOut, SearchPara, Convert.ToInt32(EXPSearchConfig[k].Noofrecords), Convert.ToString(EXPDetails[0].version), Ids, EchoToken, Platform, Convert.ToString(EXPDetails[0].SupplierName), XMLCOUNTRYCode, XMLCITY, ISPKG,false, AgentCode);
+                                        objrq.Request = XMLEANRequestOnly_async(SearchByOneID, "1", "5", xhotel.URL, xhotel.UserId, xhotel.UserName, xhotel.PassWord, xhotel.SearchTimeOut, SearchPara, Convert.ToInt32(EXPSearchConfig[k].Noofrecords), Convert.ToString(EXPDetails[0].version), Ids, EchoToken, Platform, Convert.ToString(EXPDetails[0].SupplierName), XMLCOUNTRYCode, XMLCITY, ISPKG,false,tokenData.IsPackage, AgentCode);
                                         objrq.Response = ""; RQRS.Add(objrq);
                                     }
                                     xhotel.RQRS = RQRS;
@@ -410,7 +410,7 @@ namespace XConnect.Expedia
             }
         }
 
-        public string XMLEANRequestOnly_async(bool SearchByOneID, string MinStar, string MaxStar, string WSUrl, string CID, string Sign, string ApiKey, Int32 SearchTimeOut, HotelSearchParameter SearchParam, int NoOfRecord, string version, string Ids, string echotoken, string platform, string Suppliername, string XMLCOUNTRYCode, string XMLCITY, bool ISPKG = false, bool IsB2B=false, string AgentCode = "", int ReturnRooms = 5, string EANCurrency = "USD")
+        public string XMLEANRequestOnly_async(bool SearchByOneID, string MinStar, string MaxStar, string WSUrl, string CID, string Sign, string ApiKey, Int32 SearchTimeOut, HotelSearchParameter SearchParam, int NoOfRecord, string version, string Ids, string echotoken, string platform, string Suppliername, string XMLCOUNTRYCode, string XMLCITY, bool ISPKG = false, bool IsB2B=false , bool IsPackage = false, string AgentCode = "", int ReturnRooms = 5, string EANCurrency = "USD")
         {
             try
             {
@@ -420,7 +420,7 @@ namespace XConnect.Expedia
                 checkin = checkin.Substring(6, 4) + "-" + checkin.Substring(3, 2) + "-" + checkin.Substring(0, 2);
                 checkout = checkout.Substring(6, 4) + "-" + checkout.Substring(3, 2) + "-" + checkout.Substring(0, 2);
                 string cacheKey = ""; string cacheLocation = ""; bool moreResultsAvailable = false; int ResultPage = 1;
-                string ReqString = GetEANHotelSearchRequest(SearchByOneID, checkin, checkout, NoOfRecord, NoOfNight, SearchParam, Ids, XMLCITY, XMLCOUNTRYCode, MinStar, MaxStar, Suppliername, cacheKey, cacheLocation, moreResultsAvailable, ISPKG,  IsB2B ,AgentCode, ReturnRooms, EANCurrency);
+                string ReqString = GetEANHotelSearchRequest(SearchByOneID, checkin, checkout, NoOfRecord, NoOfNight, SearchParam, Ids, XMLCITY, XMLCOUNTRYCode, MinStar, MaxStar, Suppliername, cacheKey, cacheLocation, moreResultsAvailable, ISPKG,  IsB2B, IsPackage, AgentCode, ReturnRooms, EANCurrency);
                 return ReqString;
             }
             catch (IOException ex)
@@ -532,7 +532,7 @@ namespace XConnect.Expedia
 
         #endregion
 
-        public string GetEANHotelSearchRequest(bool SearchByOneID, string checkin, string checkout, int NoOfRecord, int NoOfNight, HotelSearchParameter SearchParam, string Ids, string XMLCITY, string XMLCOUNTRYCode, string MinStar, string MaxStar, string SupplierName, string cacheKey, string cacheLocation, bool moreResultsAvailable, bool ISPKG = false, bool IsB2B=false, string AgentCode = "", int ReturnRooms = 10, string EANCurrency = "USD") //040225 - ReturnRooms
+        public string GetEANHotelSearchRequest(bool SearchByOneID, string checkin, string checkout, int NoOfRecord, int NoOfNight, HotelSearchParameter SearchParam, string Ids, string XMLCITY, string XMLCOUNTRYCode, string MinStar, string MaxStar, string SupplierName, string cacheKey, string cacheLocation, bool moreResultsAvailable, bool ISPKG = false, bool IsB2B=false,bool IsPackage=false, string AgentCode = "", int ReturnRooms = 10, string EANCurrency = "USD") //040225 - ReturnRooms
         {
             try
             {
@@ -569,7 +569,7 @@ namespace XConnect.Expedia
                 else
                     JsonRQ.Append("&sales_environment=" + _supplierConfig.Expedia.EAN_Sales_Environment_Hotel_Only);
                 
-                    if(_keySettings.MultiexpediaIsActive && ISPKG)
+                    if(_keySettings.MultiexpediaIsActive && IsPackage)
                     JsonRQ.Append("&rate_option=" + _supplierConfig.Expedia.EAN_Rate_Option_Cross_sell);//package 
                     else
                         JsonRQ.Append("&rate_option=" + _supplierConfig.Expedia.EAN_Rate_Option_Member);
@@ -585,6 +585,7 @@ namespace XConnect.Expedia
                     JsonRQ.Append("&billing_terms=");
                     JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms);
                     JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale);
+                    JsonRQ.Append("&rate_option=" + _supplierConfig.Expedia.EAN_Rate_Option_Member);
 
                 }
                 else
@@ -593,7 +594,7 @@ namespace XConnect.Expedia
                     {
 
 
-                        if (ISPKG)
+                        if (IsPackage)
                         {
                             if (_keySettings.MultiexpediaIsActive)
                             {
@@ -602,12 +603,14 @@ namespace XConnect.Expedia
                                     JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
                                     JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2C_Cross_Sell_Domestic);
                                     JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2C_Cross_Sell_Domestic);
+                                    
                                 }
                                 else if (XMLCOUNTRYCode.ToUpper() != DomesticContryCode)
                                 {
                                     JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
                                     JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2C_Cross_Sell_International);
                                     JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2C_Cross_Sell_International);
+                                    
                                 }
                             }
                             else
@@ -617,12 +620,14 @@ namespace XConnect.Expedia
                                     JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
                                     JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_International);
                                     JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_International);
+                                   
                                 }
                                 else
                                 {
                                     JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
                                     JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_Domestic);
                                     JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_Domestic);
+                                    
                                 }
 
 
@@ -653,12 +658,14 @@ namespace XConnect.Expedia
                                     JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
                                     JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_International);
                                     JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_International);
+                                    
                                 }
                                 else
                                 {
                                     JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
                                     JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_Domestic);
                                     JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_Domestic);
+                                
                                 }
 
                             }
@@ -672,6 +679,7 @@ namespace XConnect.Expedia
                             JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
                             JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_International);
                             JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_International);
+                            
                         }
                         else
                         {

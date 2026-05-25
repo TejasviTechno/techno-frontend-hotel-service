@@ -25,6 +25,7 @@ namespace XConnect.Supplier.MGBedBank.Interface
 
         Task<ResponseDto> MGGetSupplierParallel(string strxmlRQRS, string strHost, string ErrorResponse, Int32 TimeOut, string Provider = "", string SearchKey = "");
 
+        string Get_MgBedBank_BookingCancelRQ(string AgentVoucherNo, DataRow[] SupplierDetails, string BookingAmt, string RefundableAmount);
 
     }
 }

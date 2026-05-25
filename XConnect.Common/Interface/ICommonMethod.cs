@@ -1,10 +1,13 @@
-﻿using System.Collections.Concurrent;
-using System.Data;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Collections.Concurrent;
+using System.Data;
+using System.Net;
+using System.Text;
 using XConnect.Models;
 using XConnect.Models.Hotel;
+using static Azure.Core.HttpHeader;
 
 
 
@@ -157,6 +160,8 @@ namespace XConnect.CommonUtilities.Interface
         Task<ResponseDto> Response_Supplier(string Request_Text, string APIUrl, int SearchTimeOut, string SupplieName, HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "");
 
         Task<ResponseDto> AbreuOnlineResponse_Supplier(string Request_Text, string APIUrl, int SearchTimeOut, string SearchKey = "", string Provider = "", string UserId = "", string Stage = "");
+
+        Task<ResponseDto> WelcomebedsBookingResponse_timeout(string Request, string url, string UserName, string Password, string CheckIn, string CheckOut, string Supplier, string referenceNumber, Int32 TimeOut = 120000);
         string GenerateGTARequest(HotelSearchParameter objSearchPara);
 
         Task<ResponseDto> GetSupplierResponse(string strUniqueId, string strxmlRQRS, string strHost, Int32 TimeOut, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "");

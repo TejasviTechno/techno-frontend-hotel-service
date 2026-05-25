@@ -1065,6 +1065,98 @@ namespace XConnect.Supplier.Welcomebeds
             }
             return RequestString;
         }
+
+        public string welcomebedsBookingRequest_new(BookRequest_newversion bookRequest, DataRow[] WelcomebedsDetails, int i, int j, double resPrice, DataTable dtPassengers, ref string AgtRef, string CheckIn, string CheckOut, int UniqueNo, string BookToken, string AgentCode, string SearchKey = "")
+        {
+            string RequestString = "";
+            try
+            {
+                string roomtypeid = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
+                string[] spitid1 = roomtypeid.Split(new string[] { "###" }, StringSplitOptions.None);
+                string RateId = spitid1[0];
+                string HotelCode = spitid1[1];
+                string Price = spitid1[2];
+                string Bookingtoken = Convert.ToString(bookRequest.userCart.UserCartDetails[j].PurchaseToken);
+                int AdultAge = 30;
+
+                string BookAgentCode = ("Book_" + AgentCode + "_" + UniqueNo);
+                string remarks = "";
+
+                StringBuilder bookingRQ = new StringBuilder();
+                bookingRQ.Append("{");
+                bookingRQ.Append("\"bookToken\":\"" + Bookingtoken + "\",");
+                bookingRQ.Append("\"bookingReference\": {");
+                bookingRQ.Append("\"requestReferenceID\":\"" + BookAgentCode + "\"");
+                bookingRQ.Append("},");
+
+                bookingRQ.Append("\"remarks\":\"" + remarks + "\",");
+
+                bookingRQ.Append("\"travellers\": [");
+
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartID='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartId) + "' and ServiceType='Hotel'";
+
+                dtPassengers.DefaultView.Sort = "IsLead desc";
+                if (dtPassengers.DefaultView.Count > 0)
+                {
+                    for (int x = 0; x < bookRequest.userCart.UserCartDetails.Count; x++)
+
+                    {
+                        if (x == 0)
+                            bookingRQ.Append("{");
+                        else
+                            bookingRQ.Append(",{");
+
+                        dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartID='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartId) + "' and ServiceType='Hotel' and RoomNo='" + bookRequest.userCart.UserCartDetails[j].RoomNo + "'";
+                        for (int k = 0; k < dtPassengers.DefaultView.Count; k++)
+                        {
+                            if (k != 0)
+                                bookingRQ.Append(",{");
+
+
+                            DataTable dtPax = dtPassengers.DefaultView.ToTable();
+                            {
+                                string LastName = Convert.ToString(dtPassengers.DefaultView[k]["LastName"]).Trim();
+                                string FirstName = Convert.ToString(dtPassengers.DefaultView[k]["FirstName"]).Trim();
+                                int ChildAge = Convert.ToInt32(dtPassengers.DefaultView[k]["ChildAge"]);
+                                string RoomNo = Convert.ToString(dtPassengers.DefaultView[k]["RoomNo"]);
+
+
+                                if (dtPax.Rows[k]["PaxType"].ToString() == "Adult")
+                                    bookingRQ.Append("\"age\":\"" + AdultAge + "\",");
+                                else
+                                    bookingRQ.Append("\"age\":\"" + ChildAge + "\",");
+
+                                bookingRQ.Append("\"index\":\"" + RoomNo + "\",");
+                                bookingRQ.Append("\"person\": {");
+                                bookingRQ.Append("\"lastName\":\"" + LastName + "\",");
+                                bookingRQ.Append("\"name\":\"" + FirstName + "\"");
+                                bookingRQ.Append("}");
+
+
+                            }
+
+                            bookingRQ.Append("}");
+                        }
+                    }
+
+                }
+                bookingRQ.Append("]");
+                bookingRQ.Append("}");
+
+
+                string BookingRQ = bookingRQ.ToString();
+                return BookingRQ;
+
+
+
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, SearchKey);
+
+            }
+            return RequestString;
+        }
         public string WelcomebedsBookingResponse(ref string Error, string Request, string url, string UserName, string Password, string SearchKey = "", Int32 TimeOut = 120000)
         {
 

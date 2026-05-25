@@ -25,6 +25,9 @@ namespace XConnect.Supplier.Hyperguest.Interface
         string Gethyperguest_BookingCancelRQ(string AgentVoucherNo, DataRow[] hyperguestDetails);
 
         Task<ResponseDto> GethyperguestResponse(string Request, string url, string Password, Int32 TimeOut = 180000);
-        string hyperguestBookingRequest(DataSet dsCartDetails, DataRow[] hyperguestDetails, int i, int j, double resPrice, DataTable dtPassengers, ref string AgtRef, string CheckIn, string CheckOut, int UniqueNo, String AgentCode, bool IsPruvo);
+        string hyperguestBookingRequest(DataSet dsCartDetails, DataRow[] hyperguestDetails, int i, int j, double resPrice, DataTable dtPassengers, ref string AgtRef, string CheckIn, string CheckOut, int UniqueNo, string AgentCode , bool IsPruvo);
+        string hyperguestBookingRequest_new(BookRequest_newversion bookRequest, DataRow[] hyperguestDetails, int i, int j, double resPrice, DataTable dtPassengers, ref string AgtRef, string CheckIn, string CheckOut, int UniqueNo, string AgentCode , bool IsPruvo);
+
+        
     }
 }

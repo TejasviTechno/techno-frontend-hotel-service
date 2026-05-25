@@ -3104,7 +3104,7 @@ namespace Xconnect.Hotelbeds
                 return "";
             }
         }
-        public string HotelBedsdV1BookindgRequest_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, bool IsPRiceUpdate, bool IsError, int j, string AgentCode)
+        public string HotelBedsdV1BookindgRequest_newversion_singleroom(DataTable dtPassengers, BookRequest_newversion bookRequest, bool IsPRiceUpdate, bool IsError, int j, string AgentCode)
         {
             try
             {
@@ -3167,5 +3167,98 @@ namespace Xconnect.Hotelbeds
                 return "";
             }
         }
+        public  string HotelBedsdV1BookindgRequest_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, bool IsPRiceUpdate, bool IsError, int j, string AgentCode)
+        {
+            try
+            {
+                StringBuilder HBV1 = new StringBuilder();
+                if (IsPRiceUpdate == false && IsError == false)
+                {
+                    string InternalReference = Convert.ToString(AgentCode) + "_" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartID='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartId) + "' and RoomNo='" + Convert.ToInt32(j + 1) + "'";
+                    DataTable dtnewpassanger = dtPassengers.DefaultView.ToTable();
+                    //string remark = "";
+                    //if (dsCartDetails.Tables[0].Columns.Contains("SpecialRequest"))
+                    //{
+                    //    remark = Convert.ToString(dsCartDetails.Tables[0].Rows[0]["SpecialRequest"]);
+                    //    if (remark != "")
+                    //        remark = remark.Replace("SpecialRequest:", "").Replace("$$", ",").Replace("/Remark:", ",");
+                    //}
+                    HBV1.Append("{");
+                    HBV1.Append("\"holder\":");
+                    HBV1.Append("{");
+                    if (Convert.ToString(dtnewpassanger.Rows[0]["IsLead"]) == "1")
+                    {
+                        HBV1.Append("\"name\":\"" + Convert.ToString(dtnewpassanger.Rows[0]["FirstName"]) + "\",");
+                        HBV1.Append("\"surname\":\"" + Convert.ToString(dtnewpassanger.Rows[0]["LastName"]) + "\"");
+                    }
+                    else
+                    {
+                        HBV1.Append("\"name\":\"" + Convert.ToString(dtnewpassanger.Rows[0]["FirstName"]) + "\",");
+                        HBV1.Append("\"surname\":\"" + Convert.ToString(dtnewpassanger.Rows[0]["LastName"]) + "\"");
+                    }
+                    HBV1.Append("},");
+
+
+                    string[] HBRoomCount = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(new String[] { "##$$" }, StringSplitOptions.None);
+
+                    
+
+                    HBV1.Append("\"rooms\": [");
+
+                    for (int Ro = 0; Ro < HBRoomCount.Length; Ro++)
+                    {
+                        HBV1.Append("{");
+                        string[] Array = Convert.ToString(HBRoomCount[Ro]).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                        string BookingCodeHotel = Array[1];
+
+                        HBV1.Append("\"rateKey\":\"" + BookingCodeHotel + "\",");
+                        HBV1.Append("\"paxes\": [{");
+
+                        dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartID='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartId) + "' and RoomNo='" + Convert.ToInt32(Ro + 1) + "'";
+                        dtnewpassanger = dtPassengers.DefaultView.ToTable();
+
+                        for (int b = 0; b < dtnewpassanger.Rows.Count; b++)
+                        {
+                            if (b >= 1)
+                                HBV1.Append("},{");
+                            HBV1.Append("\"roomId\":\"1\",");
+                            string PaxTypeHB = "";
+                            if (Convert.ToString(dtnewpassanger.Rows[b]["PaxType"]) == "Adult")
+                                PaxTypeHB = "AD";
+                            else
+                                PaxTypeHB = "CH";
+
+                            HBV1.Append("\"type\": \"" + PaxTypeHB + "\",");
+                            HBV1.Append("\"name\": \"" + Convert.ToString(dtnewpassanger.Rows[b]["FirstName"]) + "\",");
+                            HBV1.Append("\"surname\": \"" + Convert.ToString(dtnewpassanger.Rows[b]["LastName"]) + "\"");
+                        }
+                        HBV1.Append("}]");
+
+                        if (HBRoomCount.Length - 1 == Ro)
+                            HBV1.Append("}");
+                        else
+                            HBV1.Append("},");
+                    }
+                    HBV1.Append("],");
+                    HBV1.Append("\"clientReference\":\"" + InternalReference + "\",");
+                   // HBV1.Append("\"remark\":\"" + remark + "\",");
+                    HBV1.Append("\"tolerance\":\"" + 0 + "\"");
+                    HBV1.Append("}");
+
+                    string HBV1REQ = HBV1.ToString();
+                    return HBV1REQ;
+                }
+                else
+                    return "";
+            }
+            catch (Exception ex)
+            {
+
+                _ = _exception.ErrorNew(ex, _LogAPI.Book);
+                return "";
+            }
+        }
+
     }
 }

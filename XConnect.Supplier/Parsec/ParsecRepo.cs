@@ -1,21 +1,22 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
-using XConnect.CommonUtilities.Interface;
 using XConnect.CommonUtilities;
+using XConnect.CommonUtilities.Interface;
 using XConnect.ErrorLogHandler.Interface;
 using XConnect.Markup.Interface;
-using XConnect.Models.Hotel;
 using XConnect.Models;
+using XConnect.Models.Hotel;
 using XConnect.Supplier.Parsec.Interface;
-using Options = XConnect.Models.Options;
-using Microsoft.Extensions.Options;
 using static Azure.Core.HttpHeader;
+using Options = XConnect.Models.Options;
 
 namespace XConnect.Supplier.Parsec
 {
@@ -26,14 +27,15 @@ namespace XConnect.Supplier.Parsec
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
-
-        public ParsecRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings)
+        
+        public ParsecRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings  )
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _exception = exception;
             _keySettings = keySettings.Value;
+            
         }
         public void GetParsesRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, DataTable dtROE, HotelSearchParameter SearchPara, List<SupplierDetails> lstParsecDetail, List<SupplierSearchConfig> lstParsecConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, int Hit, DataSet dtXMLCity, TokenData tokenData)
         {
@@ -1229,6 +1231,83 @@ namespace XConnect.Supplier.Parsec
             return "";
         }
 
+        public string ParsecOlympiaBooking_new(string AgentCode, DataTable dtPassengers, BookRequest_newversion bookRequest, string UserName, string Password, string UserId, string UniqueNo, int j)
+        {
+            StringBuilder Request = new StringBuilder();
+            try
+            {
+                string InternalReference = "Api_" + AgentCode + "_" + UniqueNo;
+                Request.Append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+                Request.Append("<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">");
+                Request.Append("<soap-env:Header>");
+                Request.Append("<wsse:Security xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">");
+                Request.Append("<wsse:Username>" + UserName + "</wsse:Username>");
+                Request.Append("<wsse:Password>" + Password + "</wsse:Password>");
+                Request.Append("<Context>" + UserId + "</Context>");
+                Request.Append("</wsse:Security>");
+                Request.Append("</soap-env:Header>");
+                Request.Append("<soap-env:Body>");
+                Request.Append("<OTA_HotelResRQ xmlns=\"http://parsec.es/hotelapi/OTA2014Compact\" Transaction=\"Booking\" DetailLevel=\"2\">");
+                Request.Append("<UniqueID Type=\"ClientReference\" ID=\"" + InternalReference + "\"/>");
+                Request.Append("<HotelRes>");
+                Request.Append("<Rooms>");
+                //  for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
+                //   {
+                dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartID='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartId) + "' and RoomNo='" + Convert.ToInt32(j + 1) + "'";
+                Request.Append("<Room>");
+                string[] Arr = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                string BookingCode = Arr[0];
+                Request.Append("<RoomRate BookingCode=\"" + BookingCode + "\"/>");
+                DataTable dtnewpassanger = dtPassengers.DefaultView.ToTable();
+                Request.Append("<Guests>");
+                for (int b = 0; b < dtnewpassanger.Rows.Count; b++)
+                {
+                    if (Convert.ToString(dtnewpassanger.Rows[b]["PaxType"]) == "Adult")
+                    {
+                        if (Convert.ToInt16(dtPassengers.Rows[b]["IsLead"]) == 1)
+                        {
+                            Request.Append("<Guest AgeCode=\"A\" LeadGuest=\"1\">");
+                        }
+                        else
+                        {
+                            Request.Append("<Guest AgeCode=\"A\">");
+                        }
+                        Request.Append("<PersonName>");
+                        Request.Append("<NamePrefix>" + Convert.ToString(dtnewpassanger.Rows[b]["Prefix"]) + "</NamePrefix>");
+                        Request.Append("<GivenName>" + Convert.ToString(dtnewpassanger.Rows[b]["FirstName"]) + "</GivenName>");
+                        Request.Append("<Surname>" + Convert.ToString(dtnewpassanger.Rows[b]["LastName"]) + "</Surname>");
+                        Request.Append("</PersonName>");
+                        Request.Append("</Guest>");
+                    }
+                    else if (Convert.ToString(dtnewpassanger.Rows[b]["PaxType"]) == "Child")
+                    {
+                        int childage = Convert.ToInt32(dtnewpassanger.Rows[b]["ChildAge"]);
+                        Request.Append("<Guest AgeCode=\"C\" Age=\"" + childage + "\">");
+                        Request.Append("<PersonName>");
+                        Request.Append("<NamePrefix>" + Convert.ToString(dtnewpassanger.Rows[b]["Prefix"]) + "</NamePrefix>");
+                        Request.Append("<GivenName>" + Convert.ToString(dtnewpassanger.Rows[b]["FirstName"]) + "</GivenName>");
+                        Request.Append("<Surname>" + Convert.ToString(dtnewpassanger.Rows[b]["LastName"]) + "</Surname>");
+                        Request.Append("</PersonName>");
+                        Request.Append("</Guest>");
+                    }
+                }
+                Request.Append("</Guests>");
+                Request.Append("</Room>");
+                //  }
+                Request.Append("</Rooms>");
+                Request.Append("</HotelRes>");
+                Request.Append("</OTA_HotelResRQ>");
+                Request.Append("</soap-env:Body>");
+                Request.Append("</soap-env:Envelope>");
+                string BookingREQ = Request.ToString();
+                return BookingREQ;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorNew(ex, ErrorLog._LogAPI.Book);
+            }
+            return "";
+        }
         public string ParsecBooking(string AgentCode, DataTable dtPassengers, DataSet dsCartDetails, string UserName, string Password, string UserId, string UniqueNo)
         {
             StringBuilder Request = new StringBuilder();
@@ -1254,6 +1333,85 @@ namespace XConnect.Supplier.Parsec
                     dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]) + "' and UserCartID='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartID"]) + "' and RoomNo='" + Convert.ToInt32(j + 1) + "'";
                     Request.Append("<Room>");
                     string[] Arr = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
+                    string BookingCode = Arr[j];
+                    Request.Append("<RoomRate BookingCode=\"" + BookingCode + "\"/>");
+                    DataTable dtnewpassanger = dtPassengers.DefaultView.ToTable();
+                    Request.Append("<Guests>");
+                    for (int b = 0; b < dtnewpassanger.Rows.Count; b++)
+                    {
+                        if (Convert.ToString(dtnewpassanger.Rows[b]["PaxType"]) == "Adult")
+                        {
+                            if (Convert.ToInt16(dtPassengers.Rows[b]["IsLead"]) == 1 && j == 0)
+                            {
+                                Request.Append("<Guest AgeCode=\"A\" LeadGuest=\"1\">");
+                            }
+                            else
+                            {
+                                Request.Append("<Guest AgeCode=\"A\">");
+                            }
+                            Request.Append("<PersonName>");
+                            Request.Append("<NamePrefix>" + Convert.ToString(dtnewpassanger.Rows[b]["Prefix"]) + "</NamePrefix>");
+                            Request.Append("<GivenName>" + Convert.ToString(dtnewpassanger.Rows[b]["FirstName"]) + "</GivenName>");
+                            Request.Append("<Surname>" + Convert.ToString(dtnewpassanger.Rows[b]["LastName"]) + "</Surname>");
+                            Request.Append("</PersonName>");
+                            Request.Append("</Guest>");
+                        }
+                        else if (Convert.ToString(dtnewpassanger.Rows[b]["PaxType"]) == "Child")
+                        {
+                            int childage = Convert.ToInt32(dtnewpassanger.Rows[b]["ChildAge"]);
+                            Request.Append("<Guest AgeCode=\"c\" Age=\"" + childage + "\">");
+                            Request.Append("<PersonName>");
+                            Request.Append("<NamePrefix>" + Convert.ToString(dtnewpassanger.Rows[b]["Prefix"]) + "</NamePrefix>");
+                            Request.Append("<GivenName>" + Convert.ToString(dtnewpassanger.Rows[b]["FirstName"]) + "</GivenName>");
+                            Request.Append("<Surname>" + Convert.ToString(dtnewpassanger.Rows[b]["LastName"]) + "</Surname>");
+                            Request.Append("</PersonName>");
+                            Request.Append("</Guest>");
+                        }
+                    }
+                    Request.Append("</Guests>");
+                    Request.Append("</Room>");
+                }
+                Request.Append("</Rooms>");
+                Request.Append("</HotelRes>");
+                Request.Append("</OTA_HotelResRQ>");
+                Request.Append("</soap-env:Body>");
+                Request.Append("</soap-env:Envelope>");
+                string BookingREQ = Request.ToString();
+                return BookingREQ;
+            }
+            catch (Exception ex)
+            {
+                _exception.ErrorNew(ex, ErrorLog._LogAPI.Book);
+
+            }
+            return "";
+        }
+
+        public string ParsecBooking_new(string AgentCode, DataTable dtPassengers, BookRequest_newversion bookRequest, string UserName, string Password, string UserId, string UniqueNo)
+        {
+            StringBuilder Request = new StringBuilder();
+            try
+            {
+                string InternalReference = "Api" + AgentCode + "_" + UniqueNo;
+                Request.Append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+                Request.Append("<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">");
+                Request.Append("<soap-env:Header>");
+                Request.Append("<wsse:Security xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">");
+                Request.Append("<wsse:Username>" + UserName + "</wsse:Username>");
+                Request.Append("<wsse:Password>" + Password + "</wsse:Password>");
+                Request.Append("<Context>" + UserId + "</Context>");
+                Request.Append("</wsse:Security>");
+                Request.Append("</soap-env:Header>");
+                Request.Append("<soap-env:Body>");
+                Request.Append("<OTA_HotelResRQ xmlns=\"http://parsec.es/hotelapi/OTA2014Compact\" Transaction=\"Booking\" DetailLevel=\"2\">");
+                Request.Append("<UniqueID Type=\"ClientReference\" ID=\"" + InternalReference + "\"/>");
+                Request.Append("<HotelRes>");
+                Request.Append("<Rooms>");
+                for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
+                {
+                    dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and UserCartID='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartId) + "' and RoomNo='" + Convert.ToInt32(j + 1) + "'";
+                    Request.Append("<Room>");
+                    string[] Arr = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(new String[] { "$$$" }, StringSplitOptions.None);
                     string BookingCode = Arr[j];
                     Request.Append("<RoomRate BookingCode=\"" + BookingCode + "\"/>");
                     DataTable dtnewpassanger = dtPassengers.DefaultView.ToTable();
@@ -1337,5 +1495,8 @@ namespace XConnect.Supplier.Parsec
                 return "";
             }
         }
+
+        
+
     }
 }

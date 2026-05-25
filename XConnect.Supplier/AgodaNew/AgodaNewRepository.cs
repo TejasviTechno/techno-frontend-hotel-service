@@ -95,12 +95,12 @@ namespace XConnect.Supplier.AgodaNew
                             {
 
                                 int MasterSupplierID = 0;
-                                string SupplierID = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[0].HotelOptionId.Split('|')[Convert.ToInt16(_cacheHotelOption.supplierId)];
-                                if (SupplierID == "")
-                                {
-                                    SupplierID = "162";
-                                }
-                                MasterSupplierID = Convert.ToInt32(SupplierID);
+                                //string SupplierID = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[0].HotelOptionId.Split('|')[Convert.ToInt16(_cacheHotelOption.supplierId)];
+                                //if (SupplierID == "")
+                                //{
+                                //    SupplierID = "162";
+                                //}
+                                //MasterSupplierID = Convert.ToInt32(SupplierID);
                                 SearchKeyRP = availabilityResponse.AvailabilityRS.SearchKey;
                                 //HotelOptionIdRP = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelOptionId;
 
@@ -145,6 +145,12 @@ namespace XConnect.Supplier.AgodaNew
                                 DtHotel.Rows.Add(drXmlHotel);
                                 for (int i = 0; i < availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption.Count(); i++)
                                 {
+                                    string SupplierID = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelOptionId.Split('|')[Convert.ToInt16(_cacheHotelOption.supplierId)];
+                                    if (SupplierID == "")
+                                    {
+                                        SupplierID = "162";
+                                    }
+                                    MasterSupplierID = Convert.ToInt32(SupplierID);
                                     HotelOptionIdRP = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelOptionId;
 
                                     //ROOM
@@ -287,9 +293,9 @@ namespace XConnect.Supplier.AgodaNew
                                                     //string ChainCode_Agoda = Convert.ToString(DTChainCode.Tables[0].Rows[chaincode]["chaincode"]);// Convert.ToString(chaincode);
 
                                                     string ChainCode_Agoda = Convert.ToString(DTChainCode.Tables[0].Rows[chaincode]["ChannelCode"]);
-                                                    bool supplierExists = DTChainCode.Tables[1].AsEnumerable().Any(r => Convert.ToString(r["Supplierid"])?.Trim() == SupplierID.Trim());
+                                                    //bool supplierExists = DTChainCode.Tables[1].AsEnumerable().Any(r => Convert.ToString(r["Supplierid"])?.Trim() == SupplierID.Trim());
 
-                                                    if (supplierExists)
+                                                    if (true)
                                                     {
                                                         bool exists = DTChainCode.Tables[1].AsEnumerable().Any(r => Convert.ToString(r["Supplierid"])?.Trim() == SupplierID.Trim() && Convert.ToString(r["chaincode"])?.Trim() == ChainCode_Agoda);
                                                         if (!exists)
@@ -304,25 +310,74 @@ namespace XConnect.Supplier.AgodaNew
 
                                                     #region countrycityrestrication
 
+                                                    // int CountryId = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["CountryId"]);
+                                                    // int CityId = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["CityId"]);
+                                                    // int chainid = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["HotelChainId"]);
+
+                                                    // DataRow[] drsChinn = DTCountryblock.Tables[0].Select($"chainid = {chainid} AND channalcode = '{ChainCode_Agoda}'");
+                                                    // if (drsChinn.GetLength(0) > 0)
+                                                    // {
+                                                    //     continue;
+                                                    // }
+                                                    //// DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = 0");
+                                                    // DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}' AND channalcode = '{ChainCode_Agoda}'");
+                                                    // if (drCountry.GetLength(0) > 0)
+                                                    // {
+                                                    //     continue;
+                                                    // }
+                                                    // DataRow[] drCity = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}'");
+                                                    // if (drCity.GetLength(0) > 0)
+                                                    // {
+                                                    //     continue;
+                                                    // }
+
+                                                    #region countrycityrestrication
+
                                                     int CountryId = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["CountryId"]);
+
                                                     int CityId = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["CityId"]);
+
                                                     int chainid = Convert.ToInt32(GTAResponse.Tables[0].Rows[0]["HotelChainId"]);
 
                                                     DataRow[] drsChinn = DTCountryblock.Tables[0].Select($"chainid = {chainid} AND channalcode = '{ChainCode_Agoda}'");
+
                                                     if (drsChinn.GetLength(0) > 0)
+
                                                     {
+
                                                         continue;
+
                                                     }
-                                                    DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = 0");
+
+                                                    // DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = 0");
+
+                                                    int Cids = 0;
+
+                                                    //DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}' AND channalcode = '{ChainCode_Agoda}'");
+
+                                                    DataRow[] drCountry = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{Cids}' AND channalcode = '{ChainCode_Agoda}'");
+
                                                     if (drCountry.GetLength(0) > 0)
+
                                                     {
+
                                                         continue;
+
                                                     }
-                                                    DataRow[] drCity = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}'");
+
+                                                    //DataRow[] drCity = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}'");
+
+                                                    DataRow[] drCity = DTCountryblock.Tables[1].Select($"CountryId = {CountryId} AND CityId = '{CityId}' AND channalcode = '{ChainCode_Agoda}'");
+
                                                     if (drCity.GetLength(0) > 0)
+
                                                     {
+
                                                         continue;
+
                                                     }
+
+                                                    #endregion
 
                                                     #endregion
 
@@ -1326,7 +1381,7 @@ namespace XConnect.Supplier.AgodaNew
                         //bookingRequest.Token = WebConfigurationManager.AppSettings["out_agoda_token"];
                         //bookingRequest.Token = _keySettings.out_agoda_token;
                         bookingRequest.Token = _keySettings.out_agoda_token;
-                        //bookingRequest.Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZ2VudElkIjo1LCJhZ2VudENvZGUiOiJURUNIIiwidXNlck5hbWUiOiJwaW5ha2luIiwiZW1haWwiOiJwaW5ha2luQHRlY2hub2hlYXZlbi5uZXQiLCJwaG9uZU5vIjoiKzkxIDg2OTU3NDE1ODUiLCJ1c2VySWQiOjUsInN1YlVzZXJJZCI6MCwidXNlclR5cGVJZCI6MSwidXNlclR5cGUiOiJBZ2VudCIsInVzZXJDb2RlIjoiQWdlbnQiLCJwYXltZW50VHlwZSI6MCwicGF5bWVudFR5cGVWYWx1ZSI6IlBvc3RQYWlkIiwiZGlzcGxheUN1cnJlbmN5SWQiOjUsImNyZWRpdGxpbWl0Q3VycmVuY3lJZCI6NSwiY3JlZGl0bGltaXRDdXJyZW5jeUNvZGUiOiJVU0QiLCJyYXRlQ2F0ZWdvcnlJZCI6MSwidGVuYW50SWQiOiIzMDM3MTA4NC03MjU4LUZDQjctMTBERi0zQTFGRDVBQkEyMjEiLCJpc0Zyb21BcGkiOnRydWUsInNlc3Npb25JZCI6ImZkOGYzNjI2LThjODktNGE1Yi1iMGU2LTUxYzQwYTg5YWI1YyIsInNlcnZpY2VUeXBlIjpbIkhvdGVsIl0sInJld2FyZFBvaW50cyI6W10sInBlcm1pc3Npb25UeXBlIjpbIkZ1bGwgQWNjZXNzIFBlcm1pc3Npb24iLCJDYW4gVm91Y2hlciIsIkFsbG93IGJvb2tpbmcgd2l0aGluIGNhbmNlbGxhdGlvbiIsIkFsbG93IEJvb2tpbmciLCJTaG93IFN1cHBsaWVyIl0sImlzcyI6IlRFQ0hfMzAzNzEwODQtNzI1OC1GQ0I3LTEwREYtM0ExRkQ1QUJBMjIxIiwiaWF0IjoxNzc2ODMxNzYxfQ.KArXTf9Dn - JMCANVSrE7eavMmYrsT0AfK0cgBfFTB2Q";
+                        bookingRequest.Token = "";
 
                         //bookingRequest.Token = _keySettings?.out_agoda_token;
                         CommonXMLBookRequest.Request request = new CommonXMLBookRequest.Request();
@@ -1599,13 +1654,13 @@ namespace XConnect.Supplier.AgodaNew
                         {
                             Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutCancellationChargesTimeOut);
 
-                            finalUrl = $"{_keySettings.EndPointXMLOut.TrimEnd('/')}/{_keySettings.CheckHotelCancellationChargesXMLOut.TrimStart('/')}";
+                            finalUrl = $"{_keySettings.EndPointforCheckHotelCancellationCharges.TrimEnd('/')}/{_keySettings.CheckHotelCancellationChargesXMLOut.TrimStart('/')}";
                         }
                         else if (requestName == "cancelbooking")
                         {
                             Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutCancelBookingTimeOut);
 
-                            finalUrl = $"{_keySettings.EndPointXMLOut.TrimEnd('/')}/{_keySettings.CancelBookingXMLOut.TrimStart('/')}";
+                            finalUrl = $"{_keySettings.EndPointforCancelBooking.TrimEnd('/')}/{_keySettings.CancelBookingXMLOut.TrimStart('/')}";
                         }
 
                         // 🔥 Debug log (VERY IMPORTANT)
@@ -1638,8 +1693,10 @@ namespace XConnect.Supplier.AgodaNew
                             : $"{existing}, {clientIp}";
 
                         // Custom Header
-                        Request.Headers.Add("X-Custom-Host", "13");
-                        Request.Headers.Add("X-Time-Zone", "abc");
+                        //Request.Headers.Add("X-Custom-Host", "13");
+                        Request.Headers.Add("X-Custom-Host", "AgodaReverse");
+                        //Request.Headers.Add("X-Time-Zone", "abc");
+                        Request.Headers.Add("X-Time-Zone", "Arabian Standard Time");
                         Request.Headers.Add("X-Accept-Language", "abc");
                         Request.Headers.Add("User-Agent", "PostmanRuntime/7.51.1");
                         Request.Headers.Add("X-Forwarded-For", xForwardedFor);
@@ -1655,12 +1712,12 @@ namespace XConnect.Supplier.AgodaNew
                         {
                             HttpStatusCode = (int)responseMessage.StatusCode;
 
-                            Console.WriteLine("STATUS: " + HttpStatusCode);
+                            //Console.WriteLine("STATUS: " + HttpStatusCode);
 
                             // ✅ FIX: Direct read (auto decompressed)
                             responsedata = await responseMessage.Content.ReadAsStringAsync();
 
-                            Console.WriteLine("RESPONSE: " + responsedata);
+                            // Console.WriteLine("RESPONSE: " + responsedata);
 
                             await _commonMethod.XMLRequestResponseTrack_agoda(
                                 finalUrl + " | " + strxmlRQRS,
