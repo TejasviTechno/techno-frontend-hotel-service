@@ -14446,19 +14446,31 @@ new SqlParameter("@AgentId", AgentId),
                     #endregion
                     #region "_techno"
                     case "techno":
-                    case "techno_new":
-                        //case "travab_dmc":
-                        //case "bedlinker_techno":
-                        //case "travelbullz_techno":
-                        //case "hotelinx_techno":
-                        //case "rayna_techno":
-                        //case "khayi_techno":
-                        //case "farhat_techno":
+                   // case "techno_new":
+                    //case "travab_dmc":
+                    //case "bedlinker_techno":
+                    //case "travelbullz_techno":
+                    //case "hotelinx_techno":
+                    //case "rayna_techno":
+                    //case "khayi_techno":
+                    //case "farhat_techno":
                         dsHotelData.Tables[2].DefaultView.RowFilter = "OwnsystemHotelId=" + hotelid + "and RoomTypeId='" + roomtypeid + "' and RoomNo='" + roomno + "'";
                         if (dsHotelData.Tables[2].DefaultView.Count == 0)
                         {
 
                             cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData, TechName);
+                        }
+                        dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
+                        break;
+
+                    #endregion
+                    #region "_techno"
+                    case "techno_new":
+                        dsHotelData.Tables[2].DefaultView.RowFilter = "OwnsystemHotelId=" + hotelid + "and RoomTypeId='" + roomtypeid + "' and RoomNo='" + roomno + "'";
+                        if (dsHotelData.Tables[2].DefaultView.Count == 0)
+                        {
+
+                            cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy_New(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData, TechName);
                         }
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
