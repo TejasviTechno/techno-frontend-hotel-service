@@ -72849,5 +72849,117 @@ new SqlParameter("@AgentId", AgentId),
                 return "";
             }
         }
+        public async Task<List<HotelRoomResult>> GetHotelRoomData(int hotelId, AdvancedOptions advancedOptions, string tenantid, string agentid, string platform)
+        {
+            try
+            {
+                if (hotelId <= 0)
+                    return new List<HotelRoomResult>();
+                string eanHotelId = await GetEanHotelIdFromDb(hotelId);
+                if (string.IsNullOrWhiteSpace(eanHotelId))
+                    return new List<HotelRoomResult>();
+                SqlParameter[] para = new SqlParameter[] {
+                   new SqlParameter("@AgentID", Convert.ToInt32(agentid)),
+                   new SqlParameter("@TenantId", tenantid)
+                };
+
+                DataTable dt = await _dlConnection.GetDataTableAsync("Sp_GetExpediaCrendial", para);
+                if (dt.Rows.Count > 0)
+                {
+                    // Read essential config
+                    string baseUrl = Convert.ToString(dt.Rows[0]["WebSiteURL"]);
+                    string apiKey = Convert.ToString(dt.Rows[0]["Password"]);   // API Key
+                    string secret = Convert.ToString(dt.Rows[0]["UserName"]);   // Secret / Username
+
+                    var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                    long unixTime = (long)(DateTime.UtcNow - epoch).TotalSeconds;
+                    var toBeHashed = apiKey + secret + unixTime;
+                    byte[] bytes = Encoding.UTF8.GetBytes(toBeHashed);
+                    string signature;
+                    using (var hash = SHA512.Create())
+                    {
+                        byte[] hashedBytes = hash.ComputeHash(bytes);
+                        var sb = new StringBuilder(hashedBytes.Length * 2);
+                        foreach (var b in hashedBytes)
+                            sb.Append(b.ToString("X2"));
+                        signature = sb.ToString();
+                    }
+                    string authHeaderValue = $"EAN APIKey={apiKey},Signature={signature},timestamp={unixTime}";
+
+                    string[] espitid = platform.Split(new string[] { "$$" }, StringSplitOptions.None);
+                    string ePlatFormNew = espitid[0];
+                    string eIP = espitid[1];
+                    // Prepare HttpRequestMessage
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                    using var request = new HttpRequestMessage(HttpMethod.Get, $"{baseUrl}/v3/properties/content" + $"?language=en-US&supply_source=expedia" + $"&property_id={eanHotelId}");
+
+                    request.Headers.Add("Authorization", authHeaderValue);
+                    request.Headers.Add("User-Agent", ePlatFormNew);
+                    request.Headers.Add("Customer-Ip", eIP);
+                    request.Headers.Add("Accept-Encoding", "json");
+                    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    // STEP 9 → Send request
+                    using var _httpClient = new HttpClient(); // create a temporary client
+                    using var response = await _httpClient.SendAsync(request);
+                    if (!response.IsSuccessStatusCode)
+                        return new List<HotelRoomResult>();
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    if (string.IsNullOrWhiteSpace(responseContent))
+                        return new List<HotelRoomResult>();
+                    // STEP 10 → Parse JSON into GuestReviewModel
+                    var result = new List<HotelRoomResult>();
+                    var rawProperties = JsonConvert.DeserializeObject<Dictionary<string, PropertyObject_ean>>(responseContent);
+
+                    if (rawProperties == null || rawProperties.Count == 0)
+                        return new List<HotelRoomResult>();
+
+                    foreach (var kvp in rawProperties)
+                    {
+                        var prop = kvp.Value;
+                        if (prop?.Rooms == null)
+                            continue;
+
+                        var hotel = new HotelRoomResult
+                        {
+                            HotelName = prop.Name,
+                            Rooms = new List<RoomResult>()
+                        };
+
+                        foreach (var roomKvp in prop.Rooms)
+                        {
+                            var room = roomKvp.Value;
+                            if (room == null)
+                                continue;
+
+                            var roomResult = new RoomResult
+                            {
+                                RoomName = room.Name,
+                                Roomid = room.Id,
+                                Description = room.RoomDescriptions?.Overview,
+                                Images = room.Images?.Where(img => img.RoomImageLinks != null && img.RoomImageLinks.ContainsKey("1000px")).Select(img => img.RoomImageLinks["1000px"].Href).ToList() ?? new List<string>()
+                            };
+
+                            hotel.Rooms.Add(roomResult);
+                        }
+
+                        result.Add(hotel);
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    return new List<HotelRoomResult>();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                await _exception.Error(ex); // log the exception
+                return new List<HotelRoomResult>();
+            }
+        }
     }
 }
