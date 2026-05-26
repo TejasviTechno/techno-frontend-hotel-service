@@ -28017,6 +28017,18 @@ new SqlParameter("@AgentId", AgentId),
                                         string ResponseData = "";
                                         string currency = "";
 
+                                        int srphotelid = 0; //added 26052026
+                                        string srphotelhotelname = "";
+                                        try
+                                        {
+                                            srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+                                            srphotelhotelname = Convert.ToString(dsCartDetails.Tables[0].Rows[0]["ServiceName"]);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _ = _exception.Error(ex, Searchkey);
+                                        }
+
                                         _markup.getAgetMarkupSetting(Supplier.ToLower() == "oth" ? Convert.ToString(_keySettings.IsWithinearth) == "1" ? "withinearth" : "oth" : Supplier, Convert.ToString(dsCartDetails.Tables[0].Rows[i]["giataid"]), dsAgentDetails.Tables[1], dtCountryCityMarkup, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, agentID, hotelRating, CityId, CountryId, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["CheckInDate"]));
 
                                         #region "Vervotech Hotelcode check" //#vervo
@@ -33168,7 +33180,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             }
 
                                                             //int flag = await _dida.DidaPreBookingReq(ReferenceNo, UserID, Password, XMLHotelId, RoomTypeId, NoOfAdults, NoOfChild, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, Convert.ToString(UserCartDetailId), AgentUniqueNo, false, ChildAge1, ChildAge2, NoOfRoom, Nationality, CDate, Searchkey, AgentId);
-                                                            PriceCheckDidaDto priceCheckDidaDto = await _dida.DidaPreBookingReq(ReferenceNo, UserID, Password, XMLHotelId, RoomTypeId, NoOfAdults, NoOfChild, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, Convert.ToString(UserCartDetailId), AgentUniqueNo, false, ChildAge1, ChildAge2, NoOfRoom, Nationality, CDate, Searchkey, AgentId, DidaCurrency, CurrencyFactorDida, TechName);
+                                                            PriceCheckDidaDto priceCheckDidaDto = await _dida.DidaPreBookingReq(ReferenceNo, UserID, Password, XMLHotelId, RoomTypeId, NoOfAdults, NoOfChild, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, Convert.ToString(UserCartDetailId), AgentUniqueNo, false, ChildAge1, ChildAge2, NoOfRoom, Nationality, CDate, Searchkey, AgentId, DidaCurrency, CurrencyFactorDida, TechName, srphotelid, srphotelhotelname);
                                                             int flag = priceCheckDidaDto.Flag;
                                                             FinalPrice = priceCheckDidaDto.FinalPrice;
                                                             ReferenceNo = priceCheckDidaDto.ReferenceNo;
@@ -33254,7 +33266,7 @@ new SqlParameter("@AgentId", AgentId),
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
                                                             // _ = _commonMethod.AnalyticsPrebookandbookData(Supplier, "PreBook", responsetype, time, Searchkey, TechName);
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -33941,7 +33953,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -34043,7 +34055,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -35543,7 +35555,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -36106,7 +36118,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message.ToString() + "#=" + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -36532,7 +36544,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             Error = ex.Message.ToString() + "#=" + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                                                         }
                                                         catch (Exception e)
                                                         {

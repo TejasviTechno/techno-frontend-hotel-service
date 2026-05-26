@@ -3769,7 +3769,7 @@ namespace XConnect.CommonUtilities
         }
         #endregion RoomMapping
 
-        public async Task<string> SupplierPerformanceReportForPrebookAndBook(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "", string SearchKey = "", string TechName = "")
+        public async Task<string> SupplierPerformanceReportForPrebookAndBook(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "", string SearchKey = "", string TechName = "", int srphotelid = 0, string srphotelhotelname = "")
         {
             #region Analytics
             try
@@ -3802,7 +3802,9 @@ namespace XConnect.CommonUtilities
                     SupplierName = SupplierName,
                     TechName = TechName,
                     SupplierRequest = supplierreq,
-                    SuppliersearchResponseError = supplierres
+                    SuppliersearchResponseError = supplierres,
+                    srphotelid = srphotelid,
+                    srphotelhotelname = srphotelhotelname
 
 
                 });

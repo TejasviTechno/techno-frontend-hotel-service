@@ -527,9 +527,9 @@ namespace XConnect.Analytics
 
                         var productInfo = new AnalyticsProductInfo
                         {
-
-                            //Id = mainSearchPayload?.Filters?.HotelIDs ??,// productDetail?.RestaurantId ?? 0,
-                            Name = mainSearchPayload?.CityName ?? "anonymous",
+                            Name = analyticsData?.srphotelhotelname ?? "anonymous",
+                            Id = analyticsData?.srphotelid ?? 0,
+                            // Name = mainSearchPayload?.CityName ?? "anonymous",
                             City = mainSearchPayload?.CityName ?? "anonymous",
                             Country = mainSearchPayload?.CountryCode ?? "anonymous",
                             //Name = mainSearchPayload?.SearchKey ?? "anonymous",
