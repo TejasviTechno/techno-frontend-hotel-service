@@ -50226,8 +50226,11 @@ new SqlParameter("@AgentId", AgentId),
                                             {
                                                 EANBookRequest = _expedia.EANStringForBookV3_newversion_gujju(bookRequest, dtPassengers, j, Ex_Guid, ChildSupplier.ToLower());
                                             }
+                                            else
+                                            {
+                                                EANBookRequest = _expedia.EANStringForBookV3_newversion(bookRequest, dtPassengers, j, Ex_Guid, ChildSupplier.ToLower());
+                                            }
                                             #endregion
-                                            EANBookRequest = _expedia.EANStringForBookV3_newversion(bookRequest, dtPassengers, j, Ex_Guid, ChildSupplier.ToLower());
                                             string Token = bookRequest.userCart.UserCartDetails[0].PurchaseToken;
                                             Boolean DynamicRetrive = false;
 
