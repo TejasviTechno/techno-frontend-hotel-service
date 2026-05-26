@@ -38,5 +38,6 @@ namespace XConnect.Supplier.Interface
 
         //new version
         string EANStringForBookV3_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, string Ex_Guid, string SupplierName = "");
+        string EANStringForBookV3_newversion_gujju(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, string Ex_Guid, string SupplierName = "");
     }
 }

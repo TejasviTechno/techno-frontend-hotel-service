@@ -50209,6 +50209,11 @@ new SqlParameter("@AgentId", AgentId),
                                             string ChildSupplier = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName).ToLower();
                                             bool IsB2B = true;
                                             string CID = Convert.ToString(XPDetails[0]["UserID"]);
+                                             string Uesrname= Convert.ToString(XPDetails[0]["UserName"]);
+                                            if (Uesrname.ToLower()== "5gme52r0dlt7t")
+                                            {
+                                                EANBookRequest = _expedia.EANStringForBookV3_newversion_gujju(bookRequest, dtPassengers, j, Ex_Guid, ChildSupplier.ToLower());
+                                            }
                                             #endregion
                                             EANBookRequest = _expedia.EANStringForBookV3_newversion(bookRequest, dtPassengers, j, Ex_Guid, ChildSupplier.ToLower());
                                             string Token = bookRequest.userCart.UserCartDetails[0].PurchaseToken;
