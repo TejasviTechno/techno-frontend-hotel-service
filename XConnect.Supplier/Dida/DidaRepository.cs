@@ -1631,7 +1631,7 @@ namespace Xconnect.Expedia
 
         #endregion
 
-        public async Task<PriceCheckDidaDto> DidaPreBookingReq(string ReferenceNo, string ID, string Password, string HotelCode, string RCode, int NoOfAdults, int NoOfChild, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int ChildAge1, int ChildAge2, int NoOfRoom, string Nationality, string CDate, string Searchkey = "", int AgentId = 0, string DidaCurrency = "USD", double CurrencyFactorDida = 1, string TechName = "")
+        public async Task<PriceCheckDidaDto> DidaPreBookingReq(string ReferenceNo, string ID, string Password, string HotelCode, string RCode, int NoOfAdults, int NoOfChild, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int ChildAge1, int ChildAge2, int NoOfRoom, string Nationality, string CDate, string Searchkey = "", int AgentId = 0, string DidaCurrency = "USD", double CurrencyFactorDida = 1, string TechName = "", int srphotelid = 0, string srphotelhotelname = "")
         {
             PriceCheckDidaDto priceCheckDidaDto = new PriceCheckDidaDto();
             // flag:0= priceCheck Success
@@ -1724,7 +1724,7 @@ namespace Xconnect.Expedia
                     try
                     {
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey,TechName);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey,TechName, srphotelid, srphotelhotelname);
                     }
                     catch (Exception e)
                     {
@@ -1792,7 +1792,7 @@ namespace Xconnect.Expedia
                                 try
                                 {
                                     responsetype = "GeneralError";
-                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey, TechName);
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey, TechName, srphotelid, srphotelhotelname);
                                 }
                                 catch (Exception e)
                                 {
@@ -1830,7 +1830,7 @@ namespace Xconnect.Expedia
                 {
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey,TechName);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey,TechName, srphotelid, srphotelhotelname);
                 }
                 catch (Exception e)
                 {
@@ -1845,7 +1845,7 @@ namespace Xconnect.Expedia
             try
             {
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
             }
             catch (Exception e)
             {

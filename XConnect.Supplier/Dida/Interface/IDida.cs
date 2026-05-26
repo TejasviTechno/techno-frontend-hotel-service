@@ -23,7 +23,7 @@ namespace XConnect.Supplier.Dida.Interface
         #endregion
 
         //prebook - 30/06/25
-        Task<PriceCheckDidaDto> DidaPreBookingReq(string ReferenceNo, string ID, string Password, string HotelCode, string RCode, int NoOfAdults, int NoOfChild, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int ChildAge1, int ChildAge2, int NoOfRoom, string Nationality, string CDate, string Searchkey = "", int AgentId = 0, string DidaCurrency="USD", double CurrencyFactorDida=1, string TechName = "");
+        Task<PriceCheckDidaDto> DidaPreBookingReq(string ReferenceNo, string ID, string Password, string HotelCode, string RCode, int NoOfAdults, int NoOfChild, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int ChildAge1, int ChildAge2, int NoOfRoom, string Nationality, string CDate, string Searchkey = "", int AgentId = 0, string DidaCurrency="USD", double CurrencyFactorDida=1, string TechName = "", int srphotelid = 0, string srphotelhotelname = "");
 
         string DidaBookingRequest(DataSet dsCartDetails, DataTable dtPassengers, int i, int j, string ClientID, string UserName, string Password, int UniqueNo, string PreBookRef, int NoOfRoom, string AgentCode);
         string DidaBookingRequest_newversion(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, int j, string ClientID, string UserName, string Password, int UniqueNo, string PreBookRef, int NoOfRoom, string AgentCode);
