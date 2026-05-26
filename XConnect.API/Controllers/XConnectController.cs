@@ -5790,7 +5790,8 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription =  erroragoda.remark,
-                                        CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds
+                                       // CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5818,7 +5819,8 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription = "SUCCESSFULL",
-                                        CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds
+                                        //CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5850,7 +5852,8 @@ namespace XConnect.API.Controllers
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription =  erroragoda.remark,
-                                    CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
+                                    CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds
+                                    //CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
                                 });
                             }
                             catch (Exception exx)
@@ -5904,7 +5907,8 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription =  erroragoda.remark,
-                                        CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert2.Elapsed.TotalMilliseconds
+                                        //CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5931,7 +5935,8 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription = "SUCCESSFULL",
-                                        CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert2.Elapsed.TotalMilliseconds
+                                        //CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5966,7 +5971,8 @@ namespace XConnect.API.Controllers
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription =  erroragoda.remark,
-                                    CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
+                                    CodeProcessingTimenew = timerforagodaconvert2.Elapsed.TotalMilliseconds
+                                    //CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
                                 });
                             }
                             catch (Exception exx)
