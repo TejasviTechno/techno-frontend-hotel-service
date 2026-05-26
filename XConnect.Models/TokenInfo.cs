@@ -1,5 +1,5 @@
 ﻿using System.Data;
-
+using Newtonsoft.Json;
 namespace XConnect.Models
 {
     public class TokenInfo
@@ -211,4 +211,156 @@ namespace XConnect.Models
         public DateTime Date { get; set; }
         public string Text { get; set; }
     }
+
+    #region getroomdecription
+    public class GetHotelroomdata
+    {
+        public int HotelId { get; set; }
+    }
+
+    public class Property_ean
+    {
+        [JsonProperty("id")]
+        public Dictionary<string, PropertyObject_ean> AnyKey { get; set; }
+
+    }
+    public class PropertyObject_ean
+    {
+        [JsonProperty("property_id")]
+        public string PropertyId { get; set; }
+        [JsonProperty("Name")]
+        public string Name { get; set; }
+        [JsonProperty("rooms")]
+        public Dictionary<string, RoomInfo_ean> Rooms { get; set; }
+    }
+    public class RoomInfo_ean
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("descriptions")]
+        public RoomDescriptions_ean RoomDescriptions { get; set; }
+        [JsonProperty("amenities")]
+        public Dictionary<string, RoomAmenity_ean> RoomAmenities { get; set; }
+        [JsonProperty("images")]
+        public List<RoomImages_ean> Images { get; set; }
+        [JsonProperty("bed_groups")]
+        public Dictionary<string, BedGroup_ean> BedGroups { get; set; }
+        [JsonProperty("area")]
+        public Area_ean Area { get; set; }
+        [JsonProperty("views")]
+        public Dictionary<string, ViewInfo_ean> Views { get; set; }
+        [JsonProperty("occupancy")]
+        public Occupancy Occupancy { get; set; }
+    }
+    public class RoomDescriptions_ean
+    {
+        [JsonProperty("overview")]
+        public string Overview { get; set; }
+    }
+    public class RoomAmenity_ean
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("value")]
+        public string Value { get; set; }
+        [JsonProperty("categories")]
+        public List<string> categories { get; set; }
+
+    }
+    public class RoomImages_ean
+    {
+        [JsonProperty("hero_image")]
+        public string HeroImage { get; set; }
+        [JsonProperty("category")]
+        public int Category { get; set; }
+        [JsonProperty("caption")]
+        public string Caption { get; set; }
+        [JsonProperty("links")]
+        public Dictionary<string, RoomImageLink_ean> RoomImageLinks { get; set; }
+    }
+    public class RoomImageLink_ean
+    {
+        [JsonProperty("method")]
+        public string Method { get; set; }
+        [JsonProperty("href")]
+        public string Href { get; set; }
+        [JsonProperty("expires")]
+        public string Expires { get; set; }
+    }
+    public class BedGroup_ean
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("description")]
+        public string Description { get; set; }
+        [JsonProperty("configuration")]
+        public List<BedConfiguration_ean> Configuration { get; set; }
+    }
+    public class BedConfiguration_ean
+    {
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("size")]
+        public string Size { get; set; }
+        [JsonProperty("quantity")]
+        public int Quantity { get; set; }
+    }
+    public class Area_ean
+    {
+        [JsonProperty("square_meters")]
+        public decimal SquareMeters { get; set; }
+        [JsonProperty("square_feet")]
+        public decimal SquareFeet { get; set; }
+    }
+    public class ViewInfo_ean
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+    }
+    public class Occupancy_ean
+    {
+        [JsonProperty("max_allowed")]
+        public MaxAllowed_ean MaxAllowed { get; set; }
+        [JsonProperty("age_categories")]
+        public Dictionary<string, AgeCategoryInfo_ean> AgeCategories { get; set; }
+    }
+    public class MaxAllowed_ean
+    {
+        [JsonProperty("total")]
+        public int Total { get; set; }
+        [JsonProperty("children")]
+        public int Children { get; set; }
+        [JsonProperty("adults")]
+        public int Adults { get; set; }
+    }
+    public class AgeCategoryInfo_ean
+    {
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("minimum_age")]
+        public int MinimumAge { get; set; }
+    }
+
+    public class HotelRoomResult
+    {
+        public string HotelName { get; set; }
+        public List<RoomResult> Rooms { get; set; }
+    }
+
+    public class RoomResult
+    {
+        public string Roomid { get; set; }
+        public string RoomName { get; set; }
+
+        public string Description { get; set; }
+        public List<string> Images { get; set; }
+    }
+
+    #endregion
 }
