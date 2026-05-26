@@ -1009,6 +1009,19 @@ namespace XConnect.Supplier.Letsfly
             //260326
             string[] RoomTypeId1 = RoomTypeId.Split(new string[] { "###" }, StringSplitOptions.None);
             string Nationality = RoomTypeId1[2];
+
+            int srphotelid = 0;
+            string srphotelhotelname = "";
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+                srphotelhotelname = Convert.ToString(dsCartDetails.Tables[0].Rows[0]["ServiceName"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
+
             //
             try
             {
@@ -1040,7 +1053,7 @@ namespace XConnect.Supplier.Letsfly
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error,Searchkey,TechName);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error,Searchkey,TechName, srphotelid, srphotelhotelname);
                         }
                         catch (Exception e)
                         {
@@ -1057,7 +1070,7 @@ namespace XConnect.Supplier.Letsfly
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                         }
                         catch (Exception e)
                         {
@@ -1099,7 +1112,7 @@ namespace XConnect.Supplier.Letsfly
                                             try
                                             {
                                                 responsetype = "GeneralError";
-                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName);
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                                             }
                                             catch (Exception e)
                                             {
@@ -1121,7 +1134,7 @@ namespace XConnect.Supplier.Letsfly
                                             try
                                             {
                                                 responsetype = "GeneralError";
-                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName);
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                                             }
                                             catch (Exception e)
                                             {
@@ -1140,7 +1153,7 @@ namespace XConnect.Supplier.Letsfly
                                         try
                                         {
                                             responsetype = "GeneralError";
-                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName);
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                                         }
                                         catch (Exception e)
                                         {
@@ -1161,7 +1174,7 @@ namespace XConnect.Supplier.Letsfly
                             try
                             {
                                 responsetype = "GeneralError";
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                             }
                             catch (Exception e)
                             {
@@ -1186,7 +1199,7 @@ namespace XConnect.Supplier.Letsfly
                 try
                 {
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                 }
                 catch (Exception e)
                 {
@@ -1205,7 +1218,7 @@ namespace XConnect.Supplier.Letsfly
             try
             {
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
             }
             catch (Exception e)
             {

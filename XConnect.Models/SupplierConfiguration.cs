@@ -80,18 +80,28 @@ namespace XConnect.Models
         public string creditCardExpirationYear_Xpedia { get; set; }
         public string creditCardIdentifier_Xpedia { get; set; }
         public string countryCode_Xpedia { get; set; }
+        public string countryCode_Xpedia_gujju { get; set; }
         public string homePhone_Xpedia { get; set; }
         public string WorkPhone_Xpedia { get; set; }
         public string creditCardType_Xpedia { get; set; }
         public string country_code_Xpedia { get; set; }
+        public string country_code_Xpedia_gujju { get; set; }
         public string postalCode_Xpedia { get; set; }
+        public string postalCode_Xpedia_gujju { get; set; }
         public string city_Xpedia { get; set; }
+        public string city_Xpedia_gujju { get; set; }
         public string firstName_Xpedia { get; set; }
+        public string firstName_Xpedia_gujju { get; set; }
         public string lastName_Xpedia { get; set; }
+        public string lastName_Xpedia_gujju { get; set; }
         public string email_Xpedia { get; set; }
+        public string email_Xpedia_gujju { get; set; }
         public string address1_Xpedia { get; set; }
+        public string address1_Xpedia_gujju { get; set; }
         public string area_code_Xpedia { get; set; }
+        public string area_code_Xpedia_gujju { get; set; }
         public string number_Xpedia { get; set; }
+        public string number_Xpedia_gujju { get; set; }
         public string EAN_Rate_Option_Cross_sell { get; set; }//added 20-may-2026
     }
 

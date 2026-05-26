@@ -5751,6 +5751,8 @@ namespace XConnect.API.Controllers
 
                     if (!filterUsed.ratePlanSearch)
                     {
+                        Stopwatch timerforagodaconvert = new Stopwatch();
+                        timerforagodaconvert.Start();
                         AgodaListResponse lstFiltOption = new AgodaListResponse();
                         //File.WriteAllText(Path.Combine("D:\\Karnav\\Agoda API", "WriteFile_HotelResult.txt"), Convert.ToString(finalResponse.AvailabilityRS.HotelResult.Count));
                         if (finalResponse.AvailabilityRS != null && finalResponse.AvailabilityRS.HotelResult.Count > 0)
@@ -5760,6 +5762,7 @@ namespace XConnect.API.Controllers
                             //lstFiltOption = await _hotelXML.ConvertToFinalResponseListForAgoda(finalResponse,filterUsed, Convert.ToString(tokenData.apiCurrency.CurrencyShortname), requestName, _NoofRoom); //convert to final response
                             lstFiltOption = await _hotelXML.ConvertToFinalResponseListForAgoda(finalResponse, filterUsed, authData.tokenData.apiCurrency.CurrencyShortname, requestName, _NoofRoom); //needtochange
                         }
+                        timerforagodaconvert.Stop();
                         timer.Stop();
                         if (lstFiltOption != null)
                         {
@@ -5787,7 +5790,7 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription =  erroragoda.remark,
-                                        CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5815,7 +5818,7 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription = "SUCCESSFULL",
-                                        CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5847,7 +5850,7 @@ namespace XConnect.API.Controllers
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription =  erroragoda.remark,
-                                    CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                    CodeProcessingTimenew = timerforagodaconvert.ElapsedMilliseconds
                                 });
                             }
                             catch (Exception exx)
@@ -5861,6 +5864,8 @@ namespace XConnect.API.Controllers
                     }
                     else
                     {
+                        Stopwatch timerforagodaconvert2 = new Stopwatch();
+                        timerforagodaconvert2.Start();
                         //AgodaMainPrecheck lstFiltOption = new AgodaMainPrecheck();
                         AgodaListResponse lstFiltOption = new AgodaListResponse();
 
@@ -5871,6 +5876,7 @@ namespace XConnect.API.Controllers
                             lstFiltOption = await _hotelXML.ConvertToFinalResponseListForAgoda(finalResponse, filterUsed, authData.tokenData.apiCurrency.CurrencyShortname, requestName, _NoofRoom); //needtochange
 
                         }
+                        timerforagodaconvert2.Stop();
                         timer.Stop();
                         if (lstFiltOption != null)
                         {
@@ -5898,7 +5904,7 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription =  erroragoda.remark,
-                                        CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5925,7 +5931,7 @@ namespace XConnect.API.Controllers
                                         source = "APIOut",
                                         AgentName = "Agoda",
                                         ActualDescription = "SUCCESSFULL",
-                                        CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                        CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
                                     });
                                 }
                                 catch (Exception exx)
@@ -5960,7 +5966,7 @@ namespace XConnect.API.Controllers
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription =  erroragoda.remark,
-                                    CodeProcessingTimenew = timer.ElapsedMilliseconds
+                                    CodeProcessingTimenew = timerforagodaconvert2.ElapsedMilliseconds
                                 });
                             }
                             catch (Exception exx)
@@ -5989,8 +5995,7 @@ namespace XConnect.API.Controllers
                             Errorcode = "UNAUTHORIZED",
                             source = "APIOut",
                             AgentName = "Agoda",
-                            ActualDescription = erroragoda.remark,
-                            CodeProcessingTimenew = timer.ElapsedMilliseconds
+                            ActualDescription = erroragoda.remark
                         });
                     }
                     catch (Exception exx)
@@ -6018,8 +6023,7 @@ namespace XConnect.API.Controllers
                         Errorcode = "INTERNAL_ERROR",
                         source = "APIOut",
                         AgentName = "Agoda",
-                        ActualDescription =  erroragoda.remark,
-                        CodeProcessingTimenew = timer.ElapsedMilliseconds
+                        ActualDescription =  erroragoda.remark
                     });
                 }
                 catch (Exception exx)
@@ -6572,6 +6576,65 @@ namespace XConnect.API.Controllers
                 timer.Stop();
                 error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
                 return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetStaticDataByCity", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "", "", "", "", "", 0, 0, 0, "", null);
+
+            }
+
+        }
+
+        [Route("GetHotelRoomData")]
+        [HttpPost]
+        public async Task<IActionResult> GetHotelRoomData(CommonRequest data)
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            TokenData TokenData = new TokenData();
+
+            try
+            {
+                //string IP = HttpContext.Items["ClientIp"]?.ToString();
+                //var userAgent = HttpContext.Items["User-Agent"]?.ToString();
+
+                string IP = _platformService.GetIPAddress();
+                //string userAgent = _platformService.GetBrowserInfo(_platformService.GetRequest());
+
+                string userAgent = _platformService.GetUserPlatform(IP);
+                string MainURL = _platformService.GetHostName();
+
+                //bool IsRefereshCache = data.AdvancedOptions.CustomerIpAddress == "777" ? true : false;
+
+                AuthData authData = await _authenticationTokenAgent.Authenticate(TokenData, data, IP, userAgent);
+                if (Convert.ToBoolean(authData.tokenData.AgentId))
+                {
+                    GetHotelroomdata payload = Newtonsoft.Json.JsonConvert.DeserializeObject<GetHotelroomdata>(data.Request.ToString());
+
+                    // List<StaticData> lstFiltOption = await _hotelXML.GetCitiesWithHotel(payload.CityName);
+                    List<HotelRoomResult> lstFiltOption = await _hotelXML.GetHotelRoomData(payload.HotelId, data.AdvancedOptions, Convert.ToString(authData.tokenData.TanentId), Convert.ToString(authData.tokenData.AgentId), userAgent);
+                    if (lstFiltOption != null && lstFiltOption.Count > 0)
+                    {
+                        timer.Stop();
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.OK, lstFiltOption, "application/json", data, lstFiltOption, TokenData, "GetHotelRoomData", true, timer.Elapsed.ToString(), ErrorCode.NoError, payload.HotelId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+
+                    }
+
+                    else
+                    {
+                        timer.Stop();
+                        error = _hotelXML.GetErrorMsg(ErrorType.GeneralError, ErrorCode.NorecordError, ErrorDescription.NorecordError);
+                        return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.NotFound, lstFiltOption, "application/json", data, lstFiltOption, authData.tokenData, "availabilitywithCancellation", true, timer.Elapsed.ToString(), ErrorCode.NorecordError, payload.HotelId.ToString(), IP, "", "", "", 0, 0, 0, "", null);
+
+                    }
+                }
+                else
+                {
+                    timer.Stop();
+                    return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.Unauthorized, 401, "application/json", data, "", authData.tokenData, "GetHotelRoomData", true, timer.Elapsed.ToString(), ErrorCode.AutorizationError, "", IP, "", "", "", 0, 0, 0, "", null);
+                }
+            }
+            catch (Exception ex)
+            {
+                timer.Stop();
+                error = _hotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
+                return await _hotelXML.CreateResponseCompressedAsync(HttpContext, HttpStatusCode.InternalServerError, error, "application/json", data, "", TokenData, "GetHotelRoomData", true, timer.Elapsed.ToString(), ErrorCode.InternalError, "", "", "", "", "", 0, 0, 0, "", null);
 
             }
 
