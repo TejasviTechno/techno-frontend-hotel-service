@@ -50222,7 +50222,7 @@ new SqlParameter("@AgentId", AgentId),
                                             bool IsB2B = true;
                                             string CID = Convert.ToString(XPDetails[0]["UserID"]);
                                              string Uesrname= Convert.ToString(XPDetails[0]["UserName"]);
-                                            if (Uesrname.ToLower()== "5gme52r0dlt7t")
+                                            if (Uesrname == "5gme52r0dlt7t")
                                             {
                                                 EANBookRequest = _expedia.EANStringForBookV3_newversion_gujju(bookRequest, dtPassengers, j, Ex_Guid, ChildSupplier.ToLower());
                                             }
