@@ -678,7 +678,6 @@ namespace Xconnect.BLL
                     dsGiatadata = await GetHotelDataForListFinalNewSpeedVinod_Redis_New(SearchPara.CityID, Convert.ToInt32(SearchPara.CountryID), 0, true, SearchPara.HotelID, AgentId, (db0, db1, db2, db3, db4));
                 else
                 {
-
                     dsGiatadata = await GetHotelDataForList(SearchPara.CityID, Convert.ToInt32(SearchPara.CountryID), 0, false, AgentId, dtH);
 
                     //if (Convert.ToInt32(SearchPara.CountryID) == 0)
@@ -42012,61 +42011,11 @@ new SqlParameter("@AgentId", AgentId),
                                                                     #endregion
                                                                     #region All Juniper
                                                                     case "juniper":
-                                                                        //case "egyptexpress":
-                                                                        //case "w2m":
-                                                                        //case "alphatours":
-                                                                        //case "gte":
-                                                                        //case "fastpayhotels":
-                                                                        //case "lotsofhotels":
-                                                                        //case "escalabeds":
-                                                                        //case "bookohotel":
-                                                                        //case "travcoegypt":
-                                                                        //case "eref":
-                                                                        //case "peakpoint":
-                                                                        //case "itrip":
-                                                                        //case "primetravel":
-                                                                        //case "ixpira":
-                                                                        //case "destinationitalia":
-                                                                        //case "elevatedmc":
-                                                                        //case "smileholidays":
-                                                                        //case "mtc":
-                                                                        //case "tds":
-                                                                        //case "yuppitravel":
+
                                                                         try
                                                                         {
                                                                             DataRow[] Master = SupplierDetailsCommon;
-                                                                            //switch (Supplier.ToLower())
-                                                                            //{
-                                                                            //    case "egyptexpress":
-                                                                            //        Master = EgyptExpressDetails;
-                                                                            //        break;
-                                                                            //    case "w2m":
-                                                                            //        Master = W2MDetails;
-                                                                            //        break;
-                                                                            //    case "alphatours":
-                                                                            //        Master = AlphaToursDetails;
-                                                                            //        break;
-                                                                            //    case "gte":
-                                                                            //        Master = GTEDetails;
-                                                                            //        break;
-                                                                            //    case "fastpayhotels":
-                                                                            //        Master = FastPayHotelsDetails;
-                                                                            //        break;
-                                                                            //    case "lotsofhotels":
-                                                                            //        Master = LotsOfHotelsDetails;
-                                                                            //        break;
-                                                                            //    case "escalabeds":
-                                                                            //        Master = EscalabedsDetails;
-                                                                            //        break;
-                                                                            //    case "bookohotel":
-                                                                            //        Master = BookoHotelDetails;
-                                                                            //        break;
-                                                                            //    case "travcoegypt":
-                                                                            //        Master = TravcoEgyptDetails;
-                                                                            //        break;
-                                                                            //    default:
-                                                                            //        break;
-                                                                            //}
+
                                                                             if (Master != null)
                                                                                 _juniper.Get_Juniper_BookingProcess(tokenData.AgentCode, ref dtAgentVoucher, ref dsCartDetails, ref dtCheckPriceReqStructure, ref dtPassengers, ref dtCAncellationPolicy, null, Master, tokenData, ref AgentVoucherNo, ref bookingStatus, ref UniqueNo, ref AgentUniqueNo, ref isNonRefundable, i, SearchKey, AgentId, IsPruvo);
                                                                         }
@@ -51508,8 +51457,6 @@ new SqlParameter("@AgentId", AgentId),
                                 case "iwtx":
                                     for (int j = 0; j < 1; j++)
                                     {
-
-
                                         try
                                         {
                                             //for (int j = 0; j < dsCartDetails.Tables[1].DefaultView.Count; j++)
@@ -53660,45 +53607,38 @@ new SqlParameter("@AgentId", AgentId),
                                     {
                                         for (int j = 0; j < 1; j++)
                                         {
-
-
-
                                             try
                                             {
-
                                                 #region Declaration
-                                                AgentVoucherNo = "";
+
                                                 bookingStatus = 6;
-                                                //int j = 0;
-                                                double FinalPrices = 0;
+
                                                 string RatePlanCode = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
-                                                //need
-                                                string HotelId = "";//Convert.ToString(dsCartDetails.Tables[0].Rows[i]["XMLHotelId"]);
+
                                                 UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
                                                 int UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
                                                 double CompanyBuyingPrices = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].BaseServiceBuyingAmount);
                                                 string BookingCode = "";
                                                 bool IsPriceUpdate = true;
                                                 double Gross = 0;
-                                                string NewRatePlan = "";
+
                                                 UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
                                                 bool IsError = false;
                                                 string BookingRequest = "";
-
-
 
                                                 #endregion
 
                                                 #region PriceCkeck, Booking Rule, Booking RQ, Booking URL
                                                 double CurrencyFactor = 1;
-                                                //string Currency = "USD";
                                                 string Currency = Convert.ToString(XPDetails[0]["CurrencyShortName"]);
-
+                                                string[] spitid = RatePlanCode.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                                string NewRatePlan = spitid[0].ToString();
+                                                string NationalityCode = spitid[2].ToString();
+                                                String HotelId = spitid[3].ToString();
                                                 if (suppliername.ToLower() == "robios")
                                                 {
-                                                    string[] spitid = RatePlanCode.Split(new String[] { "$$$" }, StringSplitOptions.None);
                                                     Currency = spitid[5].ToString();
-                                                    HotelId = spitid[3].ToString();
+
                                                 }
 
                                                 if (Currency.ToLower() != tokenData.SiteCurrency.ToLower())
@@ -53706,21 +53646,22 @@ new SqlParameter("@AgentId", AgentId),
                                                     CurrencyFactor = _commonMethod.GetROEByCurrency(Currency, tokenData.dtROE);
                                                 }
 
-                                                //isNonRefundable = false;
+                                                String PurchaseToken = bookRequest.userCart.UserCartDetails[j].PurchaseToken;
+                                                isNonRefundable = Convert.ToBoolean(PurchaseToken);
+                                                string Paxdetails = "";
                                                 //if (dtCAncellationPolicy != null && dtCAncellationPolicy.Rows.Count > 0)
                                                 //{
                                                 //    dtCAncellationPolicy.DefaultView.RowFilter = "RoomTypeId='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]) + "' and AgentCancellationPrice='0'";
                                                 //    if (dtCAncellationPolicy.DefaultView.Count == 0)
                                                 //        isNonRefundable = true;
                                                 //}
-                                                string NationalityCode = "";
 
-                                                NewRatePlan = _juniper.Get_LOH_RoomTypeID(RatePlanCode, ref NationalityCode);
+                                                //NewRatePlan = _juniper.Get_LOH_RoomTypeID(RatePlanCode, ref NationalityCode);260526
 
-                                                BookingCode = _juniper.Get_Juniper_HotelBookingRulesRQ_newversion(isNonRefundable, CurrencyFactor, Currency, bookRequest, XPDetails, NewRatePlan, HotelId, 0, j, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), UniqueNo, AgentUniqueNo, IsPriceUpdate, ref Gross, IsError);
+                                                BookingCode = _juniper.Get_Juniper_HotelBookingRulesRQ_newversion(isNonRefundable, CurrencyFactor, Currency, bookRequest, XPDetails, NewRatePlan, HotelId, 0, j, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), UniqueNo, AgentUniqueNo, IsPriceUpdate, ref Gross, ref Paxdetails, IsError);
 
 
-                                                BookingRequest = _juniper.Get_Juniper_BookingRequest_newversion(0, bookRequest, tokenData.AgentCode, dtPassengers, XPDetails, BookingCode, Gross, UniqueNo, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), RatePlanCode, Currency, false);//need070426
+                                                BookingRequest = _juniper.Get_Juniper_BookingRequest_newversion(0, bookRequest, tokenData.AgentCode, dtPassengers, XPDetails, BookingCode, Gross, UniqueNo, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), RatePlanCode, Currency, Paxdetails, false);//need070426
 
                                                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", "-", "Within Earth");
 
@@ -53729,35 +53670,30 @@ new SqlParameter("@AgentId", AgentId),
                                                 isNonRefundable = false;
                                                 #endregion
 
+
+                                                BookingRequest = BookingRequest.Replace("#BookingCode", BookingCode);
+
+                                                System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+                                                timerroomprocess.Start();
+
+                                                ResponseDto responseDto = await _juniper.GetSupplierResponse_report_new(Error, "", BookingRequest, Url, 180000, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, bookRequest.SearchKey);
+
+                                                ResponseDatatest = responseDto.Response;
+                                                Error = responseDto.Error;
+                                                RequestSPR = BookingRequest;
+                                                ReponseSPR = ResponseDatatest;
+
+                                                timerroomprocess.Stop();
+                                                time = timerroomprocess.Elapsed.ToString();
+
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest, ResponseDatatest, "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", "-", "Within Earth");
+
+                                                DataTable dtCheckPriceRe = null; // (DataTable)HttpContext.Current.Session["CheckPriceReq"];
+                                                if (dtCheckPriceRe != null)
                                                 {
-                                                    // if (Common.getSession("AgentCode").ToLower() == "agt-01577")
-                                                    // BookingCode = "";
-                                                    BookingRequest = BookingRequest.Replace("#BookingCode", BookingCode);
+                                                    dtCheckPriceRe.DefaultView.RowFilter = "UserCartDetailsID=" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
 
-                                                    System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
-                                                    timerroomprocess.Start();
-
-                                                    ResponseDatatest = _juniper.GetSupplierResponse_report(ref Error, "", BookingRequest, Url, 180000, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, bookRequest.SearchKey);
-
-                                                    RequestSPR = BookingRequest;
-                                                    ReponseSPR = ResponseDatatest;
-
-                                                    timerroomprocess.Stop();
-                                                    time = timerroomprocess.Elapsed.ToString();
-
-                                                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest, ResponseDatatest, "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", "-", "Within Earth");
-
-                                                    DataTable dtCheckPriceRe = null; // (DataTable)HttpContext.Current.Session["CheckPriceReq"];
-                                                    if (dtCheckPriceRe != null)
-                                                    {
-                                                        dtCheckPriceRe.DefaultView.RowFilter = "UserCartDetailsID=" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                                        //if (dtCheckPriceRe.DefaultView.Count > 0)
-                                                        //    dtCheckPriceReqStructure.ImportRow(dtCheckPriceRe.DefaultView[0].Row);
-                                                    }
                                                 }
-
-
-
 
                                                 #region Booking Confirm, On Request, Rejected
                                                 if (ResponseDatatest != "")
@@ -53990,7 +53926,7 @@ new SqlParameter("@AgentId", AgentId),
                                             Error = ex.Message + ex.StackTrace.ToString();
                                             responsetype = "GeneralError";
                                             time = "00:00:00.000000";
-                                            //string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, DidaBookRequest, DidaResponse, Error);
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
                                         }
                                         catch (Exception e)
                                         {
@@ -67805,9 +67741,9 @@ new SqlParameter("@AgentId", AgentId),
                 return null;
             }
         }
-       
 
-       
+
+
 
         public async Task<List<RoomMappingReport>> GetRoomMappingHotelReport(ApiRequestRoomMapping apiRequest)
         {

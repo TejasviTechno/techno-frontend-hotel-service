@@ -182,6 +182,7 @@ namespace XConnect.Models
         public string HotelAvail { get; set; }
         public string CheckAvail { get; set; }
         public string Booking { get; set; }
+        public string PhoneNumber { get; set; }
 
     }
     public class IBoosyConfig
