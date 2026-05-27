@@ -5781,9 +5781,10 @@ namespace XConnect.API.Controllers
                                 {
                                     _analytic.PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(new AnalyticsData
                                     {
-                                        Action = "availabilitywithcancellation",
+                                        Action = requestName,
+                                        Result = lstFiltOption,
                                         HttpStatusCode = Convert.ToInt32(404),
-                                        Stage = "Search",
+                                        Stage = requestName == "availability" ? "Search" : "Recheck",
                                         ElapsedTime = timer.ElapsedMilliseconds,
                                         Description = erroragoda.responseStatus,
                                         Errorcode = "NOT_SUCCESSFULL",
@@ -5810,9 +5811,10 @@ namespace XConnect.API.Controllers
                                     _analytic.PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(new AnalyticsData
                                     {
 
-                                        Action = "availabilitywithcancellation",
+                                        Action = requestName,
+                                        Result = lstFiltOption,
                                         HttpStatusCode = Convert.ToInt32(200),
-                                        Stage = "Search",
+                                        Stage = requestName == "availability" ? "Search" : "Recheck",
                                         ElapsedTime = timer.ElapsedMilliseconds,
                                         Description = "SUCCESSFULL",
                                         Errorcode = "SUCCESSFULL",
@@ -5843,9 +5845,10 @@ namespace XConnect.API.Controllers
                             {
                                 _analytic.PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(new AnalyticsData
                                 {
-                                    Action = "availabilitywithcancellation",
+                                    Action = requestName,
+                                    Result = lstFiltOption,
                                     HttpStatusCode = Convert.ToInt32(500),
-                                    Stage = "Search",
+                                    Stage = requestName == "availability" ? "Search" : "Recheck",
                                     ElapsedTime = timer.ElapsedMilliseconds,
                                     Description = erroragoda.responseStatus,
                                     Errorcode = "INTERNAL_ERROR",
@@ -5898,9 +5901,10 @@ namespace XConnect.API.Controllers
                                 {
                                     _analytic.PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(new AnalyticsData
                                     {
-                                        Action = "availabilitywithcancellation",
+                                        Action = requestName,
+                                        Result = lstFiltOption,
                                         HttpStatusCode = Convert.ToInt32(404),
-                                        Stage = "Search",
+                                        Stage = requestName == "availability" ? "Search" : "Recheck",
                                         ElapsedTime = timer.ElapsedMilliseconds,
                                         Description = erroragoda.responseStatus,
                                         Errorcode = "NOT_SUCCESSFULL",
@@ -5926,9 +5930,10 @@ namespace XConnect.API.Controllers
                                     _analytic.PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(new AnalyticsData
                                     {
 
-                                        Action = "availabilitywithcancellation",
+                                        Action = requestName,
+                                        Result = lstFiltOption,
                                         HttpStatusCode = Convert.ToInt32(200),
-                                        Stage = "Search",
+                                        Stage = requestName == "availability" ? "Search" : "Recheck",
                                         ElapsedTime = timer.ElapsedMilliseconds,
                                         Description = "SUCCESSFULL",
                                         Errorcode = "SUCCESSFULL",
@@ -5962,9 +5967,10 @@ namespace XConnect.API.Controllers
                             {
                                 _analytic.PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(new AnalyticsData
                                 {
-                                    Action = "availabilitywithcancellation",
+                                    Action = requestName,
+                                    Result = lstFiltOption,
                                     HttpStatusCode = Convert.ToInt32(500),
-                                    Stage = "Search",
+                                    Stage = requestName == "availability" ? "Search" : "Recheck",
                                     ElapsedTime = timer.ElapsedMilliseconds,
                                     Description = erroragoda.responseStatus,
                                     Errorcode = "INTERNAL_ERROR",
@@ -5993,9 +5999,9 @@ namespace XConnect.API.Controllers
                     {
                         _analytic.PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(new AnalyticsData
                         {
-                            Action = "availabilitywithcancellation",
+                            Action = requestName,
                             HttpStatusCode = Convert.ToInt32(401),
-                            Stage = "Search",
+                            Stage = requestName == "availability" ? "Search" : "Recheck",
                             ElapsedTime = timer.ElapsedMilliseconds,
                             Description = erroragoda.responseStatus,
                             Errorcode = "UNAUTHORIZED",
@@ -6021,9 +6027,9 @@ namespace XConnect.API.Controllers
                 {
                     _analytic.PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(new AnalyticsData
                     {
-                        Action = "availabilitywithcancellation",
+                        Action = requestName,
                         HttpStatusCode = Convert.ToInt32(500),
-                        Stage = "Search",
+                        Stage = requestName == "availability" ? "Search" : "Recheck",
                         ElapsedTime = timer.ElapsedMilliseconds,
                         Description = erroragoda.responseStatus,
                         Errorcode = "INTERNAL_ERROR",
