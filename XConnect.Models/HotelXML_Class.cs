@@ -1475,6 +1475,35 @@ namespace XConnect.Models
     }
     #endregion
 
+    #region ReCheck
+    public class CancellationPolicy
+    {
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public double CancellationPrice { get; set; }
+        public bool isNRF { get; set; }
+    }
+    public class ReCheckR
+    {
+        public string RoomNo { get; set; }
+        public string RoomTypeName { get; set; }
+        public double Price { get; set; }
+        public string BookingStatus { get; set; }
+        public string MealName { get; set; }
+        public string MappedMealName { get; set; }
+        public string EssentialInformation { get; set; }
+        public List<CancellationPolicy> CancellationPolicy { get; set; }
+        public string RoomToken { get; set; }
+    }
+    public class Root
+    {
+        public List<object> Error { get; set; }
+        public string Currency { get; set; }
+        public List<ReCheckR> ReCheckRS { get; set; }
+    }
+
+    #endregion
+
     #region Prebook Class
     public class PriceChange
     {
