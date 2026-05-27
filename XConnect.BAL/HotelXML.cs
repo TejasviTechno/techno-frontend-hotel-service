@@ -71566,8 +71566,8 @@ new SqlParameter("@AgentId", AgentId),
 
                     CommonXMLOutCheckHotelCancellationChargesRequest.CheckHotelCancellationChargesRQ checkHotelCancellationChargesRQ = new CommonXMLOutCheckHotelCancellationChargesRequest.CheckHotelCancellationChargesRQ();
                     checkHotelCancellationChargesRQ.BookingId = 0;
-                    checkHotelCancellationChargesRQ.InternalReference = "Agoda_" + InternalReference;
-                    //checkHotelCancellationChargesRQ.InternalReference = InternalReference;
+                    //checkHotelCancellationChargesRQ.InternalReference = "Agoda_" + InternalReference;
+                    checkHotelCancellationChargesRQ.InternalReference = InternalReference;
 
                     checkHotelCancellationChargesRQ.ReferenceNo = "";
 
