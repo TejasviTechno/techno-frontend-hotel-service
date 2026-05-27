@@ -399,6 +399,7 @@ namespace XConnect.Models
     {
         public string Response { get; set; } = "";
         public string Error { get; set; } = "";
+        public int Httpcode { get; set; }
 
     }
 

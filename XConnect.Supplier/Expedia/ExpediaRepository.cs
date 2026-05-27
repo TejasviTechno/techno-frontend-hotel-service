@@ -3531,6 +3531,7 @@ namespace XConnect.Expedia
         {
             ResponseDto responseDto = new ResponseDto();
             string Response = "";
+            int Httpcode = 1;
             try
             {
                 string Key = "";
@@ -3602,7 +3603,8 @@ namespace XConnect.Expedia
                 using (var response = (HttpWebResponse)await Request.GetResponseAsync())
                 {
                     Stream streamResponse = response.GetResponseStream();
-
+                    var statuscode = (int)response.StatusCode;
+                    Httpcode = statuscode;
                     try
                     {
                         if (response.ContentEncoding.ToLower().Contains("gzip"))
@@ -3650,6 +3652,7 @@ namespace XConnect.Expedia
             }
 
             responseDto.Response = Response;
+            responseDto.Httpcode = Httpcode;
             return responseDto;
         }
 

@@ -63239,7 +63239,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                 if (true)// (Supplier.ToString().ToUpper() == "EAN_B2BV3" || Supplier.ToString().ToUpper() == "EAN_PKGV3")
                                 {
-                                    ResponseDto responseDto = await _expedia.GetEANResponse(URLRetrive + _supplierConfig.Expedia.email_Xpedia + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
+                                    ResponseDto responseDto = await _expedia.GetEANResponse(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia, 120000, XMLProvider.ToString(), Sign, ApiKey, echoToken, platform, "GET", "", "", IP);
                                     RetriveBookRes = responseDto.Response;
                                     _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(URLRetrive + _supplierConfig.Expedia.EAN_VersionOnlyV3 + "/itineraries/" + ItineraryID + "?email=" + _supplierConfig.Expedia.email_Xpedia), Convert.ToString(RetriveBookRes), "After Request hit Retrive Booking", Supplier.ToString(), "Request Confirm", PNRNo, "WITHINEARTH");
                                 }
@@ -63269,7 +63269,8 @@ new SqlParameter("@AgentId", AgentId),
                                             {
                                                 ResponseDto responseDto2 = await _expedia.GetEANResponse(URLRetrive + LinkDelete, 120000, Supplier, Sign, ApiKey, echoToken, platform, LinkMethod, "", "", IP);
                                                 string BookCancelRes = responseDto2.Response;
-                                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + LinkDelete), Convert.ToString(BookCancelRes), "After Request hit Cancel Booking after Cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNo), "");
+                                                int Httpcode = responseDto2.Httpcode;
+                                                _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), "", Convert.ToString(URLRetrive + LinkDelete), Convert.ToString(BookCancelRes + "#" + Httpcode), "After Request hit Cancel Booking after Cancellation", Convert.ToString(XMLProvider), "Request Confirm", Convert.ToString(PNRNo), "");
 
                                                 if (BookCancelRes == "")
                                                 {
