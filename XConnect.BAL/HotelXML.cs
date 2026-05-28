@@ -71479,8 +71479,10 @@ new SqlParameter("@AgentId", AgentId),
                                 AgodaCancelReturn Status = (await SaveHotelCancellationData_agoda(p, dsAgentDetails, AgentId, request.Reason, request.InternalReference));
                                 if (Status.ReturnStatus == "Room  Cancelled Successfully!!!")
                                 {
-                                    room.AgentCharge = status_new.AgentCancellationAmount;
-                                    room.Message = status_new.ReturnStatus;
+                                    //room.AgentCharge = status_new.AgentCancellationAmount;
+                                    //room.Message = status_new.ReturnStatus;
+                                    room.AgentCharge = Status.AgentCancellationAmount;
+                                    room.Message = Status.ReturnStatus;
                                     room.CancelStatus = 1;
                                 }
                                 if (Status.ReturnStatus == "Error")
@@ -71623,6 +71625,7 @@ new SqlParameter("@AgentId", AgentId),
                             cancelRQ.CancelAll = 1;
                             cancelRQ.Reason = CancelReson;
                             request1.CancelRQ = cancelRQ;
+                            agodaCancelReturn.AgentCancellationAmount = checkHotelCancellationChargesResponse.CheckHotelCancellationChargesRS.HotelOption.TotalCharge; //28-05-2026
 
                             CommonXMLOutCancelBookingRequest.AdvancedOptions advancedOptions1 = new CommonXMLOutCancelBookingRequest.AdvancedOptions();
                             advancedOptions1.Currency = checkHotelCancellationChargesResponse.CheckHotelCancellationChargesRS.Currency;
