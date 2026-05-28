@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using XConnect.Models.Hotel;
 using XConnect.Models;
+using System.Net;
+using XConnect.CommonUtilities.Interface;
 
 namespace Xconnect.Hotelbeds.Interface
 {
@@ -38,5 +40,8 @@ namespace Xconnect.Hotelbeds.Interface
         string HotelBedsdV1BookindgRequest_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, bool IsPRiceUpdate, bool IsError, int j, string AgentCode);
         string HotelBedsdV1BookindgRequest_newversion_singleroom(DataTable dtPassengers, BookRequest_newversion bookRequest, bool IsPRiceUpdate, bool IsError, int j, string AgentCode);
         Task<ResponseDto> GetHotelBedsSupplierResponse(string strHost, string Username, string Password, Int32 TimeOut, string strxmlRQRS, string methodtype, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "", bool fromCancel = false);
+        Task<ResponseDto> GetHotelBedsSupplierResponse_timeout(string strHost, string Username, string Password, string referenceNumber, string CheckIn, string CheckOut, Int32 TimeOut, string strxmlRQRS, string methodtype, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "", bool fromCancel = false);
+       
+
     }
 }

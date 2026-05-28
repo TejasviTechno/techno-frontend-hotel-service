@@ -19,6 +19,9 @@ using static Azure.Core.HttpHeader;
 using System.Net;
 using System.Security.Cryptography;
 using static XConnect.Models.ErrorLog;
+using System.IO.Compression;
+using static XConnect.Supplier.PkFare.PkfInfoRes;
+using XConnect.Expedia;
 
 namespace Xconnect.Hotelbeds
 
@@ -2808,7 +2811,7 @@ namespace Xconnect.Hotelbeds
             return cancellationDto;
         }
 
-        public async Task<ResponseDto> GetHotelBedsSupplierResponse(string strHost, string Username, string Password, Int32 TimeOut, string strxmlRQRS, string methodtype, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "",bool fromCancel=false)
+        public async Task<ResponseDto> GetHotelBedsSupplierResponse_timeout(string strHost, string Username, string Password, string referenceNumber, string CheckIn, string CheckOut, Int32 TimeOut, string strxmlRQRS, string methodtype, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "",bool fromCancel=false)
         {
             ResponseDto responseDto = new ResponseDto();
 
@@ -2883,6 +2886,168 @@ namespace Xconnect.Hotelbeds
                 }
                 catch (WebException webExcp)
                 {
+                    //HttpWebResponse httpResponse = (HttpWebResponse)webExcp.Response;
+                    //string result = httpResponse.StatusDescription.ToString();
+                    //string result1 = new StreamReader(webExcp.Response.GetResponseStream()).ReadToEnd();
+                    //_ = _commonMethod.XMLRequestResponseTrackError(strxmlRQRS, result1, Provider, "Proper, Searchkey=" + Searchkey + "");
+                    //Error = result + " ," + result1;
+
+                    //responseDto.Response = "";
+                    //responseDto.Error = Error;
+                    string result;
+                    string result1;
+
+                    if (webExcp.Response != null)
+                    {
+                        HttpWebResponse httpResponse = (HttpWebResponse)webExcp.Response;
+                        result = httpResponse.StatusDescription;
+
+                        using (Stream responseStream = httpResponse.GetResponseStream())
+                        {
+                            if (responseStream != null && httpResponse.ContentEncoding.ToLower().Contains("gzip"))
+                            {
+                                // Decompress if response is gzip encoded
+                                using (var decompressedStream = new GZipStream(responseStream, CompressionMode.Decompress))
+                                using (var streamReader = new StreamReader(decompressedStream))
+                                {
+                                    result1 = streamReader.ReadToEnd();
+                                }
+                            }
+                            else
+                            {
+                                // Read response as usual
+                                using (var streamReader = new StreamReader(responseStream))
+                                {
+                                    result1 = streamReader.ReadToEnd();
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        result = "No response received";
+                        result1 = string.Empty;
+                    }
+                    _ = _commonMethod.XMLRequestResponseTrackError(strxmlRQRS, result1, Provider, "Proper, Searchkey=" + Searchkey + "");
+                    Error = result + " ," + result1;
+                    try
+                    {
+                        #region Code For Timeout
+                        if (webExcp.Message.ToLower().Contains("timeout") || (webExcp.Message.ToLower().Contains("timed out")))
+                        {
+                            _ = _commonMethod.Gettimeoutemail(referenceNumber, Provider, CheckIn, CheckOut, CheckIn, Error);
+                        }
+                        #endregion
+                    }
+                    catch (WebException ex1)
+                    {
+                        _ = _exception.Error(ex1, Searchkey);
+                    }
+                    return responseDto;
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+                Error = ex.Message.ToString();
+                _ = _exception.Error(ex, Searchkey);
+                try
+                {
+                    #region Code For Timeout
+                    if (ex.Message.ToLower().Contains("timeout") || (ex.Message.ToLower().Contains("timed out")))
+                    {
+                        _ = _commonMethod.Gettimeoutemail(referenceNumber, Provider, CheckIn, CheckOut, CheckIn, Error);
+                    }
+                    #endregion
+                }
+                catch (WebException ex1)
+                {
+
+                    _ = _exception.Error(ex1, Searchkey);
+                }
+            }
+
+            responseDto.Response = strOutput;
+            responseDto.Error = Error;
+
+            return responseDto;
+        }
+
+        public async Task<ResponseDto> GetHotelBedsSupplierResponse(string strHost, string Username, string Password, Int32 TimeOut, string strxmlRQRS, string methodtype, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "", bool fromCancel = false)
+        {
+            ResponseDto responseDto = new ResponseDto();
+
+            System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+            //Provider = "hotelbeds";
+            timer.Start();
+            string strOutput = "";
+            string signature = "";
+            string Error = "";
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12; //#25-09-2024
+            try
+            {
+                using (var sha = SHA256.Create())
+                {
+                    long ts = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds / 1000;
+                    var computedHash = sha.ComputeHash(Encoding.UTF8.GetBytes(Username + Password + ts));
+                    signature = BitConverter.ToString(computedHash).Replace("-", "");
+                }
+                HttpWebRequest Request = (HttpWebRequest)WebRequest.Create(strHost);
+                ServicePointManager.DefaultConnectionLimit = 1000;
+                // Request.Timeout = TimeOut;
+                Request.Headers.Add("X-Signature", signature);
+                Request.Headers.Add("Api-Key", Username);
+                Request.ContentType = "application/json";
+                Request.Accept = "application/json";
+                if (methodtype.ToLower() == "delete")
+                    Request.Method = "DELETE";
+                else
+                    Request.Method = "POST";
+                Request.Headers.Add("Accept-Encoding", "gzip");
+                Request.Timeout = TimeOut;
+
+                if (!fromCancel)
+                {
+                    Stream newStream = null;
+                    byte[] data = Encoding.ASCII.GetBytes(strxmlRQRS);
+                    Request.ContentLength = data.Length;
+                    newStream = Request.GetRequestStream();
+                    newStream.Write(data, 0, data.Length);
+                }
+
+                string respXml; /* will contain response from api in string form */
+
+                try
+                {
+                    HttpWebResponse Response = (HttpWebResponse)await Request.GetResponseAsync();
+                    Stream st = Response.GetResponseStream();
+
+                    if (Response.ContentEncoding.ToLower().Contains("gzip"))
+                        st = new System.IO.Compression.GZipStream(st, System.IO.Compression.CompressionMode.Decompress);
+                    else if (Response.ContentEncoding.ToLower().Contains("deflate"))
+                        st = new System.IO.Compression.DeflateStream(st, System.IO.Compression.CompressionMode.Decompress);
+                    StreamReader stIn = new StreamReader(st, Encoding.Default);
+                    respXml = await stIn.ReadToEndAsync();
+                    strOutput = respXml;
+                    stIn.Close();
+                    timer.Stop();
+                    if (para != null)
+                    {
+                        para.SupplierTime += ",SupplierName :" + Provider + " : " + "Execution Time :" + timer.Elapsed.ToString();
+                        if (DebugMode)
+                            _ = _commonMethod.XMLRequestResponseTrack(strxmlRQRS, strOutput, Provider, "Proper");
+                    }
+
+
+                    if (Convert.ToString(_keySettings.IsLogTrack) == "1")
+                    {
+                        TimeSpan timeTaken = timer.Elapsed;
+                        // _exception.ErrorLog(Convert.ToString(_keySettings.LogTrackPath), Provider + "->" + strHost + "-> Execution Time : " + timer.Elapsed.ToString());
+                        _ = _commonMethod.XMLRequestResponseTrack(strxmlRQRS, strOutput, Provider, "Proper");
+                    }
+                }
+                catch (WebException webExcp)
+                {
                     HttpWebResponse httpResponse = (HttpWebResponse)webExcp.Response;
                     string result = httpResponse.StatusDescription.ToString();
                     string result1 = new StreamReader(webExcp.Response.GetResponseStream()).ReadToEnd();
@@ -2905,8 +3070,7 @@ namespace Xconnect.Hotelbeds
 
             return responseDto;
         }
-
-        //prebook
+       //prebook
         public async Task<PriceCheckCMDto> PriceUpdateHotelBedsV1(string HTL_RoomCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] HotelBedsV1Details, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string Searchkey = "", int AgentId = 0)
         {
             PriceCheckCMDto priceCheckCMDto = null;

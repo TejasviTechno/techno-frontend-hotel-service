@@ -10988,7 +10988,6 @@ new SqlParameter("@AgentId", AgentId),
                           new SqlParameter("@CityIds",CityIds),
                             };
 
-
                         if (_keySettings.UseLocalDatabase == "1")
                             // dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_CID_new9", para, Timeout);
                             dsIsSubAgent_Agent = await _dlConnection.GetDataSet_cache("IsSubAgent_V1_Xconnect_ForCache_HID_New9_markuptest", para, Timeout);
@@ -52107,6 +52106,15 @@ new SqlParameter("@AgentId", AgentId),
                                             bookingStatus = 6;
 
                                             UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+
+                                            string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
+                                            string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
+                                            DateTime checkInDate = DateTime.Parse(CheckIn);
+                                            DateTime checkOutDate = DateTime.Parse(CheckOut);
+
+                                            // Convert to "yyyy-MM-dd" format
+                                            CheckIn = checkInDate.ToString("yyyy-MM-dd");
+                                            CheckOut = checkOutDate.ToString("yyyy-MM-dd");
                                             bool IsErrors = false;
 
                                             bool IsPriceUpdates = false;
@@ -52117,7 +52125,7 @@ new SqlParameter("@AgentId", AgentId),
                                             System.Diagnostics.Stopwatch timerbookprocess = new System.Diagnostics.Stopwatch();
                                             timerbookprocess.Start();
 
-                                            ResponseDto responseDto = await _hotelbeds.GetHotelBedsSupplierResponse(Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings, Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), 180000, HBV1BookingReq, "POST", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, bookRequest.SearchKey);
+                                            ResponseDto responseDto = await _hotelbeds.GetHotelBedsSupplierResponse_timeout(Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings, Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), ReferenceNo, CheckIn, CheckOut, 180000, HBV1BookingReq, "POST", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, bookRequest.SearchKey);
 
                                             ResponseDataHotelBedsV1 = responseDto.Response;
                                             Error = responseDto.Error;
