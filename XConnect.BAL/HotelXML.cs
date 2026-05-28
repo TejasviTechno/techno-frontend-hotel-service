@@ -17648,9 +17648,9 @@ new SqlParameter("@AgentId", AgentId),
                             hotelPolicy_Prebook.FromDate = fromDate.ToString("MM/dd/yyyy HH:mm:ss");
                             hotelPolicy_Prebook.Todate = toDate.ToString("MM/dd/yyyy HH:mm:ss");
 
-                            hotelPolicy_Prebook.CancellationAmount = Convert.ToDouble(Convert.ToDouble(drPolicy[p]["BuyingPrice"]) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
+                            hotelPolicy_Prebook.CancellationAmount = Convert.ToDouble(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
 
-                            hotelPolicy_Prebook.BaseCancellationAmount = Convert.ToDouble(drPolicy[p]["BuyingPrice"]);
+                            hotelPolicy_Prebook.BaseCancellationAmount = Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]);
 
                             hotelPolicy_Prebook.AgentcancellationAmount = Convert.ToDouble(Convert.ToDecimal(drPolicy[p]["AgentCancellationPrice"]).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
 
