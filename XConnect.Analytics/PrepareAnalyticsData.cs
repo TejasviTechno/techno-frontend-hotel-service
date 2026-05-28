@@ -4,6 +4,7 @@ using QueueManager.Contracts.Models.Hotel;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ using XConnect.Analytics.Interface;
 using XConnect.Models;
 using XConnect.Models.Hotel;
 using static XConnect.Analytics.PrepareClientData;
+using XConnect.DAL.Interface;
+using Microsoft.Data.SqlClient;
 
 
 namespace XConnect.Analytics
@@ -24,14 +27,16 @@ namespace XConnect.Analytics
         private readonly IUserContextAccessor _userContextAccessor;
         private readonly ILogger<PrepareClientData> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IDLConnection _dlConnection;
 
 
-        public PrepareClientData(IPushAnalytics pushAnalytics, IUserContextAccessor userContextAccessor, ILogger<PrepareClientData> logger, IConfiguration configuration)
+        public PrepareClientData(IPushAnalytics pushAnalytics, IUserContextAccessor userContextAccessor, ILogger<PrepareClientData> logger, IConfiguration configuration, IDLConnection dlConnection)
         {
             _pushAnalytics = pushAnalytics;
             _userContextAccessor = userContextAccessor;
             _logger = logger;
             _configuration = configuration;
+            _dlConnection = dlConnection;
         }
 
      
@@ -169,7 +174,7 @@ namespace XConnect.Analytics
             }
         }
 
-        public void PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(AnalyticsData analyticsData)
+        public async void PushHotelDetailsClientDataForAnalyticsAsyc_Agoda(AnalyticsData analyticsData)
         {
             try
             {
@@ -189,7 +194,8 @@ namespace XConnect.Analytics
 
                 //var locationItem = resultData?.AvailabilityRS?.HotelResult?.FirstOrDefault();
 
-
+                int hotelid = Convert.ToInt32(analyticsData?.srphotelid ?? 0);
+                GetHotelDetails gethoteldetail = await GetHotelDetailsByHotelId(hotelid);
 
                 var locationInfo = new AnalyticsLocationInfo
                 {
@@ -208,12 +214,16 @@ namespace XConnect.Analytics
 
                 var productInfo = new AnalyticsProductInfo
                 {
-                    //Name = mainSearchPayload?.CityName ?? "anonymous",
-                    Name = resultData?.hotels?.FirstOrDefault()?.name ?? "anonymous", //added
-                    Id = Convert.ToInt32(resultData?.hotels?.FirstOrDefault()?.code ?? "0"),
 
-                    City = mainSearchPayload?.CityName ?? "anonymous",
-                    Country = mainSearchPayload?.CountryCode ?? "anonymous",
+                    Name = gethoteldetail?.HotelName ?? "anonymous", //added
+                    Id = gethoteldetail?.HotelId ?? 0,
+                    City = gethoteldetail?.CityName ?? "anonymous",
+                    Country = gethoteldetail?.CountryName ?? "anonymous",
+
+                    //Name = resultData?.hotels?.FirstOrDefault()?.name ?? "anonymous",
+                    //Id = Convert.ToInt32(resultData?.hotels?.FirstOrDefault()?.code ?? "0"),
+                    //City = mainSearchPayload?.CityName ?? "anonymous",
+                    //Country = mainSearchPayload?.CountryCode ?? "anonymous",
                 };
 
                 //var productInfo = new AnalyticsProductInfo();
@@ -303,6 +313,48 @@ namespace XConnect.Analytics
                 _logger.LogError(ex, "Error at PushHotelDetailsClientDataForAnalyticsAsyc");
 
             }
+        }
+
+        public async Task<GetHotelDetails> GetHotelDetailsByHotelId(int hotelid)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[] {
+              new SqlParameter("@HotelId", Convert.ToInt32(hotelid)),
+           };
+
+                DataTable dt = await _dlConnection.GetDataTableAsync("sp_GetHotelDetailsByHotelId", para);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    DataRow row = dt.Rows[0];
+                    GetHotelDetails hotel = new GetHotelDetails
+                    {
+                        CountryId = Convert.ToInt32(row["Countryid"]),
+                        CountryName = row["CountryName"].ToString(),
+                        CityId = Convert.ToInt32(row["Cityid"]),
+                        CityName = row["cityName"].ToString(),
+                        HotelName = row["HotelName"].ToString(),
+                        HotelId = Convert.ToInt32(row["Hotelid"]),
+                    };
+                    return hotel;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error at PushHotelRecheckSupplierDataForAnalyticsAsyc");
+                return null;
+            }
+
+        }
+        public class GetHotelDetails
+        {
+            public int CountryId { get; set; }
+            public string CountryName { get; set; }
+            public int CityId { get; set; }
+            public string CityName { get; set; }
+            public string HotelName { get; set; }
+            public int HotelId { get; set; }
         }
 
 

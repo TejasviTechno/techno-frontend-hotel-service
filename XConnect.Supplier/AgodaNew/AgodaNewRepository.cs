@@ -102,6 +102,16 @@ namespace XConnect.Supplier.AgodaNew
                                 //}
                                 //MasterSupplierID = Convert.ToInt32(SupplierID);
                                 SearchKeyRP = availabilityResponse.AvailabilityRS.SearchKey;
+
+                                try
+                                {
+                                    SearchParam.SearchKey = SearchKeyRP;
+
+                                }
+                                catch (Exception exa)
+                                {
+                                    _exception.Error(exa);
+                                }
                                 //HotelOptionIdRP = availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelOptionId;
 
                                 //var lowestPriceRoom = GetLowestPriceRoom(availabilityResponse);

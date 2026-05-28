@@ -70081,6 +70081,15 @@ new SqlParameter("@AgentId", AgentId),
                     string RoomToken = spitid2[2];
                     string RoomNo = "1";
 
+                    try
+                    {
+                        SearchPara.SearchKey = SearchKey;
+
+                    }
+                    catch (Exception exa)
+                    {
+                        _exception.Error(exa);
+                    }
                     CommoXMLOutPreCheckRequest.PreCheckRequest preCheckRequest = new CommoXMLOutPreCheckRequest.PreCheckRequest();
                     //if (SearchPara.CityID != 0)
                     if (Convert.ToInt32(SearchPara.Filters.HotelIDs) != 0)
@@ -72034,100 +72043,100 @@ new SqlParameter("@AgentId", AgentId),
                             hostName = System.Net.Dns.GetHostName();
 
                             #region Elastic
-                            try
-                            {
-                                //if (APIName.ToLower() == "hotelsearch"
-                                //     || APIName.ToLower() == "precheck"
-                                //     || APIName.ToLower() == "booking"
-                                //     || APIName.ToLower() == "bookingids"
-                                //     || APIName.ToLower() == "bookingdetail"
-                                //     || APIName.ToLower() == "cancel")
+                            //try
+                            //{
+                            //    //if (APIName.ToLower() == "hotelsearch"
+                            //    //     || APIName.ToLower() == "precheck"
+                            //    //     || APIName.ToLower() == "booking"
+                            //    //     || APIName.ToLower() == "bookingids"
+                            //    //     || APIName.ToLower() == "bookingdetail"
+                            //    //     || APIName.ToLower() == "cancel")
 
-                                if (APIName.ToLower() == "availability"
-                            || APIName.ToLower() == "availabilitywithcancellation"
-                            || APIName.ToLower() == "availabilitywithcancellationv2"
-                            || APIName.ToLower() == "recheck"
-                            || APIName.ToLower() == "prebook"
-                            || APIName.ToLower() == "book"
-                            || APIName.ToLower() == "book_newversion"
-                            || APIName.ToLower() == "cancelbooking")
-                                {
-                                    string stage = APIName;
-                                    switch (APIName.ToLower())
-                                    {
-                                        //case "hotelsearch":
-                                        case "availabilitywithcancellation":
-                                        case "availability":
-                                        case "availabilitywithcancellationv2":
-                                            stage = "Search";
-                                            //bool isapi = tokendata.IsFromAPI;
-                                            //if (isapi)
-                                            //{
-                                            //    stage = "Search";
-                                            //}
-                                            //else
-                                            //{
-                                            //    stage = "SearchById";
-                                            //}
-                                            break;
+                            //    if (APIName.ToLower() == "availability"
+                            //|| APIName.ToLower() == "availabilitywithcancellation"
+                            //|| APIName.ToLower() == "availabilitywithcancellationv2"
+                            //|| APIName.ToLower() == "recheck"
+                            //|| APIName.ToLower() == "prebook"
+                            //|| APIName.ToLower() == "book"
+                            //|| APIName.ToLower() == "book_newversion"
+                            //|| APIName.ToLower() == "cancelbooking")
+                            //    {
+                            //        string stage = APIName;
+                            //        switch (APIName.ToLower())
+                            //        {
+                            //            //case "hotelsearch":
+                            //            case "availabilitywithcancellation":
+                            //            case "availability":
+                            //            case "availabilitywithcancellationv2":
+                            //                stage = "Search";
+                            //                //bool isapi = tokendata.IsFromAPI;
+                            //                //if (isapi)
+                            //                //{
+                            //                //    stage = "Search";
+                            //                //}
+                            //                //else
+                            //                //{
+                            //                //    stage = "SearchById";
+                            //                //}
+                            //                break;
 
-                                        //case "recheck":
-                                        //    stage = "Recheck";
-                                        //    break;
+                            //            //case "recheck":
+                            //            //    stage = "Recheck";
+                            //            //    break;
 
-                                        //case "precheck":
-                                        case "prebook":
+                            //            //case "precheck":
+                            //            case "prebook":
 
-                                            stage = "Prebook";
-                                            break;
+                            //                stage = "Prebook";
+                            //                break;
 
-                                        case "cancel":
-                                            stage = "Cancel";
-                                            break;
-                                        case "booking":
-                                            stage = "Book";
-                                            break;
+                            //            case "cancel":
+                            //                stage = "Cancel";
+                            //                break;
+                            //            case "booking":
+                            //                stage = "Book";
+                            //                break;
 
-                                        default:
-                                            stage = APIName;
-                                            break;
-                                    }
-                                    bool isapi1 = tokendata.IsFromAPI;
-                                    //bool isfromagoda = tokendata.IsFromAgoda;
+                            //            default:
+                            //                stage = APIName;
+                            //                break;
+                            //        }
+                            //        bool isapi1 = tokendata.IsFromAPI;
+                            //        //bool isfromagoda = tokendata.IsFromAgoda;
 
-                                    string source = "APIOut";
-                                    //if (isapi1)
-                                    //{
-                                    //    source = "APIOut";
-                                    //}
-                                    //else
-                                    //{
-                                    //    source = "Web";
-                                    //}
+                            //        string source = "APIOut";
+                            //        //if (isapi1)
+                            //        //{
+                            //        //    source = "APIOut";
+                            //        //}
+                            //        //else
+                            //        //{
+                            //        //    source = "Web";
+                            //        //}
 
 
-                                    _analytic.PushHotelDetailsClientDataForAnalyticsAsyc(new AnalyticsData
-                                    {
-                                        Result = value,
-                                        Action = APIName,
-                                        HttpStatusCode = Convert.ToInt32(statusCodeagoda),
-                                        Stage = stage,
-                                        // Payload = payload,
-                                        Payload = RQ,
-                                        ElapsedTime = elapsedMilliseconds,
-                                        Description = ErrorCode,
-                                        Errorcode = ErrorCode,
-                                        //Search_Key = searchKeyRP,
-                                        Search_Key = Search_Key,
-                                        source = source
+                            //        _analytic.PushHotelDetailsClientDataForAnalyticsAsyc(new AnalyticsData
+                            //        {
+                            //            Result = value,
+                            //            Action = APIName,
+                            //            HttpStatusCode = Convert.ToInt32(statusCodeagoda),
+                            //            Stage = stage,
+                            //            // Payload = payload,
+                            //            Payload = RQ,
+                            //            ElapsedTime = elapsedMilliseconds,
+                            //            Description = ErrorCode,
+                            //            Errorcode = ErrorCode,
+                            //            //Search_Key = searchKeyRP,
+                            //            Search_Key = Search_Key,
+                            //            source = source
 
-                                    });
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                await _exception.Error(ex);
-                            }
+                            //        });
+                            //    }
+                            //}
+                            //catch (Exception ex)
+                            //{
+                            //    await _exception.Error(ex);
+                            //}
 
                             #endregion
 
