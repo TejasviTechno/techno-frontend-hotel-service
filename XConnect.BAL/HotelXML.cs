@@ -61725,11 +61725,20 @@ new SqlParameter("@AgentId", AgentId),
                                 double Amount = result.penaltyAmount ?? 0;
 
                                 //cancel request 
-                                CancellationXML = JsonConvert.SerializeObject(new BookingCancellationRq
+                                string currencyCode = "";
+                                if (DtCancellation.Rows[p].Table.Columns.Contains("Currency"))
+                                    currencyCode = Convert.ToString(DtCancellation.Rows[p]["Currency"]);
+
+                                CancellationXML = JsonConvert.SerializeObject(new
                                 {
-                                    reason = string.IsNullOrWhiteSpace(CancelReson) ? "Cancelled by customer" : CancelReson,
-                                    expectedPenaltyAmount = Amount
-                                });
+                                    bookingNumber = bookingNumber,
+                                    cancellation = new BookingCancellationRq
+                                    {
+                                        reason = string.IsNullOrWhiteSpace(CancelReson) ? "Cancelled by customer" : CancelReson,
+                                        expectedPenaltyAmount = Amount
+                                    },
+                                    currencyCode = string.IsNullOrWhiteSpace(currencyCode) ? null : currencyCode
+                                }, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
                                 string cancelexelyurl = baseUrl + _supplierConfig.Exely.CancelBooking.Replace("{number}", bookingNumber);
                                 string cancelBookingRequestLog = cancelexelyurl + " body-json " + CancellationXML;
@@ -65595,11 +65604,20 @@ new SqlParameter("@AgentId", AgentId),
                                 double Amount = result.penaltyAmount ?? 0;
 
                                 //cancel request 
-                                CancellationXML = JsonConvert.SerializeObject(new BookingCancellationRq
+                                string currencyCode = "";
+                                if (DtCancellation.Rows[p].Table.Columns.Contains("Currency"))
+                                    currencyCode = Convert.ToString(DtCancellation.Rows[p]["Currency"]);
+
+                                CancellationXML = JsonConvert.SerializeObject(new
                                 {
-                                    reason = string.IsNullOrWhiteSpace(CancelReson) ? "Cancelled by customer" : CancelReson,
-                                    expectedPenaltyAmount = Amount
-                                });
+                                    bookingNumber = bookingNumber,
+                                    cancellation = new BookingCancellationRq
+                                    {
+                                        reason = string.IsNullOrWhiteSpace(CancelReson) ? "Cancelled by customer" : CancelReson,
+                                        expectedPenaltyAmount = Amount
+                                    },
+                                    currencyCode = string.IsNullOrWhiteSpace(currencyCode) ? null : currencyCode
+                                }, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                                 room.xmlrequest = CancellationXML;
 
                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentRef), Convert.ToString(UserNameType), Convert.ToString(CancellationXML), "-", "Before Request hit CancelBooking", Convert.ToString(DtCancellation.Rows[p]["Provider"]), "Request Confirm", PNRNO_Cancel, "NomadsB2B");

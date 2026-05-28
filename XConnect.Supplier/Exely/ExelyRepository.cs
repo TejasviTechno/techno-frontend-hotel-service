@@ -197,7 +197,7 @@ namespace XConnect.Supplier.Exely
         }
 
         //public string Get_Exely_AvailabilityRQ(HotelSearchParameter SearchPara, string HotelCode, string currencyCode, RoomDetails room)
-        public string Get_Exely_AvailabilityRQ(HotelSearchParameter SearchPara, string HotelCode, string currencyCode, int roomIndex = -1)
+        public string Get_Exely_AvailabilityRQ(HotelSearchParameter SearchPara, string HotelCode, string currencyCode, int roomIndex = -1, string include = "", MealPreference? mealPreference = null, double? minPrice = null, double? maxPrice = null)
         {
             try
             {
@@ -244,33 +244,32 @@ namespace XConnect.Supplier.Exely
                         }
                     }
                 }
-                // 🔹 Final minimal request
-                object exelyRequest;
-                if (childAges.Count > 0)
+                // 🔹 Build request matching partner contract: include, mealPreference, pricePreference
+                var req = new Dictionary<string, object?>
                 {
-                    exelyRequest = new
-                    {
-                        propertyIds = propertyIds,
-                        adults = totalAdults,
-                        arrivalDate = ParseSearchDate(SearchPara.CheckInDate).ToString("yyyy-MM-dd"),
-                        departureDate = ParseSearchDate(SearchPara.CheckOutDate).ToString("yyyy-MM-dd"),
-                        childAges = childAges,
-                        //currencyCode = string.IsNullOrWhiteSpace(currencyCode) ? "USD" : currencyCode
-                    };
-                }
-                else
-                {
-                    exelyRequest = new
-                    {
-                        propertyIds = propertyIds,
-                        adults = totalAdults,
-                        arrivalDate = ParseSearchDate(SearchPara.CheckInDate).ToString("yyyy-MM-dd"),
-                        departureDate = ParseSearchDate(SearchPara.CheckOutDate).ToString("yyyy-MM-dd"),
-                        //currencyCode = string.IsNullOrWhiteSpace(currencyCode) ? "USD" : currencyCode
-                    };
-                }
+                    ["propertyIds"] = propertyIds,
+                    ["adults"] = totalAdults,
+                    ["arrivalDate"] = ParseSearchDate(SearchPara.CheckInDate).ToString("yyyy-MM-dd"),
+                    ["departureDate"] = ParseSearchDate(SearchPara.CheckOutDate).ToString("yyyy-MM-dd"),
+                    ["include"] = include ?? string.Empty
+                };
 
-                return JsonConvert.SerializeObject(exelyRequest);
+                if (childAges.Count > 0)
+                    req["childAges"] = childAges;
+
+                if (mealPreference != null)
+                    req["mealPreference"] = mealPreference;
+
+                // Price preference: always include requested currency (fallback to USD if empty)
+                /*string prefCurrency = string.IsNullOrWhiteSpace(currencyCode) ? "USD" : currencyCode;
+                req["pricePreference"] = new
+                {
+                    currencyCode = prefCurrency,
+                    minPrice = minPrice ?? 0,
+                    maxPrice = maxPrice ?? 10000000
+                };*/
+
+                return JsonConvert.SerializeObject(req);
             }
             catch (Exception ex)
             {
@@ -454,6 +453,48 @@ namespace XConnect.Supplier.Exely
                                             List<ShortRoomStay> roomsForHotel = result.roomStays
                                                 .Where(rs => string.Equals(rs.propertyId, hotelCode, StringComparison.OrdinalIgnoreCase))
                                                 .ToList();
+                                            // Fallback: if aggregated response lacks roomStays for this property, or
+                                            // all returned rooms have zero availability, or room currency differs
+                                            // from the requested supplier currency, call property-specific endpoint
+                                            bool hasNoAvailability = roomsForHotel != null && roomsForHotel.Count > 0 && roomsForHotel.All(r => r.availability <= 0);
+                                            bool currencyMismatch = false;
+                                            if (!string.IsNullOrWhiteSpace(Item.CurrencyCode) && roomsForHotel != null && roomsForHotel.Count > 0)
+                                            {
+                                                currencyMismatch = roomsForHotel.Any(r => !string.Equals(r.currencyCode, Item.CurrencyCode, StringComparison.OrdinalIgnoreCase));
+                                            }
+
+                                            if ((roomsForHotel == null || roomsForHotel.Count == 0) || hasNoAvailability || currencyMismatch)
+                                            {
+                                                try
+                                                {
+                                                    //string exelyBaseUrl = GetExelyBaseUrl(Item.URL);
+                                                    var detailed = await GetRoomStaysByPropertyAsync(hotelCode, exelyBaseUrl, Item.PassWord, Item.SearchTimeOut, SearchParam, SearchParam.SearchKey);
+                                                    if (detailed?.roomStays != null && detailed.roomStays.Count > 0)
+                                                    {
+                                                        roomsForHotel = detailed.roomStays.Select(d => new ShortRoomStay
+                                                        {
+                                                            propertyId = d.propertyId,
+                                                            roomType = d.roomType,
+                                                            ratePlan = d.ratePlan,
+                                                            guestCount = d.guestCount,
+                                                            stayDates = d.stayDates,
+                                                            currencyCode = d.currencyCode,
+                                                            total = d.total,
+                                                            cancellationPolicy = d.cancellationPolicy,
+                                                            includedServices = d.includedServices,
+                                                            mealPlanCode = d.mealPlanCode,
+                                                            availableDiscounts = d.availableDiscounts,
+                                                            fullPlacementsName = d.fullPlacementsName,
+                                                            availability = d.availability,
+                                                            checksum = d.checksum
+                                                        }).ToList();
+                                                    }
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    _ = _exception.Error(ex, SearchParam.SearchKey);
+                                                }
+                                            }
                                             Dictionary<string, string>? roomTypeCategoryNames;
                                             roomTypeCategoryNames = null;
                                             for (int j = 0; j < roomsForHotel.Count; j++)
@@ -1010,7 +1051,7 @@ namespace XConnect.Supplier.Exely
                     recheckTimer.Stop();
                     responseData = responseDto.Response;
 
-                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, responseData, "After Exely Recheck", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
+                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, FormatJsonIfPossible(responseData), "After Exely Recheck", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
                     await _commonMethod.XMLRequestResponseTrack_Error(recheckUrl, responseData, supplierName, recheckTimer.Elapsed.ToString(), "ExelyReCheckRoomStaysByProperty", Searchkey);
 
                     priceCheckCMDto.IsError = false;
@@ -1094,7 +1135,7 @@ namespace XConnect.Supplier.Exely
                     string verifyUrl = $"{baseUrl.TrimEnd('/')}/{verifyUrlPath}";
                     requestData = verifyRQ;
 
-                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, "-", "Before Exely PreBook Verify", supplierName, "response confirm", "-", "NomadsB2B", Searchkey);
+                    _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, requestData, "-", "Before Exely PreBook Verify", supplierName, "Response confirm", "-", "NomadsB2B", Searchkey);
                     #endregion Request
 
                     #region Response
@@ -1191,8 +1232,7 @@ namespace XConnect.Supplier.Exely
                 int checkInHour = roomTypeParts.Length > 9 && int.TryParse(roomTypeParts[9], out int ciH) ? ciH : 14;
                 int checkOutHour = roomTypeParts.Length > 10 && int.TryParse(roomTypeParts[10], out int coH) ? coH : 12;
 
-                List<int> childAges = new List<int>();
-                for (int c = 0; c < noofchild; c++) childAges.Add(8);
+                List<int> childAges = GetExelyChildAges(dtPassengers, noofchild);
 
                 var placements = BuildBookingPlacements(storedPlacementCode, noofadult, noofchild);
 
@@ -1280,8 +1320,7 @@ namespace XConnect.Supplier.Exely
                     int checkOutHour = parts.Length > 10 && int.TryParse(parts[10], out int coH) ? coH : 12;
                     string nationality = !string.IsNullOrWhiteSpace(room.Nationality) ? room.Nationality : XmlNationality;
 
-                    List<int> childAges = new List<int>();
-                    for (int c = 0; c < room.NoOfChild; c++) childAges.Add(8);
+                    List<int> childAges = GetExelyChildAges(dtPassengers, room.NoOfChild);
 
                     var placements = BuildBookingPlacements(storedPlacementCode, room.NoOfAdults, room.NoOfChild);
 
@@ -1444,8 +1483,7 @@ namespace XConnect.Supplier.Exely
 
                 int noOfAdults = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfAdults"]);
                 int noOfChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoOfChild"]);
-                List<int> childAges = new List<int>();
-                for (int c = 0; c < noOfChild; c++) childAges.Add(8);
+                List<int> childAges = GetExelyChildAges(dtPassengers, noOfChild);
                 var placements = BuildBookingPlacements(storedPlacementCode, noOfAdults, noOfChild);
 
                 List<BookingGuest> guests = new List<BookingGuest>();
@@ -1485,13 +1523,9 @@ namespace XConnect.Supplier.Exely
                                 roomType = new BookingRoomTypeRq { id = roomTypeCode, placements = placements },
                                 guests = guests,
                                 guestCount = new BookingGuestCount { adultCount = noOfAdults, childAges = childAges.Count > 0 ? childAges : null },
-                                checksum = checksum,
-                                services = new List<RoomStayServiceRq>(),
-                                extraStay = new ExtraStayRequest(),
-                                discounts = new List<BookingDiscountRq>()
+                                checksum = checksum
                             }
                         },
-                        services = new List<BookingServiceRq>(),
                         customer = new Customer
                         {
                             firstName = guests[0].firstName,
@@ -1505,7 +1539,6 @@ namespace XConnect.Supplier.Exely
                                 emails = new List<Email> { new Email { emailAddress = "guest@withinearth.com" } }
                             }
                         },
-                        bookingComments = new List<string>(),
                         createBookingToken = uniqueBookingToken
                     }
                 };
@@ -1530,8 +1563,7 @@ namespace XConnect.Supplier.Exely
                 int checkInHour = roomTypeParts.Length > 9 && int.TryParse(roomTypeParts[9], out int ciH) ? ciH : 14;
                 int checkOutHour = roomTypeParts.Length > 10 && int.TryParse(roomTypeParts[10], out int coH) ? coH : 12;
 
-                List<int> childAges = new List<int>();
-                for (int c = 0; c < noOfChild; c++) childAges.Add(8);
+                List<int> childAges = GetExelyChildAges(dtPassengers, noOfChild);
                 var placements = BuildBookingPlacements(storedPlacementCode, noOfAdults, noOfChild);
 
                 List<BookingGuest> guests = new List<BookingGuest>();
@@ -1635,6 +1667,36 @@ namespace XConnect.Supplier.Exely
             return new List<BookingPlacementRq> { new BookingPlacementRq { code = $"AdultBed-{adultBeds}" } };
         }
 
+        private static List<int> GetExelyChildAges(DataTable? dtPassengers, int noOfChild)
+        {
+            if (dtPassengers != null)
+            {
+                var childAges = new List<int>();
+                if (dtPassengers.Columns.Contains("ChildAge"))
+                {
+                    foreach (DataRow row in dtPassengers.Rows)
+                    {
+                        if (int.TryParse(Convert.ToString(row["ChildAge"]), out int age) && age > 0)
+                            childAges.Add(age);
+                    }
+                }
+                else if (dtPassengers.Columns.Contains("PaxType") && dtPassengers.Columns.Contains("Age"))
+                {
+                    foreach (DataRow row in dtPassengers.Rows)
+                    {
+                        string paxType = Convert.ToString(row["PaxType"]) ?? string.Empty;
+                        if (paxType.Equals("child", StringComparison.OrdinalIgnoreCase) && int.TryParse(Convert.ToString(row["Age"]), out int age) && age > 0)
+                            childAges.Add(age);
+                    }
+                }
+
+                if (childAges.Count > 0)
+                    return childAges;
+            }
+
+            return Enumerable.Range(0, noOfChild).Select(_ => 8).ToList();
+        }
+
         public string Get_Exely_GetCancellationChargesRQ(string AgentRef)
         {
             try
@@ -1703,8 +1765,8 @@ namespace XConnect.Supplier.Exely
                 DataRow[] drSearchConfig = dtSearchConfig.Select("SupplierID='" + sid + "'");
                 int searchTimeout = drSearchConfig.Length > 0 ? Convert.ToInt32(drSearchConfig[0]["BookingConfirmationTimeout"]) : 20000;
 
-                //PropertyInfoType? result = await GetExelyPropertyContentAsync(hotelcode, baseUrl, password, searchTimeout, searchKey, "en", "After Exely EInfo", provider);
-                PropertyInfoType? result = null;
+                PropertyInfoType? result = await GetExelyPropertyContentAsync(hotelcode, baseUrl, password, searchTimeout, searchKey, "en", "After Exely EInfo", provider);
+                //PropertyInfoType? result = null;
 
                 if (result == null) return essential;
 
@@ -1768,6 +1830,7 @@ namespace XConnect.Supplier.Exely
         private sealed class ExelyCachedValue<T> where T : class
         {
             public T? Value { get; set; }
+            public DateTime LastRefreshedUtc { get; set; }
         }
 
         private async Task<T?> GetOrCreateExelyContentCacheAsync<T>(string cacheKey, Func<Task<T?>> factory) where T : class
@@ -1792,6 +1855,13 @@ namespace XConnect.Supplier.Exely
             }
         }
 
+        private bool IsOffPeakWindow()
+        {
+            // Default off-peak window: 02:00 - 05:00 UTC. Adjust if needed.
+            int hour = DateTime.UtcNow.Hour;
+            return hour >= 2 && hour < 5;
+        }
+
         private async Task<PropertyInfoType?> GetExelyPropertyContentAsync(string propertyId, string baseUrl, string password, int searchTimeout, string searchKey, string languageCode = "en", string historyLabel = "", string provider = "Exely")
         {
             try
@@ -1803,32 +1873,120 @@ namespace XConnect.Supplier.Exely
                 string contentUrl = $"{baseUrl.TrimEnd('/')}/{contentTemplate.Replace("{propertyId}", propertyId)}?languageCode={languageCode}";
                 string cacheKey = $"Exely:PropertyContent:{contentUrl.ToLowerInvariant()}";
 
-                return await GetOrCreateExelyContentCacheAsync(cacheKey, async () =>
+                SemaphoreSlim cacheLock = ExelyContentCacheLocks.GetOrAdd(cacheKey, _ => new SemaphoreSlim(1, 1));
+                await cacheLock.WaitAsync();
+                try
                 {
+                    if (_cache.TryGetValue(cacheKey, out ExelyCachedValue<PropertyInfoType>? cached) && cached?.Value != null)
+                    {
+                        // If cached recently within 24h, return cached
+                        if ((DateTime.UtcNow - cached.LastRefreshedUtc) < TimeSpan.FromHours(24))
+                            return cached.Value;
+
+                        // If cache is stale but it's not off-peak, avoid calling Content API; return stale cached value
+                        if (!IsOffPeakWindow())
+                            return cached.Value;
+
+                        // else off-peak: fallthrough to refresh
+                    }
+
+                    // No cached value or off-peak window -> fetch fresh
                     ResponseDto responseDto = await ExelyGetResponseAsync(contentUrl, searchTimeout, password, searchKey);
                     string responseData = responseDto.Response;
 
                     if (!string.IsNullOrWhiteSpace(historyLabel))
-                        _commonMethod.ThirdPartyGetPolicyHistory(propertyId, propertyId, contentUrl, responseData, historyLabel, provider, "Response", "-", "NomadsB2B");
+                    {
+                        var formatted = FormatJsonIfPossible(responseData);
+                        _commonMethod.ThirdPartyGetPolicyHistory(propertyId, propertyId, contentUrl, formatted, historyLabel, provider, "Response", "-", "NomadsB2B");
+                    }
 
                     if (string.IsNullOrWhiteSpace(responseData) || responseData.ToLower().Contains("\"error\""))
+                    {
+                        // If we have a stale cached value, return it instead of null
+                        if (cached?.Value != null)
+                            return cached.Value;
+
                         return null;
+                    }
 
                     try
                     {
-                        return JsonConvert.DeserializeObject<PropertyInfoType>(responseData);
+                        var result = JsonConvert.DeserializeObject<PropertyInfoType>(responseData);
+                        RewriteExelyContentImageUrls(result, propertyId);
+
+                        // store in cache with refresh timestamp
+                        _cache.Set(cacheKey, new ExelyCachedValue<PropertyInfoType> { Value = result, LastRefreshedUtc = DateTime.UtcNow });
+
+                        return result;
                     }
                     catch (Exception ex)
                     {
                         _ = _exception.Error(ex, searchKey);
+                        // return stale cached value if available
+                        if (cached?.Value != null)
+                            return cached.Value;
+
                         return null;
                     }
-                });
+                }
+                finally
+                {
+                    cacheLock.Release();
+                }
             }
             catch (Exception ex)
             {
                 _ = _exception.Error(ex, searchKey);
                 return null;
+            }
+        }
+
+
+        private void RewriteExelyContentImageUrls(PropertyInfoType content, string propertyId)
+        {
+            if (content?.Images == null || content.Images.Count == 0)
+                return;
+
+            foreach (var image in content.Images)
+            {
+                if (image == null || string.IsNullOrWhiteSpace(image.Url))
+                    continue;
+
+                image.Url = GetExelyCachedImageUrl(image.Url, propertyId);
+            }
+        }
+
+        private string GetExelyCachedImageUrl(string sourceUrl, string propertyId)
+        {
+            if (string.IsNullOrWhiteSpace(sourceUrl) || string.IsNullOrWhiteSpace(propertyId))
+                return sourceUrl;
+
+            try
+            {
+                var cachedFileName = Uri.EscapeDataString(sourceUrl);
+                return $"/media/supplier/Exely/{propertyId}/{cachedFileName}";
+            }
+            catch
+            {
+                return sourceUrl;
+            }
+        }
+
+        private string FormatJsonIfPossible(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return input;
+
+            try
+            {
+                var parsed = JsonConvert.DeserializeObject(input);
+                if (parsed == null)
+                    return input;
+                return JsonConvert.SerializeObject(parsed, Formatting.Indented);
+            }
+            catch
+            {
+                return input;
             }
         }
 
@@ -1914,7 +2072,7 @@ namespace XConnect.Supplier.Exely
                 string url = $"{baseUrl.TrimEnd('/')}/{path}?{string.Join("&", queryParams)}";
                 ResponseDto responseDto = await ExelyGetResponseAsync(url, searchTimeout, password, searchKey);
 
-                _commonMethod.ThirdPartyGetPolicyHistory(propertyId, propertyId, url, responseDto.Response, "After Exely RoomStaysByProperty", "Exely", "Response", "-", "NomadsB2B");
+                _commonMethod.ThirdPartyGetPolicyHistory(propertyId, propertyId, url, FormatJsonIfPossible(responseDto.Response), "After Exely RoomStaysByProperty", "Exely", "Response", "-", "NomadsB2B");
 
                 if (string.IsNullOrWhiteSpace(responseDto.Response) || responseDto.Response.ToLower().Contains("\"error\""))
                     return null;
@@ -1989,7 +2147,7 @@ namespace XConnect.Supplier.Exely
                     ResponseDto responseDto = await ExelyGetResponseAsync(cancellationRulesUrl, searchTimeout, password, searchKey);
                     string responseData = responseDto.Response;
 
-                    _commonMethod.ThirdPartyGetPolicyHistory(propertyId, propertyId, cancellationRulesUrl, responseData, "After Exely cancellation rules", "Exely", "Response", "-", "NomadsB2B");
+                    _commonMethod.ThirdPartyGetPolicyHistory(propertyId, propertyId, cancellationRulesUrl, FormatJsonIfPossible(responseData), "After Exely cancellation rules", "Exely", "Response", "-", "NomadsB2B");
 
                     if (string.IsNullOrWhiteSpace(responseData) || responseData.ToLower().Contains("\"error\""))
                         return null;
