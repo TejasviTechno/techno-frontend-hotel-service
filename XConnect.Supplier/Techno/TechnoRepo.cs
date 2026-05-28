@@ -1008,71 +1008,93 @@ namespace XConnect.Supplier.Techno
                 }
                 _commonMethod.ThirdPartyGetPolicyHistory(RoomTypeId, Convert.ToString(SearchKey), Request, Response + Error, "After Get Policy", Provider, "Response", Search_Key, "");
 
-                CancellationPilicyRS WE_DMCResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<CancellationPilicyRS>(Response);
+                //CancellationPilicyRS WE_DMCResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<CancellationPilicyRS>(Response);
+                //CancellationPilicyRS WE_DMCResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<CancellationPilicyRS>(Response);
                 //string ResponseData2 = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(Response, "root").InnerXml;
                 //DataSet WE_DMC_Response = Common.GetDataSetFromXMLString(ResponseData2);
 
-
+                //Added By Hetvi
                 #region  Cancellation policy
-                string EssentialInformation = WE_DMCResponse.CancellationRS.EssentialInformation;
-                for (int c = 0; c < WE_DMCResponse.CancellationRS.CancellationPolicy.Count(); c++)
+
+                Root WE_DMCResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<Root>(Response);
+
+                if (WE_DMCResponse != null && WE_DMCResponse.ReCheckRS != null && WE_DMCResponse.ReCheckRS.Count > 0)
                 {
-                    double CancellationPrice = Convert.ToDouble(WE_DMCResponse.CancellationRS.CancellationPolicy[c].CancellationPrice) * CurrencyFactorWE_DMC;//Convert.ToDouble(WE_DMCResponse.CancellationPilicyRS.HotelResult[0].HotelOption[0].HotelRooms[0][0].CancellationPolicy[c].CancellationPrice);
-                    DateTime FromDate = Convert.ToDateTime(WE_DMCResponse.CancellationRS.CancellationPolicy[c].FromDate); //Convert.ToDateTime(WE_DMCResponse.CancellationPilicyRS.HotelResult[0].HotelOption[0].HotelRooms[0][0].CancellationPolicy[c].FromDate);
-                    DateTime ToDate = Convert.ToDateTime(WE_DMCResponse.CancellationRS.CancellationPolicy[c].ToDate); //Convert.ToDateTime(WE_DMCResponse.CancellationPilicyRS.HotelResult[0].HotelOption[0].HotelRooms[0][0].CancellationPolicy[c].ToDate);
-
-                    #region "Calculation"
-
-                    string SPUI = EssentialInformation;
-                    double AppliedAgentCharges = CancellationPrice;
-                    #region Vat
-                    double VatOnPolicy = 0;
-                    double CompanyChargeAmount = CancellationPrice;
-                    double WE_DMCMainAgentCharge = CancellationPrice;
-                    AppliedAgentCharges = _markup.ProcessHotelCancelationPrice_WithMarkup(ref WE_DMCMainAgentCharge, objSearPera.NoofNights, objSearPera.CityID, Convert.ToString(objSearPera.CountryID), CancellationPrice, isPerce, B2CMarkup, AgentPercentage, AgentMarkupAmount, IsParentId, SubAgentMarkup, ref VatOnPolicy);
-
-                    #endregion
-                    int WE_DMCCutOffDays = XMLHotelBookingCommon.CutOffDays;
-                    WE_DMCCutOffDays = _commonMethod.GetCutOffDays(dtSuplierMarkup, Provider);
-                    DateTime CancellationDate = DateTime.ParseExact(objSearPera.CheckInDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).Date;
-                    DateTime NowDate = DateTime.Now.Date;
-                    double CancelCharge = AppliedAgentCharges;
-                    if (AppliedAgentCharges > 0)
-                        CancellationDate = FromDate;
-                    else
-                        CancellationDate = ToDate;
-
-                    //CancellationDate = CancellationDate.AddDays(-CancelDAY);
-
-                    #endregion
-
-                    if (CancellationDate.AddDays(WE_DMCCutOffDays).Date > DateTime.Now.Date)
-                        CancellationDate = CancellationDate.AddDays(WE_DMCCutOffDays).Date;
-                    if (NowDate.Date < CancellationDate.Date)
+                    foreach (var room in WE_DMCResponse.ReCheckRS)
                     {
-                        if (AppliedAgentCharges == 0)
+                        string EssentialInformation = room.EssentialInformation ?? "";
+
+                        if (room.CancellationPolicy != null && room.CancellationPolicy.Count > 0)
                         {
-                            double Zero = 0;
-                            dtWithinearth_DMC_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref Zero, dtWithinearth_DMC_Cancellation.NewRow(), CurrencyFactorWE_DMC, Currency, Provider, ownsystemid, Convert.ToString(roomno),
-                            RoomTypeId, RoomTypeName, MealId, NowDate, CancellationDate, 0, 0, "", VatOnPolicy, "", "NO", SearchKey, SPUI, "", ""));
-                            dtWithinearth_DMC_Cancellation.AcceptChanges();
+                            for (int c = 0; c < room.CancellationPolicy.Count; c++)
+                            {
+                                double CancellationPrice = Convert.ToDouble(room.CancellationPolicy[c].CancellationPrice) * CurrencyFactorWE_DMC;
+                                //DateTime FromDate = DateTime.ParseExact(room.CancellationPolicy[c].FromDate, "MM-dd-yyyy", CultureInfo.InvariantCulture);
+                                DateTime FromDate = Convert.ToDateTime(room.CancellationPolicy[c].FromDate);
+                                //DateTime ToDate = DateTime.ParseExact(room.CancellationPolicy[c].ToDate, "MM-dd-yyyy", CultureInfo.InvariantCulture);
+                                DateTime ToDate = Convert.ToDateTime(room.CancellationPolicy[c].ToDate);
+
+                                #region "Calculation"
+
+                                string SPUI = EssentialInformation;
+                                double AppliedAgentCharges = CancellationPrice;
+
+                                #region Vat
+
+                                double VatOnPolicy = 0;
+                                double CompanyChargeAmount = CancellationPrice;
+                                double WE_DMCMainAgentCharge = CancellationPrice;
+
+                                AppliedAgentCharges = _markup.ProcessHotelCancelationPrice_WithMarkup(ref WE_DMCMainAgentCharge, objSearPera.NoofNights, objSearPera.CityID, Convert.ToString(objSearPera.CountryID), CancellationPrice, isPerce, B2CMarkup, AgentPercentage, AgentMarkupAmount, IsParentId, SubAgentMarkup, ref VatOnPolicy);
+
+                                #endregion
+
+                                int WE_DMCCutOffDays = XMLHotelBookingCommon.CutOffDays;
+                                WE_DMCCutOffDays = _commonMethod.GetCutOffDays(dtSuplierMarkup, Provider);
+                                DateTime CancellationDate = DateTime.ParseExact(objSearPera.CheckInDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).Date;
+                                DateTime NowDate = DateTime.Now.Date;
+                                double CancelCharge = AppliedAgentCharges;
+
+                                if (AppliedAgentCharges > 0)
+                                    CancellationDate = FromDate;
+                                else
+                                    CancellationDate = ToDate;
+
+                                #endregion
+
+                                if (CancellationDate.AddDays(WE_DMCCutOffDays).Date > DateTime.Now.Date)
+                                    CancellationDate = CancellationDate.AddDays(WE_DMCCutOffDays).Date;
+
+                                if (NowDate.Date < CancellationDate.Date)
+                                {
+                                    if (AppliedAgentCharges == 0)
+                                    {
+                                        double Zero = 0;
+
+                                        dtWithinearth_DMC_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref Zero, dtWithinearth_DMC_Cancellation.NewRow(), CurrencyFactorWE_DMC, Currency, Provider, ownsystemid, Convert.ToString(roomno), RoomTypeId, RoomTypeName, MealId, NowDate, CancellationDate, 0, 0, "", VatOnPolicy, "", "NO", SearchKey, SPUI, "", ""));
+
+                                        dtWithinearth_DMC_Cancellation.AcceptChanges();
+                                    }
+                                    else
+                                    {
+                                        dtWithinearth_DMC_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtWithinearth_DMC_Cancellation.NewRow(), CurrencyFactorWE_DMC, Currency, Provider, ownsystemid, Convert.ToString(roomno), RoomTypeId, RoomTypeName, MealId, CancellationDate.Date, DateTime.ParseExact(objSearPera.CheckInDate, "dd/MM/yyyy", CultureInfo.InvariantCulture), AppliedAgentCharges, CancelCharge, "", VatOnPolicy, "", "NO", SearchKey, SPUI, "", ""));
+
+                                        dtWithinearth_DMC_Cancellation.AcceptChanges();
+                                    }
+                                }
+                                else
+                                {
+                                    dtWithinearth_DMC_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtWithinearth_DMC_Cancellation.NewRow(), CurrencyFactorWE_DMC, Currency, Provider, ownsystemid, Convert.ToString(roomno), RoomTypeId, RoomTypeName, MealId, DateTime.Now.Date, DateTime.ParseExact(objSearPera.CheckInDate, "dd/MM/yyyy", CultureInfo.InvariantCulture), AppliedAgentCharges, CancelCharge, "", VatOnPolicy, "", "YES", SearchKey, SPUI, "", ""));
+
+                                    dtWithinearth_DMC_Cancellation.AcceptChanges();
+                                }
+                            }
                         }
-                        else
-                        {
-                            dtWithinearth_DMC_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtWithinearth_DMC_Cancellation.NewRow(), CurrencyFactorWE_DMC, Currency, Provider, ownsystemid, Convert.ToString(roomno),
-                            RoomTypeId, RoomTypeName, MealId, CancellationDate.Date, DateTime.ParseExact(objSearPera.CheckInDate, "dd/MM/yyyy", null), AppliedAgentCharges, CancelCharge, "", VatOnPolicy, "", "NO", SearchKey, SPUI, "", ""));
-                            dtWithinearth_DMC_Cancellation.AcceptChanges();
-                        }
-                    }
-                    else
-                    {
-                        // DataRow drWE_DMCHotelCancellation_Temp = dtWithinearth_DMC_Cancellation.NewRow();
-                        dtWithinearth_DMC_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref CompanyChargeAmount, dtWithinearth_DMC_Cancellation.NewRow(), CurrencyFactorWE_DMC, Currency, Provider, ownsystemid, Convert.ToString(roomno),
-                        RoomTypeId, RoomTypeName, MealId, DateTime.Now.Date, DateTime.ParseExact(objSearPera.CheckInDate, "dd/MM/yyyy", null), AppliedAgentCharges, CancelCharge, "", VatOnPolicy, "", "YES", SearchKey, SPUI, "", ""));
-                        dtWithinearth_DMC_Cancellation.AcceptChanges();
                     }
                 }
+
                 #endregion
+
                 dsHotel.Tables[2].Merge(dtWithinearth_DMC_Cancellation);
             }
             catch (Exception ex)
@@ -1089,6 +1111,7 @@ namespace XConnect.Supplier.Techno
             return cancellationDto;
 
         }
+
         public string Withinearth_DMCCancellationPolicyRequest(string UserID, HotelSearchParameter sp, string SearchKey, string HotelOptionId, string RoomToken, string Currency, string IP)
         {
             try
@@ -1133,10 +1156,13 @@ namespace XConnect.Supplier.Techno
                 SBreq.Append("\"HotelOption\":{");
                 SBreq.Append("\"HotelOptionId\":\"" + HotelOptionId + "\",");
                 SBreq.Append("\"HotelRooms\":[");
-                SBreq.Append("{");
-                SBreq.Append("\"RoomNo\":\"" + sp.RoomNo + "\",");
-                SBreq.Append("\"RoomToken\":\"" + RoomToken + "\"");
-                SBreq.Append("}");
+                foreach (var room in sp.Rooms)
+                {
+                    SBreq.Append("{");
+                    SBreq.Append("\"RoomNo\":\"" + room.RoomNo + "\",");
+                    SBreq.Append("\"RoomToken\":\"" + RoomToken + "\"");
+                    SBreq.Append("}");
+                }
                 SBreq.Append("]");
                 SBreq.Append("}");
                 SBreq.Append("},");
@@ -1145,13 +1171,6 @@ namespace XConnect.Supplier.Techno
                 SBreq.Append("\"CustomerIpAddress\":\"" + IP + "\"");
                 SBreq.Append("}");
                 SBreq.Append("}");
-                foreach (var room in sp.Rooms)
-                {
-                    SBreq.Append("{");
-                    SBreq.Append("\"RoomNo\":\"" + sp.RoomNo + "\",");
-                    SBreq.Append("\"RoomToken\":\"" + RoomToken + "\"");
-                    SBreq.Append("}");
-                }
                 Request = SBreq.ToString();
                 return Request;
             }
@@ -1161,6 +1180,7 @@ namespace XConnect.Supplier.Techno
                 return "";
             }
         }
+
         public async Task<ResponseDto> GetSupplierResponseWE_DMC(string strxmlRQRS, string strHost, int TimeOut, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string UniqueNo = "", string Search_key = "",string password="",string Techname="")
         {
             //System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
@@ -1306,7 +1326,7 @@ namespace XConnect.Supplier.Techno
                 timerroomprocess.Start();
 
                 //ResponseData = GetSupplierResponseWE_DMC_report(ref Error, Req, URL, 180000, Provider, null, false, UniqueNo, Searchkey);
-                ResponseDto responseDto = await GetSupplierResponseWE_DMC(Req, URL, 180000, Provider, null, false, UniqueNo, Searchkey);
+                ResponseDto responseDto = await GetSupplierResponseWE_DMC(Req, URL, 180000, Provider, null, false, UniqueNo, Searchkey, Password, TechName);
                 ResponseData = responseDto.Response;
                 Error = responseDto.Error;
 

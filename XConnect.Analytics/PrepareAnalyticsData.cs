@@ -180,14 +180,14 @@ namespace XConnect.Analytics
                 //}
 
 
-                var resultData = analyticsData.Result as AvailHotelList_Comp;  // response 
+                var resultData = analyticsData.Result as AgodaListResponse;  // response 
 
                 var mainSearchPayload = analyticsData.Payload as HotelSearchParameter; // request
 
 
                 var clientsLocalTimeZone = _configuration.GetValue<string>("EnvironmentType:clientsLocalTimeZone") ?? "Arabian Standard Time";
 
-                var locationItem = resultData?.AvailabilityRS?.HotelResult?.FirstOrDefault();
+                //var locationItem = resultData?.AvailabilityRS?.HotelResult?.FirstOrDefault();
 
 
 
@@ -208,9 +208,10 @@ namespace XConnect.Analytics
 
                 var productInfo = new AnalyticsProductInfo
                 {
-                    Name = mainSearchPayload?.CityName ?? "anonymous",
+                    //Name = mainSearchPayload?.CityName ?? "anonymous",
+                    Name = resultData?.hotels?.FirstOrDefault()?.name ?? "anonymous", //added
+                    Id = Convert.ToInt32(resultData?.hotels?.FirstOrDefault()?.code ?? "0"),
 
-                    //Name = resultData?.AvailabilityRS?.SearchKey ?? "anonymous",//productDetail?.RestaurantNameDefault ?? "anonymous",
                     City = mainSearchPayload?.CityName ?? "anonymous",
                     Country = mainSearchPayload?.CountryCode ?? "anonymous",
                 };
@@ -219,7 +220,7 @@ namespace XConnect.Analytics
 
                 var fareDetails = new AnalyticsFareInformation
                 {
-                    TotalProducts = Convert.ToInt32(resultData?.AvailabilityRS?.Count ?? 0),
+                    //TotalProducts = Convert.ToInt32(resultData?.hotels?.Count ?? 0),
                     Volume = 0
                 };
 
@@ -527,9 +528,9 @@ namespace XConnect.Analytics
 
                         var productInfo = new AnalyticsProductInfo
                         {
-
-                            //Id = mainSearchPayload?.Filters?.HotelIDs ??,// productDetail?.RestaurantId ?? 0,
-                            Name = mainSearchPayload?.CityName ?? "anonymous",
+                            Name = analyticsData?.srphotelhotelname ?? "anonymous",
+                            Id = analyticsData?.srphotelid ?? 0,
+                            // Name = mainSearchPayload?.CityName ?? "anonymous",
                             City = mainSearchPayload?.CityName ?? "anonymous",
                             Country = mainSearchPayload?.CountryCode ?? "anonymous",
                             //Name = mainSearchPayload?.SearchKey ?? "anonymous",

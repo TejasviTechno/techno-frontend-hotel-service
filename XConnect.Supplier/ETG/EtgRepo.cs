@@ -2215,6 +2215,20 @@ namespace XConnect.Supplier.ETG
             string XmlId = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["XMLHotelId"]);
             string GiataId = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["GiataId"]);
             string ServiceId = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["ServiceId"]);
+
+            int srphotelid = 0;
+            string srphotelhotelname = "";
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+                srphotelhotelname = Convert.ToString(dsCartDetails.Tables[0].Rows[0]["ServiceName"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
+
+
             try
             {
                 DataTable dtROE = TokenData.dtROE;
@@ -2260,8 +2274,14 @@ namespace XConnect.Supplier.ETG
                 {
                     #region Price Check RS
 
+                    System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
+                    timerroomprocess.Start();
+
                     //PrebookResponseData = GetOstrovokRoomResponse(PrebookRQ, PrebookURL, Key, ref Error, UserCartDetailId);
                     PrebookResponseData = await GetRatehawkRoomResponse(PrebookRQ, PrebookURL, Key, UserCartDetailId,60000);
+
+                    timerroomprocess.Stop();
+                    time = timerroomprocess.Elapsed.ToString();
 
                     _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), UserCartDetailId, PrebookRQ, PrebookResponseData + Error, "After Hit Prebook Response", SupplierName, "Prebook Response Confirm", "-", "Withinearth",Searchkey);
 
@@ -2269,8 +2289,16 @@ namespace XConnect.Supplier.ETG
                     if (PrebookResponseData == string.Empty || PrebookResponseData == "" || PrebookResponseData == null)
                     {
                         //SuppReason = "NRS";// No Response from supplier side
-                        responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error,Searchkey,TechName);
+                        try
+                        {
+                            responsetype = "GeneralError";
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = _exception.Error(ex);
+                        }
+
 
                         priceCheckCMDto.Flag = false;
                         return priceCheckCMDto;
@@ -2294,9 +2322,16 @@ namespace XConnect.Supplier.ETG
                                 {
                                     PrebookResponseData = "#Price Changed Tag Received from supplier =  " + price_changed + PrebookResponseData;
                                     //SuppReason = "PCS.";// Price change from supplier side
-                                    responsetype = "GeneralError";
-                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName);
+                                    try
+                                    {
+                                        responsetype = "GeneralError";
+                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
 
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _ = _exception.Error(ex);
+                                    }
 
                                     priceCheckCMDto.Flag = true;
                                     return priceCheckCMDto;
@@ -2338,10 +2373,19 @@ namespace XConnect.Supplier.ETG
 
                         if (Convert.ToDouble(Math.Round(FinalPrice.TruncateDecimalPlaces(2))) > Math.Round(CompanyBuyingPrice.TruncateDecimalPlaces(2)))
                         {
-                            PrebookResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + PrebookResponseData;
-                            responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName);
-                            //SuppReason = "PCS";// Price change from supplier side
+                            try
+                            {
+                                PrebookResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + PrebookResponseData;
+                                responsetype = "GeneralError";
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                                //SuppReason = "PCS";// Price change from supplier side
+                            }
+                            catch (Exception ex)
+                            {
+                                _ = _exception.Error(ex);
+                            }
+
+
 
                             priceCheckCMDto.Flag = true;
                             return priceCheckCMDto;
@@ -2396,7 +2440,16 @@ namespace XConnect.Supplier.ETG
                                         responsetype = "GeneralError";
                                         _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UserCartDetailId), PrebookRQ, PrebookResponseData, "(After Price Check BookingTime) Cancellation Policy Change", SupplierName, "Request Confirm", " - ", "Withinearth");
 
-                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName);
+                                        try
+                                        {
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            _ = _exception.Error(ex);
+                                        }
+
+
 
                                         priceCheckCMDto.Flag = true;
                                         priceCheckCMDto.ItemPrice = FinalPrice;
@@ -2421,9 +2474,18 @@ namespace XConnect.Supplier.ETG
                     }
                     else
                     {
-                        //SuppReason = "PFS";// Prebook fail from supplier side
-                        responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName);
+                        try
+                        {
+                            //SuppReason = "PFS";// Prebook fail from supplier side
+                            responsetype = "GeneralError";
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = _exception.Error(ex);
+                        }
+
+
                         priceCheckCMDto.Flag = false;
                         return priceCheckCMDto;
 
@@ -2432,8 +2494,15 @@ namespace XConnect.Supplier.ETG
                 }
                 else
                 {
-                    responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName);
+                    try
+                    {
+                        responsetype = "GeneralError";
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                    }
+                    catch (Exception ex)
+                    {
+                        _ = _exception.Error(ex);
+                    }
                     priceCheckCMDto.Flag = false;
                     return priceCheckCMDto;
                 }
@@ -2441,7 +2510,7 @@ namespace XConnect.Supplier.ETG
                 try
                 {
                     responsetype = "Success";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
                 }
                 catch (Exception e)
                 {
@@ -2451,8 +2520,15 @@ namespace XConnect.Supplier.ETG
             }
             catch (Exception e)
             {
-                responsetype = "GeneralError";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, e.Message.ToString() + "#" + PrebookResponseData, Error, Searchkey, TechName);
+                try
+                {
+                    responsetype = "GeneralError";
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, e.Message.ToString() + "#" + PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                }
+                catch (Exception ex)
+                {
+                    _ = _exception.Error(ex, Searchkey);
+                }
                 _ = _exception.Error(e);
                 priceCheckCMDto.Flag = true;
                 priceCheckCMDto.ItemPrice = 0;

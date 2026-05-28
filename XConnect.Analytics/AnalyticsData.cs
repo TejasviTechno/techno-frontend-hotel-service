@@ -32,6 +32,8 @@ namespace XConnect.Analytics
         public string SupplierRequest { get; set; } = string.Empty; // new added 05052026
         public string AgentName { get; set; } = string.Empty; // new added 21052026
         public string ActualDescription { get; set; } = string.Empty; // new added 21052026
+        public int srphotelid { get; set; }  // new added 26052026
+        public string srphotelhotelname { get; set; } = string.Empty; // new added 26052026
 
         //public string ErrorCode { get; set; } = string.Empty;
         //public string CheckIn { get; set; } = string.Empty;

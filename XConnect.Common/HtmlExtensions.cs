@@ -1106,7 +1106,8 @@ namespace XConnect.CommonUtilities
         {
            
             //return _config["KeySettings:staticimagepath"] + "Images/Dubai/" + Raynaid + "/1-ThumbNail.jpg";
-            return staticimagepath + "Images/Dubai/" + Raynaid + "/1-ThumbNail.jpg";
+            //return staticimagepath + "Images/Dubai/" + Raynaid + "/1-ThumbNail.jpg";
+            return staticimagepath + "/" + Raynaid + "/1.webp";
         }
 
         public static DataTable ConvertToDataTable<T>(IList<T> data)

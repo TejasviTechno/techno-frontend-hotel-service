@@ -1180,6 +1180,19 @@ namespace XConnect.Supplier.GoGlobal
             string Error = "";
             string Request = "";
             string Response = "";
+
+            int srphotelid = 0;
+            string srphotelhotelname = "";
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+                srphotelhotelname = Convert.ToString(dsCartDetails.Tables[0].Rows[0]["ServiceName"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, SearchKey);
+            }
+
             try
             {
                 string SupplierCurrency = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["SupplierCurrency"]);
@@ -1278,7 +1291,7 @@ namespace XConnect.Supplier.GoGlobal
                     try
                     {
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error,SearchKey,TechName);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error,SearchKey,TechName, srphotelid, srphotelhotelname);
                     }
                     catch (Exception e)
                     {
@@ -1299,7 +1312,7 @@ namespace XConnect.Supplier.GoGlobal
                 {
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName, srphotelid, srphotelhotelname);
                 }
                 catch (Exception e)
                 {
@@ -1314,7 +1327,7 @@ namespace XConnect.Supplier.GoGlobal
                 try
                 {
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName, srphotelid, srphotelhotelname);
                 }
                 catch (Exception e)
                 {
@@ -1326,7 +1339,7 @@ namespace XConnect.Supplier.GoGlobal
                 try
                 {
                     responsetype = "Success";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName, srphotelid, srphotelhotelname);
                 }
                 catch (Exception e)
                 {

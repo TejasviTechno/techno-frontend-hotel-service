@@ -133,7 +133,7 @@ namespace XConnect.Supplier.XTG
                                         //else
                                         //{
                                         //    filter = FilterWithOutCity_Xtg(1, hotelcount, DtHotelDAta, lstRating, Supplier);
-                                        filter = FilterWithOutCity_Xtg_new(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);//Added on 16-JAN-2025
+                                        filter = FilterWithOutCity_Xtg_new(ratingcount, hotelcount, DtHotelDAta, lstRating, XTGChild[x].HotelSupplier);//Added on 16-JAN-2025
                                         //}
 
 
