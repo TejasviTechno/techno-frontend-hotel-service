@@ -6380,7 +6380,7 @@ new SqlParameter("@AgentId", AgentId),
         #endregion
 
 
-        public async Task<AgodaBookingRS> AgodaBookingProcess(AgodaBookingRQ agodaRQ, TokenData tokenData, Stopwatch Timer = null)
+        public async Task<AgodaBookingRS> AgodaBookingProcess(AgodaBookingRQ agodaRQ, TokenData tokenData, Stopwatch Timer = null, Stopwatch codetimer = null)
 
         {
             AgodaBookingRS ObjRespond = new AgodaBookingRS();
@@ -6411,9 +6411,10 @@ new SqlParameter("@AgentId", AgentId),
                 }
                 if (true)// (rateplanstring.Contains("==$$$"))
                 {
+                    codetimer.Start();
                     //return ObjRespond = ThirdPartyXML.XMLOutBookingProcess(agodaRQ, tokenData, Timer, rateplanstring);
                     ObjRespond = _agodanew.XMLOutBookingProcess(agodaRQ, tokenData, Timer, rateplanstring);
-
+                    codetimer.Stop();
                 }
                 return ObjRespond;
                 #region comment

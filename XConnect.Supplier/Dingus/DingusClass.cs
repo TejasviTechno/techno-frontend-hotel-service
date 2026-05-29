@@ -36,7 +36,7 @@ namespace XConnect.Supplier.Dingus
             public DateTime FinalPolicyDate { get; set; }
             public string PromotionCode { get; set; }
             public string PromotionName { get; set; }
-            public string NumberOfUnits { get; set; }
+            public int NumberOfUnits { get; set; }
         }
 
         public class Roomlist

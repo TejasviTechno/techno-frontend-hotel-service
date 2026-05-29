@@ -2873,7 +2873,7 @@ namespace Xconnect.Hotelbeds
                     {
                         para.SupplierTime += ",SupplierName :" + Provider + " : " + "Execution Time :" + timer.Elapsed.ToString();
                         if (DebugMode)
-                            _ = _commonMethod.XMLRequestResponseTrack(strxmlRQRS, strOutput, Provider, "Proper");
+                            _ = _commonMethod.XMLRequestResponseTrack(strxmlRQRS, strOutput, Provider, "Proper","", Searchkey);
                     }
 
 
@@ -2881,7 +2881,7 @@ namespace Xconnect.Hotelbeds
                     {
                         TimeSpan timeTaken = timer.Elapsed;
                        // _exception.ErrorLog(Convert.ToString(_keySettings.LogTrackPath), Provider + "->" + strHost + "-> Execution Time : " + timer.Elapsed.ToString());
-                        _ = _commonMethod.XMLRequestResponseTrack(strxmlRQRS, strOutput, Provider, "Proper");
+                        _ = _commonMethod.XMLRequestResponseTrack(strxmlRQRS, strOutput, Provider, "Proper","", Searchkey);
                     }
                 }
                 catch (WebException webExcp)
