@@ -25,6 +25,7 @@ using System.Xml.Serialization;
 using static XConnect.Supplier.Dingus.DingusClass;
 using Xconnect.Hotelbeds.Interface;
 using XConnect.Supplier.Booking.Com;
+using Azure;
 
 
 
@@ -302,7 +303,6 @@ namespace XConnect.Supplier.Dingus
 
             }
         }
-
 
         public string DingusSearchRequest(HotelSearchParameter searchParam, string HotelIds, string Username, string Password, string DingusURL, string language1, string Provider)
         {
@@ -1087,7 +1087,6 @@ namespace XConnect.Supplier.Dingus
             DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
             string Dingus_Currency = Currency;
             double TaxPer = 0;
-
             try
             {
                 #region Response
@@ -1125,94 +1124,91 @@ namespace XConnect.Supplier.Dingus
                     int NoOfRooms = SearchParam.Rooms.Count;
 
                     Double DingusFactor = 1;
-
-                    List<DingusClass.Roomlist> hotelRoom = new List<DingusClass.Roomlist>();
-
-                    for (int r = 0; r < hotelGroup.Count(); r++)
-                    {
-                        var roomStay = hotelGroup.ElementAt(r);
-
-                        for (int ro = 0; ro < roomStay.RoomRates.Length; ro++)
-                        {
-                            string MealPlanDescription = Convert.ToString(roomStay.RoomRates[ro].MealPlanDescription);
-                            double Price = Convert.ToDouble(roomStay.RoomRates[ro].Total.AmountAfterTax);
-                            Dingus_Currency = Convert.ToString(roomStay.RoomRates[ro].Total.CurrencyCode);
-
-                            if (Dingus_Currency.ToLower() != commonSearch.tokenData.SiteCurrency)
-                            {
-                                DingusFactor = _commonMethod.GetROEByCurrency(Dingus_Currency, dtROE);
-                                Price = Price * DingusFactor;
-                            }
-                            DingusClass.Roomlist hotelRoomlist = new DingusClass.Roomlist();
-                            hotelRoomlist.Meal = MealPlanDescription;
-                            hotelRoomlist.Price = Price;
-                            hotelRoomlist.RPH = roomStay.RoomStayCandidateRPH;
-                            hotelRoom.Add(hotelRoomlist);
-
-                        }
-                    }
-
-                    var mealGroups = hotelRoom.Select(x => x.Meal).Distinct().ToList(); ;
-                    var uniqueRooms = hotelRoom.Select(x => x.RPH).Distinct().ToList();
-
-                    if (uniqueRooms.Count == NoOfRooms)
-                    {
-                        for (int a = 0; a < mealGroups.Count; a++)
-                        {
-                            List<DingusClass.Roomlist>[] roomtypearr1 = new List<DingusClass.Roomlist>[NoOfRooms];
-
-                            for (int rm = 1; rm <= NoOfRooms; rm++)
-                            {
-                                if (hotelRoom[rm] == null)
-                                    continue;
-
-                                List<DingusClass.Roomlist> xlist = hotelRoom.Where(A => A.Meal == mealGroups[a] && A.RPH == rm).ToList();
-
-                                List<DingusClass.Roomlist> Suppliermeal = new List<DingusClass.Roomlist>();
-                                if (xlist != null)
-                                    Suppliermeal = xlist;
-
-                                foreach (DingusClass.Roomlist item in Suppliermeal)
-                                {
-                                    if (roomtypearr1[rm - 1] == null)
-                                    {
-                                        roomtypearr1[rm - 1] = new List<DingusClass.Roomlist>();
-                                    }
-                                    roomtypearr1[rm - 1].Add(item.CastList<DingusClass.Roomlist>());
-                                }
-
-                            }
-
-                            List<List<DingusClass.Roomlist>> dataV1 = MergeRooms_list(roomtypearr1, NoOfRooms);
-
-                            for (int room = 0; room < dataV1.Count; room++)
-                            {
-                                List<DingusClass.Roomlist> roomss = dataV1[room];
-                                double TotalPrice = 0;
-                                for (int rr = 0; rr < roomss.Count; rr++)
-                                {
-                                    TotalPrice += roomss[rr].Price;
-                                }
-
-                                if (room == 0)
-                                {
-                                    FinalPrice = TotalPrice;
-                                }
-                                else if (FinalPrice > TotalPrice)
-                                {
-                                    FinalPrice = TotalPrice;
-                                }
-
-                            }
-
-                        }
-                    }
-
-
-                    //}
                     if (SearchParam.Filters.IsShowRooms == 0)
                     {
-                        // string ItemCode = Convert.ToString(distinctHotel.Rows[h]["HotelCode"]);
+                        List<DingusClass.Roomlist> hotelRoom = new List<DingusClass.Roomlist>();
+
+                        for (int r = 0; r < hotelGroup.Count(); r++)
+                        {
+                            var roomStay = hotelGroup.ElementAt(r);
+
+                            for (int ro = 0; ro < roomStay.RoomRates.Length; ro++)
+                            {
+                                string MealPlanDescription = Convert.ToString(roomStay.RoomRates[ro].MealPlanDescription);
+                                double Price = Convert.ToDouble(roomStay.RoomRates[ro].Total.AmountAfterTax);
+                                Dingus_Currency = Convert.ToString(roomStay.RoomRates[ro].Total.CurrencyCode);
+                                int NumberOfUnits = Convert.ToInt32(roomStay.RoomRates[ro].NumberOfUnits);
+                                if (NumberOfUnits >= NoOfRooms)
+                                {
+                                    if (Dingus_Currency.ToLower() != commonSearch.tokenData.SiteCurrency)
+                                    {
+                                        DingusFactor = _commonMethod.GetROEByCurrency(Dingus_Currency, dtROE);
+                                        Price = Price * DingusFactor;
+                                    }
+                                    DingusClass.Roomlist hotelRoomlist = new DingusClass.Roomlist();
+                                    hotelRoomlist.Meal = MealPlanDescription;
+                                    hotelRoomlist.Price = Price;
+                                    hotelRoomlist.RPH = roomStay.RoomStayCandidateRPH;
+                                    hotelRoom.Add(hotelRoomlist);
+                                }
+                            }
+                        }
+
+                        var mealGroups = hotelRoom.Select(x => x.Meal).Distinct().ToList(); ;
+                        var uniqueRooms = hotelRoom.Select(x => x.RPH).Distinct().ToList();
+
+                        if (uniqueRooms.Count == NoOfRooms)
+                        {
+                            for (int a = 0; a < mealGroups.Count; a++)
+                            {
+                                List<DingusClass.Roomlist>[] roomtypearr1 = new List<DingusClass.Roomlist>[NoOfRooms];
+
+                                for (int rm = 1; rm <= NoOfRooms; rm++)
+                                {
+                                    if (hotelRoom[rm-1] == null)
+                                        continue;
+
+                                    List<DingusClass.Roomlist> xlist = hotelRoom.Where(A => A.Meal == mealGroups[a] && A.RPH == rm).ToList();
+
+                                    List<DingusClass.Roomlist> Suppliermeal = new List<DingusClass.Roomlist>();
+                                    if (xlist != null)
+                                        Suppliermeal = xlist;
+
+                                    foreach (DingusClass.Roomlist item in Suppliermeal)
+                                    {
+                                        if (roomtypearr1[rm - 1] == null)
+                                        {
+                                            roomtypearr1[rm - 1] = new List<DingusClass.Roomlist>();
+                                        }
+                                        roomtypearr1[rm - 1].Add(item.CastList<DingusClass.Roomlist>());
+                                    }
+
+                                }
+
+                                List<List<DingusClass.Roomlist>> dataV1 = MergeRooms_list(roomtypearr1, NoOfRooms);
+
+                                for (int room = 0; room < dataV1.Count; room++)
+                                {
+                                    List<DingusClass.Roomlist> roomss = dataV1[room];
+                                    double TotalPrice = 0;
+                                    for (int rr = 0; rr < roomss.Count; rr++)
+                                    {
+                                        TotalPrice += roomss[rr].Price;
+                                    }
+
+                                    if (room == 0)
+                                    {
+                                        FinalPrice = TotalPrice;
+                                    }
+                                    else if (FinalPrice > TotalPrice)
+                                    {
+                                        FinalPrice = TotalPrice;
+                                    }
+
+                                }
+
+                            }
+                        }
 
                         if (FinalPrice == 0)
                             continue; // need to chaange
@@ -1269,9 +1265,9 @@ namespace XConnect.Supplier.Dingus
                             }
                             #endregion
                         }
-                    }
-                    #endregion
 
+                        #endregion
+                    }
                     #region "When Need Rooms"
                     //add Hotel code blank and rooms code in room block
                     else
@@ -1391,7 +1387,7 @@ namespace XConnect.Supplier.Dingus
                                                     string MealPlanDescription = Convert.ToString(roomStay.RoomRates[ro].MealPlanDescription);
                                                     string MealPlanCodes = Convert.ToString(roomStay.RoomRates[ro].MealPlanCodes);
                                                     string RoomTypeCode = Convert.ToString(roomStay.RoomRates[ro].RoomTypeCode);
-                                                    string NumberOfUnits = Convert.ToString(roomStay.RoomRates[ro].NumberOfUnits);
+                                                    int NumberOfUnits = Convert.ToInt32(roomStay.RoomRates[ro].NumberOfUnits);
                                                     int RatePlanID = Convert.ToInt32(roomStay.RoomRates[ro].RatePlanID);
                                                     string RatePlanCode = Convert.ToString(roomStay.RoomRates[ro].RatePlanCode);
                                                     string PromotionCode = Convert.ToString(roomStay.RoomRates[ro].PromotionCode);
@@ -1401,104 +1397,106 @@ namespace XConnect.Supplier.Dingus
                                                     double FinalSellingPrice = Convert.ToDouble(roomStay.RoomRates[ro].Total.AmountAfterTax);
                                                     Dingus_Currency = Convert.ToString(roomStay.RoomRates[ro].Total.CurrencyCode);
 
-                                                    if (Dingus_Currency.ToLower() != commonSearch.tokenData.SiteCurrency)
+                                                    if (NumberOfUnits >= NoOfRooms)
                                                     {
-                                                        DingusFactor = _commonMethod.GetROEByCurrency(Dingus_Currency, dtROE); // added on 14-05-2025
-                                                        FinalSellingPrice = FinalSellingPrice * DingusFactor;
-                                                    }
-
-                                                    if (roomStay.RoomTypes != null)
-                                                    {
-                                                        List<OTA_HotelAvailRSRoomStayRoomType> filteredRoomTypeName = roomStay.RoomTypes
-                                                                                .Where(x => x.RoomTypeCode == RoomTypeCode)
-                                                                                .ToList();
-
-                                                        if (filteredRoomTypeName.Count > 0)
+                                                        if (Dingus_Currency.ToLower() != commonSearch.tokenData.SiteCurrency)
                                                         {
-                                                            for (int t = 0; t < filteredRoomTypeName.Count; t++)
-                                                            {
-                                                                RoomName = filteredRoomTypeName[t].RoomDescription.Name;
-                                                            }
+                                                            DingusFactor = _commonMethod.GetROEByCurrency(Dingus_Currency, dtROE); // added on 14-05-2025
+                                                            FinalSellingPrice = FinalSellingPrice * DingusFactor;
                                                         }
-                                                        if (RateTypeCode.ToLower() == "package")
+
+                                                        if (roomStay.RoomTypes != null)
+                                                        {
+                                                            List<OTA_HotelAvailRSRoomStayRoomType> filteredRoomTypeName = roomStay.RoomTypes
+                                                                                    .Where(x => x.RoomTypeCode == RoomTypeCode)
+                                                                                    .ToList();
+
+                                                            if (filteredRoomTypeName.Count > 0)
+                                                            {
+                                                                for (int t = 0; t < filteredRoomTypeName.Count; t++)
+                                                                {
+                                                                    RoomName = filteredRoomTypeName[t].RoomDescription.Name;
+                                                                }
+                                                            }
+                                                            if (RateTypeCode.ToLower() == "package")
+                                                            {
+
+                                                                if ("spanish" == "spanish" && false)
+                                                                {
+                                                                    //es=Spanish
+                                                                    RoomName = RoomName + " (Para paquete)";
+                                                                }
+                                                                else
+                                                                {
+                                                                    // en= English
+                                                                    RoomName = RoomName + " (For Package)";
+                                                                }
+
+                                                            }
+                                                            //end
+                                                        }
+
+                                                        #region Policy
+                                                        DateTime MainDate = new DateTime();
+                                                        string EssentialInfo = "";
+
+                                                        if (roomStay.CancelPolicies != null)
                                                         {
 
-                                                            if ("spanish" == "spanish" && false)
+                                                            List<OTA_HotelAvailRSRoomStayCancelPenalty> filteredPolicies = roomStay.CancelPolicies
+                                                                                    .Where(x => x.RatePlanID == RatePlanID)
+                                                                                    .ToList();
+
+                                                            if (filteredPolicies.Count > 0)
                                                             {
-                                                                //es=Spanish
-                                                                RoomName = RoomName + " (Para paquete)";
+                                                                for (int p = 0; p < filteredPolicies.Count; p++)
+                                                                {
+                                                                    EssentialInfo = EssentialInfo + Convert.ToString(filteredPolicies[p].PenaltyDescription) + "</br>";
+                                                                    // added on 17-06-2025 # 66080
+                                                                    if (EssentialInfo.Contains("Noches"))
+                                                                    {
+                                                                        EssentialInfo = "PenaltyDescription : " + EssentialInfo;
+                                                                    }
+                                                                    DateTime OnlyDate = Convert.ToDateTime(filteredPolicies[p].Start);
+
+                                                                    if (p == 0)
+                                                                        MainDate = OnlyDate;
+                                                                    else if (OnlyDate < MainDate)
+                                                                        MainDate = OnlyDate;
+                                                                }
                                                             }
                                                             else
                                                             {
-                                                                // en= English
-                                                                RoomName = RoomName + " (For Package)";
-                                                            }
-
-                                                        }
-                                                        //end
-                                                    }
-
-                                                    #region Policy
-                                                    DateTime MainDate = new DateTime();
-                                                    string EssentialInfo = "";
-
-                                                    if (roomStay.CancelPolicies != null)
-                                                    {
-
-                                                        List<OTA_HotelAvailRSRoomStayCancelPenalty> filteredPolicies = roomStay.CancelPolicies
-                                                                                .Where(x => x.RatePlanID == RatePlanID)
-                                                                                .ToList();
-
-                                                        if (filteredPolicies.Count > 0)
-                                                        {
-                                                            for (int p = 0; p < filteredPolicies.Count; p++)
-                                                            {
-                                                                EssentialInfo = EssentialInfo + Convert.ToString(filteredPolicies[p].PenaltyDescription) + "</br>";
-                                                                // added on 17-06-2025 # 66080
-                                                                if (EssentialInfo.Contains("Noches"))
-                                                                {
-                                                                    EssentialInfo = "PenaltyDescription : " + EssentialInfo;
-                                                                }
-                                                                DateTime OnlyDate = Convert.ToDateTime(filteredPolicies[p].Start);
-
-                                                                if (p == 0)
-                                                                    MainDate = OnlyDate;
-                                                                else if (OnlyDate < MainDate)
-                                                                    MainDate = OnlyDate;
+                                                                MainDate = DateTime.Now.Date;
                                                             }
                                                         }
                                                         else
                                                         {
                                                             MainDate = DateTime.Now.Date;
                                                         }
+
+                                                        #endregion
+
+                                                        string uniqid = Guid.NewGuid().ToString();
+                                                        string roomTypeId = Convert.ToString(10 + "$$$" + RoomTypeCode + "$$$" + MealPlanCodes + "$$$" + RatePlanID + "$$$" + RatePlanCode + "$$$" + HotelCode + "$$$" + PromotionCode + "$$$" + ChainCode + "$$$" + uniqid + "$$$" + RoomStayCandidateRPH);
+
+                                                        DingusClass.HotelRoom hotelRoomList = new DingusClass.HotelRoom();
+                                                        hotelRoomList.RoomTypeName = RoomName;
+                                                        hotelRoomList.RoomTypeCode = roomTypeId; //RoomTypeId;
+                                                        hotelRoomList.MealId = MealPlanDescription;
+                                                        hotelRoomList.MealName = MealPlanDescription;
+                                                        hotelRoomList.BoardType = MealPlanDescription;
+                                                        hotelRoomList.RoomTypeId = roomTypeId;
+                                                        hotelRoomList.RoomNo = RoomStayCandidateRPH;
+                                                        hotelRoomList.EssentialInformation = EssentialInfo;
+                                                        hotelRoomList.SupplierCurrency = Dingus_Currency;
+                                                        hotelRoomList.FinalSellingPrice = FinalSellingPrice;
+                                                        hotelRoomList.FinalPolicyDate = MainDate;
+                                                        hotelRoomList.PromotionName = PromotionName;
+                                                        hotelRoomList.NumberOfUnits = NumberOfUnits;
+                                                        hotelRooms.Add(hotelRoomList);
+
                                                     }
-                                                    else
-                                                    {
-                                                        MainDate = DateTime.Now.Date;
-                                                    }
-
-                                                    #endregion
-
-
-                                                    string uniqid = Guid.NewGuid().ToString();
-                                                    string roomTypeId = Convert.ToString(10 + "$$$" + RoomTypeCode + "$$$" + MealPlanCodes + "$$$" + RatePlanID + "$$$" + RatePlanCode + "$$$" + HotelCode + "$$$" + PromotionCode + "$$$" + ChainCode + "$$$" + uniqid + "$$$" + RoomStayCandidateRPH);
-
-                                                    DingusClass.HotelRoom hotelRoomList = new DingusClass.HotelRoom();
-                                                    hotelRoomList.RoomTypeName = RoomName;
-                                                    hotelRoomList.RoomTypeCode = roomTypeId; //RoomTypeId;
-                                                    hotelRoomList.MealId = MealPlanDescription;
-                                                    hotelRoomList.MealName = MealPlanDescription;
-                                                    hotelRoomList.BoardType = MealPlanDescription;
-                                                    hotelRoomList.RoomTypeId = roomTypeId;
-                                                    hotelRoomList.RoomNo = RoomStayCandidateRPH;
-                                                    hotelRoomList.EssentialInformation = EssentialInfo;
-                                                    hotelRoomList.SupplierCurrency = Dingus_Currency;
-                                                    hotelRoomList.FinalSellingPrice = FinalSellingPrice;
-                                                    hotelRoomList.FinalPolicyDate = MainDate;
-                                                    hotelRoomList.PromotionName = PromotionName;
-                                                    hotelRoomList.NumberOfUnits = NumberOfUnits;
-                                                    hotelRooms.Add(hotelRoomList);
-
 
                                                 }
 
@@ -1519,6 +1517,7 @@ namespace XConnect.Supplier.Dingus
                                              .Distinct()
                                              .ToList();
 
+
                                         if (uniqueRoomNos.Count == SearchParam.Rooms.Count)
                                         {
                                             for (int a = 0; a < uniqueMealNames.Count; a++)
@@ -1527,7 +1526,7 @@ namespace XConnect.Supplier.Dingus
 
                                                 for (int rm = 1; rm <= SearchParam.Rooms.Count; rm++) //search para loops
                                                 {
-                                                    if (hotelRooms[rm] == null)//Added on 10-APR-2024
+                                                    if (hotelRooms[rm-1] == null)//Added on 10-APR-2024
                                                         continue;
 
                                                     List<DingusClass.HotelRoom> xlist = hotelRooms.Where(A => A.MealName == uniqueMealNames[a] && A.RoomNo == rm).ToList();
@@ -1585,9 +1584,7 @@ namespace XConnect.Supplier.Dingus
                                                                 PromotionCode += " Room " + (rr + 1) + PromotionCode;
 
                                                         }
-
                                                     }
-
 
                                                     var earliestDate = dataV1[room].Min(x => x.FinalPolicyDate);
                                                     string MealPlanDescription = uniqueMealNames[a];
