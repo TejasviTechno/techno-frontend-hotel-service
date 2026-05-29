@@ -119,6 +119,7 @@
     public class DetailedRoomType
     {
         public string id { get; set; }
+        public string? name { get; set; }
         public List<Placement> placements { get; set; }
     }
 
@@ -134,6 +135,7 @@
     public class RatePlan
     {
         public string id { get; set; }
+        public string? name { get; set; }
     }
 
     public class GuestCount

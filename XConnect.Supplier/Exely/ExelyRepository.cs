@@ -495,6 +495,15 @@ namespace XConnect.Supplier.Exely
                                                     _ = _exception.Error(ex, SearchParam.SearchKey);
                                                 }
                                             }
+                                            PropertyInfoType? propertyContent = null;
+                                            bool needsRoomDisplayNames = roomsForHotel != null && roomsForHotel.Any(rs =>
+                                                string.IsNullOrWhiteSpace(rs.roomType?.name) ||
+                                                string.IsNullOrWhiteSpace(rs.ratePlan?.name));
+                                            if (needsRoomDisplayNames)
+                                            {
+                                                propertyContent = await GetExelyPropertyContentAsync(hotelCode, exelyBaseUrl, Item.PassWord, Item.SearchTimeOut, SearchParam.SearchKey, "en", string.Empty, Item.Supplier);
+                                            }
+
                                             Dictionary<string, string>? roomTypeCategoryNames;
                                             roomTypeCategoryNames = null;
                                             for (int j = 0; j < roomsForHotel.Count; j++)
@@ -579,7 +588,14 @@ namespace XConnect.Supplier.Exely
                                                 _markup.ProcessHotelRoom_WithMarkup(roomCurrencyFactor, roomCurrency, false, true, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate, SearchParam.CheckOutDate, ref roomLevelTotal, ref drHotelRoom, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, commonSearch.B2CMarkup, commonSearch.IsParentId);
                                                 drHotelRoom["SupplierName"] = Item.Supplier;
                                                 drHotelRoom["BoardTypeID"] = roomStay.mealPlanCode;
-                                                drHotelRoom["RoomTypeName"] = BuildExelyRoomDisplayName(roomStay).Replace("-", "_");
+                                                if (propertyContent != null)
+                                                {
+                                                    if (roomStay.roomType != null && string.IsNullOrWhiteSpace(roomStay.roomType.name))
+                                                        roomStay.roomType.name = GetExelyRoomTypeById(propertyContent, roomStay.roomType.id)?.Name;
+                                                    if (roomStay.ratePlan != null && string.IsNullOrWhiteSpace(roomStay.ratePlan.name))
+                                                        roomStay.ratePlan.name = GetExelyRatePlanById(propertyContent, roomStay.ratePlan.id)?.Name;
+                                                }
+                                                drHotelRoom["RoomTypeName"] = BuildExelyRoomDisplayName(roomStay, propertyContent).Replace("-", "_");
 
                                                 if (roomTypeCategoryNames != null && roomTypeCategoryNames.TryGetValue(roomStay.roomType?.id ?? "", out string? catN) && !string.IsNullOrWhiteSpace(catN))
                                                     drHotelRoom["Type"] = catN;
@@ -1074,11 +1090,25 @@ namespace XConnect.Supplier.Exely
                             var matchedContentRatePlan = GetExelyRatePlanById(propertyContent, matchedRecheckStay.ratePlan?.id);
                             var matchedContentRoomType = GetExelyRoomTypeById(propertyContent, matchedRecheckStay.roomType?.id);
 
-                            // ratePlan.id from room-stays can now be matched back to the cached content response.
                             if (matchedContentRatePlan != null)
                             {
-                                // Use matchedContentRatePlan.Name / Description / Currency / AvailableServices for downstream mapping if needed.
+                                if (matchedRecheckStay.ratePlan != null)
+                                    matchedRecheckStay.ratePlan.name = matchedContentRatePlan.Name;
                             }
+
+                            if (matchedContentRoomType != null)
+                            {
+                                if (matchedRecheckStay.roomType != null)
+                                    matchedRecheckStay.roomType.name = matchedContentRoomType.Name;
+                            }
+
+                            if (matchedRecheckStay.roomType != null)
+                            {
+                                matchedRecheckStay.roomType.name = BuildExelyRoomDisplayName(matchedRecheckStay, propertyContent);
+                            }
+
+                            if (matchedRecheckStay.roomType != null || matchedRecheckStay.ratePlan != null)
+                                responseData = JsonConvert.SerializeObject(recheckResult, GetExelyIsoJsonSettings());
 
                             double livePrice = matchedRecheckStay.total?.priceBeforeTax ?? 0;
                             double storedPrice = itempriceY > 0 ? itempriceY : CompanyBuyingPriceA;
@@ -1793,6 +1823,13 @@ namespace XConnect.Supplier.Exely
                 if (result == null) return essential;
 
                 var parts = new List<string>();
+                if (result.Images != null && result.Images.Count > 0)
+                {
+                    string imageUrl = result.Images.FirstOrDefault()?.Url;
+                    if (!string.IsNullOrWhiteSpace(imageUrl))
+                        parts.Add("<img src=\"" + WebUtility.HtmlEncode(imageUrl) + "\" style=\"max-width:160px;max-height:120px;margin:4px;\" />");
+                }
+
                 if (result.Services != null && result.Services.Count > 0)
                 {
                     string serviceList = string.Join(", ",
@@ -1827,17 +1864,25 @@ namespace XConnect.Supplier.Exely
                     var room = result.RoomTypes
                         .FirstOrDefault(x => x.Id == roomTypeCode);
 
-                    if (room?.Amenities != null && room.Amenities.Count > 0)
+                    if (room != null)
                     {
-                        string roomAmenityList = string.Join(", ",
-                            room.Amenities
-                                .Where(a => !string.IsNullOrWhiteSpace(a.Name ?? a.Code))
-                                .Select(a => a.Name ?? a.Code)
-                                .Distinct()
-                        );
+                        if (!string.IsNullOrWhiteSpace(room.Name))
+                            parts.Add("Room Type: " + room.Name);
+                        if (!string.IsNullOrWhiteSpace(room.Description))
+                            parts.Add("Room Details: " + room.Description);
 
-                        if (!string.IsNullOrWhiteSpace(roomAmenityList))
-                            parts.Add("Room Amenities: " + roomAmenityList);
+                        if (room?.Amenities != null && room.Amenities.Count > 0)
+                        {
+                            string roomAmenityList = string.Join(", ",
+                                room.Amenities
+                                    .Where(a => !string.IsNullOrWhiteSpace(a.Name ?? a.Code))
+                                    .Select(a => a.Name ?? a.Code)
+                                    .Distinct()
+                            );
+
+                            if (!string.IsNullOrWhiteSpace(roomAmenityList))
+                                parts.Add("Room Amenities: " + roomAmenityList);
+                        }
                     }
                 }
 
@@ -1850,10 +1895,17 @@ namespace XConnect.Supplier.Exely
                             parts.Add("Rate Plan: " + ratePlan.Name);
                         if (!string.IsNullOrWhiteSpace(ratePlan.Description))
                             parts.Add("Plan Details: " + ratePlan.Description);
+                        if (!string.IsNullOrWhiteSpace(ratePlan.Currency))
+                            parts.Add("Currency: " + ratePlan.Currency);
                         parts.Add("IsStayWithChildrenOnly: " + (ratePlan.IsStayWithChildrenOnly ? "true" : "false"));
+                        if (!string.IsNullOrWhiteSpace(ratePlan.CancellationRuleId))
+                            parts.Add("CancellationRuleId: " + ratePlan.CancellationRuleId);
+                        if (!string.IsNullOrWhiteSpace(ratePlan.ExtraStayRuleId))
+                            parts.Add("ExtraStayRuleId: " + ratePlan.ExtraStayRuleId);
+                        parts.Add("CorporateOnly: " + (ratePlan.CorporateOnly ? "true" : "false"));
                     }
                 }
-                essential = string.Join(" | ", parts).Replace("<br>", " ").Trim();
+                essential = string.Join("<br/>", parts).Replace("<br>", " ").Trim();
             }
             catch (Exception ex)
             {
@@ -2463,16 +2515,89 @@ namespace XConnect.Supplier.Exely
                 .ToList();
         }
 
-        private string BuildExelyRoomDisplayName(ShortRoomStay roomStay)
+        private string BuildExelyRoomDisplayName(ShortRoomStay roomStay, PropertyInfoType? propertyContent = null)
         {
-            string placementName = BuildExelyPlacementName(roomStay);
+            string roomTypeName = roomStay.roomType?.name?.Trim();
+            if (string.IsNullOrWhiteSpace(roomTypeName) && propertyContent != null)
+                roomTypeName = GetExelyRoomTypeById(propertyContent, roomStay.roomType?.id)?.Name?.Trim();
 
-            return !string.IsNullOrWhiteSpace(placementName)
-                ? placementName
-                : (roomStay.fullPlacementsName ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(roomTypeName))
+                roomTypeName = BuildExelyPlacementName(roomStay);
+
+            if (string.IsNullOrWhiteSpace(roomTypeName))
+                roomTypeName = (roomStay.fullPlacementsName ?? string.Empty).Trim();
+
+            string ratePlanName = roomStay.ratePlan?.name?.Trim();
+            if (string.IsNullOrWhiteSpace(ratePlanName) && propertyContent != null)
+                ratePlanName = GetExelyRatePlanById(propertyContent, roomStay.ratePlan?.id)?.Name?.Trim();
+
+            if (!string.IsNullOrWhiteSpace(ratePlanName))
+            {
+                if (string.IsNullOrWhiteSpace(roomTypeName))
+                    roomTypeName = ratePlanName;
+                else if (!roomTypeName.Contains(ratePlanName, StringComparison.OrdinalIgnoreCase))
+                    roomTypeName = $"{roomTypeName} - {ratePlanName}";
+            }
+
+            return roomTypeName?.Trim() ?? string.Empty;
+        }
+
+        private string BuildExelyRoomDisplayName(DetailedRoomStay roomStay, PropertyInfoType? propertyContent = null)
+        {
+            string roomTypeName = roomStay.roomType?.name?.Trim();
+            if (string.IsNullOrWhiteSpace(roomTypeName) && propertyContent != null)
+                roomTypeName = GetExelyRoomTypeById(propertyContent, roomStay.roomType?.id)?.Name?.Trim();
+
+            if (string.IsNullOrWhiteSpace(roomTypeName))
+                roomTypeName = BuildExelyPlacementName(roomStay);
+
+            if (string.IsNullOrWhiteSpace(roomTypeName))
+                roomTypeName = (roomStay.fullPlacementsName ?? string.Empty).Trim();
+
+            string ratePlanName = roomStay.ratePlan?.name?.Trim();
+            if (string.IsNullOrWhiteSpace(ratePlanName) && propertyContent != null)
+                ratePlanName = GetExelyRatePlanById(propertyContent, roomStay.ratePlan?.id)?.Name?.Trim();
+
+            if (!string.IsNullOrWhiteSpace(ratePlanName))
+            {
+                if (string.IsNullOrWhiteSpace(roomTypeName))
+                    roomTypeName = ratePlanName;
+                else if (!roomTypeName.Contains(ratePlanName, StringComparison.OrdinalIgnoreCase))
+                    roomTypeName = $"{roomTypeName} - {ratePlanName}";
+            }
+
+            return roomTypeName?.Trim() ?? string.Empty;
         }
 
         private string BuildExelyPlacementName(ShortRoomStay roomStay)
+        {
+            if (roomStay.roomType?.placements != null && roomStay.roomType.placements.Count > 0)
+            {
+                List<string> placementParts = roomStay.roomType.placements
+                    .Where(placement => placement.count > 0)
+                    .Select(BuildExelyPlacementPart)
+                    .Where(part => !string.IsNullOrWhiteSpace(part))
+                    .ToList();
+                if (placementParts.Count > 0)
+                    return string.Join(", ", placementParts);
+            }
+            int adults = roomStay.guestCount?.adultCount ?? 0;
+            List<int> childAges = roomStay.guestCount?.childAges?.Where(age => age >= 0).ToList() ?? new List<int>();
+            List<string> parts = new List<string>();
+            if (adults > 0)
+                parts.Add($"{adults} {(adults == 1 ? "adult" : "adults")} on main beds");
+
+            if (childAges.Count > 0)
+            {
+                string childText = childAges.Count == 1 ? "1 child" : $"{childAges.Count} children";
+                string agesText = string.Join(", ", childAges);
+                parts.Add($"{childText} (age {agesText})");
+            }
+
+            return string.Join(", ", parts);
+        }
+
+        private string BuildExelyPlacementName(DetailedRoomStay roomStay)
         {
             if (roomStay.roomType?.placements != null && roomStay.roomType.placements.Count > 0)
             {
