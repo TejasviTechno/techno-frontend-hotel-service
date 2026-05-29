@@ -1038,6 +1038,10 @@ namespace XConnect.Supplier.Exely
                     string recheckExpectedRatePlan = recheckRtParts.Length > 1 ? recheckRtParts[1] : "";
                     string recheckArrival = ParseSearchDate(recheckCheckIn).ToString("yyyy-MM-dd");
                     string recheckDeparture = ParseSearchDate(recheckCheckOut).ToString("yyyy-MM-dd");
+
+                    // Load cached content for the property so ratePlan.id from room-stays can be mapped back to content details.
+                    PropertyInfoType? propertyContent = await GetExelyPropertyContentAsync(hotelId, baseUrl, password, bookingTimeout, Searchkey, "en", string.Empty, supplierName);
+
                     string recheckTemplate = (_supplierConfig.Exely.GetRoomStaysByProperty ?? string.Empty).TrimStart('/');
                     string recheckUrl = $"{baseUrl.TrimEnd('/')}/{recheckTemplate.Replace("{propertyId}", hotelId)}?arrivalDate={recheckArrival}&departureDate={recheckDeparture}&adults={recheckAdults}";
                     requestData = recheckUrl;
@@ -1067,6 +1071,15 @@ namespace XConnect.Supplier.Exely
 
                         if (matchedRecheckStay != null)
                         {
+                            var matchedContentRatePlan = GetExelyRatePlanById(propertyContent, matchedRecheckStay.ratePlan?.id);
+                            var matchedContentRoomType = GetExelyRoomTypeById(propertyContent, matchedRecheckStay.roomType?.id);
+
+                            // ratePlan.id from room-stays can now be matched back to the cached content response.
+                            if (matchedContentRatePlan != null)
+                            {
+                                // Use matchedContentRatePlan.Name / Description / Currency / AvailableServices for downstream mapping if needed.
+                            }
+
                             double livePrice = matchedRecheckStay.total?.priceBeforeTax ?? 0;
                             double storedPrice = itempriceY > 0 ? itempriceY : CompanyBuyingPriceA;
                             if (livePrice > 0 && Math.Abs(livePrice - storedPrice) > 0.01)
@@ -1765,6 +1778,15 @@ namespace XConnect.Supplier.Exely
                 DataRow[] drSearchConfig = dtSearchConfig.Select("SupplierID='" + sid + "'");
                 int searchTimeout = drSearchConfig.Length > 0 ? Convert.ToInt32(drSearchConfig[0]["BookingConfirmationTimeout"]) : 20000;
 
+                string roomTypeCode = roomTypeId ?? string.Empty;
+                string ratePlanCode = string.Empty;
+                if (!string.IsNullOrWhiteSpace(roomTypeId) && roomTypeId.Contains("$$$"))
+                {
+                    var roomTypeParts = roomTypeId.Split("$$$");
+                    roomTypeCode = roomTypeParts.Length > 0 ? roomTypeParts[0] : string.Empty;
+                    ratePlanCode = roomTypeParts.Length > 1 ? roomTypeParts[1] : string.Empty;
+                }
+
                 PropertyInfoType? result = await GetExelyPropertyContentAsync(hotelcode, baseUrl, password, searchTimeout, searchKey, "en", "After Exely EInfo", provider);
                 //PropertyInfoType? result = null;
 
@@ -1803,7 +1825,7 @@ namespace XConnect.Supplier.Exely
                 if (result.RoomTypes != null && result.RoomTypes.Count > 0)
                 {
                     var room = result.RoomTypes
-                        .FirstOrDefault(x => x.Id == roomTypeId);
+                        .FirstOrDefault(x => x.Id == roomTypeCode);
 
                     if (room?.Amenities != null && room.Amenities.Count > 0)
                     {
@@ -1816,6 +1838,19 @@ namespace XConnect.Supplier.Exely
 
                         if (!string.IsNullOrWhiteSpace(roomAmenityList))
                             parts.Add("Room Amenities: " + roomAmenityList);
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(ratePlanCode))
+                {
+                    var ratePlan = GetExelyRatePlanById(result, ratePlanCode);
+                    if (ratePlan != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(ratePlan.Name))
+                            parts.Add("Rate Plan: " + ratePlan.Name);
+                        if (!string.IsNullOrWhiteSpace(ratePlan.Description))
+                            parts.Add("Plan Details: " + ratePlan.Description);
+                        parts.Add("IsStayWithChildrenOnly: " + (ratePlan.IsStayWithChildrenOnly ? "true" : "false"));
                     }
                 }
                 essential = string.Join(" | ", parts).Replace("<br>", " ").Trim();
@@ -1862,8 +1897,68 @@ namespace XConnect.Supplier.Exely
             return hour >= 2 && hour < 5;
         }
 
+        private async Task<PropertyInfoType?> GetExelyPropertyFromAllCacheAsync(string propertyId, string baseUrl, string password, int searchTimeout, string languageCode, string searchKey, string provider = "Exely")
+        {
+            if (string.IsNullOrWhiteSpace(propertyId) || string.IsNullOrWhiteSpace(baseUrl) || string.IsNullOrWhiteSpace(password))
+                return null;
+
+            // allow override via supplier config if present
+            string allTemplate = _supplierConfig.Exely.PropertyContent ?? "api/content/v1/properties?count=200&include=ALL";
+            string allUrl = $"{baseUrl.TrimEnd('/')}/{allTemplate.TrimStart('/')}?languageCode={languageCode}";
+            string cacheKey = $"Exely:PropertyContent:All:{allUrl.ToLowerInvariant()}";
+
+            // Use cache helper to fetch and cache the PropertyInfoPage
+            PropertyInfoPage? page = await GetOrCreateExelyContentCacheAsync<PropertyInfoPage>(cacheKey, async () =>
+            {
+                ResponseDto resp = await ExelyGetResponseAsync(allUrl, searchTimeout, password, searchKey);
+                if (string.IsNullOrWhiteSpace(resp.Response) || resp.Response.ToLower().Contains("\"error\""))
+                    return null;
+
+                try
+                {
+                    return JsonConvert.DeserializeObject<PropertyInfoPage>(resp.Response);
+                }
+                catch
+                {
+                    return null;
+                }
+            });
+
+            if (page?.Properties == null || page.Properties.Count == 0)
+                return null;
+
+            var found = page.Properties.FirstOrDefault(p => string.Equals(p.Id, propertyId, StringComparison.OrdinalIgnoreCase));
+            if (found == null)
+                return null;
+
+            try
+            {
+                // Convert the include-type object to the full PropertyInfoType by serializing and deserializing
+                string json = JsonConvert.SerializeObject(found);
+                var prop = JsonConvert.DeserializeObject<PropertyInfoType>(json);
+                if (prop != null)
+                    RewriteExelyContentImageUrls(prop, propertyId);
+                return prop;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private async Task<PropertyInfoType?> GetExelyPropertyContentAsync(string propertyId, string baseUrl, string password, int searchTimeout, string searchKey, string languageCode = "en", string historyLabel = "", string provider = "Exely")
         {
+            // Try to fetch from combined/all-properties content endpoint first (cached)
+            try
+            {
+                var fromAll = await GetExelyPropertyFromAllCacheAsync(propertyId, baseUrl, password, searchTimeout, languageCode, searchKey, provider);
+                if (fromAll != null)
+                    return fromAll;
+            }
+            catch
+            {
+                // ignore and fallback to per-property fetch
+            }
             try
             {
                 string contentTemplate = (_supplierConfig.Exely.PropertyContentByProperty ?? string.Empty).TrimStart('/');
@@ -1954,6 +2049,22 @@ namespace XConnect.Supplier.Exely
 
                 image.Url = GetExelyCachedImageUrl(image.Url, propertyId);
             }
+        }
+
+        private RatePlanInfo? GetExelyRatePlanById(PropertyInfoType? content, string? ratePlanId)
+        {
+            if (content?.RatePlans == null || string.IsNullOrWhiteSpace(ratePlanId))
+                return null;
+
+            return content.RatePlans.FirstOrDefault(rp => string.Equals(rp.Id, ratePlanId, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private RoomTypeInfo? GetExelyRoomTypeById(PropertyInfoType? content, string? roomTypeId)
+        {
+            if (content?.RoomTypes == null || string.IsNullOrWhiteSpace(roomTypeId))
+                return null;
+
+            return content.RoomTypes.FirstOrDefault(rt => string.Equals(rt.Id, roomTypeId, StringComparison.OrdinalIgnoreCase));
         }
 
         private string GetExelyCachedImageUrl(string sourceUrl, string propertyId)
