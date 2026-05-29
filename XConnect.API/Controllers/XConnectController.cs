@@ -6097,6 +6097,7 @@ namespace XConnect.API.Controllers
         public async Task<IActionResult> Booking(AgodaBookingRQ RQ)
         {
             Stopwatch timer = new Stopwatch();
+            Stopwatch codetimer = new Stopwatch();
             timer.Start();
             TokenData TokenData = new TokenData();
             CommonRequest data = new CommonRequest();
@@ -6117,7 +6118,7 @@ namespace XConnect.API.Controllers
                     AgodaBookingRS agodaBookingRS = new AgodaBookingRS();
                     AgodaBookingErrorRS_New bookingerrorcode = new AgodaBookingErrorRS_New();
                     AgodaBookingErrorRS agodaError = new AgodaBookingErrorRS();
-                    agodaBookingRS = await _hotelXML.AgodaBookingProcess(RQ, authData.tokenData, timer);
+                    agodaBookingRS = await _hotelXML.AgodaBookingProcess(RQ, authData.tokenData, timer, codetimer);
 
                     if (agodaBookingRS != null)
 
@@ -6145,8 +6146,8 @@ namespace XConnect.API.Controllers
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription = agodaError.remark,
-                                    srphotelid = Convert.ToInt32(RQ.hotel)
-                                    //CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds
+                                    srphotelid = Convert.ToInt32(RQ.hotel),
+                                    CodeProcessingTimenew = codetimer.Elapsed.TotalMilliseconds
 
                                 });
                             }
@@ -6183,8 +6184,8 @@ namespace XConnect.API.Controllers
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription = agodaError.remark,
-                                    srphotelid = Convert.ToInt32(RQ.hotel)
-                                    //CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds
+                                    srphotelid = Convert.ToInt32(RQ.hotel),
+                                    CodeProcessingTimenew = codetimer.Elapsed.TotalMilliseconds
 
                                 });
                             }
@@ -6217,8 +6218,8 @@ namespace XConnect.API.Controllers
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription = bookingerrorcode.remark,
-                                    srphotelid = Convert.ToInt32(RQ.hotel)
-                                    //CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds
+                                    srphotelid = Convert.ToInt32(RQ.hotel),
+                                    CodeProcessingTimenew = codetimer.Elapsed.TotalMilliseconds
 
                                 });
                             }
@@ -6248,8 +6249,8 @@ namespace XConnect.API.Controllers
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription = erroragoda.remark,
-                                    srphotelid = Convert.ToInt32(RQ.hotel)
-                                    //CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds
+                                    srphotelid = Convert.ToInt32(RQ.hotel),
+                                    CodeProcessingTimenew = codetimer.Elapsed.TotalMilliseconds
 
                                 });
                             }
@@ -6279,8 +6280,8 @@ namespace XConnect.API.Controllers
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription = "SUCCESSFULL",
-                                    srphotelid = Convert.ToInt32(RQ.hotel)
-                                    //CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds
+                                    srphotelid = Convert.ToInt32(RQ.hotel),
+                                    CodeProcessingTimenew = codetimer.Elapsed.TotalMilliseconds
 
                                 });
                             }
@@ -6319,8 +6320,8 @@ namespace XConnect.API.Controllers
                             source = "APIOut",
                             AgentName = "Agoda",
                             ActualDescription = erroragoda.remark,
-                            srphotelid = Convert.ToInt32(RQ.hotel)
-                            //CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds
+                            srphotelid = Convert.ToInt32(RQ.hotel),
+                            CodeProcessingTimenew = codetimer.Elapsed.TotalMilliseconds
 
                         });
                     }
@@ -6355,8 +6356,8 @@ namespace XConnect.API.Controllers
                         source = "APIOut",
                         AgentName = "Agoda",
                         ActualDescription = erroragoda.remark,
-                        srphotelid = Convert.ToInt32(RQ.hotel)
-                        //CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds
+                        srphotelid = Convert.ToInt32(RQ.hotel),
+                        CodeProcessingTimenew = codetimer.Elapsed.TotalMilliseconds
 
                     });
                 }
