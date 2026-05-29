@@ -2592,8 +2592,6 @@ namespace Xconnect.Hotelbeds
                 DataRow[] drSearchConfig = (dtSearchConfig.Select("SupplierID='" + SupplierId + "'"));
                 string[] HBRoomCount = roomtypeid.Split(new String[] { "##$$" }, StringSplitOptions.None);
                 double Factor = 1;
-
-
                 for (int Ro = 0; Ro < HBRoomCount.Length; Ro++)
                 {
                     string[] roomCode = HBRoomCount[Ro].Split(new String[] { "$$$" }, StringSplitOptions.None);
@@ -2650,7 +2648,6 @@ namespace Xconnect.Hotelbeds
                             Factor = _commonMethod.GetROEByCurrency(currency, tokenData.dtROE);
                         }
 
-
                         if (rateType.ToLower() == "bookable")
                         {
                             int allotment = Convert.ToInt16(dsHotelBeds.Tables["rates"].Rows[i]["allotment"]);  // added on 30-07-2024 # 49944
@@ -2701,7 +2698,7 @@ namespace Xconnect.Hotelbeds
                                 ISBookable = false;
                             }
                             //added on 30-07-2024 # 49944
-
+                            
                             int NoOfRoomSearch = Convert.ToInt32(SearchPara.Rooms.Count());
                             if (allotment >= NoOfRoomSearch)
                             {
