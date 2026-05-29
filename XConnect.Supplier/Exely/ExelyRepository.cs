@@ -595,7 +595,7 @@ namespace XConnect.Supplier.Exely
                                                     if (roomStay.ratePlan != null && string.IsNullOrWhiteSpace(roomStay.ratePlan.name))
                                                         roomStay.ratePlan.name = GetExelyRatePlanById(propertyContent, roomStay.ratePlan.id)?.Name;
                                                 }
-                                                drHotelRoom["RoomTypeName"] = BuildExelyRoomDisplayName(roomStay, propertyContent).Replace("-", "_");
+                                                drHotelRoom["RoomTypeName"] = BuildExelyRoomDisplayName(roomStay, propertyContent);
 
                                                 if (roomTypeCategoryNames != null && roomTypeCategoryNames.TryGetValue(roomStay.roomType?.id ?? "", out string? catN) && !string.IsNullOrWhiteSpace(catN))
                                                     drHotelRoom["Type"] = catN;
@@ -2517,19 +2517,19 @@ namespace XConnect.Supplier.Exely
 
         private string BuildExelyRoomDisplayName(ShortRoomStay roomStay, PropertyInfoType? propertyContent = null)
         {
-            string roomTypeName = roomStay.roomType?.name?.Trim();
+            string roomTypeName = roomStay.roomType?.name?.Trim().Replace("_", "-");
             if (string.IsNullOrWhiteSpace(roomTypeName) && propertyContent != null)
-                roomTypeName = GetExelyRoomTypeById(propertyContent, roomStay.roomType?.id)?.Name?.Trim();
+                roomTypeName = GetExelyRoomTypeById(propertyContent, roomStay.roomType?.id)?.Name?.Trim().Replace("_", "-");
 
             if (string.IsNullOrWhiteSpace(roomTypeName))
                 roomTypeName = BuildExelyPlacementName(roomStay);
 
             if (string.IsNullOrWhiteSpace(roomTypeName))
-                roomTypeName = (roomStay.fullPlacementsName ?? string.Empty).Trim();
+                roomTypeName = (roomStay.fullPlacementsName ?? string.Empty).Trim().Replace("_", "-");
 
-            string ratePlanName = roomStay.ratePlan?.name?.Trim();
+            string ratePlanName = roomStay.ratePlan?.name?.Trim().Replace("_", "-");
             if (string.IsNullOrWhiteSpace(ratePlanName) && propertyContent != null)
-                ratePlanName = GetExelyRatePlanById(propertyContent, roomStay.ratePlan?.id)?.Name?.Trim();
+                ratePlanName = GetExelyRatePlanById(propertyContent, roomStay.ratePlan?.id)?.Name?.Trim().Replace("_", "-");
 
             if (!string.IsNullOrWhiteSpace(ratePlanName))
             {
@@ -2539,24 +2539,24 @@ namespace XConnect.Supplier.Exely
                     roomTypeName = $"{roomTypeName} - {ratePlanName}";
             }
 
-            return roomTypeName?.Trim() ?? string.Empty;
+            return (roomTypeName?.Trim() ?? string.Empty).Replace("__", "-").Trim('-', '_').Trim();
         }
 
         private string BuildExelyRoomDisplayName(DetailedRoomStay roomStay, PropertyInfoType? propertyContent = null)
         {
-            string roomTypeName = roomStay.roomType?.name?.Trim();
+            string roomTypeName = roomStay.roomType?.name?.Trim().Replace("_", "-");
             if (string.IsNullOrWhiteSpace(roomTypeName) && propertyContent != null)
-                roomTypeName = GetExelyRoomTypeById(propertyContent, roomStay.roomType?.id)?.Name?.Trim();
+                roomTypeName = GetExelyRoomTypeById(propertyContent, roomStay.roomType?.id)?.Name?.Trim().Replace("_", "-");
 
             if (string.IsNullOrWhiteSpace(roomTypeName))
                 roomTypeName = BuildExelyPlacementName(roomStay);
 
             if (string.IsNullOrWhiteSpace(roomTypeName))
-                roomTypeName = (roomStay.fullPlacementsName ?? string.Empty).Trim();
+                roomTypeName = (roomStay.fullPlacementsName ?? string.Empty).Trim().Replace("_", "-");
 
-            string ratePlanName = roomStay.ratePlan?.name?.Trim();
+            string ratePlanName = roomStay.ratePlan?.name?.Trim().Replace("_", "-");
             if (string.IsNullOrWhiteSpace(ratePlanName) && propertyContent != null)
-                ratePlanName = GetExelyRatePlanById(propertyContent, roomStay.ratePlan?.id)?.Name?.Trim();
+                ratePlanName = GetExelyRatePlanById(propertyContent, roomStay.ratePlan?.id)?.Name?.Trim().Replace("_", "-");
 
             if (!string.IsNullOrWhiteSpace(ratePlanName))
             {
@@ -2566,7 +2566,7 @@ namespace XConnect.Supplier.Exely
                     roomTypeName = $"{roomTypeName} - {ratePlanName}";
             }
 
-            return roomTypeName?.Trim() ?? string.Empty;
+            return (roomTypeName?.Trim() ?? string.Empty).Replace("__", "-").Trim('-', '_').Trim();
         }
 
         private string BuildExelyPlacementName(ShortRoomStay roomStay)
