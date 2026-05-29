@@ -17647,17 +17647,17 @@ new SqlParameter("@AgentId", AgentId),
                             hotelPolicy_Prebook.FromDate = fromDate.ToString("MM/dd/yyyy HH:mm:ss");
                             hotelPolicy_Prebook.Todate = toDate.ToString("MM/dd/yyyy HH:mm:ss");
 
-                            hotelPolicy_Prebook.CancellationAmount = Convert.ToDouble(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
+                            hotelPolicy_Prebook.CancellationAmount = Math.Round(Convert.ToDouble(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)),2);
 
-                            hotelPolicy_Prebook.BaseCancellationAmount = Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]);
+                            hotelPolicy_Prebook.BaseCancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]),2);
 
-                            hotelPolicy_Prebook.AgentcancellationAmount = Convert.ToDouble(Convert.ToDecimal(drPolicy[p]["AgentCancellationPrice"]).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
+                            hotelPolicy_Prebook.AgentcancellationAmount = Math.Round(Convert.ToDouble(Convert.ToDecimal(drPolicy[p]["AgentCancellationPrice"]).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency)),2);
 
-                            hotelPolicy_Prebook.BaseAgentcancellationAmount = Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]);
+                            hotelPolicy_Prebook.BaseAgentcancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]),2);
 
-                            hotelPolicy_Prebook.CompanyCancellationAmount = Convert.ToDouble(drPolicy[p]["BuyingPrice"]);
+                            hotelPolicy_Prebook.CompanyCancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["BuyingPrice"]),2);
 
-                            hotelPolicy_Prebook.BaseCompanyCancellationAmount = Convert.ToDouble(drPolicy[p]["BuyingPrice"]);
+                            hotelPolicy_Prebook.BaseCompanyCancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["BuyingPrice"]),2);
 
                             hotelPolicy_Prebooks.Add(hotelPolicy_Prebook);
 
