@@ -674,19 +674,60 @@ namespace XConnect.Expedia
                     else
                     {
 
-                        if ((XMLCOUNTRYCode.ToUpper() != DomesticContryCode))
+                        if (_keySettings.MultiexpediaIsActive)
                         {
-                            JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
-                            JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_International);
-                            JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_International);
-                            
+
+                            if ((XMLCOUNTRYCode.ToUpper() != DomesticContryCode))
+                            {
+
+                                JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
+
+                                JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_International);
+
+                                JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_International);
+
+                            }
+
+                            else
+                            {
+
+                                JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
+
+                                JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_Domestic);
+
+                                JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_Domestic);
+
+                            }
+
                         }
+
                         else
                         {
-                            JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
-                            JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_Domestic);
-                            JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_Domestic);
+
+                            if ((XMLCOUNTRYCode.ToUpper() != DomesticContryCode))
+                            {
+
+                                JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
+
+                                JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_International);
+
+                                JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_International);
+
+                            }
+
+                            else
+                            {
+
+                                JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
+
+                                JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_Domestic);
+
+                                JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_Domestic);
+
+                            }
+
                         }
+
 
                     }
 
