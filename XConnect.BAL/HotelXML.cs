@@ -73101,32 +73101,34 @@ new SqlParameter("@AgentId", AgentId),
                     foreach (var kvp in rawProperties)
                     {
                         var prop = kvp.Value;
-                        if (prop?.Rooms == null)
-                            continue;
+                        //if (prop?.Rooms == null)
+                        //    continue;
 
                         var hotel = new HotelRoomResult
                         {
                             HotelName = prop.Name,
+                            Ratings = prop.Ratings,
                             Rooms = new List<RoomResult>()
                         };
-
-                        foreach (var roomKvp in prop.Rooms)
+                        if (prop?.Rooms != null)
                         {
-                            var room = roomKvp.Value;
-                            if (room == null)
-                                continue;
-
-                            var roomResult = new RoomResult
+                            foreach (var roomKvp in prop.Rooms)
                             {
-                                RoomName = room.Name,
-                                Roomid = room.Id,
-                                Description = room.RoomDescriptions?.Overview,
-                                Images = room.Images?.Where(img => img.RoomImageLinks != null && img.RoomImageLinks.ContainsKey("1000px")).Select(img => img.RoomImageLinks["1000px"].Href).ToList() ?? new List<string>()
-                            };
+                                var room = roomKvp.Value;
+                                if (room == null)
+                                    continue;
 
-                            hotel.Rooms.Add(roomResult);
+                                var roomResult = new RoomResult
+                                {
+                                    RoomName = room.Name,
+                                    Roomid = room.Id,
+                                    Description = room.RoomDescriptions?.Overview,
+                                    Images = room.Images?.Where(img => img.RoomImageLinks != null && img.RoomImageLinks.ContainsKey("1000px")).Select(img => img.RoomImageLinks["1000px"].Href).ToList() ?? new List<string>()
+                                };
+
+                                hotel.Rooms.Add(roomResult);
+                            }
                         }
-
                         result.Add(hotel);
                     }
 

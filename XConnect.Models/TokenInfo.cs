@@ -230,6 +230,8 @@ namespace XConnect.Models
         public string PropertyId { get; set; }
         [JsonProperty("Name")]
         public string Name { get; set; }
+        [JsonProperty("ratings")]
+        public Ratings_ean Ratings { get; set; }
         [JsonProperty("rooms")]
         public Dictionary<string, RoomInfo_ean> Rooms { get; set; }
     }
@@ -346,10 +348,49 @@ namespace XConnect.Models
         [JsonProperty("minimum_age")]
         public int MinimumAge { get; set; }
     }
-
+    public class Ratings_ean
+    {
+        public PropertyRating_ean Property { get; set; }
+        public GuestRating_ean Guest { get; set; }
+    }
+    public class PropertyRating_ean
+    {
+        [JsonProperty("rating")]
+        public string Rating { get; set; }
+        [JsonProperty("type")]
+        public string Type { get; set; }
+    }
+    public class GuestRating_ean
+    {
+        [JsonProperty("count")]
+        public int Count { get; set; }
+        [JsonProperty("overall")]
+        public string Overall { get; set; }
+        [JsonProperty("cleanliness")]
+        public string Cleanliness { get; set; }
+        [JsonProperty("service")]
+        public string Service { get; set; }
+        [JsonProperty("comfort")]
+        public string Comfort { get; set; }
+        [JsonProperty("condition")]
+        public string Condition { get; set; }
+        [JsonProperty("location")]
+        public string Location { get; set; }
+        [JsonProperty("neighborhood")]
+        public string Neighborhood { get; set; }
+        [JsonProperty("quality")]
+        public string Quality { get; set; }
+        [JsonProperty("value")]
+        public string Value { get; set; }
+        [JsonProperty("amenities")]
+        public string Amenities { get; set; }
+        [JsonProperty("recommendation_percent")]
+        public string RecommendationPercent { get; set; }
+    }
     public class HotelRoomResult
     {
         public string HotelName { get; set; }
+        public Ratings_ean Ratings { get; set; }
         public List<RoomResult> Rooms { get; set; }
     }
 
