@@ -787,7 +787,8 @@ namespace XConnect.Supplier.GRNC
                                                 {
                                                     continue;
                                                 }
-                                                string RoomTypeId = room_type + "$$$$" + cancellation_policy + "$$$$" + rate_key + "$$$$" + SessionId + "$$$$" + group_code + "$$$$" + rate_type + "$$$$" + hcode + "$$$$" + room_code + "$$$$" + CityId + "$$$$" + no_of_infants + "$$$$" + XMLnationality + "$$$$" + rooms + "$$$$" + NoOfRoom + "$$$$" + room_reference + "$$$$" + "<b>Room Type:<b>" + description + "</br>" + other_inclusions + "</br>" + EssentialInfo;
+                                                //string RoomTypeId = room_type + "$$$$" + cancellation_policy + "$$$$" + rate_key + "$$$$" + SessionId + "$$$$" + group_code + "$$$$" + rate_type + "$$$$" + hcode + "$$$$" + room_code + "$$$$" + CityId + "$$$$" + no_of_infants + "$$$$" + XMLnationality + "$$$$" + rooms + "$$$$" + NoOfRoom + "$$$$" + room_reference + "$$$$" + "<b>Room Type:<b>" + description + "</br>" + other_inclusions + "</br>" + EssentialInfo;
+                                                string RoomTypeId = room_type + "$$$$" + cancellation_policy + "$$$$" + rate_key + "$$$$" + SessionId + "$$$$" + group_code + "$$$$" + rate_type + "$$$$" + hcode + "$$$$" + room_code + "$$$$" + CityId + "$$$$" + no_of_infants + "$$$$" + XMLnationality + "$$$$" + rooms + "$$$$" + NoOfRoom + "$$$$" + room_reference + "$$$$" + "<b>Room Type:<b>" + description + "</br>" + other_inclusions + "</br>" + EssentialInfo + "$$$$" + ItemCode;
 
                                                 RoomTypeId = RoomTypeId.Replace("'", "");
 
@@ -1694,7 +1695,8 @@ namespace XConnect.Supplier.GRNC
                 var postData = Xmlrequest;
                 request.Method = "POST";
                 //Request.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; MS Web Services Client Protocol 1.1.4322.2300)";
-                request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");
+                //request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");
+                request.Headers.Add("Api-Key", password);
                 request.ContentType = "application/json";
                 request.Accept = "application/json";
                 //Request.Headers.Add("Accept", "application/json");
@@ -1990,8 +1992,275 @@ namespace XConnect.Supplier.GRNC
                 return "";
             }
         }
+        public string GRNCBookingRequest1_newverstion(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, int j, int UniqueNo, string PreBookRef, int NoOfRoom, string HotelId, string TID, string ContryId, string CITY_CODE, string AgentCode)
+        {
+            try
+            {
+                //string UserCartId = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["UserCartId"]);
+                string UserCartId = Convert.ToString(bookRequest.userCart.UserCartDetails[0].UserCartId);
+
+                string checkindate = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
+                //string checkindate = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]);
+                //string checkin = (checkindate).Substring(0, 4) + "-" + (checkindate).Substring(4, 2) + "-" + (checkindate).Substring(6, 2);// + "T03:00:00+03:00";
+
+                string checkoutdate = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
+                //string checkoutdate = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckOutDate"]);
+                //string checkout = (checkoutdate).Substring(0, 4) + "-" + (checkoutdate).Substring(4, 2) + "-" + (checkoutdate).Substring(6, 2);// + "T03:00:00+03:00";
+
+                DateTime checkInDate = DateTime.Parse(checkindate);
+                DateTime checkOutDate = DateTime.Parse(checkoutdate);
+
+                string checkin = checkInDate.ToString("yyyy-MM-dd");
+                string checkout = checkOutDate.ToString("yyyy-MM-dd");
+
+                string AgentReference = Convert.ToString(AgentCode + "_" + UniqueNo);
+                string firstName = ""; string lastName = ""; string title = "";
+                string BookingRQ = "";
+                //DataRow[] drRoom = dsCartDetails.Tables[1].Select("RoomTypeId='" + TID + "'");
+                //string RoomTypeId1 = Convert.ToString(drRoom[0]["RoomTypeId"]);
+                string RoomTypeId1 = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
+                string[] RoomTypeIdList = Convert.ToString(RoomTypeId1).Split(new String[] { "$$$$" }, StringSplitOptions.None);
+                string group_code = RoomTypeIdList[4];
+                string rate_key = RoomTypeIdList[2];
+                string cancellation_policy_code1 = RoomTypeIdList[1];
+                string room_type = RoomTypeIdList[0];
+                string sid = RoomTypeIdList[3];
+                string hcode = RoomTypeIdList[6];
+                string rate_type = RoomTypeIdList[5];
+                string noofinfants = RoomTypeIdList[9];
+                string city_code = RoomTypeIdList[8];
+                string room_code = RoomTypeIdList[7];
+                string Nationality = RoomTypeIdList[10];
+                string noofrm = RoomTypeIdList[11];
+                string Roomreference = RoomTypeIdList[13];
+                //string code = Convert.ToString(dsCartDetails.Tables[1].Rows[j]["purchaseToken"]);
+                string code = Convert.ToString(Convert.ToString(bookRequest.userCart.UserCartDetails[j].PurchaseToken));
+
+                string[] roomtype = Convert.ToString(code).Split(new String[] { "@@@" }, StringSplitOptions.None);
+                string price = roomtype[0];
+                string roomcode = roomtype[1];
+                string ratekey = roomtype[2];
+
+                string[] Roomreference2 = Convert.ToString(Roomreference).Split(new String[] { "###" }, StringSplitOptions.None);
+                int room = Convert.ToInt32(noofrm);
+                StringBuilder SBPassanger = new StringBuilder();
+                StringBuilder SBContect = new StringBuilder();
+
+                //DataRow[] drHotelBookingDetail = dsCartDetails.Tables[1].Select("UserCartId='" + UserCartId + "'");
+                //int RoomNumber = Convert.ToInt32(drHotelBookingDetail[j]["RoomNumber"]);
+                int RoomNumber = Convert.ToInt32(bookRequest.userCart.UserCartDetails.Count);
+                DataRow[] drPassengers = dtPassengers.DefaultView.ToTable().Select("IsLead='1'");
+                if (drPassengers.Length == 0)
+                {
+                    if (Convert.ToString(dtPassengers.DefaultView[0]["PaxType"]).Trim().ToLower() == "adult")
+                        dtPassengers.DefaultView[0]["IsLead"] = 1;
+                }
+                firstName = Convert.ToString(dtPassengers.DefaultView[0]["FirstName"]).Trim();
+                lastName = Convert.ToString(dtPassengers.DefaultView[0]["LastName"]).Trim();
+                title = Convert.ToString(dtPassengers.DefaultView[0]["Prefix"]).Trim().Replace(".", "");
+                int ChildAge = Convert.ToInt32(dtPassengers.DefaultView[0]["ChildAge"]);
+                if (Convert.ToInt16(dtPassengers.DefaultView[0]["IsLead"]) == 1)
+                {
+                    SBContect.Append("\"holder\": {");
+                    SBContect.Append("\"title\": \"" + title + ".\",");
+                    SBContect.Append("\"name\": \"" + firstName + "\",");
+                    SBContect.Append("\"surname\": \"" + lastName + "\",");
+                    //SBContect.Append("\"email\": \"" + GrncStaticInfo.email + "\",");
+                    SBContect.Append("\"email\": \"" + _supplierConfig.GRNC.Email + "\",");
+                    SBContect.Append("\"phone_number\": \"" + _supplierConfig.GRNC.Phonenumber + "\",");
+                    SBContect.Append("\"client_nationality\": \"" + Nationality + "\"");
+                    SBContect.Append("}");
+                }
+                SBPassanger.Append("\"booking_items\":[");
+                for (int p = 0; p < room; p++)
+                {
+                    //int NoOfChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[p]["NoOfChild"]);
+                    //int NoOfAdults = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[p]["NoOfAdults"]);
+
+                    int NoOfChild = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofChild);
+                    int NoOfAdults = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].NoofAdult);
+                    SBPassanger.Append("{");
+                    if (p == 0)
+                    {
+                        SBPassanger.Append("\"room_code\": \"" + roomcode + "\",");
+                        SBPassanger.Append("\"rate_key\": \"" + ratekey + "\",");
+                        SBPassanger.Append("\"rooms\":[");
+                        SBPassanger.Append("{");
+                    }
+                    //int Child1Age = Convert.ToInt32(drHotelBookingDetail[p]["ChildAge1"]);
+                    //int Child2Age = Convert.ToInt32(drHotelBookingDetail[p]["ChildAge2"]);
+
+                    DataRow[] dsAdults = dtPassengers.Select("RoomNo=" + RoomNumber + " and UserCartId = '" + UserCartId + "'");
+
+                    // int childage = Convert.ToInt32(dtPassengers.DefaultView[p]["ChildAge"]);
+                    int ChildAge1 = 0;
+                    int ChildAge2 = 0;
+                    int NoOfInfant = 0;
+                    int ChildAges = 0;
+                    if (NoOfChild == 1)  //Need to check for child
+                    {
+                        //ChildAge1 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[p]["ChildAge1"]);
+                        ChildAge1 = Convert.ToInt32(dtPassengers.DefaultView[p]["ChildAge"]);
+                        if (ChildAge1 < 2)
+                        {
+                            NoOfChild = NoOfChild - 1;
+                            NoOfInfant = NoOfInfant + 1;
+                        }
+                        else
+                        {
+                            NoOfChild += NoOfChild - 1;
+                            ChildAges = ChildAges + 1;
+                        }
+                    }
+                    else if (NoOfChild == 2)
+                    {
+                        //ChildAge1 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[p]["ChildAge1"]);
+                        ChildAge1 = Convert.ToInt32(dtPassengers.DefaultView[p]["ChildAge"]);
+                        if (ChildAge1 < 2)
+                        {
+                            NoOfChild = NoOfChild - 1;
+                            NoOfInfant = NoOfInfant + 1;
+                        }
+                        else
+                        {
+                            NoOfChild += NoOfChild - 1;
+                            ChildAges = ChildAges + 1;
+                        }
+                        //ChildAge2 = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[p]["ChildAge2"]);
+                        ChildAge1 = Convert.ToInt32(dtPassengers.DefaultView[p]["ChildAge"]);
+                        if (ChildAge2 < 2)
+                        {
+                            NoOfChild = NoOfChild - 1;
+                            NoOfInfant = NoOfInfant + 1;
+                        }
+                        else
+                        {
+                            NoOfChild += NoOfChild - 1;
+                            ChildAges = ChildAges + 1;
+                        }
+                    }
+
+                    if (NoOfInfant != 0)
+                    {
+                        SBPassanger.Append("\"no_of_infants\":  " + NoOfInfant + ",");
+                    }
+
+                    if (ChildAges != 0)
+                    {
+                        SBPassanger.Append("\"no_of_extra_beds\":  " + ChildAges + ",");
+                    }
+
+                    string romreference = Roomreference2[p + 1];
+
+                    SBPassanger.Append("\"room_reference\": \"" + romreference + "\",");
+                    int a = 0;
+
+                    for (int r = 0; r < RoomNumber; r++)//no of room loop
+                    {
+                        //dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]) + "' and (RoomNo=" + (p + 1) + ")";
+                        dtPassengers.DefaultView.RowFilter = "PickUp='" + Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId) + "' and (RoomNo=" + (p + 1) + ")";
+                        dtPassengers.DefaultView.Sort = "IsLead DESC";
+                        string SpecialRequest = Convert.ToString(dtPassengers.DefaultView[0]["Message"]).Trim();
+                        //for (int t = 0; t < dtPassengers.DefaultView.Count; t++)
+                        //{
+                        //int childage = Convert.ToInt32(dtPassengers.DefaultView[t]["ChildAge"]);
+                        SBPassanger.Append("\"paxes\": [");
+                        for (int k = 0; k < dtPassengers.DefaultView.Count; k++)
+                        // for (int k = 0; k < RoomNumber.Count; k++)
+                        {
+                            string FirstName = Convert.ToString(dtPassengers.DefaultView[k]["FirstName"]).Trim();
+                            string LastName = Convert.ToString(dtPassengers.DefaultView[k]["LastName"]).Trim();
+                            string Title = Convert.ToString(dtPassengers.DefaultView[k]["Prefix"]).Trim().Replace(".", "");
+                            int ChAge = Convert.ToInt32(dtPassengers.DefaultView[k]["ChildAge"]);
+                            a = k + 1;
+                            if (ChAge != 1)
+                            {
+                                SBPassanger.Append("{");
+                                SBPassanger.Append("\"title\": \"" + Title + ".\",");
+                                SBPassanger.Append("\"name\": \"" + FirstName + "\",");
+                                SBPassanger.Append("\"surname\": \"" + LastName + "\",");
+                                if (Convert.ToString(dtPassengers.DefaultView[k]["PaxType"]).Trim().ToLower() == "adult" || ChAge > 11)
+                                    SBPassanger.Append("\"type\": \"" + "AD" + "\"");
+                                else if (ChAge < 12 && ChAge > 1)
+                                {
+                                    SBPassanger.Append("\"type\": \"" + "CH" + "\",");
+                                    SBPassanger.Append("\"age\": \"" + ChAge + "\"");
+                                }
+                                if (a == dtPassengers.DefaultView.Count)
+                                {
+                                    SBPassanger.Append("}");
+                                }
+                                else
+                                {
+                                    SBPassanger.Append("},");
+                                }
+                            }
+                            else//Infant
+                            {
+                                if (a == dtPassengers.DefaultView.Count)
+                                {
+                                    SBPassanger = SBPassanger.Remove(SBPassanger.Length - 1, 1);
+                                }
+                            }
+                        }
+                        int c = p + 1;
+                        if (c == room)
+                        {
+                            SBPassanger.Append("]");
+                            SBPassanger.Append("}");
+                        }
+                        else
+                        {
+                            SBPassanger.Append("]");
+                            SBPassanger.Append("},");
+                        }
+                    }
+                }
+                SBPassanger.Append("]");
+                SBPassanger.Append("}");
+                StringBuilder BookRQ = new StringBuilder();
+                BookRQ.Append("{");
+                BookRQ.Append("\"search_id\": \"" + sid + "\",");
+                BookRQ.Append("\"hotel_code\": \"" + HotelId + "\",");
+                BookRQ.Append("\"city_code\": \"" + city_code + "\",");
+                BookRQ.Append("\"group_code\": \"" + group_code + "\",");
+                BookRQ.Append("\"checkin\": \"" + checkin + "\",");
+                BookRQ.Append("\"checkout\": \"" + checkout + "\",");
+                BookRQ.Append("\"payment_type\": \"" + "AT_WEB" + "\",");
+                BookRQ.Append("\"booking_name\": \"" + AgentReference + "\",");
+                BookRQ.Append(SBPassanger.ToString());
+                BookRQ.Append("],");
+                BookRQ.Append(SBContect.ToString());
+                BookRQ.Append("}");
+                BookingRQ = BookRQ.ToString();
+
+                return BookingRQ;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return "";
+            }
+        }
 
         public string GRNCBookingfetch(DataSet dsCartDetails, DataTable dtPassengers, int i, int j, int UniqueNo, string PreBookRef, int NoOfRoom, string HotelId, string TID, string ContryId, string CITY_CODE)
+        {
+            var jsonString = "";
+            try
+            {
+
+
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+            }
+            return jsonString;
+
+
+
+        }
+        public string GRNCBookingfetch_newverstion(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, int j, int UniqueNo, string PreBookRef, int NoOfRoom, string HotelId, string TID, string ContryId, string CITY_CODE)
         {
             var jsonString = "";
             try
@@ -2024,7 +2293,8 @@ namespace XConnect.Supplier.GRNC
                 var postData = Xmlrequest;
                 request.Method = "POST";
                 //Request.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; MS Web Services Client Protocol 1.1.4322.2300)";
-                request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");
+                //request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");
+                request.Headers.Add("Api-Key", password);
                 request.ContentType = "application/json";
                 request.Accept = "application/json";
                 //Request.Headers.Add("Accept", "application/json");

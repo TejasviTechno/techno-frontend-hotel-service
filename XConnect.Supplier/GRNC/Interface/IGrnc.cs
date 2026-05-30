@@ -20,10 +20,12 @@ namespace XConnect.Supplier.GRNC.Interface
         Task<CancellationDto> GRNCCancelltionPolicy(DataSet dsHotel, string ownsystemid, string RoomTypeId_Own, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtMarkupDetails, TokenData tokenData, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string roomno, string HotelId, string Provider, string roomtypecode, string type, string GiataId, int AgentId, int hotelRating/*, string CurrencyCode, string amount_type*/, string checkin, string checkout, double roomprice, string MealId,string SearchKey, string CompanyBuying = "");
 
         string GRNCBookingRequest1(DataSet dsCartDetails, DataTable dtPassengers, int i, int j, int UniqueNo, string PreBookRef, int NoOfRoom, string HotelId, string TID, string ContryId, string CITY_CODE, string AgentCode);
+        string GRNCBookingRequest1_newverstion(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, int j, int UniqueNo, string PreBookRef, int NoOfRoom, string HotelId, string TID, string ContryId, string CITY_CODE, string AgentCode);
 
         string GRNCBookingResponse(ref string Error, string sid, string Xmlrequest, string Url, string username, string password, int Timeout, string UserId);
 
         string GRNCBookingfetch(DataSet dsCartDetails, DataTable dtPassengers, int i, int j, int UniqueNo, string PreBookRef, int NoOfRoom, string HotelId, string TID, string ContryId, string CITY_CODE);
+        string GRNCBookingfetch_newverstion(BookRequest_newversion bookRequest, DataTable dtPassengers, int i, int j, int UniqueNo, string PreBookRef, int NoOfRoom, string HotelId, string TID, string ContryId, string CITY_CODE);
 
         string GRNCBookingrefetchResponse(string sid, string Xmlrequest, string Url, string username, string password, int Timeout, string UserId);
 

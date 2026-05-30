@@ -56389,7 +56389,236 @@ new SqlParameter("@AgentId", AgentId),
                                     }
                                     break;
                                 #endregion
+                                #region "GRNC"
+                                case "grnc":
+                                    {
+                                        try
+                                        {
+                                            for (int j = 0; j < 1; j++)
+                                            {
+                                                AgentVoucherNo = "";
+                                                //string HotelIds = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
+                                                string ContryId = ""; //Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLCountryId"]);
+                                                string UrlOptionDetails = Convert.ToString(XPDetails[0]["WebSiteURL"] + _supplierConfig.GRNC.Book);
+                                                string Url = Convert.ToString(XPDetails[0]["WebSiteURL"] + _supplierConfig.GRNC.Book);
+                                                //string Url = Convert.ToString(XPDetails[0]["WebSiteURL"] + "/api/v3/hotels/bookings");
+                                                //double CompanyBuyPrices = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"]);
+                                                double CompanyBuyPrices = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].BaseServiceBuyingAmount);
+                                                string SID = Convert.ToString(Convert.ToString(bookRequest.userCart.UserCartDetails[j].PurchaseToken));
 
+                                                string TID = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
+                                                int UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+
+                                                int NoOfRoom = Convert.ToInt32(bookRequest.userCart.UserCartDetails.Count);
+                                                string provider = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName);
+                                                //string UserID = Convert.ToString(GRNCDetails[0]["UserID"]);
+                                                //string CurrencyCode = Convert.ToString(GRNCDetails[0]["CurrencyShortName"]);
+                                                //string amount_type = Convert.ToString(GRNCDetails[0]["amount_type"]);
+                                                //string checkin = Convert.ToString(GRNCDetails[0]["checkin"]);
+                                                //string checkout = Convert.ToString(GRNCDetails[0]["checkout"]);
+                                                // string cancellation_policy_code = Convert.ToString(GRNCDetails[0]["cancellation_policy_code"]);
+                                                string UserName = Convert.ToString(XPDetails[0]["UserName"]);
+                                                string Password = Convert.ToString(XPDetails[0]["Password"]);
+                                                string WBEKey = Convert.ToBase64String(Encoding.ASCII.GetBytes(UserName + ":" + Password));
+
+                                                //string[] Array2 = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["RoomTypeId"]).Split(new String[] { "$$$$" }, StringSplitOptions.None);
+                                                string[] Array2 = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(new String[] { "$$$$" }, StringSplitOptions.None);
+                                                //double CompanyBuyPricess = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["Rate"]);
+                                                double CompanyBuyPricess = Convert.ToDouble(bookRequest.BookRQ.TotalPrice);
+                                                string group_code = Array2[4];
+                                                string rate_key = Array2[2];
+                                                string cancellation_policy_code1 = Array2[1];
+                                                string room_type = Array2[0];
+                                                string sid = Array2[3];
+                                                string hcode = Array2[6];
+                                                string room_code = Array2[7];
+                                                string rate_type = Array2[5];
+                                                string CITY_CODE = Array2[8];
+                                                string rooms1 = Array2[11];
+
+                                                string HotelIds = Convert.ToString(Array2[15]);
+
+                                                int rom = Convert.ToInt32(rooms1);
+                                                //string Urls = Convert.ToString(XPDetails[0]["WebSiteURL"] + "/api/v3/hotels/availability/" + sid + "/rates/?action=" + rate_type);
+                                                string Urls = Convert.ToString(XPDetails[0]["WebSiteURL"] + _supplierConfig.GRNC.HotelSearch + sid + "/rates/?action=" + rate_type);
+                                                string Urll = Convert.ToString(XPDetails[0]["WebSiteURL"] + _supplierConfig.GRNC.HotelSearch + sid + "?/hcode/=" + HotelIds + "&bundled=true");
+                                                UniqueNo = "";
+                                                string PreBookRefNo = "";
+                                                UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                double itemprice1 = 0;
+                                                bool IsCombine1 = false;
+                                                //bool IsPriceUpdates1 = Common.GRNCRECheck(dsCartDetails, IsCombine1, HotelIds, rate_type, sid, Urls, ref itemprice1, CompanyBuyPrices, ref dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, Supplier, "B", j, "", WBEKey, rate_key, group_code, rate_type, cancellation_policy_code1, "", Urll);
+                                                //string GRNCBookinghRequest = _grnc.GRNCBookingRequest1(dsCartDetails, dtPassengers, i, j, UserCartDetailId, PreBookRefNo, NoOfRoom, hcode, TID, ContryId, CITY_CODE, AgentCode);
+                                                string GRNCBookinghRequest = _grnc.GRNCBookingRequest1_newverstion(bookRequest, dtPassengers, 0, j, UserCartDetailId, PreBookRefNo, NoOfRoom, hcode, TID, ContryId, CITY_CODE, tokenData.AgentCode);
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), GRNCBookinghRequest, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "WithInEarth");
+                                                #region FruadChacking
+
+                                                //timerroomprocess.Start();
+                                                Error = "";
+                                                //timerroomprocess.Start();
+
+                                                string GRNCResponseDataBooking = _grnc.GRNCBookingResponse(ref Error, sid, GRNCBookinghRequest, Url, Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), Convert.ToInt32(180000), Convert.ToString(XPDetails[0]["UserID"]));
+                                                RequestSPR = GRNCBookinghRequest;
+                                                ReponseSPR = GRNCResponseDataBooking;
+                                                //timerroomprocess.Stop();
+                                                //time = timerroomprocess.Elapsed.ToString();
+
+                                                //GRNCbooking.RootObjects GRNCResponseBooking = JsonConvert.DeserializeObject<GRNCbooking.RootObjects>(GRNCResponseDataBooking);
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), GRNCBookinghRequest, GRNCResponseDataBooking + Error, "After Request hit booking", Convert.ToString(provider), "Response Confirm", "-", "WithinEarth");
+                                                #endregion FruadChacking
+                                                string Value = "GRN";
+                                                string Booking_ID = "";
+                                                if (GRNCResponseDataBooking != null || GRNCResponseDataBooking != "")
+                                                {
+                                                    DataSet dsStandardTourBooking = _commonMethod.ReadDataFromJson(GRNCResponseDataBooking);
+                                                    if (dsStandardTourBooking != null)
+                                                    {
+                                                        if (GRNCResponseDataBooking.Contains("status") == true)
+                                                        {
+                                                            string Status = Convert.ToString(dsStandardTourBooking.Tables["rootNode"].Rows[0]["status"]);
+                                                            string ReservationRef = Convert.ToString(dsStandardTourBooking.Tables["rootNode"].Rows[0]["booking_reference"]);
+                                                            //string Booking_ID = Convert.ToString(dsStandardTourBooking.Tables["rootNode"].Rows[0]["booking_id"]);
+                                                            string Urlls = Convert.ToString(XPDetails[0]["WebSiteURL"] + _supplierConfig.GRNC.HotelSearch + ReservationRef + "?type=\"" + Value + "\"");
+                                                            if (Status.ToLower() == "pending")
+                                                            {
+                                                                //GRNCBookinghRequest = _grnc.GRNCBookingfetch(dsCartDetails, dtPassengers, i, j, UserCartDetailId, PreBookRefNo, NoOfRoom, hcode, TID, ContryId, CITY_CODE);
+                                                                GRNCBookinghRequest = _grnc.GRNCBookingfetch_newverstion(bookRequest, dtPassengers, 0, j, UserCartDetailId, PreBookRefNo, NoOfRoom, hcode, TID, ContryId, CITY_CODE);
+                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), GRNCBookinghRequest, "-", "Before Request hit fetchbooking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "WithInEarth");
+
+                                                                GRNCResponseDataBooking = _grnc.GRNCBookingrefetchResponse(sid, GRNCBookinghRequest, Urlls, Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), Convert.ToInt32(180000), Convert.ToString(XPDetails[0]["UserID"]));
+                                                                dsStandardTourBooking = _commonMethod.ReadDataFromJson(GRNCResponseDataBooking);
+                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), GRNCBookinghRequest, GRNCResponseDataBooking, "After Request hit fetchbooking", Convert.ToString(provider), "Response Confirm", "-", "WithinEarth");
+
+                                                                RequestSPR = RequestSPR + "#GRNCBookinghRequest=" + GRNCBookinghRequest;
+                                                                ReponseSPR = ReponseSPR + "#GRNCResponseDataBooking=" + GRNCResponseDataBooking;
+                                                                Status = Convert.ToString(dsStandardTourBooking.Tables["bookings"].Rows[0]["booking_status "]);
+                                                                ReservationRef = Convert.ToString(dsStandardTourBooking.Tables["bookings"].Rows[0]["booking_reference"]);
+                                                                Booking_ID = Convert.ToString(dsStandardTourBooking.Tables["bookings"].Rows[0]["booking_id"]);
+                                                            }
+                                                            if (dsStandardTourBooking.Tables["rootNode"].Columns.Contains("booking_id"))
+                                                            {
+                                                                Booking_ID = Convert.ToString(dsStandardTourBooking.Tables["rootNode"].Rows[0]["booking_id"]);
+                                                            }
+
+                                                            ReservationRef = ReservationRef + "$$$" + Booking_ID;
+                                                            dsStandardTourBooking = _commonMethod.ReadDataFromJson(GRNCResponseDataBooking);
+                                                            try
+                                                            {
+                                                                if (dsStandardTourBooking != null)
+                                                                {
+                                                                    if (Status == "Confirmed")//Confirmed 
+                                                                        bookingStatus = 6;
+                                                                    else if (Status == "rejected")//Canceled 
+                                                                        bookingStatus = 2;
+                                                                    else if (Status == "failed")//Canceled 
+                                                                        bookingStatus = 2;
+                                                                    else if (Status == "pending")// Canceled 
+                                                                        bookingStatus = 2;
+                                                                    else
+                                                                        bookingStatus = 1;//reject
+                                                                    if (Status.ToLower() == "confirmed")
+                                                                    {
+                                                                        if (Booking_ID != string.Empty && ReservationRef != string.Empty && Status != string.Empty)
+                                                                        {
+                                                                            bookingStatus = 6;
+                                                                            AgentVoucherNo = ReservationRef;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            bookingStatus = 2;
+                                                                            AgentVoucherNo = ReservationRef;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            catch (Exception ex)
+                                                            {
+                                                                _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString());
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            bookingStatus = 2;
+                                                            AgentVoucherNo = "";
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        bookingStatus = 2;
+                                                        AgentVoucherNo = "";
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    bookingStatus = 2;
+                                                    AgentVoucherNo = "";
+                                                }
+                                                #region SupplierPR Booking
+                                                if (bookingStatus == 6)
+                                                    responsetype = "Success";
+                                                else
+                                                    responsetype = "GeneralError";
+
+                                                try
+                                                {
+                                                    //_ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, GRNCBookinghRequest, GRNCResponseDataBooking, Error);
+                                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, GRNCBookinghRequest, GRNCResponseDataBooking, Error, bookRequest.SearchKey, TechName);
+
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                                }
+                                                #endregion
+
+                                                #region Booking DataRaw
+                                                //DataRow newRow_WhiteSandsUAE = dtAgentVoucher.NewRow();
+                                                //newRow_WhiteSandsUAE["UserCartId"] = dsCartDetails.Tables[0].Rows[i]["UserCartId"];
+                                                //newRow_WhiteSandsUAE["UserCartDetailId"] = dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"];
+                                                //newRow_WhiteSandsUAE["AgentVoucherNo"] = AgentVoucherNo;
+                                                //newRow_WhiteSandsUAE["XMLRequest"] = GRNCBookinghRequest;
+                                                //newRow_WhiteSandsUAE["XMLResponse"] = GRNCResponseDataBooking;
+                                                //newRow_WhiteSandsUAE["RoomStatus"] = bookingStatus;
+                                                //newRow_WhiteSandsUAE["SupplierName"] = provider; //dsCartDetails.Tables[1].DefaultView[j]["SupplierName"];
+                                                //newRow_WhiteSandsUAE["PackageId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["PackageId"]);
+                                                //// newRow_WhiteSandsUAE["TicketNumber"] = ReservationRef;
+                                                //dtAgentVoucher.Rows.Add(newRow_WhiteSandsUAE);
+
+                                                AgentVoucher agentVoucher = new AgentVoucher();
+                                                agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                agentVoucher.XMLRequest = GRNCBookinghRequest;
+                                                agentVoucher.XMLResponse = GRNCResponseDataBooking;
+                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                agentVoucher.SupplierName = bookRequest.userCart.UserCartDetails[j].SupplierName;
+                                                agentVouchers.Add(agentVoucher);
+                                                bookResponse_1.agentVouchers = agentVouchers;
+                                                #endregion
+                                            }
+
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            #region SupplierPerformanceReport Catch
+                                            try
+                                            {
+                                                Error = ex.Message + ex.StackTrace.ToString();
+                                                responsetype = "GeneralError";
+                                                time = "00:00:00.000000";
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, bookRequest.SearchKey, TechName);
+                                                //_ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", bookRequest.SearchKey);
+                                            }
+                                            #endregion
+                                            _ = _exception.ErrorBooking(ex, tokenData.AgentId.ToString());
+                                        }
+                                    }
+                                    break;
+                                #endregion
 
 
                                 default:
