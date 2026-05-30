@@ -8386,6 +8386,43 @@ namespace XConnect.CommonUtilities
 
                                 }
 
+                                //added by trupti 300526
+                                if (!IsFromAPI)
+                                {
+                                    List<_FRatebreakup> lstRateBreakup = new List<_FRatebreakup>();
+                                    for (int rb = 0; rb < finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].RateBreakup.Count; rb++)
+                                    {
+                                        var rateBreakup = finalResponse.AvailabilityRS.HotelResult[giataSeq]
+                                .HotelOption[hotelSeq]
+                                .HotelRooms[roomNoSeq][noOfRooms]
+                                .RateBreakup[rb];
+
+                                        _FRatebreakup objRG = new _FRatebreakup
+                                        {
+                                            Rate = Convert.ToString(rateBreakup.Rate),
+                                            Date = Convert.ToString(rateBreakup.Date),
+                                            BuyingPrice = Convert.ToString(rateBreakup.BuyingPrice),
+                                            RateType = Convert.ToString(rateBreakup.RateType),
+                                            DateOfWeek = Convert.ToString(rateBreakup.DateOfWeek),
+                                            Surcharge = Convert.ToString(rateBreakup.Surcharge),
+                                            CompanyCharge = Convert.ToString(rateBreakup.CompanyCharge),
+                                            Total = Convert.ToString(rateBreakup.Total)
+                                        };
+
+                                        lstRateBreakup.Add(objRG);
+
+
+                                    }
+                                    RoomList.FinalRateBreakup = lstRateBreakup;
+
+                                }
+                                else
+                                {
+                                    RoomList.FinalRateBreakup = null;
+
+                                }
+                                //end
+
                                 if (withcancellation)
                                 {
                                     // RoomList.EssentialInformation = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].EssentialInformation;
