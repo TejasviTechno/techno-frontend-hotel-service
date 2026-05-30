@@ -5553,7 +5553,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                 case "xtg":
                                     dataTable.Add(Task.Run(async () =>
                                     {
-                                        var result = await _xtg.XMLXTG_RoomOnly(item, commonSearch, item.RQRS[0].Request, item.CurrencyCode, dtAgentDetail, dtMarkupDetails, SearchPara, item.RQRS[0].Response, item.Supplier, item.XmlCity, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, item.CurrencyFactor);
+                                        var result = await _xtg.XMLXTG_RoomOnly(item, commonSearch, item.RQRS[0].Request, item.CurrencyCode, dtAgentDetail, dtMarkupDetails, SearchPara, item.RQRS[0].Response, item.Supplier, item.XmlCity, dtROE, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, item.CurrencyFactor);
                                         item.dtHotelRoom = result;
                                         return result;
                                     }));
@@ -5588,7 +5588,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     //{
                                     dataTable.Add(Task.Run(async () =>
                                     {
-                                        var result = await _hotelbeds.hotelbedsv1_new_HotelSearchWithRooms(SearchByOneID, item, commonSearch, item.RQRS, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, withcancellation, StoreSupplierResErrorLog);
+                                        var result = await _hotelbeds.hotelbedsv1_new_HotelSearchWithRooms(SearchByOneID, item, commonSearch, item.RQRS, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, dtROE,ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, withcancellation, StoreSupplierResErrorLog);
                                         item.dtHotelRoom = result;
                                         return result;
                                     }));
@@ -31867,16 +31867,11 @@ new SqlParameter("@AgentId", AgentId),
                                                         dtCheckPriceReqStructure.Rows.Add(_commonMethod.AddCheckPriceReq(dtCheckPriceReqStructure.NewRow(), 1, Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["UserCartID"]), Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]),
                                                             Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["RoomTypeID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower(), RequestString));
 
-                                                        //var client = new XMLTravelGate.GraphQLClient(XTGWebUrl);
-                                                        //XMLTravelGate.GraphQLQuery_Response objResponse = new XMLTravelGate.GraphQLQuery_Response();
-                                                        //objResponse = client.GetXTGResponse(ref Error, XMLTravelGate.GraphQLClient.XTG_Quote_Query, Newtonsoft.Json.Linq.JObject.Parse(RequestString), XTGApiKey, Convert.ToInt32(180000));
-
                                                         GraphQLQuery_Response objResponse = new GraphQLQuery_Response();
                                                         ResponseXTGDto responseXTGDto = new ResponseXTGDto();
                                                         responseXTGDto = await _xtg.GetXTGResponseAsync(XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_Quote_Query, Newtonsoft.Json.Linq.JObject.Parse(RequestString), XTGApiKey, Convert.ToInt32(180000));
                                                         objResponse = responseXTGDto.GraphQLQuery_Response;
                                                         Error = responseXTGDto.Error;
-
 
                                                         _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), RequestString, objResponse.Response + Error, "After Get Price Request hit ", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower(), "Response Confirm", "-", "API Out");
                                                         RequestSPR = RequestString;
@@ -31891,7 +31886,6 @@ new SqlParameter("@AgentId", AgentId),
                                                             string ResponseString = Newtonsoft.Json.JsonConvert.DeserializeXmlNode(objResponse.Response).InnerXml;
                                                             DataSet ResponseDataXTG = _commonMethod.GetDataSetFromXMLString(ResponseString);
 
-
                                                             if ((ResponseDataXTG.Tables["error"] != null && ResponseDataXTG.Tables["error"].Rows.Count > 0) || ResponseDataXTG.Tables["optionQuote"] == null)
                                                             {
                                                                 responsetype = "GeneralError";
@@ -31903,14 +31897,16 @@ new SqlParameter("@AgentId", AgentId),
                                                                 {
                                                                     if (DeadLine == 0 || DeadLine == Convert.ToDouble(ResponseDataXTG.Tables["cancelPenalties"].Rows[0]["hoursBefore"]))// new added UniqueNo 18 - June - 2025
                                                                     {
-                                                                        //DataTable dtInrCurrencyXTG = 1;// Common.GetCountryCurrency(XMLTravelGate.XTG_Currency);
-                                                                        double CurrencyFactor = 1;// Convert.ToDouble(dtInrCurrencyXTG.Rows[0]["AmtToExch"]);
+                                                                         double CurrencyFactor = 1;
+                                                                        
+                                                                        string optionRefId = Convert.ToString(ResponseDataXTG.Tables["optionQuote"].Rows[0]["optionRefId"]);
+                                                                        bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus_xtg(optionRefId, Convert.ToInt32(UniqueNo));//new added UniqueNo 18-June-2025
+                                                                       
+                                                                        Currency = Convert.ToString(ResponseDataXTG.Tables["price"].Rows[0]["currency"]);
                                                                         if (Currency.ToLower() != TokenData.SiteCurrency.ToLower())
                                                                         {
                                                                             CurrencyFactor = _commonMethod.GetROEByCurrency(Currency, TokenData.dtROE);
                                                                         }
-                                                                        string optionRefId = Convert.ToString(ResponseDataXTG.Tables["optionQuote"].Rows[0]["optionRefId"]);
-                                                                        bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus_xtg(optionRefId, Convert.ToInt32(UniqueNo));//new added UniqueNo 18-June-2025
                                                                         double Price = Convert.ToDouble(ResponseDataXTG.Tables["price"].Rows[0]["net"]) * CurrencyFactor;
                                                                         if ((Price).TruncateDecimalPlaces(0) > (Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[0]["CompanyBuyingPrice"])).TruncateDecimalPlaces(0))
                                                                         {
@@ -31920,8 +31916,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                             #region "Price update logic with markup"
                                                                             double UpdatedPrice = Price;
                                                                             #region "Markup Logic Supplierwise"
-                                                                            //double AgentPercentage = 0.0;
-                                                                            //Boolean blnIsShowSupplier = false;
+                                                                            
                                                                             int SupplierID = 0;
                                                                             if (dsAgentDetails.Tables[1] != null)
                                                                             {
@@ -31937,7 +31932,6 @@ new SqlParameter("@AgentId", AgentId),
                                                                                 }
                                                                                 if (drSupRow != null)
                                                                                 {
-                                                                                    //AgentPercentage = Convert.ToDouble(drSupRow[0]["AgentWiseMarkup"]);
                                                                                     blnIsShowSupplier = (Convert.ToInt16(drSupRow[0]["IsShowSupplier"]) == 1 ? true : false);
                                                                                     SupplierID = Convert.ToInt32(drSupRow[0]["SupplierID"]);
                                                                                 }
@@ -33421,7 +33415,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                 timerroomprocess.Stop();
                                                                 ENtime = timerroomprocess.Elapsed.ToString();
 
-                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ereqUrl, ResponseData_Ex + ENError, "After Get Price EAN Request hit booking" + 0, Supplier, "Response Confirm", "-", "WithinEarth");
+                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), ereqUrl, ResponseData_Ex + ENError, "After Get Price EAN Request hit booking" + 0, Supplier, "Response Confirm", "-", "WithinEarth", Searchkey);
 
                                                                 if (ResponseData_Ex.ToLower().Contains("eanwserror") || ResponseData_Ex.ToLower().Contains("error"))
                                                                 {
@@ -53704,7 +53698,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                 BookingRequest = _juniper.Get_Juniper_BookingRequest_newversion(0, bookRequest, tokenData.AgentCode, dtPassengers, XPDetails, BookingCode, Gross, UniqueNo, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), RatePlanCode, Currency, Paxdetails, false);//need070426
 
-                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", "-", "Within Earth");
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "Within Earth");
 
                                                 string Url = Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.Juniper.Booking;
                                                 string ResponseDatatest = "";
@@ -53727,7 +53721,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 timerroomprocess.Stop();
                                                 time = timerroomprocess.Elapsed.ToString();
 
-                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest, ResponseDatatest, "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", "-", "Within Earth");
+                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest, ResponseDatatest, "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "Within Earth");
 
                                                 DataTable dtCheckPriceRe = null; // (DataTable)HttpContext.Current.Session["CheckPriceReq"];
                                                 if (dtCheckPriceRe != null)
@@ -54008,14 +54002,12 @@ new SqlParameter("@AgentId", AgentId),
                                         string ChildSupplier_Xtg = Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName).ToLower();
 
                                         UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[0].UserCartDetailId);
-                                        //string InternalReferenceXTG = "API_" + Convert.ToString(AgentCode + "_" + UniqueNo);
                                         string InternalReferenceXTG = UniqueNo;
                                         XPDetails = dsAgentDetails.Tables[1].Select("SupplierName='xtg'");
                                         DataRow[] XTGChild = dsAgentDetails.Tables[1].Select("SupplierName='" + ChildSupplier_Xtg + "'");
 
                                         if (XPDetails != null && XTGChild != null && XTGChild.Length > 0 && XPDetails.GetLength(0) > 0)
                                         {
-
                                             string XTGSiteID = Convert.ToString(XPDetails[0]["UserID"]);
                                             string XTGApiKey = Convert.ToString(XPDetails[0]["Password"]);
                                             string XTGWebUrl = Convert.ToString(XPDetails[0]["WebSiteURL"]);
@@ -54032,7 +54024,6 @@ new SqlParameter("@AgentId", AgentId),
                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), XtgReq, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Request Confirm", ReferenceNo, "API Out");
                                             isNonRefundable = false;
 
-                                            {
                                                 if (XtgReq != string.Empty)
                                                 {
                                                     System.Diagnostics.Stopwatch timerroomprocess_xtg = new System.Diagnostics.Stopwatch();
@@ -54056,7 +54047,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 //    if (dtCheckPriceRe.DefaultView.Count > 0)
                                                 //        dtCheckPriceReqStructure.ImportRow(dtCheckPriceRe.DefaultView[0].Row);
                                                 //}
-                                            }
+                                            
 
                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), XtgReq, objResponse.Response + "Status:" + Convert.ToString(objResponse.IsError), "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Response Confirm", ReferenceNo, "API Out");
                                             #region "UnSuccessFull"
@@ -54075,7 +54066,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                                 try
                                                 {
-                                                    // string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, XtgReq, objResponse.Response, objResponse.Response);
+                                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, XtgReq, objResponse.Response, objResponse.Response);
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -54210,7 +54201,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 }
                                                 try
                                                 {
-                                                    //string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, XtgReq, objResponse.Response, Error);
+                                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, XtgReq, objResponse.Response, Error);
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -54244,7 +54235,7 @@ new SqlParameter("@AgentId", AgentId),
                                             bookingStatus = 2; AgentVoucherNo = "Rejected";
                                             try
                                             {
-                                                // string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, XtgReq, "Sesseion timeout", Error);
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, XtgReq, "Sesseion timeout", Error);
                                             }
                                             catch (Exception e)
                                             {
@@ -54263,7 +54254,7 @@ new SqlParameter("@AgentId", AgentId),
                                             Error = Error + ex.Message;
                                             responsetype = "GeneralError";
                                             time = "00:00:00.000000";
-                                            //string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierNameForReport, "Book", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
                                         }
                                         catch (Exception e)
                                         {

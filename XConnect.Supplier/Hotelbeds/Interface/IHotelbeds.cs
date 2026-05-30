@@ -21,7 +21,7 @@ namespace Xconnect.Hotelbeds.Interface
 
         Task<List<Options>> HotelbedsV1_HotelSearchWithRooms(bool SearchByOneID, HotelX Item, CommonSearch commonSearch, List<RQRS> rQRS, string WSurl, string Username, string Password, Int32 SearchTimeOut, HotelSearchParameter SearchParam, bool DebugMode, string Currency, double CurrencyFactor, string ProccessCutOffTime, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, bool withcancellation, string StoreSupplierResErrorLog);
 
-        Task<List<Options>> hotelbedsv1_new_HotelSearchWithRooms(bool SearchByOneID, HotelX Item, CommonSearch commonSearch, List<RQRS> rQRS, string WSurl, string Username, string Password, Int32 SearchTimeOut, HotelSearchParameter SearchParam, bool DebugMode, string Currency, double CurrencyFactor, string ProccessCutOffTime, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, bool withcancellation, string StoreSupplierResErrorLog);
+        Task<List<Options>> hotelbedsv1_new_HotelSearchWithRooms(bool SearchByOneID, HotelX Item, CommonSearch commonSearch, List<RQRS> rQRS, string WSurl, string Username, string Password, Int32 SearchTimeOut, HotelSearchParameter SearchParam, bool DebugMode, string Currency, double CurrencyFactor, DataTable dtROE,string ProccessCutOffTime, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, bool withcancellation, string StoreSupplierResErrorLog);
 
         #region Recheck -28-05-25
         Task<ResponseRecheck> HotelBedsV1_cancellation_For_Recheck_OnlyRead_EssInfo(string roomtypeid, DataTable dtSuplierMarkup, string provider, string CompanyBuyPrice, int AgentId, string SearchKey);

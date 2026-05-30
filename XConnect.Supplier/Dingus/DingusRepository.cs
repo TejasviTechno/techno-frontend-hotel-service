@@ -322,8 +322,6 @@ namespace XConnect.Supplier.Dingus
                 string checkIn = String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(searchParam.CheckInDate, "dd/MM/yyyy", null));
                 string checkOut = String.Format("{0:yyyy-MM-dd}", DateTime.ParseExact(searchParam.CheckOutDate, "dd/MM/yyyy", null));
 
-
-
                 StringBuilder HotelAvailRQ = new StringBuilder();
                 if (HotelIds != string.Empty)
                 {

@@ -2422,7 +2422,7 @@ namespace XConnect.Supplier.Juniper
 
                 xslrequest = JuniperNew_PriceCheck(UserID, Password, RoomTypeIds, CheckIn, CheckOut, HotelId, Currency);
                 #endregion
-                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), xslrequest, "", "Before get price " + SupplierName + " request hit " + j + "is for Price Check" + isForBooking, SupplierName, "response confirm", "-", "API Out");
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), xslrequest, "", "Before get price " + SupplierName + " request hit " + j + "is for Price Check" + isForBooking, SupplierName, "response confirm", "-", "API Out",Searchkey);
 
                 if (xslrequest != "")
                 {
@@ -2444,7 +2444,7 @@ namespace XConnect.Supplier.Juniper
                     timerroomprocess.Stop();
                     time = timerroomprocess.Elapsed.ToString();
 
-                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), xslrequest, Responsedata_Ex + Error, "After get price " + SupplierName + " request hit " + j + "is for Price Check" + isForBooking, SupplierName, "response confirm", "-", "API Out");
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), xslrequest, Responsedata_Ex + Error, "After get price " + SupplierName + " request hit " + j + "is for Price Check" + isForBooking, SupplierName, "response confirm", "-", "API Out",Searchkey);
 
                     if (Responsedata_Ex == string.Empty || Responsedata_Ex.Contains("Error"))
                     {

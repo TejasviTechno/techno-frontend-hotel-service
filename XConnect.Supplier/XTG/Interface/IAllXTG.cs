@@ -17,7 +17,7 @@ namespace XConnect.Supplier.XTG.Interface
         void GetXTGRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, DataTable dtROE, bool HitFromAll, HotelSearchParameter SearchPara, List<SupplierDetails> XTGDetails, List<SupplierSearchConfig> XTGSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string Natinality, int Hit,TokenData tokenData);
 
         bool CheckRoomValidation(string Supplier, HotelSearchParameter SearchPara);
-        Task<List<Options>> XMLXTG_RoomOnly(HotelX Item, CommonSearch commonSearch, string RQ, string currencyCode, DataTable dtAgentDetail, DataTable dtMarkupDetails, HotelSearchParameter SearchParam, string ResponseData, string Provider, string xmlcity, string ProccessCutOffTime, int processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, double CurrencyFactor = 4);
+        Task<List<Options>> XMLXTG_RoomOnly(HotelX Item, CommonSearch commonSearch, string RQ, string currencyCode, DataTable dtAgentDetail, DataTable dtMarkupDetails, HotelSearchParameter SearchParam, string ResponseData, string Provider, string xmlcity, DataTable dtROE ,string ProccessCutOffTime, int processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, double CurrencyFactor = 4);
 
         void GetMealRoomData_Xtg(string Type, string Code, ref string returnString, string SupplierName, string supplierCode, string AccessCode);
 
