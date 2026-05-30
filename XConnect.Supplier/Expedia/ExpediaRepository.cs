@@ -2002,7 +2002,12 @@ namespace XConnect.Expedia
                                                     else
                                                         Profit = Profit * ExpediaCurrencyFactor;
                                                     OurProfit += Profit;
-                                                    FinalPrice = FinalPrice - OurProfit;
+
+                                                    if (!commonSearch.tokenData.IsFromB2B && _keySettings.MultiexpediaIsActive)
+                                                        FinalPrice = FinalPrice;
+                                                    else
+                                                        FinalPrice = FinalPrice - OurProfit;
+                                                   // FinalPrice = FinalPrice - OurProfit;
                                                     #endregion
                                                 }
 
@@ -2504,7 +2509,12 @@ namespace XConnect.Expedia
                                                         }
 
                                                         double VatOnRateBrackUp = 0;
-                                                        double tempmin = MainPrice - OurProfit;
+                                                        double tempmin = 0;
+                                                        if (!commonSearch.tokenData.IsFromB2B && _keySettings.MultiexpediaIsActive)
+                                                            tempmin = tempmin;
+                                                        else
+                                                            tempmin = tempmin - OurProfit;
+                                                       // double tempmin = MainPrice - OurProfit;
                                                         tempmin = _markup.ProcessHotelRateBreakupPrice_WithMarkup(1, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), Convert.ToDouble(tempmin), commonSearch.B2CMarkup, commonSearch.IsParentId, isPerce, AgentPercentage, AgentMarkupAmount, commonSearch.SubAgentMarkup, ref VatOnRateBrackUp);
 
 
@@ -2543,8 +2553,12 @@ namespace XConnect.Expedia
 
                                                             drEANRoom["GrossWitohutDiscount"] = discountprice;
                                                         }
-
+                                                        
+                                                        if(!commonSearch.tokenData.IsFromB2B &&_keySettings.MultiexpediaIsActive)
+                                                        MainPrice = MainPrice;
+                                                        else
                                                         MainPrice = MainPrice - OurProfit;
+                                                        //MainPrice = MainPrice - OurProfit;
 
                                                         double ItemPrice = Convert.ToDouble(MainPrice);
 
