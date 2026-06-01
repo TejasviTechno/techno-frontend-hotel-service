@@ -2055,7 +2055,7 @@ namespace XConnect.CommonUtilities
                         new SqlParameter("@UserCartId", USercartID),
             };
 
-                await _dlConnection.GetExecuteScalarQry("Update UserCartDetails set purchaseToken = @EachoToken where usercartdetailid = @UserCartId", para);
+                await _dlConnection.GetExecuteScalarQry("Update UserCartDetails set eacho token = @EachoToken where usercartdetailid = @UserCartId", para);
                 return true;
             }
             catch (Exception ex)
