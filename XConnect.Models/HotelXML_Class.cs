@@ -713,6 +713,7 @@ namespace XConnect.Models
 
 
         public List<_FinalPolicy> CancellationPolicy { get; set; }
+        public List<_FRatebreakup> FinalRateBreakup { get; set; }
     }
 
     public class _FinalPolicy_Comp
@@ -814,6 +815,7 @@ namespace XConnect.Models
         public string BookingStatus { get; set; }
         public string RoomToken { get; set; }
         public List<_FinalPolicy> CancellationPolicy { get; set; }
+        public List<_FRatebreakup> RateBreakup { get; set; }
         public string CancellationToken { get; set; }
         //public List<_FinalRate> RateDetails { get; set; }
         public string RateDetailsToken { get; set; }
@@ -827,6 +829,8 @@ namespace XConnect.Models
         public string RoomTypeId { get; set; } //Added on 27-march-26
         public string channel { get; set; } //Added on 27-march-26
         public string MealFullname { get; set; } //Added on 28-march-26
+
+       
     }
     public class _FinalPolicy
     {
@@ -2986,6 +2990,47 @@ namespace XConnect.Models
 
     //}
     #endregion
+
+    public class _FRatebreakup
+    {
+        // First Grid
+        //public string SupplierName { get; set; }
+        //public string OwnsystemHotelId { get; set; }
+        //public string RoomNo { get; set; }
+        //public string RoomTypeName { get; set; }
+        public string RateType { get; set; }
+        // public string RoomTypeId { get; set; }
+
+        // Second Grid
+        // public string MealId { get; set; }
+        public string Date { get; set; }
+        public string DateOfWeek { get; set; }
+        //public string Meal { get; set; }
+        public string Rate { get; set; }
+        //public string ContractID { get; set; }
+        //public string RoomSequenceNo { get; set; }
+        //public string OrderNo { get; set; }
+        //public string BookingStatus { get; set; }
+        //public string  BoardTypeID { get; set; }
+        public string Surcharge { get; set; }
+        public string CompanyCharge { get; set; }
+        public string Total { get; set; }
+        // public decimal? SalesTaxAmount { get; set; }
+        //public decimal? HotelOccupancyTaxAmount { get; set; }
+        //public string HotelFessDescription { get; set; }
+        //public decimal? HotelFeeAmount { get; set; }
+        //public string CancellationText { get; set; }
+        //public string  TotalNight { get; set; }
+        //public string GIITACode { get; set; }
+        //public string FinalRateType { get; set; }
+        //public string CheckInInstruction { get; set; }
+        //public string SpecialCheckInInstruction { get; set; }
+        //public decimal? VatDiffAmount { get; set; }
+        // public decimal? CompanyRate { get; set; }
+        //public string SupplierCurrency { get; set; }
+        public string BuyingPrice { get; set; }
+        // public string RoomTypeCode { get; set; }
+    }
 
 }
 

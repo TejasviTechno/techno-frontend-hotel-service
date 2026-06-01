@@ -282,7 +282,10 @@ namespace XConnect.Models
     {
         public string HotelSearch { get; set; }
         public string Policies { get; set; }
-      
+        public string Book { get; set; }
+        public string Email { get; set; }
+        public string Phonenumber { get; set; }
+
     }
     public class ExelyConfig
     {

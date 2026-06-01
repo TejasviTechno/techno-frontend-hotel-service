@@ -344,13 +344,42 @@ namespace XConnect.CommonUtilities
                             final.CancellationToken = final.CancellationToken.ToBase64StringManual(false);
                         final.CancellationPolicy = _FinalPolicy;
                         final.RateDetailsToken = "";
+                        //for (int r = 0; r < rateBeckup.Count; r++)
+                        //{
+                        //    if ((rateBeckup[r].OwnsystemHotelId) == (Mainrooms[i][j].OwnsystemHotelId) && rateBeckup[r].RoomTypeId == Mainrooms[i][j].RoomTypeId && rateBeckup[r].MealId == Mainrooms[i][j].MealId && rateBeckup[r].RoomNo == Mainrooms[i][j].RoomNo)
+                        //    {
+                        //        final.RateDetailsToken += rateBeckup[r].EncryptRateBreakUp();
+                        //    }
+                        //}
+                        //addedby trupti 300526
+                        List<_FRatebreakup> _FinalRateBreakUp = new List<_FRatebreakup>();
+
                         for (int r = 0; r < rateBeckup.Count; r++)
                         {
-                            if ((rateBeckup[r].OwnsystemHotelId) == (Mainrooms[i][j].OwnsystemHotelId) && rateBeckup[r].RoomTypeId == Mainrooms[i][j].RoomTypeId && rateBeckup[r].MealId == Mainrooms[i][j].MealId && rateBeckup[r].RoomNo == Mainrooms[i][j].RoomNo)
+                            if ((rateBeckup[r].OwnsystemHotelId) == (Mainrooms[i][j].OwnsystemHotelId)
+                                && rateBeckup[r].RoomTypeId == Mainrooms[i][j].RoomTypeId
+                                && rateBeckup[r].MealId == Mainrooms[i][j].MealId
+                                && rateBeckup[r].RoomNo == Mainrooms[i][j].RoomNo)
                             {
+                                _FinalRateBreakUp.Add(new _FRatebreakup
+                                {
+                                    Date = rateBeckup[r].Date,
+                                    Rate = rateBeckup[r].Rate,
+                                    BuyingPrice = rateBeckup[r].BuyingPrice,
+                                    RateType = rateBeckup[r].RateType,
+                                    DateOfWeek = rateBeckup[r].DateOfWeek,
+                                    Surcharge = rateBeckup[r].Surcharge,
+                                    CompanyCharge = rateBeckup[r].CompanyCharge,
+                                    Total = rateBeckup[r].Total
+
+                                });
+
                                 final.RateDetailsToken += rateBeckup[r].EncryptRateBreakUp();
                             }
                         }
+
+                        final.RateBreakup = _FinalRateBreakUp;
+                        //end 
                         if (final.RateDetailsToken != "")
                             final.RateDetailsToken = final.RateDetailsToken.ToBase64StringManual(false);
 

@@ -1385,7 +1385,7 @@ namespace Xconnect.Hotelbeds
             }
             return options;
         }
-        public async Task<List<Options>> hotelbedsv1_new_HotelSearchWithRooms(bool SearchByOneID, HotelX Item, CommonSearch commonSearch, List<RQRS> rQRS, string WSurl, string Username, string Password, Int32 SearchTimeOut, HotelSearchParameter SearchParam, bool DebugMode, string currency, double CurrencyFactor, string ProccessCutOffTime, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, bool withcancellation, string StoreSupplierResErrorLog)
+        public async Task<List<Options>> hotelbedsv1_new_HotelSearchWithRooms(bool SearchByOneID, HotelX Item, CommonSearch commonSearch, List<RQRS> rQRS, string WSurl, string Username, string Password, Int32 SearchTimeOut, HotelSearchParameter SearchParam, bool DebugMode, string currency, double CurrencyFactor, DataTable dtROE, string ProccessCutOffTime, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, bool withcancellation, string StoreSupplierResErrorLog)
         {
             System.Diagnostics.Stopwatch timer_room_HotelbedsV1 = new System.Diagnostics.Stopwatch();
             timer_room_HotelbedsV1.Start();

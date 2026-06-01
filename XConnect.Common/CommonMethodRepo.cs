@@ -2055,7 +2055,7 @@ namespace XConnect.CommonUtilities
                         new SqlParameter("@UserCartId", USercartID),
             };
 
-                await _dlConnection.GetExecuteScalarQry("Update UserCartDetails set purchaseToken = @EachoToken where usercartdetailid = @UserCartId", para);
+                await _dlConnection.GetExecuteScalarQry("Update UserCartDetails set eacho token = @EachoToken where usercartdetailid = @UserCartId", para);
                 return true;
             }
             catch (Exception ex)
@@ -8385,6 +8385,43 @@ namespace XConnect.CommonUtilities
                                     SupplierName = null;
 
                                 }
+
+                                //added by trupti 300526
+                                if (!IsFromAPI)
+                                {
+                                    List<_FRatebreakup> lstRateBreakup = new List<_FRatebreakup>();
+                                    for (int rb = 0; rb < finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].RateBreakup.Count; rb++)
+                                    {
+                                        var rateBreakup = finalResponse.AvailabilityRS.HotelResult[giataSeq]
+                                .HotelOption[hotelSeq]
+                                .HotelRooms[roomNoSeq][noOfRooms]
+                                .RateBreakup[rb];
+
+                                        _FRatebreakup objRG = new _FRatebreakup
+                                        {
+                                            Rate = Convert.ToString(rateBreakup.Rate),
+                                            Date = Convert.ToString(rateBreakup.Date),
+                                            BuyingPrice = Convert.ToString(rateBreakup.BuyingPrice),
+                                            RateType = Convert.ToString(rateBreakup.RateType),
+                                            DateOfWeek = Convert.ToString(rateBreakup.DateOfWeek),
+                                            Surcharge = Convert.ToString(rateBreakup.Surcharge),
+                                            CompanyCharge = Convert.ToString(rateBreakup.CompanyCharge),
+                                            Total = Convert.ToString(rateBreakup.Total)
+                                        };
+
+                                        lstRateBreakup.Add(objRG);
+
+
+                                    }
+                                    RoomList.FinalRateBreakup = lstRateBreakup;
+
+                                }
+                                else
+                                {
+                                    RoomList.FinalRateBreakup = null;
+
+                                }
+                                //end
 
                                 if (withcancellation)
                                 {
