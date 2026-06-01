@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Collections.Concurrent;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using System.Text;
@@ -282,7 +283,7 @@ namespace XConnect.Supplier.Exely
         #region Response
         public async Task<List<Options>> Exely_HotelSearchWithRooms(HotelX Item, CommonSearch commonSearch, string ResponseData, HotelSearchParameter SearchParam, string XmlCity, string XmlCountry, string XmlNationality, string Currency, double CurrencyFactor, DataTable dtROE, string ProccessCutOffTime, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string StoreSupplierResErrorLog)
         {
-            System.Diagnostics.Stopwatch timer_room_Exely = new System.Diagnostics.Stopwatch();
+            Stopwatch timer_room_Exely = new Stopwatch();
             timer_room_Exely.Start();
 
             List<Options> options = new List<Options>();
@@ -1056,7 +1057,7 @@ namespace XConnect.Supplier.Exely
                     string recheckDeparture = ParseSearchDate(recheckCheckOut).ToString("yyyy-MM-dd");
 
                     // Load cached content for the property so ratePlan.id from room-stays can be mapped back to content details.
-                    PropertyInfoType? propertyContent = await GetExelyPropertyContentAsync(hotelId, baseUrl, password, bookingTimeout, Searchkey, "en", string.Empty, supplierName);
+                    PropertyInfoType? propertyContent = await GetExelyPropertyContentAsync(hotelId, baseUrl, password, bookingTimeout, Searchkey, "en", string.Empty, supplierName, true);
 
                     string recheckTemplate = (_supplierConfig.Exely.GetRoomStaysByProperty ?? string.Empty).TrimStart('/');
                     string recheckUrl = $"{baseUrl.TrimEnd('/')}/{recheckTemplate.Replace("{propertyId}", hotelId)}?arrivalDate={recheckArrival}&departureDate={recheckDeparture}&adults={recheckAdults}";
@@ -1066,7 +1067,7 @@ namespace XConnect.Supplier.Exely
                     #endregion Request
 
                     #region Response
-                    System.Diagnostics.Stopwatch recheckTimer = System.Diagnostics.Stopwatch.StartNew();
+                    Stopwatch recheckTimer = Stopwatch.StartNew();
                     var responseDto = await ExelyGetResponseAsync(recheckUrl, bookingTimeout, password, Searchkey);
                     recheckTimer.Stop();
                     responseData = responseDto.Response;
@@ -1817,7 +1818,7 @@ namespace XConnect.Supplier.Exely
                     ratePlanCode = roomTypeParts.Length > 1 ? roomTypeParts[1] : string.Empty;
                 }
 
-                PropertyInfoType? result = await GetExelyPropertyContentAsync(hotelcode, baseUrl, password, searchTimeout, searchKey, "en", "After Exely EInfo", provider);
+                PropertyInfoType? result = await GetExelyPropertyContentAsync(hotelcode, baseUrl, password, searchTimeout, searchKey, "en", "After Exely EInfo", provider, true);
                 //PropertyInfoType? result = null;
 
                 if (result == null) return essential;
@@ -1898,10 +1899,10 @@ namespace XConnect.Supplier.Exely
                         if (!string.IsNullOrWhiteSpace(ratePlan.Currency))
                             parts.Add("Currency: " + ratePlan.Currency);
                         parts.Add("IsStayWithChildrenOnly: " + (ratePlan.IsStayWithChildrenOnly ? "true" : "false"));
-                        if (!string.IsNullOrWhiteSpace(ratePlan.CancellationRuleId))
-                            parts.Add("CancellationRuleId: " + ratePlan.CancellationRuleId);
-                        if (!string.IsNullOrWhiteSpace(ratePlan.ExtraStayRuleId))
-                            parts.Add("ExtraStayRuleId: " + ratePlan.ExtraStayRuleId);
+                        //if (!string.IsNullOrWhiteSpace(ratePlan.CancellationRuleId))
+                        //    parts.Add("CancellationRuleId: " + ratePlan.CancellationRuleId);
+                        //if (!string.IsNullOrWhiteSpace(ratePlan.ExtraStayRuleId))
+                        //    parts.Add("ExtraStayRuleId: " + ratePlan.ExtraStayRuleId);
                         parts.Add("CorporateOnly: " + (ratePlan.CorporateOnly ? "true" : "false"));
                     }
                 }
@@ -1998,18 +1999,21 @@ namespace XConnect.Supplier.Exely
             }
         }
 
-        private async Task<PropertyInfoType?> GetExelyPropertyContentAsync(string propertyId, string baseUrl, string password, int searchTimeout, string searchKey, string languageCode = "en", string historyLabel = "", string provider = "Exely")
+        private async Task<PropertyInfoType?> GetExelyPropertyContentAsync(string propertyId, string baseUrl, string password, int searchTimeout, string searchKey, string languageCode = "en", string historyLabel = "", string provider = "Exely", bool propertyOnly = false)
         {
             // Try to fetch from combined/all-properties content endpoint first (cached)
-            try
+            if (!propertyOnly)
             {
-                var fromAll = await GetExelyPropertyFromAllCacheAsync(propertyId, baseUrl, password, searchTimeout, languageCode, searchKey, provider);
-                if (fromAll != null)
-                    return fromAll;
-            }
-            catch
-            {
-                // ignore and fallback to per-property fetch
+                try
+                {
+                    var fromAll = await GetExelyPropertyFromAllCacheAsync(propertyId, baseUrl, password, searchTimeout, languageCode, searchKey, provider);
+                    if (fromAll != null)
+                        return fromAll;
+                }
+                catch
+                {
+                    // ignore and fallback to per-property fetch
+                }
             }
             try
             {
@@ -2233,9 +2237,11 @@ namespace XConnect.Supplier.Exely
                 }
 
                 string url = $"{baseUrl.TrimEnd('/')}/{path}?{string.Join("&", queryParams)}";
+                Stopwatch roomStaysTimer = Stopwatch.StartNew();
                 ResponseDto responseDto = await ExelyGetResponseAsync(url, searchTimeout, password, searchKey);
+                roomStaysTimer.Stop();
 
-                _commonMethod.ThirdPartyGetPolicyHistory(propertyId, propertyId, url, FormatJsonIfPossible(responseDto.Response), "After Exely RoomStaysByProperty", "Exely", "Response", "-", "NomadsB2B");
+                await _commonMethod.XMLRequestResponseTrack_Error(url, responseDto.Response, "Exely", roomStaysTimer.Elapsed.ToString(), "ExelyRoomStaysByProperty", searchKey);
 
                 if (string.IsNullOrWhiteSpace(responseDto.Response) || responseDto.Response.ToLower().Contains("\"error\""))
                     return null;
