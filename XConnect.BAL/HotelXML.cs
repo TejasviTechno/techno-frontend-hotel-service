@@ -31900,8 +31900,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                          double CurrencyFactor = 1;
                                                                         
                                                                         string optionRefId = Convert.ToString(ResponseDataXTG.Tables["optionQuote"].Rows[0]["optionRefId"]);
-                                                                        bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus_xtg(optionRefId, Convert.ToInt32(UniqueNo));//new added UniqueNo 18-June-2025
-                                                                       
+                                                                        //bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus_xtg(optionRefId, Convert.ToInt32(UniqueNo));//new added UniqueNo 18-June-2025
+                                                                        objdata.ShoppingCartDetails[0].EachoToken = optionRefId; //010626
                                                                         Currency = Convert.ToString(ResponseDataXTG.Tables["price"].Rows[0]["currency"]);
                                                                         if (Currency.ToLower() != TokenData.SiteCurrency.ToLower())
                                                                         {
@@ -41426,8 +41426,8 @@ new SqlParameter("@AgentId", AgentId),
                                                                                     {
                                                                                         timerroomprocess.Start();
 
-                                                                                        objResponse = _xtg.GetXTGResponse(ref Error, XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_BOOK_Query, Newtonsoft.Json.Linq.JObject.Parse(XtgReq), XTGApiKey, Convert.ToInt32(120000));
-
+                                                                                        //objResponse = _xtg.GetXTGResponse(ref Error, XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_BOOK_Query, Newtonsoft.Json.Linq.JObject.Parse(XtgReq), XTGApiKey, Convert.ToInt32(120000));
+                                                                                        objResponse = null;
                                                                                         RequestSPR = Convert.ToString(XtgReq);
                                                                                         ReponseSPR = Convert.ToString(objResponse);
                                                                                         timerroomprocess.Stop();
@@ -52188,7 +52188,10 @@ new SqlParameter("@AgentId", AgentId),
 
                                                         if (dsHotelBeds.Tables["booking"].Rows.Count > 0 && (APIbookingStatus.ToLower() == "confirmed" || APIbookingStatus.ToLower() == "preconfirmed"))
                                                         {
-                                                            AgentVoucherNo = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["reference"]);
+                                                            string reference = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["reference"]);
+                                                           string clientReference = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["clientReference"]);
+                                                            AgentVoucherNo = reference + "-" + clientReference;
+
                                                         }
 
                                                         try
@@ -54029,9 +54032,9 @@ new SqlParameter("@AgentId", AgentId),
                                                     System.Diagnostics.Stopwatch timerroomprocess_xtg = new System.Diagnostics.Stopwatch();
                                                     timerroomprocess_xtg.Start();
 
-                                                    objResponse = _xtg.GetXTGResponse(ref Error, XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_BOOK_Query, Newtonsoft.Json.Linq.JObject.Parse(XtgReq), XTGApiKey, Convert.ToInt32(120000));
-
-                                                    RequestSPR = Convert.ToString(XtgReq);
+                                                   // objResponse = _xtg.GetXTGResponse(ref Error, XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_BOOK_Query, Newtonsoft.Json.Linq.JObject.Parse(XtgReq), XTGApiKey, Convert.ToInt32(120000));
+                                                objResponse = null;
+                                                   RequestSPR = Convert.ToString(XtgReq);
                                                     ReponseSPR = Convert.ToString(objResponse);
                                                     timerroomprocess_xtg.Stop();
                                                     time = timerroomprocess_xtg.Elapsed.ToString();
@@ -62402,21 +62405,23 @@ new SqlParameter("@AgentId", AgentId),
                             break;
                         case "HOTELBEDS":
                             #region "HotelBedsV1"
-                            //  if (Supplier.ToString().ToUpper() == "HOTELBEDSV1")
-                            {
-                                try
+                      
+                               try
                                 {
+                                    string[] spitid = AgentVoucherNo_Cancle.Split(new String[] { "-" }, StringSplitOptions.None);
+                                
+                                     string AgentVoucherNo = spitid[0].ToString();
                                     //string VoucherNumber = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/1.0/bookings/" + AgentVoucherNo_Cancle;
-                                    string VoucherNumber = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings2 + AgentVoucherNo_Cancle;
-                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), VoucherNumber, "-", "Before Request hit cancelbooking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                    string VoucherNumber = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings2 + AgentVoucherNo;
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), VoucherNumber, "-", "Before Request hit cancelbooking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
                                     ResponseDto responseDto = await _hotelbeds.GetHotelBedsSupplierResponse(VoucherNumber, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), 60000, "", "DELETE", Convert.ToString(Supplier), null, false, "", true);
                                     string HotelsBedsV1Response = responseDto.Response;
 
-                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), VoucherNumber, HotelsBedsV1Response, "After cancelbooking Response", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), VoucherNumber, HotelsBedsV1Response, "After cancelbooking Response", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
 
                                     if (HotelsBedsV1Response.ToLower().Contains("error") == true || HotelsBedsV1Response.Trim() == string.Empty)
                                     {
-                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(VoucherNumber), Convert.ToString(HotelsBedsV1Response), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
+                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), Convert.ToString(VoucherNumber), Convert.ToString(HotelsBedsV1Response), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
                                         return "";
                                     }
                                     else
@@ -62435,12 +62440,12 @@ new SqlParameter("@AgentId", AgentId),
                                                     BookingStatus = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["status"]);
                                             }
                                             if (BookingStatus.ToUpper() == "CANCELLED")
-                                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(VoucherNumber), Convert.ToString(HotelsBedsV1Response), "After Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), Convert.ToString(VoucherNumber), Convert.ToString(HotelsBedsV1Response), "After Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
                                         }
                                         catch (Exception ex)
                                         {
                                             _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
-                                            _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), VoucherNumber, ex.Message, "Error block 1", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                            _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), VoucherNumber, ex.Message, "Error block 1", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
                                             return "";
                                         }
                                     }
@@ -62451,7 +62456,7 @@ new SqlParameter("@AgentId", AgentId),
                                     _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/1.0/bookings/" + AgentVoucherNo_Cancle, EX.Message, "Error block 2", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
                                     return "";
                                 }
-                            }
+                            
                             #endregion
                             break;
                         case "TRAVELLANDA":

@@ -65,7 +65,6 @@ namespace XConnect.Supplier.XTG
         }
         public void GetXTGRequestOnly_async(DataRow[] commonCode, List<StarRating> listRating, DataTable dtROE, bool HitFromAll, HotelSearchParameter SearchPara, List<SupplierDetails> XTGDetails, List<SupplierSearchConfig> XTGSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string Natinality, int Hit, TokenData tokenData)
         {
-
             try
             {
                 #region "XTG"
@@ -3586,8 +3585,8 @@ namespace XConnect.Supplier.XTG
         {
             try
             {
-
-                string OptionRefId = Convert.ToString(bookRequest.userCart.UserCartDetails[0].PurchaseToken);
+          
+                string OptionRefId = Convert.ToString(bookRequest.userCart.UserCartDetails[0].EachoToken);
                 #region "Price CHeck Before booking"
                 try
                 {
