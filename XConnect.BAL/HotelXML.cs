@@ -17649,9 +17649,9 @@ new SqlParameter("@AgentId", AgentId),
                             hotelPolicy_Prebook.FromDate = fromDate.ToString("MM/dd/yyyy HH:mm:ss");
                             hotelPolicy_Prebook.Todate = toDate.ToString("MM/dd/yyyy HH:mm:ss");
 
-                            hotelPolicy_Prebook.CancellationAmount = Convert.ToDouble(Convert.ToDouble(drPolicy[p]["BuyingPrice"]) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
+                            hotelPolicy_Prebook.CancellationAmount = Convert.ToDouble(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE));
 
-                            hotelPolicy_Prebook.BaseCancellationAmount = Convert.ToDouble(drPolicy[p]["BuyingPrice"]);
+                            hotelPolicy_Prebook.BaseCancellationAmount = Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]);
 
                             hotelPolicy_Prebook.AgentcancellationAmount = Convert.ToDouble(Convert.ToDecimal(drPolicy[p]["AgentCancellationPrice"]).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency));
 
@@ -17669,24 +17669,88 @@ new SqlParameter("@AgentId", AgentId),
                         #endregion
                         #region RB
                         List<Ratebreakup_Prebook> ratebreakup_Prebooks = new List<Ratebreakup_Prebook>();
-                        for (int p = 0; p < userCart_Prebook.NoofNights; p++)
+                        //for (int p = 0; p < userCart_Prebook.NoofNights; p++)
+                        //{
+                        //    Ratebreakup_Prebook ratebreakup_Prebook = new Ratebreakup_Prebook();
+                        //    double Night_Price = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / userCart_Prebook.NoofNights;
+                        //    string newCheckInDate = Convert.ToString(objdata.CheckInDate);
+                        //    string newCheckOutDate = Convert.ToString(objdata.CheckOutDate);
+                        //    ratebreakup_Prebook.RoomTypeName = Convert.ToString(objdata.ShoppingCartDetails[room].RoomName);
+                        //    ratebreakup_Prebook.MealName = Convert.ToString(objdata.ShoppingCartDetails[room].MealPlanCode);
+                        //    ratebreakup_Prebook.RateType = Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
+                        //    DateTime rateDate = objdata.CheckOutDate.Date.AddDays(p);
+                        //    ratebreakup_Prebook.Date = rateDate;
+                        //    string rateWeekColumn = Convert.ToString(objdata.CheckOutDate.Date.AddDays(p).DayOfWeek).Substring(0, 3);
+                        //    ratebreakup_Prebook.DayOfWeek = Convert.ToString(rateWeekColumn);
+                        //    ratebreakup_Prebook.Rate = Night_Price;
+                        //    ratebreakup_Prebook.SupplierCurrencyId = _commonMethod.GetCurrencyIdCurrencyCode(objdata.SupplierCurrency, tokenData.dtROE);
+                        //    ratebreakup_Prebook.BaseRate = Convert.ToDouble(Night_Price);
+                        //    ratebreakup_Prebooks.Add(ratebreakup_Prebook);
+                        //}
+                        //userCartDetails_Pre.ratebreakup_Prebooks = ratebreakup_Prebooks;
+
+                        if (!string.IsNullOrEmpty(objdata.TechName) &&
+      objdata.TechName.ToLower().Contains("expedia"))
                         {
-                            Ratebreakup_Prebook ratebreakup_Prebook = new Ratebreakup_Prebook();
-                            double Night_Price = Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice) / userCart_Prebook.NoofNights;
-                            string newCheckInDate = Convert.ToString(objdata.CheckInDate);
-                            string newCheckOutDate = Convert.ToString(objdata.CheckOutDate);
-                            ratebreakup_Prebook.RoomTypeName = Convert.ToString(objdata.ShoppingCartDetails[room].RoomName);
-                            ratebreakup_Prebook.MealName = Convert.ToString(objdata.ShoppingCartDetails[room].MealPlanCode);
-                            ratebreakup_Prebook.RateType = Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
-                            DateTime rateDate = objdata.CheckOutDate.Date.AddDays(p);
-                            ratebreakup_Prebook.Date = rateDate;
-                            string rateWeekColumn = Convert.ToString(objdata.CheckOutDate.Date.AddDays(p).DayOfWeek).Substring(0, 3);
-                            ratebreakup_Prebook.DayOfWeek = Convert.ToString(rateWeekColumn);
-                            ratebreakup_Prebook.Rate = Night_Price;
-                            ratebreakup_Prebook.SupplierCurrencyId = _commonMethod.GetCurrencyIdCurrencyCode(objdata.SupplierCurrency, tokenData.dtROE);
-                            ratebreakup_Prebook.BaseRate = Convert.ToDouble(Night_Price);
-                            ratebreakup_Prebooks.Add(ratebreakup_Prebook);
+                            foreach (DataRow dr in dtRateBreakUp.Rows)
+                            {
+                                ratebreakup_Prebooks.Add(new Ratebreakup_Prebook
+                                {
+                                    RoomTypeName = objdata.ShoppingCartDetails[0].RoomName,
+                                    MealName = objdata.ShoppingCartDetails[0].MealPlanCode,
+                                    RateType = Convert.ToString(dr["RateType"]),
+                                    Date = dr["Date"] == DBNull.Value
+                                            ? DateTime.MinValue
+                                            : Convert.ToDateTime(dr["Date"]),
+                                    DayOfWeek = Convert.ToString(dr["DateOfWeek"]),
+                                    Rate = dr["Rate"] == DBNull.Value
+                                            ? 0
+                                            : Convert.ToDouble(dr["Rate"]),
+                                    BaseRate = dr["BuyingPrice"] == DBNull.Value
+                                            ? 0
+                                            : Convert.ToDouble(dr["BuyingPrice"]),
+                                    SupplierCurrencyId = _commonMethod.GetCurrencyIdCurrencyCode(
+                                        objdata.SupplierCurrency,
+                                        tokenData.dtROE)
+                                });
+                            }
                         }
+                        else
+                        {
+                            // Existing logic
+                            for (int p = 0; p < userCart_Prebook.NoofNights; p++)
+                            {
+                                Ratebreakup_Prebook ratebreakup_Prebook = new Ratebreakup_Prebook();
+
+                                double Night_Price =
+                                    Convert.ToDouble(objdata.ShoppingCartDetails[room].FinalSellingPrice)
+                                    / userCart_Prebook.NoofNights;
+
+                                ratebreakup_Prebook.RoomTypeName =
+                                    Convert.ToString(objdata.ShoppingCartDetails[room].RoomName);
+
+                                ratebreakup_Prebook.MealName =
+                                    Convert.ToString(objdata.ShoppingCartDetails[room].MealPlanCode);
+
+                                ratebreakup_Prebook.RateType =
+                                    Convert.ToString(objdata.ShoppingCartDetails[room].RoomType);
+
+                                DateTime rateDate = objdata.CheckOutDate.Date.AddDays(p);
+
+                                ratebreakup_Prebook.Date = rateDate;
+                                ratebreakup_Prebook.DayOfWeek = rateDate.ToString("ddd");
+                                ratebreakup_Prebook.Rate = Night_Price;
+                                ratebreakup_Prebook.BaseRate = Night_Price;
+
+                                ratebreakup_Prebook.SupplierCurrencyId =
+                                    _commonMethod.GetCurrencyIdCurrencyCode(
+                                        objdata.SupplierCurrency,
+                                        tokenData.dtROE);
+
+                                ratebreakup_Prebooks.Add(ratebreakup_Prebook);
+                            }
+                        }
+
                         userCartDetails_Pre.ratebreakup_Prebooks = ratebreakup_Prebooks;
                         #endregion
                     }
@@ -28188,7 +28252,6 @@ new SqlParameter("@AgentId", AgentId),
                                             Supplier = "xpedia";
                                         if (Supplier.IndexOf("_xtg") >= 0)
                                             Supplier = "xtg";
-
                                         if (IsVervoActive == false || (_commonMethod.ExcludeSupplierFromVervoMappingCheck(Supplier) ||
                                             (Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["giataid"]) == UnicaId
                                             && Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]) == XMLHotelCode

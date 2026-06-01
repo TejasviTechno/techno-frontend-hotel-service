@@ -712,6 +712,9 @@ namespace XConnect.Models
 
 
         public List<_FinalPolicy> CancellationPolicy { get; set; }
+        //300526
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public List<_FRatebreakup> FinalRateBreakup { get; set; }
     }
 
     public class _FinalPolicy_Comp
@@ -812,6 +815,9 @@ namespace XConnect.Models
         public string EssentialInformation { get; set; }
         public string BookingStatus { get; set; }
         public string RoomToken { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public List<_FRatebreakup>? RateBreakup { get; set; }
         public List<_FinalPolicy> CancellationPolicy { get; set; }
         public string CancellationToken { get; set; }
         //public List<_FinalRate> RateDetails { get; set; }
@@ -2956,6 +2962,19 @@ namespace XConnect.Models
 
     //}
     #endregion
+
+    public class _FRatebreakup
+    {
+      
+        public string RateType { get; set; }
+        public string Date { get; set; }
+        public string DateOfWeek { get; set; }
+        public string Rate { get; set; }
+        public string  Surcharge { get; set; }
+        public string  CompanyCharge { get; set; }
+        public string  Total { get; set; }
+        public string BuyingPrice { get; set; }
+    }
 
 }
 
