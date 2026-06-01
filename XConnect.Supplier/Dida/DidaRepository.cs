@@ -1640,7 +1640,8 @@ namespace Xconnect.Expedia
             // flag:3= Currency Cheange in PriceCheck Response
             // flag:4= Room is OnRequest or N/A at priceCheck
             // flag:5= Price is Changed...!
-            
+            System.Diagnostics.Stopwatch timerroomcodeprocess = new System.Diagnostics.Stopwatch();
+            timerroomcodeprocess.Start();
             string responsetype = "Success";
             string time = "";
             string SupplierName = "Dida";
@@ -1723,8 +1724,9 @@ namespace Xconnect.Expedia
                 {
                     try
                     {
+                        timerroomcodeprocess.Stop();
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey,TechName, srphotelid, srphotelhotelname);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey,TechName, srphotelid, srphotelhotelname, timerroomcodeprocess);
                     }
                     catch (Exception e)
                     {
@@ -1791,8 +1793,9 @@ namespace Xconnect.Expedia
                             {
                                 try
                                 {
+                                    timerroomcodeprocess.Stop();
                                     responsetype = "GeneralError";
-                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey, TechName, srphotelid, srphotelhotelname);
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey, TechName, srphotelid, srphotelhotelname, timerroomcodeprocess);
                                 }
                                 catch (Exception e)
                                 {
@@ -1828,9 +1831,10 @@ namespace Xconnect.Expedia
             {
                 try
                 {
+                    timerroomcodeprocess.Stop();
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey,TechName, srphotelid, srphotelhotelname);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error,Searchkey,TechName, srphotelid, srphotelhotelname, timerroomcodeprocess);
                 }
                 catch (Exception e)
                 {
@@ -1844,8 +1848,9 @@ namespace Xconnect.Expedia
 
             try
             {
+                timerroomcodeprocess.Stop();
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timerroomcodeprocess);
             }
             catch (Exception e)
             {

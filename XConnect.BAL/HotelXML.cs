@@ -70020,7 +70020,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 {
 
                                                     // _logger.LogError(ex, "newhotelsearch_agoda", result);
-                                                    _logger.LogError(ex, "newhotelsearch_agoda {@Result}", result);
+                                                   // _logger.LogError(ex, "newhotelsearch_agoda {@Result}", result);
                                                     _exception.Error(ex);
                                                     return null;
                                                 }
@@ -70892,7 +70892,7 @@ new SqlParameter("@AgentId", AgentId),
 
                             // newadded 17042026
 
-                            if (APIName.ToLower() == "availabilitywithcancellation" || APIName.ToLower() == "availability" || APIName.ToLower() == "availabilitywithcancellationv2")
+                            if (APIName.ToLower() == "availabilitywithcancellation" || APIName.ToLower() == "availability" || APIName.ToLower() == "availabilitywithcancellationv2" || APIName.ToLower() == "precheck")
                             {
                                 var options = new JsonSerializerOptions
                                 {
@@ -71746,7 +71746,7 @@ new SqlParameter("@AgentId", AgentId),
                                     room.Message = Status.ReturnStatus;
                                     room.CancelStatus = 1;
                                 }
-                                if (Status.ReturnStatus == "Error")
+                                if (Status.ReturnStatus == "Error" || Status.ReturnStatus == "")
                                 {
                                     List<XConnect.Models._Error> Error = new List<XConnect.Models._Error>();
                                     XConnect.Models._Error Er = new XConnect.Models._Error();

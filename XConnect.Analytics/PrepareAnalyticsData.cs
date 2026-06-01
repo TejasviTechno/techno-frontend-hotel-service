@@ -214,9 +214,9 @@ namespace XConnect.Analytics
 
                 var productInfo = new AnalyticsProductInfo
                 {
-
+                    Id = analyticsData?.srphotelid ?? 0,
                     Name = gethoteldetail?.HotelName ?? "anonymous", //added
-                    Id = gethoteldetail?.HotelId ?? 0,
+                   // Id = gethoteldetail?.HotelId ?? 0,
                     City = gethoteldetail?.CityName ?? "anonymous",
                     Country = gethoteldetail?.CountryName ?? "anonymous",
 
@@ -276,11 +276,9 @@ namespace XConnect.Analytics
 
                 var clientData = new ClientData
                 {
-                    ServiceName = QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Reverse_Client_errors,
-                    //ServiceName = (analyticsData.Action.ToLower() == "availability" || analyticsData.Action.ToLower() == "availabilitywithcancellation"
-                    //|| analyticsData.Action.ToLower() == "availabilitywithcancellationv2") ?
-                    //QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Client_HotelService
-                    //: QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Client_HotelService_noremove,
+                    //ServiceName = QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Reverse_Client_errors,
+                    ServiceName = apiInfo.Stage == "Search" ? QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Reverse_Client_errors : QueueManager.Contracts.Enums.Constants.ElasticsearchIndexConstants.Reverse_Client_errors_noremove,
+
                     // clientTimeZone = string.IsNullOrEmpty(_userContextAccessor.ClientStats.clientsLocalTimeZone) ? clientsLocalTimeZone : _userContextAccessor.ClientStats.clientsLocalTimeZone,
                     clientTimeZone = string.IsNullOrEmpty(_userContextAccessor?.ClientStats?.clientsLocalTimeZone) ? (string.IsNullOrEmpty(clientsLocalTimeZone) ? null : clientsLocalTimeZone) : _userContextAccessor.ClientStats.clientsLocalTimeZone,
                     Description = analyticsData.Description,
@@ -367,14 +365,15 @@ namespace XConnect.Analytics
         private readonly IUserContextAccessor _userContextAccessor;
         private readonly ILogger<PrepareSupplierData> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IDLConnection _dlConnection;
 
-
-        public PrepareSupplierData(IPushAnalyticsSupplier pushSupplierAnalytics, IUserContextAccessor userContextAccessor, ILogger<PrepareSupplierData> logger, IConfiguration configuration)
+        public PrepareSupplierData(IPushAnalyticsSupplier pushSupplierAnalytics, IUserContextAccessor userContextAccessor, ILogger<PrepareSupplierData> logger, IConfiguration configuration, IDLConnection dlConnection)
         {
             _pushSupplierAnalytics = pushSupplierAnalytics;
             _userContextAccessor = userContextAccessor;
             _logger = logger;
             _configuration = configuration;
+            _dlConnection = dlConnection;
         }
 
         public void PushHotelSearchSupplierDataForAnalyticsAsyc(AnalyticsData analyticsData)
@@ -518,7 +517,7 @@ namespace XConnect.Analytics
             }
         }
 
-        public void PushHotelRecheckSupplierDataForAnalyticsAsyc(AnalyticsData analyticsData)
+        public async void PushHotelRecheckSupplierDataForAnalyticsAsyc(AnalyticsData analyticsData)
         {
             try
             {
@@ -526,17 +525,10 @@ namespace XConnect.Analytics
 
                 var supplierDataList = new List<SupplierData>();
 
-                //var allTasks = new List<HotelX>();
-
-                //if (analyticsData?.Result is ConcurrentBag<HotelX> bundles)
-                ////if (analyticsData?.Result is IEnumerable<HotelX> bundles)
-                //{
-                //    allTasks.AddRange(bundles);
-                //}
-
                 var mainSearchPayload = analyticsData.Payload as HotelSearchParameter; // request
 
-                //var resultData = analyticsData.Result as FinalRestProductDomainDtos;
+                //var resultData = analyticsData.Result as FinalRestProductDomainDtos; // response
+
                 //var mainSearchPayload = analyticsData.Payload as RestaurantSearchParaForList;
 
                 var isDebugMode = _configuration.GetValue<bool>("EnvironmentType:isDebug");
@@ -559,6 +551,7 @@ namespace XConnect.Analytics
                             Search_Key = analyticsData?.Search_Key ?? "anonymous",
                             SuppliersearchResponseError = analyticsData?.SuppliersearchResponseError ?? "anonymous",
                             SupplierRequest = analyticsData?.SupplierRequest ?? "anonymous",
+                            CodeProcessingTimenew = analyticsData?.CodeProcessingTimenew ?? 0
 
                         };
                         //var locationItem = allTasks[i].RestaurantList?.FirstOrDefault();
@@ -578,14 +571,16 @@ namespace XConnect.Analytics
 
                         };
 
+                        int hotelid = Convert.ToInt32(analyticsData?.srphotelid ?? 0);
+                        GetHotelDetails gethoteldetail = await GetHotelDetailsByHotelId(hotelid);
+
                         var productInfo = new AnalyticsProductInfo
                         {
-                            Name = analyticsData?.srphotelhotelname ?? "anonymous",
                             Id = analyticsData?.srphotelid ?? 0,
-                            // Name = mainSearchPayload?.CityName ?? "anonymous",
-                            City = mainSearchPayload?.CityName ?? "anonymous",
-                            Country = mainSearchPayload?.CountryCode ?? "anonymous",
-                            //Name = mainSearchPayload?.SearchKey ?? "anonymous",
+                            Name = gethoteldetail?.HotelName ?? "anonymous", //added
+                            City = gethoteldetail?.CityName ?? "anonymous",
+                            Country = gethoteldetail?.CountryName ?? "anonymous",
+
 
                         };
                         //var productInfo = new AnalyticsProductInfo();
@@ -710,6 +705,39 @@ namespace XConnect.Analytics
             return description;
         }
 
+        public async Task<GetHotelDetails> GetHotelDetailsByHotelId(int hotelid)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[] {
+              new SqlParameter("@HotelId", Convert.ToInt32(hotelid)),
+           };
+
+                DataTable dt = await _dlConnection.GetDataTableAsync("sp_GetHotelDetailsByHotelId", para);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    DataRow row = dt.Rows[0];
+                    GetHotelDetails hotel = new GetHotelDetails
+                    {
+                        CountryId = Convert.ToInt32(row["Countryid"]),
+                        CountryName = row["CountryName"].ToString(),
+                        CityId = Convert.ToInt32(row["Cityid"]),
+                        CityName = row["cityName"].ToString(),
+                        HotelName = row["HotelName"].ToString(),
+                        HotelId = Convert.ToInt32(row["Hotelid"]),
+                    };
+                    return hotel;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error at PushHotelRecheckSupplierDataForAnalyticsAsyc");
+                return null;
+            }
+
+        }
+
     }
     public class ClientSearchDataService
     {
@@ -797,7 +825,7 @@ namespace XConnect.Analytics
                 TraceId = _userContextAccessor.TraceId,
                 SearchKey = _analyticsData.Search_Key,
                 TenantId = Convert.ToString(_userContextAccessor?.DecodedJwt?.TenantId) ?? "",
-                CodeProcessingTime = _analyticsData.CodeProcessingTimenew,
+                CodeProcessingTime = _analyticsData?.CodeProcessingTimenew ?? 0,
                 ResponseErrorLog = _analyticsData?.SuppliersearchResponseError ?? "",
                 RequestErrorLog = _analyticsData?.SupplierRequest ?? "",
             };

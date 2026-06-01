@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Collections.Concurrent;
 using System.Data;
+using System.Diagnostics;
 using System.Net;
 using System.Text;
 using XConnect.Models;
@@ -136,7 +137,7 @@ namespace XConnect.CommonUtilities.Interface
 
         double TruncateDecimalPlacesNew(double val);
 
-        Task<string> SupplierPerformanceReportForPrebookAndBook(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "", string SearchKey = "", string TechName = "", int srphotelid = 0, string srphotelhotelname = "");
+        Task<string> SupplierPerformanceReportForPrebookAndBook(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "", string SearchKey = "", string TechName = "", int srphotelid = 0, string srphotelhotelname = "", Stopwatch timerroomcodeprocess = null);
         Task<string> AnalyticsRecheckData(string SupplierName, string ResponseType, string ResponseTimeout, string SearchKey = "", string TechName = "");
         Task<string> AnalyticsPrebookandbookData(string SupplierName, string ReportType, string ResponseType, string ResponseTimeout, string SearchKey = "", string TechName = "");
         Task<string> SupplierPerformanceReportForRecheckOnly(string SupplierName, string ReportType, int AgentId, string ResponseTimeout, string ResponseType, string Request = "", string Response = "", string Error = "");

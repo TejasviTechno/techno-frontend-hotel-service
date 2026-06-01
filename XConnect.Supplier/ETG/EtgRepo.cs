@@ -2205,6 +2205,8 @@ namespace XConnect.Supplier.ETG
         }
         public async Task<PriceCheckCMDto> Get_Ostrovok_Prebook_new(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, DataRow[] OstrovokDetails, double FinalPrice, double CompanyBuyingPrice, TokenData TokenData, string Searchkey, int AgentId, int i = 0, string Supplier = "",string TechName="")
         {
+            System.Diagnostics.Stopwatch timercodeprocess = new System.Diagnostics.Stopwatch();
+            timercodeprocess.Start();
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
             string responsetype = "Success";
             string time = "";
@@ -2291,8 +2293,9 @@ namespace XConnect.Supplier.ETG
                         //SuppReason = "NRS";// No Response from supplier side
                         try
                         {
+                            timercodeprocess.Stop();
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                         }
                         catch (Exception ex)
                         {
@@ -2324,8 +2327,9 @@ namespace XConnect.Supplier.ETG
                                     //SuppReason = "PCS.";// Price change from supplier side
                                     try
                                     {
+                                        timercodeprocess.Stop();
                                         responsetype = "GeneralError";
-                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
 
                                     }
                                     catch (Exception ex)
@@ -2375,9 +2379,10 @@ namespace XConnect.Supplier.ETG
                         {
                             try
                             {
+                                timercodeprocess.Stop();
                                 PrebookResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + PrebookResponseData;
                                 responsetype = "GeneralError";
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                                 //SuppReason = "PCS";// Price change from supplier side
                             }
                             catch (Exception ex)
@@ -2442,7 +2447,8 @@ namespace XConnect.Supplier.ETG
 
                                         try
                                         {
-                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                                            timercodeprocess.Stop();
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                                         }
                                         catch (Exception ex)
                                         {
@@ -2476,9 +2482,10 @@ namespace XConnect.Supplier.ETG
                     {
                         try
                         {
+                            timercodeprocess.Stop();
                             //SuppReason = "PFS";// Prebook fail from supplier side
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                         }
                         catch (Exception ex)
                         {
@@ -2496,8 +2503,9 @@ namespace XConnect.Supplier.ETG
                 {
                     try
                     {
+                        timercodeprocess.Stop();
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                     }
                     catch (Exception ex)
                     {
@@ -2509,8 +2517,9 @@ namespace XConnect.Supplier.ETG
                 #region RPT Success
                 try
                 {
+                    timercodeprocess.Stop();
                     responsetype = "Success";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                 }
                 catch (Exception e)
                 {
@@ -2522,8 +2531,9 @@ namespace XConnect.Supplier.ETG
             {
                 try
                 {
+                    timercodeprocess.Stop();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, e.Message.ToString() + "#" + PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", TokenData.AgentId, time, responsetype, PrebookRQ, e.Message.ToString() + "#" + PrebookResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                 }
                 catch (Exception ex)
                 {

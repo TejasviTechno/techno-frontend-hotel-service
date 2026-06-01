@@ -619,7 +619,7 @@ namespace XConnect.Supplier.AgodaNew
                             catch (Exception ex)
                             {
                                 _exception.Error(ex);
-                                _logger.LogError(ex , "XMLOut_HotelSearchWithRooms");
+                                //_logger.LogError(ex , "XMLOut_HotelSearchWithRooms");
 
                                 return options;
                                 
