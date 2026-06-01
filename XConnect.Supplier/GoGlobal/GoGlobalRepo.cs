@@ -1172,6 +1172,9 @@ namespace XConnect.Supplier.GoGlobal
 
         public async Task<PriceCheckCMDto> PriceCheckGoGlobal(int i, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] GGDetails, string UniqueNo, string AgentUniqueNo, string IsFor, bool IsError, string supplier, double CompanyBuyPrice, double itemprice, bool PolicyChange, int AgentId = 0, string SearchKey = "",string TechName="")
         {
+            System.Diagnostics.Stopwatch timercodeprocess = new System.Diagnostics.Stopwatch();
+            timercodeprocess.Start();
+
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
             bool PriceUpdate = false;
             string responsetype = "Success";
@@ -1290,8 +1293,9 @@ namespace XConnect.Supplier.GoGlobal
                 {
                     try
                     {
+                        timercodeprocess.Stop();
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error,SearchKey,TechName, srphotelid, srphotelhotelname);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error,SearchKey,TechName, srphotelid, srphotelhotelname, timercodeprocess);
                     }
                     catch (Exception e)
                     {
@@ -1310,9 +1314,10 @@ namespace XConnect.Supplier.GoGlobal
             {
                 try
                 {
+                    timercodeprocess.Stop();
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName, srphotelid, srphotelhotelname);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                 }
                 catch (Exception e)
                 {
@@ -1326,8 +1331,9 @@ namespace XConnect.Supplier.GoGlobal
 
                 try
                 {
+                    timercodeprocess.Stop();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName, srphotelid, srphotelhotelname);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                 }
                 catch (Exception e)
                 {
@@ -1338,8 +1344,9 @@ namespace XConnect.Supplier.GoGlobal
             {
                 try
                 {
+                    timercodeprocess.Stop();
                     responsetype = "Success";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName, srphotelid, srphotelhotelname);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, Response, Error, SearchKey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                 }
                 catch (Exception e)
                 {

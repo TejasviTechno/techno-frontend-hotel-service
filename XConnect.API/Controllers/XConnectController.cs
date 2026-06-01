@@ -6720,7 +6720,7 @@ namespace XConnect.API.Controllers
             catch (Exception ex)
             {
                 timer.Stop();
-                // Common.Error(ex);
+                await _exception.Error(ex);  //26052026
                 // error = HotelXML.GetErrorMsg(ErrorType.InternalError, ErrorCode.InternalError, ErrorDescription.InternalError);
                 CancelBookingResponse rs = new CancelBookingResponse();
                 rs.Error.Add(error);
