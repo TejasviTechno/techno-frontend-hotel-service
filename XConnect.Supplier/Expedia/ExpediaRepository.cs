@@ -10,6 +10,7 @@ using System.Text.Json;
 using Azure;
 using Elasticsearch.Net;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Protocols;
@@ -28,6 +29,7 @@ using static Azure.Core.HttpHeader;
 using static XConnect.Expedia.EAN;
 using static XConnect.Models.ErrorLog;
 using static XConnect.Supplier.Booking.Com.BookingDotComRoom;
+using static XConnect.Supplier.Booking.Com.preebookrs;
 using static XConnect.Supplier.Omnibees.HotelSearchResponse;
 using Options = XConnect.Models.Options;
 
@@ -532,7 +534,7 @@ namespace XConnect.Expedia
 
         #endregion
 
-        public string GetEANHotelSearchRequest(bool SearchByOneID, string checkin, string checkout, int NoOfRecord, int NoOfNight, HotelSearchParameter SearchParam, string Ids, string XMLCITY, string XMLCOUNTRYCode, string MinStar, string MaxStar, string SupplierName, string cacheKey, string cacheLocation, bool moreResultsAvailable, bool ISPKG = false, bool IsB2B=false,bool IsPackage=false, string AgentCode = "", int ReturnRooms = 10, string EANCurrency = "USD") //040225 - ReturnRooms
+        public string GetEANHotelSearchRequest_bkp280526_needtolive(bool SearchByOneID, string checkin, string checkout, int NoOfRecord, int NoOfNight, HotelSearchParameter SearchParam, string Ids, string XMLCITY, string XMLCOUNTRYCode, string MinStar, string MaxStar, string SupplierName, string cacheKey, string cacheLocation, bool moreResultsAvailable, bool ISPKG = false, bool IsB2B=false,bool IsPackage=false, string AgentCode = "", int ReturnRooms = 10, string EANCurrency = "USD") //040225 - ReturnRooms
         {
             try
             {
@@ -759,7 +761,215 @@ namespace XConnect.Expedia
                 return "";
             }
         }
+        public string GetEANHotelSearchRequest(bool SearchByOneID, string checkin, string checkout, int NoOfRecord, int NoOfNight, HotelSearchParameter SearchParam, string Ids, string XMLCITY, string XMLCOUNTRYCode, string MinStar, string MaxStar, string SupplierName, string cacheKey, string cacheLocation, bool moreResultsAvailable, bool ISPKG = false, bool IsB2B = false, bool IsPackage = false, string AgentCode = "", int ReturnRooms = 10, string EANCurrency = "USD") //040225 - ReturnRooms
+        {
+            try
+            {
+                StringBuilder JsonRQ = new StringBuilder();
+                JsonRQ.Append("checkin=" + checkin + "");
+                JsonRQ.Append("&checkout=" + checkout + "");
+                JsonRQ.Append("&currency=" + EANCurrency + "");
+                JsonRQ.Append("&language=" + _supplierConfig.Expedia.EANLanguage + "");
+                JsonRQ.Append("&country_code=" + XMLCOUNTRYCode + "");
+                Ids = Ids.Replace(",", "&property_id=");
+                for (int room = 0; room < SearchParam.Rooms.Count; room++)
+                {
+                    int Adultcount = Convert.ToInt32(SearchParam.Rooms[room].NoofAdults);
+                    int Childcount = Convert.ToInt32(SearchParam.Rooms[room].NoofChild);
+                    if (Childcount > 0)
+                    {
+                        switch (Childcount)
+                        {
+                            case 1:
+                                JsonRQ.Append("&occupancy=" + Adultcount + "-" + Convert.ToString(SearchParam.Rooms[room].Child1Age));
+                                break;
+                            case 2:
+                                JsonRQ.Append("&occupancy=" + Adultcount + "-" + Convert.ToString(SearchParam.Rooms[room].Child1Age) + "," + Convert.ToString(SearchParam.Rooms[room].Child2Age));
+                                break;
+                        }
+                    }
+                    else
+                        JsonRQ.Append("&occupancy=" + Adultcount);
+                }
+                JsonRQ.Append("&sales_channel=agent_tool");
+                JsonRQ.Append("&property_id=" + Ids + "");
+                if (ISPKG)
+                    JsonRQ.Append("&sales_environment=" + _supplierConfig.Expedia.EAN_Sales_Environment_Hotel_package);
+                else
+                    JsonRQ.Append("&sales_environment=" + _supplierConfig.Expedia.EAN_Sales_Environment_Hotel_Only);
 
+                if (_keySettings.MultiexpediaIsActive && IsPackage)
+                    JsonRQ.Append("&rate_option=" + _supplierConfig.Expedia.EAN_Rate_Option_Cross_sell);//package 
+                else
+                    JsonRQ.Append("&rate_option=" + _supplierConfig.Expedia.EAN_Rate_Option_Member);
+                // }
+                //if (_keySettings.MultiexpediaIsActive)
+                //    JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
+                //else
+                //    JsonRQ.Append("&billing_terms="  +_supplierConfig.Expedia.EAN_Billing_Terms);
+                string DomesticContryCode = _keySettings.DomesticContryCode;//added 20-may-2026
+
+                if (SupplierName.ToLower() == "ean_b2b" || SupplierName.ToLower() == "ean_pkg" || SupplierName.ToLower() == "ean_b2bv3" || SupplierName.ToLower() == "ean_pkgv3")
+                {
+                    JsonRQ.Append("&billing_terms=");
+                    JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms);
+                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale);
+                    JsonRQ.Append("&rate_option=" + _supplierConfig.Expedia.EAN_Rate_Option_Member);
+
+                }
+                else
+                {
+                    if (!IsB2B)
+                    {
+
+
+                        if (IsPackage)
+                        {
+                            if (_keySettings.MultiexpediaIsActive)
+                            {
+                                if (XMLCOUNTRYCode.ToUpper() == DomesticContryCode)
+                                {
+                                    JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
+                                    JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2C_Cross_Sell_Domestic);
+                                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2C_Cross_Sell_Domestic);
+
+                                }
+                                else if (XMLCOUNTRYCode.ToUpper() != DomesticContryCode)
+                                {
+                                    JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
+                                    JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2C_Cross_Sell_International);
+                                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2C_Cross_Sell_International);
+
+                                }
+                            }
+                            else
+                            {
+                                if ((XMLCOUNTRYCode.ToUpper() != DomesticContryCode))
+                                {
+                                    JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
+                                    JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_International);
+                                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_International);
+
+                                }
+                                else
+                                {
+                                    JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
+                                    JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_Domestic);
+                                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_Domestic);
+
+                                }
+
+
+                            }
+
+                        }
+                        else
+                        {
+                            if (_keySettings.MultiexpediaIsActive)
+                            {
+                                if (XMLCOUNTRYCode.ToUpper() == DomesticContryCode)
+                                {
+                                    JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
+                                    JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2C_Domestic);
+                                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2C_Domestic);
+                                }
+                                else if (XMLCOUNTRYCode.ToUpper() != DomesticContryCode)
+                                {
+                                    JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
+                                    JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2C_International);
+                                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2C_International);
+                                }
+                            }
+                            else
+                            {
+                                if ((XMLCOUNTRYCode.ToUpper() != DomesticContryCode))
+                                {
+                                    JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
+                                    JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_International);
+                                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_International);
+
+                                }
+                                else
+                                {
+                                    JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
+                                    JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_Domestic);
+                                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_Domestic);
+
+                                }
+
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                        if (_keySettings.MultiexpediaIsActive)
+                        {
+                            if ((XMLCOUNTRYCode.ToUpper() != DomesticContryCode))
+                            {
+                                JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
+                                JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_International);
+                                JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_International);
+
+                            }
+                            else
+                            {
+                                JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms_EAC);
+                                JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_Domestic);
+                                JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_Domestic);
+                            }
+
+                        }
+                        else
+                        {
+
+                            if ((XMLCOUNTRYCode.ToUpper() != DomesticContryCode))
+                            {
+                                JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
+                                JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_International);
+                                JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_International);
+
+                            }
+                            else
+                            {
+                                JsonRQ.Append("&billing_terms=" + _supplierConfig.Expedia.EAN_Billing_Terms);
+                                JsonRQ.Append("&payment_terms=" + _supplierConfig.Expedia.EAN_Payment_Terms_B2B_Domestic);
+                                JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale_B2B_Domestic);
+                            }
+
+                        }
+
+
+                    }
+
+                }
+
+                //                    JsonRQ.Append("&partner_point_of_sale=" + _supplierConfig.Expedia.EAN_Partner_Point_Of_Sale);
+
+                if (SearchParam.Filters.IsShowRooms == 0)
+                {
+                    JsonRQ.Append("&rate_plan_count=" + _supplierConfig.Expedia.EAN_Rate_Plan_Count_1);
+                }
+                else
+                {
+                    if (SearchByOneID)
+                    {
+                        JsonRQ.Append("&rate_plan_count=" + _supplierConfig.Expedia.EAN_Rate_Plan_Count_250); // added on 20-JUN-2024 as per mustafa sir //change to 250 As per Mustfa sir 16 OCT 2025
+                    }
+                    else
+                    {
+                        JsonRQ.Append("&rate_plan_count=" + _supplierConfig.Expedia.EAN_Rate_Plan_Count_10);
+                    }
+                }
+                JsonRQ.Append("&platform_name=" + _supplierConfig.Expedia.EAN_Platform_Name);
+                return JsonRQ.ToString();
+            }
+            catch (Exception Ex)
+            {
+                _ = _exception.Error(Ex);
+                return "";
+            }
+        }
 
         #region OLD Code
 
@@ -2405,7 +2615,7 @@ namespace XConnect.Expedia
                                                                     string StrikeTrough_Currency = Convert.ToString(totals["strikethrough"].billable_currency.currency);
                                                                     if (StrikeTrough_Currency.ToLower() != commonSearch.tokenData.SiteCurrency?.ToLower())
                                                                     {
-                                                                        double CurrencyFactor4 = _commonMethod.GetROEByCurrency(StrikeTrough_Currency, dtROE);
+                                                                        double CurrencyFactor4 =  _commonMethod.GetROEByCurrency(StrikeTrough_Currency, dtROE);
                                                                         StrikeTrough = StrikeTrough * CurrencyFactor4;
                                                                     }
                                                                     else

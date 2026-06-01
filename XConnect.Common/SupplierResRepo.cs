@@ -343,6 +343,7 @@ namespace XConnect.CommonUtilities
                         if (final.CancellationToken != "")
                             final.CancellationToken = final.CancellationToken.ToBase64StringManual(false);
                         final.CancellationPolicy = _FinalPolicy;
+                        
                         final.RateDetailsToken = "";
                         //for (int r = 0; r < rateBeckup.Count; r++)
                         //{
