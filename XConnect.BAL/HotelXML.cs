@@ -16870,7 +16870,7 @@ new SqlParameter("@AgentId", AgentId),
 
                         //string Website = Convert.ToString(System.Web.HttpContext.Current.Request.Url.ToString().ToLower());
                         Website = Website.Replace("prebook", "cancellationpolicymulti");
-                        //Update CancellationToken                        
+                        //Update CancellationToken
                         ResponseDto responseDto = await _techno.GetSupplierResponseWE_DMC(JsonRQ, Website, 10000, "GetCancencellationPolicy", null, false, SearchKey);//change 20000 to 10000 on 5-JUN-2024
                         string ResponseData = responseDto.Response;
 
