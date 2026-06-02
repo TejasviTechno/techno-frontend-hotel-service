@@ -1049,7 +1049,7 @@ namespace XConnect.Supplier.AgodaNew
                                                                     //TimeSpan totaldays = Convert.ToDateTime(from) - Convert.ToDateTime(to);
                                                                     totaldays = Convert.ToDateTime(from) - Convert.ToDateTime(to);
                                                                     drHotelCancellation["daysBeforeCheckIn"] = Convert.ToString(Convert.ToInt32(totaldays.Days));
-
+                                                                    break;
 
 
                                                                 }
