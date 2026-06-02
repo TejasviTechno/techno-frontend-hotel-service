@@ -272,6 +272,10 @@ namespace XConnect.CommonUtilities
                         price += Convert.ToDecimal(final.Price);
                         final.RoomNo = Mainrooms[i][j].RoomNo;
                         final.RoomTypeName = Mainrooms[i][j].RoomTypeName;
+                        //020626
+                        if (!tokenData.IsFromAPI)
+                            final.RoomTypeId = Mainrooms[i][j].RoomTypeId;
+
                         IsRoomCombine = Mainrooms[i][j].IsCombineRoom;
 
 

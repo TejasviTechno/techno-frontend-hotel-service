@@ -8350,6 +8350,7 @@ namespace XConnect.CommonUtilities
                         List<List<_FinalRoomList_Comp>> finalRoom = new List<List<_FinalRoomList_Comp>>();
 
                         string SupplierName = "";//170326
+                        string RoomId = "";//020626
 
                         for (int roomNoSeq = 0; roomNoSeq < finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms?.Count; roomNoSeq++)//each rooms
                         {
@@ -8378,11 +8379,26 @@ namespace XConnect.CommonUtilities
                                 {
                                     RoomList.SupplierCurrency = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].SupplierCurrency;//Added on 04-FEB-26
                                     SupplierName = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].SupplierName;//170326
+                                   
+
+                                    if (SupplierName.ToLower() == "ean_gujju_pkg" || SupplierName.ToLower() == "ean_gujju_b2b")
+                                    {
+                                        string RoomTypeId = finalResponse.AvailabilityRS.HotelResult[giataSeq].HotelOption[hotelSeq].HotelRooms[roomNoSeq][noOfRooms].RoomTypeId;
+                                        string[] Room_Id = RoomTypeId.Split(new String[] { "$$$" }, StringSplitOptions.None);
+                                        RoomList.RoomId = Room_Id[0].ToString();
+                                    }
+                                    else
+                                        RoomList.RoomId = null;
+
+
+
+
                                 }
                                 else
                                 {
                                     RoomList.SupplierCurrency = null;
                                     SupplierName = null;
+                                    RoomList.RoomId = null;
 
                                 }
                                 //added by trupti 300526
