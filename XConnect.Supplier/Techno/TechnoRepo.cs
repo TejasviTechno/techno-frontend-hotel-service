@@ -1201,7 +1201,7 @@ namespace XConnect.Supplier.Techno
                 //Request.ContentType = "text/xml;charset=utf-8;";
                 //Request.Accept = "text/xml";
                 Request.Headers.Add("Accept-Encoding", "gzip,deflate");
-                 
+
                 if(Techname.ToLower()=="techno_new")
                     Request.Headers.Add("Authorization", "Bearer " + password);
 
@@ -1218,10 +1218,10 @@ namespace XConnect.Supplier.Techno
                 {
                     HttpWebResponse Response = (HttpWebResponse)await Request.GetResponseAsync();
                     Stream responseStream = Response.GetResponseStream();
-                    responseStream = new System.IO.Compression.DeflateStream(responseStream, System.IO.Compression.CompressionMode.Decompress);
+                            responseStream = new System.IO.Compression.DeflateStream(responseStream, System.IO.Compression.CompressionMode.Decompress);
                     StreamReader Reader = new StreamReader(responseStream, Encoding.UTF8);
 
-                    strOutput = await Reader.ReadToEndAsync();
+                        strOutput = await Reader.ReadToEndAsync();
 
                     responseStream.Close();
                     Reader.Close();
@@ -1243,6 +1243,92 @@ namespace XConnect.Supplier.Techno
                     //string result1 = new StreamReader(webExcp.Response.GetResponseStream()).ReadToEnd();
                     //Common.XMLRequestResponseTrackError(strxmlRQRS, result1, Provider, "Proper");
                     //return result1;
+                    _ = _exception.Error(ex, Search_key, strxmlRQRS);
+                    if (UniqueNo != "")
+                    {
+                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(UniqueNo), strxmlRQRS, ex.ToString(), "Error Log [GetSupplierResponse  " + Provider + "]", Provider, "Request Confirm j=" + 0 + "", "-", "WE");
+                    }
+
+
+                    responseDto.Response = "";
+                    responseDto.Error = Error;
+                    return responseDto;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Error = ex.Message;
+                _ = _exception.Error(ex, Search_key, strxmlRQRS);
+                if (UniqueNo != "")
+                {
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(UniqueNo), strxmlRQRS, ex.ToString(), "Error Log2 [GetSupplierResponse " + Provider + "]", Provider, "Request Confirm j=" + 0 + "", "-", "WE");
+                }
+
+                responseDto.Response = "";
+                responseDto.Error = Error;
+                return responseDto;
+            }
+
+            responseDto.Response = strOutput;
+            responseDto.Error = Error;
+            return responseDto;
+        }
+
+        public async Task<ResponseDto> GetSupplierResponseWE_DMC_New(string strxmlRQRS, string strHost, int TimeOut, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string UniqueNo = "", string Search_key = "", string password = "", string Techname = "")
+        {
+            string Error = "";
+            string strOutput = "";
+            ResponseDto responseDto = new ResponseDto();
+            try
+            {
+
+                HttpWebRequest Request;
+                Request = (HttpWebRequest)HttpWebRequest.Create(strHost);
+                Request.Timeout = TimeOut;
+                Request.Proxy = null;
+                Request.Method = "POST";
+                Request.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; MS Web Services Client Protocol 1.1.4322.2300)";
+                Request.Headers.Add("Accept-Encoding", "gzip,deflate");
+
+                if (Techname.ToLower() == "techno_new")
+                    Request.Headers.Add("Authorization", "Bearer " + password);
+
+
+                Request.KeepAlive = false;
+                Request.ContentType = "application/json";
+                Request.Accept = null;
+                Stream newStream = null;
+                byte[] data = Encoding.ASCII.GetBytes(strxmlRQRS);
+                Request.ContentLength = data.Length;
+                newStream = Request.GetRequestStream();
+                newStream.Write(data, 0, data.Length);
+                try
+                {
+                    HttpWebResponse Response = (HttpWebResponse)await Request.GetResponseAsync();
+                    Stream responseStream = Response.GetResponseStream();
+                    string contentEncoding = Response.Headers["Content-Encoding"];
+                    if (!string.IsNullOrWhiteSpace(contentEncoding))
+                    {
+                        string encoding = contentEncoding.ToLower();
+                        if (encoding.Contains("gzip"))
+                            responseStream = new System.IO.Compression.GZipStream(responseStream, System.IO.Compression.CompressionMode.Decompress);
+                        else if (encoding.Contains("deflate"))
+                            responseStream = new System.IO.Compression.DeflateStream(responseStream, System.IO.Compression.CompressionMode.Decompress);
+                    }
+
+                    using (Response)
+                    using (responseStream)
+                    using (StreamReader Reader = new StreamReader(responseStream, Encoding.UTF8))
+                    {
+                        strOutput = await Reader.ReadToEndAsync();
+                    }
+                    
+                }
+                catch (Exception ex)
+                {
+                    Error = ex.Message;
+                    
                     _ = _exception.Error(ex, Search_key, strxmlRQRS);
                     if (UniqueNo != "")
                     {
@@ -1324,9 +1410,17 @@ namespace XConnect.Supplier.Techno
 
                 System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                 timerroomprocess.Start();
-
+                ResponseDto responseDto ;
+                if (TechName.ToLower() == "techno_new")
+                {
+                    responseDto = await GetSupplierResponseWE_DMC_New(Req, URL, 180000, Provider, null, false, UniqueNo, Searchkey, Password, TechName);
+                }
+                else
+                {
+                    responseDto = await GetSupplierResponseWE_DMC(Req, URL, 180000, Provider, null, false, UniqueNo, Searchkey, Password, TechName);
+                }
                 //ResponseData = GetSupplierResponseWE_DMC_report(ref Error, Req, URL, 180000, Provider, null, false, UniqueNo, Searchkey);
-                ResponseDto responseDto = await GetSupplierResponseWE_DMC(Req, URL, 180000, Provider, null, false, UniqueNo, Searchkey, Password, TechName);
+                
                 ResponseData = responseDto.Response;
                 Error = responseDto.Error;
 
