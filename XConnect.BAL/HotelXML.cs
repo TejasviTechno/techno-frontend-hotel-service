@@ -50921,11 +50921,8 @@ new SqlParameter("@AgentId", AgentId),
                                         string BookingRequest_restel = "";
                                         try
                                         {
-                                            // for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
-                                            {
-                                                //DataRow[] RestelDetails = SupplierDetailsCommon;
                                                 #region Declaration
-                                                //int j = 0;
+                                               
                                                 AgentVoucherNo = "";
                                                 bookingStatus = 6;
                                                 double FinalPrices = 0;
@@ -51132,10 +51129,6 @@ new SqlParameter("@AgentId", AgentId),
 
                                                     #endregion
                                                 }
-                                            }
-
-
-
                                         }
                                         catch (Exception ex)
                                         {
@@ -54032,8 +54025,8 @@ new SqlParameter("@AgentId", AgentId),
                                                     System.Diagnostics.Stopwatch timerroomprocess_xtg = new System.Diagnostics.Stopwatch();
                                                     timerroomprocess_xtg.Start();
 
-                                                   // objResponse = _xtg.GetXTGResponse(ref Error, XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_BOOK_Query, Newtonsoft.Json.Linq.JObject.Parse(XtgReq), XTGApiKey, Convert.ToInt32(120000));
-                                                objResponse = null;
+                                                   objResponse = _xtg.GetXTGResponse(ref Error, XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_BOOK_Query, Newtonsoft.Json.Linq.JObject.Parse(XtgReq), XTGApiKey, Convert.ToInt32(120000));
+                                             
                                                    RequestSPR = Convert.ToString(XtgReq);
                                                     ReponseSPR = Convert.ToString(objResponse);
                                                     timerroomprocess_xtg.Stop();
