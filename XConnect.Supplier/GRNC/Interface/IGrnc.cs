@@ -30,5 +30,6 @@ namespace XConnect.Supplier.GRNC.Interface
         string GRNCBookingrefetchResponse(string sid, string Xmlrequest, string Url, string username, string password, int Timeout, string UserId);
 
         string GRNCCancellationResponse(string sid, string strxmlRQRS, string url, string Key);
+        string GRNCCancellationResponse_newverstion(string sid, string strxmlRQRS, string url, string Key, string Password);
     }
 }

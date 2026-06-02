@@ -63490,7 +63490,9 @@ new SqlParameter("@AgentId", AgentId),
                                     string GRNCUrl = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/api/v3/hotels/bookings/" + ReferenceNo;
                                     _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), GRNCUrl, "-", "Before Request hit cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", PNRNO_Cancel, "WithinEarth");
 
-                                    string ResponseCancellation = _grnc.GRNCCancellationResponse("", CancellationGRNC, GRNCUrl, Supplier);
+                                    string Password = Convert.ToString(SupplierDetailsCommon[0]["Password"]);
+                                    //string ResponseCancellation = _grnc.GRNCCancellationResponse("", CancellationGRNC, GRNCUrl, Supplier);
+                                    string ResponseCancellation = _grnc.GRNCCancellationResponse_newverstion("", CancellationGRNC, GRNCUrl, Supplier, Password);
 
                                     _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(DtCancellation.Rows[0]["AgentVoucherNo"]), Convert.ToString(SupplierDetailsCommon[0]["UserName"]), GRNCUrl, ResponseCancellation, "After Request hit cancel", Convert.ToString(DtCancellation.Rows[0]["Provider"]), "Request Confirm", PNRNO_Cancel, "WithinEarth");
                                     DataSet GRNCResponse = _commonMethod.ReadDataFromJson(ResponseCancellation.ToString());

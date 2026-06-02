@@ -2427,5 +2427,72 @@ namespace XConnect.Supplier.GRNC
 
             return strOutput;
         }
+
+        public string GRNCCancellationResponse_newverstion(string sid, string strxmlRQRS, string url, string Key, string Password)
+        {
+            System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+            timer.Start();
+            string strOutput = "";
+            string responsedata = "";
+            try
+            {
+                HttpWebRequest Request;
+                Request = (HttpWebRequest)HttpWebRequest.Create(url);
+                Request.Method = "DELETE";
+                //Request.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; MS Web Services Client Protocol 1.1.4322.2300)";
+                //Request.Headers.Add("Api-Key", "af3675c6f7819722b572fcd4bcd6598d");
+                Request.Headers.Add("Api-Key", Password);
+                Request.ContentType = "application/json";
+                Request.Accept = "application/json";
+                //Request.Headers.Add("Accept", "application/json");
+                //Request.Headers.Add("Accept-Encoding", "application/gzip");
+                Stream newStream = null;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+           | SecurityProtocolType.Tls11
+           | SecurityProtocolType.Tls12
+           | SecurityProtocolType.Ssl3;
+                byte[] data = Encoding.ASCII.GetBytes(strxmlRQRS);
+                Request.ContentLength = data.Length;
+                newStream = Request.GetRequestStream();
+                newStream.Write(data, 0, data.Length);
+
+                try
+                {
+                    Task<string> Response;
+
+                    HttpWebResponse response = (HttpWebResponse)Request.GetResponse();
+                    Stream responseStream = response.GetResponseStream();
+                    // if (response.ContentEncoding.ToLower().Contains("gzip"))
+                    //     responseStream = new System.IO.Compression.GZipStream(responseStream, System.IO.Compression.CompressionMode.Decompress);
+                    //  else if (response.ContentEncoding.ToLower().Contains("deflate"))
+                    //      responseStream = new System.IO.Compression.DeflateStream(responseStream, System.IO.Compression.CompressionMode.Decompress);
+                    StreamReader streamReader = new StreamReader(responseStream);
+                    Response = streamReader.ReadToEndAsync();
+                    strOutput = Response.Result.ToString();
+                    responseStream.Close();
+                    streamReader.Close();
+                    response.Close();
+                    timer.Stop();
+                    if (Convert.ToString(_keySettings.IsLogTrack) == "1")
+                    {
+                        TimeSpan timeTaken = timer.Elapsed;
+                        //ErrorLog(Convert.ToString(System.Web.Configuration.WebConfigurationManager.AppSettings["LogTrackPath"]), sid + "-> Execution Time : " + timer.Elapsed.ToString());
+                    }
+                }
+                catch (WebException webExcp)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)webExcp.Response;
+                    string result = httpResponse.StatusDescription.ToString();
+                    string result1 = new StreamReader(webExcp.Response.GetResponseStream()).ReadToEnd();
+                    return "";
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+            }
+
+            return strOutput;
+        }
     }
 }
