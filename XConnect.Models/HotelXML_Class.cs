@@ -684,6 +684,7 @@ namespace XConnect.Models
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string SupplierName { get; set; } //170326
+       
         public decimal MinPrice { get; set; }
         public bool IsCombineRoom { get; set; }
        
@@ -705,6 +706,7 @@ namespace XConnect.Models
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string SupplierCurrency { get; set; } //Added 04-FEB-26
+
         public string BookingStatus { get; set; }
         public string RoomToken { get; set; }
         public string MappedMealName { get; set; }
