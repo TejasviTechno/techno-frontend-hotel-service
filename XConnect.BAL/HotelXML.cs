@@ -68341,8 +68341,7 @@ new SqlParameter("@AgentId", AgentId),
                         agodaSearchError = GetAgodaErrorMsg("", AgodaErrorType.noAvailability, validation);
 
                 }
-                //data.AdvancedOptions.Currency = authData.tokenData.CreditLimitCurrencyName;// use to get data in credit currecny only
-                data.AdvancedOptions.Currency = "USD";// Need To Change 24032026
+                data.AdvancedOptions.Currency = tokenData.CreditLimitCurrencyName;// use to get data in credit currecny only
             }
             catch (Exception ex)
             {
@@ -70494,15 +70493,23 @@ new SqlParameter("@AgentId", AgentId),
 
                             finalUrl = $"{_keySettings.EndPointXMLOut.TrimEnd('/')}/{_keySettings.AvailabilitywithcancellationXMLOut.TrimStart('/')}";
                         }
-                        //else if (requestName == "prebook") // ✅ FIXED
                         else if (requestName == "precheck") // ✅ FIXED
                         {
                             Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutPrebookTimeOut);
 
                             //finalUrl = $"{_keySettings.EndPointforprebook.TrimEnd('/')}/{_keySettings.PrebookXMLOut.TrimStart('/')}";
-                            finalUrl = $"{_keySettings.EndPointforprebook.TrimEnd('/')}/{_keySettings.AddHotelToCartXMLOut.TrimStart('/')}";
+                            finalUrl = $"{_keySettings.EndPointforrecheck.TrimEnd('/')}/{_keySettings.RecheckXMLOut.TrimStart('/')}";
 
                         }
+                        //else if (requestName == "prebook") // ✅ FIXED
+                        //else if (requestName == "precheck") // ✅ FIXED
+                        //{
+                        //    Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutPrebookTimeOut);
+
+                        //    //finalUrl = $"{_keySettings.EndPointforprebook.TrimEnd('/')}/{_keySettings.PrebookXMLOut.TrimStart('/')}";
+                        //    finalUrl = $"{_keySettings.EndPointforprebook.TrimEnd('/')}/{_keySettings.AddHotelToCartXMLOut.TrimStart('/')}";
+
+                        //}
                         else if (requestName == "book")
                         {
                             Item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutBookTimeOut);

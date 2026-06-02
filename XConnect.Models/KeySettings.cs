@@ -134,7 +134,9 @@ namespace XConnect.Models
         public string? AgodaVersion { get; set; } = String.Empty;
         public string? EndPointforCheckHotelCancellationCharges { get; set; } = String.Empty; //Added on 22-may-26 
         public string? EndPointforCancelBooking { get; set; } = String.Empty; //Added on 22-may-26 
-
+        public string? EndPointforrecheck { get; set; } = String.Empty;  
+        public string? RecheckXMLOut { get; set; } = String.Empty;  
+        
 
     }
 }

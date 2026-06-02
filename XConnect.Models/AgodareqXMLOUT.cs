@@ -209,6 +209,49 @@ namespace XConnect.Models
 
     }
 
+
+    #region recheck agoda
+
+    public class CommoXMLOutReCheckResponse
+    {
+        // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
+
+        public class CancellationPolicy_agodarecheck
+        {
+            public string FromDate { get; set; }
+            public string ToDate { get; set; }
+            public double CancellationPrice { get; set; }
+            public bool isNRF { get; set; }
+        }
+        public class ReCheckR_agoda
+        {
+            public string RoomNo { get; set; }
+            public string RoomTypeName { get; set; }
+            public double Price { get; set; }
+            public string BookingStatus { get; set; }
+            public string MealName { get; set; }
+            public string MappedMealName { get; set; }
+            public string EssentialInformation { get; set; }
+            public List<CancellationPolicy> CancellationPolicy { get; set; }
+            public string RoomToken { get; set; }
+        }
+        public class Root_agoda
+        {
+            public List<object> Error { get; set; }
+            public string Currency { get; set; }
+            public List<ReCheckR> ReCheckRS { get; set; }
+        }
+
+
+    }
+
+
+
+
+
+
+    #endregion
+
     public class CommonXMLBookRequest
     {
         public class AdvancedOptions

@@ -723,7 +723,6 @@ namespace XConnect.Supplier.AgodaNew
 
         }
 
-
         public async Task<List<Options>> XMLOut_HotelPreCheck(HotelX Item, CommonSearch commonSearch, DataSet GTAResponse, string HotelID, HotelSearchParameter SearchParam, DataTable dtAgentDetail, DataTable dtMarkupDetails, AdvancedOptions advancedOptions, string ratePlanCode)
         {
             System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
@@ -748,10 +747,30 @@ namespace XConnect.Supplier.AgodaNew
                         //giitaCode = Convert.ToString(GTAResponse.Tables[0].Rows[0]["GiataId"]);
                         giitaCode = Convert.ToString(GTAResponse.Tables[0].Rows[0]["Id"]);
 
+                        //recheck
+
+                        CommoXMLOutReCheckResponse.Root_agoda recheckResponse = JsonConvert.DeserializeObject<CommoXMLOutReCheckResponse.Root_agoda>(Item.RQRS[0].Response);
+                        var RecheckResponse = JsonConvert.DeserializeObject<CommoXMLOutReCheckResponse.Root_agoda>(Item.RQRS[0].Response);
+
+                        // string RecheckResponse = JsonConvert.DeserializeObject<CommoXMLOutReCheckResponse.Root.ReCheckR>(Item.RQRS[0].Response);
+
+
+                        //recheck end
+
+
+
                         CommoXMLOutPreCheckResponse.PreCheckResponse preCheckResponse = new CommoXMLOutPreCheckResponse.PreCheckResponse();
 
                         //AvailabilityResponse availabilityResponse = new AvailabilityResponse();
-                        preCheckResponse = JsonConvert.DeserializeObject<CommoXMLOutPreCheckResponse.PreCheckResponse>(Item.RQRS[0].Response);
+                        //preCheckResponse = JsonConvert.DeserializeObject<CommoXMLOutPreCheckResponse.PreCheckResponse>(Item.RQRS[0].Response);
+                        preCheckResponse = JsonConvert.DeserializeObject<CommoXMLOutPreCheckResponse.PreCheckResponse>(Item.RQRS[0].Request);
+
+                        string requestName = "precheck";
+                        string preCheckRequestafterrecheck = await GetSupplierResponseFinalNew_new(Item, requestName);
+                        preCheckResponse = JsonConvert.DeserializeObject<CommoXMLOutPreCheckResponse.PreCheckResponse>(preCheckRequestafterrecheck);
+
+                        
+
                         if (preCheckResponse.PreBookRS != null)
                         {
                             string HotelOptionIdRP = string.Empty;
@@ -791,7 +810,7 @@ namespace XConnect.Supplier.AgodaNew
                                             SearchKey = spitid2[1];
                                             RoomToken = spitid2[2];
                                             RoomNo = "1";
-                                            RoomId = spitid1[1];    
+                                            RoomId = spitid1[1];
                                         }
                                         string SupplierID = spitid1[6];
                                         int MasterSupplierID = 0;
@@ -875,7 +894,7 @@ namespace XConnect.Supplier.AgodaNew
                                                 bool isroom = true;
                                                 int ChainCode_Agoda = Convert.ToInt32(spitid1[9]);
                                                 double ChainMarkup = Convert.ToDouble(spitid1[10]);
-
+                                                //TimeSpan totaldays;  // 01062026
 
                                                 //foreach (var rm in availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelRooms[j])
                                                 {
@@ -1010,25 +1029,51 @@ namespace XConnect.Supplier.AgodaNew
                                                         k++;
                                                         if (Convert.ToInt32(spitid1[7]) > 0)
                                                         {
-                                                            //foreach (var cp in rm.CancellationPolicy)
-                                                            //{
-                                                            //    if (cp.CancellationPrice == 0)
-                                                            //    {
-                                                            //        drHotelCancellation["FromDate"] = cp.FromDate;
-                                                            //        drHotelCancellation["ToDate"] = cp.ToDate;
 
-                                                            //        DateTime from = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
-                                                            //        DateTime to = Convert.ToDateTime(cp.ToDate);
-                                                            //        TimeSpan totaldays = Convert.ToDateTime(from) - Convert.ToDateTime(to);
-                                                            //        drHotelCancellation["daysBeforeCheckIn"] = Convert.ToString(Convert.ToInt32(totaldays.Days));
-                                                            //    }
-                                                            //    else
-                                                            //    {
-                                                            //        drHotelCancellation["CompanyCancellationPrice"] = cp.CancellationPrice;
-                                                            //        drHotelCancellation["AgentCancellationPrice"] = cp.CancellationPrice;
-                                                            //    }
-                                                            //}
-                                                            drHotelCancellation["daysBeforeCheckIn"] = Convert.ToString(Convert.ToInt32(spitid1[7]));
+                                                            #region recheck
+
+                                                            TimeSpan totaldays = TimeSpan.Zero;  // 01062026
+
+
+                                                            foreach (var cp in RecheckResponse.ReCheckRS[0].CancellationPolicy)
+                                                            {
+                                                                //foreach (var cp in rm.CancellationPolicy)
+
+                                                                if (cp.CancellationPrice == 0)
+                                                                {
+                                                                    drHotelCancellation["FromDate"] = cp.FromDate;
+                                                                    drHotelCancellation["ToDate"] = cp.ToDate;
+
+                                                                    DateTime from = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
+                                                                    DateTime to = Convert.ToDateTime(cp.ToDate);
+                                                                    //TimeSpan totaldays = Convert.ToDateTime(from) - Convert.ToDateTime(to);
+                                                                    totaldays = Convert.ToDateTime(from) - Convert.ToDateTime(to);
+                                                                    drHotelCancellation["daysBeforeCheckIn"] = Convert.ToString(Convert.ToInt32(totaldays.Days));
+
+
+
+                                                                }
+                                                                else
+                                                                {
+
+                                                                    DateTime from = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
+                                                                    DateTime to = Convert.ToDateTime(DateTime.Now.Date);
+                                                                    //TimeSpan totaldays = Convert.ToDateTime(from) - Convert.ToDateTime(to);
+                                                                    totaldays = Convert.ToDateTime(from) - Convert.ToDateTime(to);
+                                                                    drHotelCancellation["daysBeforeCheckIn"] = Convert.ToString(Convert.ToInt32(totaldays.Days));
+
+                                                                    drHotelCancellation["CompanyCancellationPrice"] = cp.CancellationPrice;
+                                                                    drHotelCancellation["AgentCancellationPrice"] = cp.CancellationPrice;
+                                                                }
+                                                            }
+
+                                                            #endregion
+
+
+
+
+                                                            //drHotelCancellation["daysBeforeCheckIn"] = Convert.ToString(Convert.ToInt32(spitid1[7]));  //01062026
+                                                            drHotelCancellation["daysBeforeCheckIn"] = totaldays.Days;   //01062026
                                                             drHotelCancellation["CompanyCancellationPrice"] = spitid2[3];
                                                             drHotelCancellation["AgentCancellationPrice"] = spitid2[3];
                                                             drHotelCancellation["SupplierCurrency"] = preCheckResponse.PreBookRS.Currency;
@@ -1205,6 +1250,490 @@ namespace XConnect.Supplier.AgodaNew
             return options;
         }
 
+
+
+        #region comment
+        //public async Task<List<Options>> XMLOut_HotelPreCheck(HotelX Item, CommonSearch commonSearch, DataSet GTAResponse, string HotelID, HotelSearchParameter SearchParam, DataTable dtAgentDetail, DataTable dtMarkupDetails, AdvancedOptions advancedOptions, string ratePlanCode)
+        //{
+        //    System.Diagnostics.Stopwatch timerroomx = new System.Diagnostics.Stopwatch();
+        //    timerroomx.Start();
+
+        //    List<Options> options = new List<Options>();
+        //    if (GTAResponse != null && GTAResponse.Tables.Count > 0 && GTAResponse.Tables[0].Rows.Count > 0)
+        //    {
+        //        string giitaCode = "";
+        //        double LowestRate = 0;
+        //        string RoomId = "";
+        //        DataTable DtHotel = _commonMethod.GenerateDataTableNewV2();
+        //        //DataRow drXmlHotel = DtHotel.NewRow();
+        //        //DataTable DtHotelRoom = Common.GenerateRoomtypeDataTableNewV2();
+        //        //DataTable dtCancellation = Common.GenerateCancellationDataTableNewV2();
+        //        //DataTable DtHotelRoomRateBreackUp = Common.GenerateoomRateBreackUpDataTableNewV2();
+        //        DataTable dtHotelAllocation = _commonMethod.GenerateHotelAllocationTableNewV2();
+        //        try
+        //        {
+        //            if (Item != null && Item.RQRS != null && Item.RQRS[0].Response != null)
+        //            {
+        //                //giitaCode = Convert.ToString(GTAResponse.Tables[0].Rows[0]["GiataId"]);
+        //                giitaCode = Convert.ToString(GTAResponse.Tables[0].Rows[0]["Id"]);
+
+        //                CommoXMLOutPreCheckResponse.PreCheckResponse preCheckResponse = new CommoXMLOutPreCheckResponse.PreCheckResponse();
+
+        //                //AvailabilityResponse availabilityResponse = new AvailabilityResponse();
+        //                preCheckResponse = JsonConvert.DeserializeObject<CommoXMLOutPreCheckResponse.PreCheckResponse>(Item.RQRS[0].Response);
+        //                if (preCheckResponse.PreBookRS != null)
+        //                {
+        //                    string HotelOptionIdRP = string.Empty;
+        //                    string SearchKeyRP = string.Empty;
+
+        //                    string Status = preCheckResponse.PreBookRS.HotelOption.Status;
+        //                    if (Status.ToLower() == "bookable")
+        //                    {
+        //                        if (preCheckResponse.PreBookRS.HotelOption != null)
+        //                        {
+        //                            DataRow drXmlHotel = DtHotel.NewRow();
+        //                            DataTable DtHotelRoom = _commonMethod.GenerateRoomtypeDataTableNewV2();
+        //                            DataTable dtCancellation = _commonMethod.GenerateCancellationDataTableNewV2();
+        //                            DataTable DtHotelRoomRateBreackUp = _commonMethod.GenerateoomRateBreackUpDataTableNewV2();
+        //                            try
+        //                            {
+        //                                getrateplan.Root rateplan = new getrateplan.Root();
+        //                                rateplan = JsonConvert.DeserializeObject<getrateplan.Root>(ratePlanCode);
+
+        //                                ratePlanCode = rateplan.token;
+        //                                byte[] decodedBytes = Convert.FromBase64String(ratePlanCode);
+        //                                // Convert the byte array to a readable string (assuming it's UTF8 encoded)
+        //                                string decoded_ratePlanCode = Encoding.UTF8.GetString(decodedBytes);
+        //                                string RoomRatePlanCode = decoded_ratePlanCode;
+        //                                string[] spitid1 = null;
+        //                                string[] spitid2 = null;
+        //                                string HotelOptionId = "";
+        //                                string SearchKey = "";
+        //                                string RoomToken = "";
+        //                                string RoomNo = "";
+        //                                if (!string.IsNullOrEmpty(ratePlanCode))
+        //                                {
+        //                                    spitid1 = RoomRatePlanCode.Split(new String[] { "^^" }, StringSplitOptions.None);
+        //                                    spitid2 = spitid1[5].Split(new String[] { "$$$" }, StringSplitOptions.None);
+
+        //                                    HotelOptionId = spitid2[0];
+        //                                    SearchKey = spitid2[1];
+        //                                    RoomToken = spitid2[2];
+        //                                    RoomNo = "1";
+        //                                    RoomId = spitid1[1];    
+        //                                }
+        //                                string SupplierID = spitid1[6];
+        //                                int MasterSupplierID = 0;
+        //                                MasterSupplierID = Convert.ToInt32(spitid1[6]);
+        //                                SearchKeyRP = spitid2[1];
+        //                                HotelOptionIdRP = spitid2[0];
+
+        //                                //var lowestPriceRoom = GetLowestPriceRoom(availabilityResponse);
+        //                                //LowestRate = lowestPriceRoom.Price;
+        //                                LowestRate = preCheckResponse.PreBookRS.HotelOption.TotalPrice;
+
+        //                                drXmlHotel["GIITACode"] = giitaCode;
+        //                                drXmlHotel["OwnsystemHotelId"] = Item.SearchPara.Filters.HotelIDs;
+        //                                drXmlHotel["RaynaId"] = Item.SearchPara.Filters.HotelIDs;
+        //                                drXmlHotel["SupplierCurrency"] = preCheckResponse.PreBookRS.Currency;
+        //                                drXmlHotel["XmlHotelCity"] = GTAResponse.Tables[0].Rows[0]["CityId"];
+        //                                drXmlHotel["XMLHotelCode"] = Item.SearchPara.Filters.HotelIDs;
+        //                                drXmlHotel["HotelName"] = GTAResponse.Tables[0].Rows[0]["Name"];
+        //                                //drXmlHotel["HotelFrontImage"] = GTAImage1;
+        //                                drXmlHotel["Address"] = GTAResponse.Tables[0].Rows[0]["AddressLine"];
+        //                                //drXmlHotel["ReviewCount"] = ReviewCount;
+        //                                //drXmlHotel["ReviewRating"] = ReviewRating;
+        //                                drXmlHotel["Location"] = GTAResponse.Tables[0].Rows[0]["LandMark"];
+        //                                drXmlHotel["XMLCountry"] = GTAResponse.Tables[0].Rows[0]["CountryId"];
+        //                                drXmlHotel["XMLCity"] = GTAResponse.Tables[0].Rows[0]["CityId"];
+        //                                //drXmlHotel["Rating"] = Rating;
+        //                                //drXmlHotel["GroupName"] = Chain;
+        //                                //drXmlHotel["SortSequence"] = SortSeq;
+        //                                //drXmlHotel["latitude"] = Convert.ToString(Latitude).ToLower();
+        //                                //drXmlHotel["longitute"] = Convert.ToString(Longitude).ToLower();
+        //                                //drXmlHotel["SellingPrice"] = LowestRate;
+        //                                //drXmlHotel["FinalSellingPrice"] = LowestRate;
+        //                                //drXmlHotel["BookingStatus"] = BookingStatus;
+        //                                //drXmlHotel["SupplierName"] = "siteminder";
+        //                                //drXmlHotel["OfficeID"] = 0;
+        //                                //drXmlHotel["ContractID"] = 0;
+        //                                //drXmlHotel["Reviews"] = 0;
+        //                                //drXmlHotel["UniqueNo"] = uniqueno;
+        //                                //drXmlHotel["IsShowSupplier"] = blnIsShowSupplier;
+        //                                //drXmlHotel["VatdiffAmount"] = 0;
+        //                                //drXmlHotel["MasterSupplierId"] = Convert.ToInt32(GTAResponse.Tables[0].Rows[h]["SupplierId"]);
+        //                                //drXmlHotel["SupplierId"] = "14";
+        //                                //drXmlHotel["ReservationEmail"] = Convert.ToString(GTAResponse.Tables[0].Rows[h]["ReservationEmail"]);
+        //                                //drXmlHotel["HotelContactNo"] = ""; // Convert.ToString(GTAResponse.Tables[0].Rows[h]["HotelContactNo"]);
+
+        //                                DtHotel.Rows.Add(drXmlHotel);
+
+        //                                //ROOM
+        //                                string RoomUniqueId = string.Empty;
+        //                                if (preCheckResponse.PreBookRS.HotelOption.HotelRooms != null && preCheckResponse.PreBookRS.HotelOption.HotelRooms.Count > 0)
+        //                                {
+        //                                    int k = 0;
+        //                                    string RoomTokenRP = string.Empty;
+        //                                    //foreach (var rm in preCheckResponse.PreBookRS.HotelOption.HotelRooms)
+        //                                    {
+        //                                        //RoomUniqueId += rm.RoomNo + "_" + rm.UniqueId + ",";
+        //                                        //GimmonixDetail gimmonixDetail = new GimmonixDetail();
+        //                                        //if (GTAResponse.Tables.Count > 1 && GTAResponse.Tables[1] != null && GTAResponse.Tables[1].Rows.Count > 0)
+        //                                        //{
+        //                                        //    gimmonixDetail = GTAResponse.Tables[1].AsEnumerable()
+        //                                        //                    .Where(row => row.Field<int>("Supplierid") == Convert.ToInt32(SupplierID))
+        //                                        //                    .Select(row => new GimmonixDetail
+        //                                        //                    {
+        //                                        //                        GimmonixRoomId = row.Field<string>("gimmonixRoomId"),
+        //                                        //                        GimmonixRoomName = row.Field<string>("GimmonixRoomName")
+        //                                        //                    })
+        //                                        //                    .FirstOrDefault();
+
+        //                                        //    //GimmonixRoomId = GimmonixRoomId + "_" + SupplierID + rm.RoomToken;                                                    
+        //                                        //}
+        //                                        //else { continue; }
+
+        //                                        RoomTokenRP = RoomToken;
+        //                                        RoomTokenRP = "";
+        //                                        int daysBeforeCheckIn = 365;
+        //                                        double totalprice = 0;
+        //                                        string RoomName = "";
+        //                                        string MealName = "Ro";
+        //                                        double price = 0;
+        //                                        string processedRoomTypeID = "";
+        //                                        bool isroom = true;
+        //                                        int ChainCode_Agoda = Convert.ToInt32(spitid1[9]);
+        //                                        double ChainMarkup = Convert.ToDouble(spitid1[10]);
+
+
+        //                                        //foreach (var rm in availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelRooms[j])
+        //                                        {
+        //                                            for (int kk = 0; kk < preCheckResponse.PreBookRS.HotelOption.HotelRooms.Count; kk++)
+        //                                            {
+        //                                                //GimmonixDetail gimmonixDetail = new GimmonixDetail();
+        //                                                //if (GTAResponse.Tables.Count > 1 && GTAResponse.Tables[1] != null && GTAResponse.Tables[1].Rows.Count > 0)
+        //                                                //{
+        //                                                //    //GimmonixRoomId = GTAResponse.Tables[1].AsEnumerable()
+        //                                                //    //            .Where(row => row.Field<int>("Supplierid") == Convert.ToInt32(SupplierID) && row.Field<string>("SupplierRoomName") == rm.RoomTypeName)
+        //                                                //    //            .Select(row => row.Field<string>("gimmonixRoomId"))
+        //                                                //    //            .FirstOrDefault();
+
+        //                                                //    gimmonixDetail = GTAResponse.Tables[1].AsEnumerable()
+        //                                                //                    .Where(row => row.Field<int>("Supplierid") == Convert.ToInt32(SupplierID))
+        //                                                //                    .Select(row => new GimmonixDetail
+        //                                                //                    {
+        //                                                //                        GimmonixRoomId = row.Field<string>("gimmonixRoomId"),
+        //                                                //                        GimmonixRoomName = row.Field<string>("GimmonixRoomName")
+        //                                                //                    })
+        //                                                //                    .FirstOrDefault();
+        //                                                //    //GimmonixRoomId = GimmonixRoomId + "_" + SupplierID + rm.RoomToken;                                                    
+        //                                                //}
+        //                                                //else { continue; }
+        //                                                //if (availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelRooms[j][0].RoomTypeName == availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelRooms[j][kk].RoomTypeName && availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelRooms[j][0].MealName == availabilityResponse.AvailabilityRS.HotelResult[0].HotelOption[i].HotelRooms[j][kk].MealName)
+        //                                                {
+        //                                                    double PRprice = preCheckResponse.PreBookRS.HotelOption.TotalPrice;
+        //                                                    RoomUniqueId += preCheckResponse.PreBookRS.HotelOption.HotelRooms[kk].RoomNo + "_" + preCheckResponse.PreBookRS.HotelOption.HotelRooms[kk].UniqueId + ",";
+        //                                                    double totalprice1 = preCheckResponse.PreBookRS.HotelOption.HotelRooms[kk].Price;
+        //                                                    RoomName = preCheckResponse.PreBookRS.HotelOption.HotelRooms[kk].RoomTypeName;
+
+        //                                                    processedRoomTypeID = RoomId; // getMappedRoom_rlm(RoomName.Split('|')[0].Trim(), GTAResponse.Tables[1], Convert.ToInt32(Item.SearchPara.Filters.HotelIDs)); //needtochange
+
+        //                                                    if (processedRoomTypeID == "")
+        //                                                    {
+        //                                                        isroom = false;
+        //                                                        continue;
+        //                                                    }
+
+        //                                                    MealName = preCheckResponse.PreBookRS.HotelOption.HotelRooms[kk].MappedMealName;
+        //                                                    //totalprice = totalprice + totalprice1;
+        //                                                    daysBeforeCheckIn = Convert.ToInt32(spitid1[7]);
+
+        //                                                    int UniqueId = preCheckResponse.PreBookRS.HotelOption.HotelRooms[kk].UniqueId;
+
+        //                                                    //needtochange
+        //                                                    //try
+        //                                                    //{
+        //                                                    //    // DLConnection dBConnection1 = new DLConnection();
+        //                                                    //    SqlParameter[] para1 = new SqlParameter[]{
+        //                                                    //new SqlParameter("@totalprice1",Math.Round(totalprice1,2)),
+        //                                                    //new SqlParameter("@PRprice",Math.Round(PRprice,2)),
+        //                                                    //new SqlParameter("@UniqueId",UniqueId),
+        //                                                    //new SqlParameter("@ChainMarkup",ChainMarkup)
+        //                                                    //};
+        //                                                    //    //DataTable DsPrice = dBConnection1.GetDataTable("AgodaUpdatePrice_channalWise", para1);
+        //                                                    //    DataTable DsPrice = _dlConnection.GetDataTable("AgodaUpdatePrice_channalWise", para1);
+        //                                                    //    price += Convert.ToDouble(DsPrice.Rows[0]["AGprice"]);
+
+        //                                                    //}
+        //                                                    //catch (System.Exception ex)
+        //                                                    //{
+        //                                                    //    // Common.Error(ex);
+        //                                                    //    _exception.Error(ex);
+
+        //                                                    //}
+        //                                                    // ===============
+        //                                                }
+        //                                            }
+        //                                            if (isroom == false)
+        //                                            {
+        //                                                return options;
+        //                                            }
+        //                                            DataRow drhotelRoom = DtHotelRoom.NewRow();
+
+        //                                            drhotelRoom["SupplierName"] = "xmlout";
+        //                                            drhotelRoom["OwnsystemHotelId"] = Item.SearchPara.Filters.HotelIDs;
+        //                                            drhotelRoom["ContractID"] = 0;
+        //                                            drhotelRoom["UniqueNo"] = RoomToken;
+        //                                            drhotelRoom["BookingStatus"] = preCheckResponse.PreBookRS.HotelOption.Status;
+        //                                            drhotelRoom["RoomNo"] = "1";
+        //                                            //drhotelRoom["PromotionId"] = 0;
+        //                                            //drhotelRoom["HSupplierId"] = "";
+        //                                            //drhotelRoom["HRateTypeId"] = "";
+        //                                            drhotelRoom["RoomTypeName"] = RoomName;// gimmonixDetail.GimmonixRoomName;
+        //                                            drhotelRoom["OfferCode"] = "";
+        //                                            drhotelRoom["MealName"] = MealName;// rm.MealName;
+        //                                            drhotelRoom["RoomTypeId"] = processedRoomTypeID; // "123";// gimmonixDetail.GimmonixRoomId; drhotelRoom["BoardTypeID"] = RoomToken;
+        //                                            drhotelRoom["MealId"] = MealName;
+        //                                            drhotelRoom["OfferDescription"] = "";
+        //                                            //drhotelRoom["SupplierCurrency"] = preCheckResponse.PreBookRS.Currency;
+        //                                            drhotelRoom["SupplierCurrency"] = "USD";  //needdtochange
+        //                                            drhotelRoom["SHRUI"] = "";
+        //                                            drhotelRoom["CityId"] = GTAResponse.Tables[0].Rows[0]["CityId"];
+        //                                            drhotelRoom["IsCombineRoom"] = true;
+        //                                            //drhotelRoom["FinalSellingPrice"] = rm.Price;   //Single Room
+        //                                            //drhotelRoom["FinalSellingPrice"] = price;// preCheckResponse.PreBookRS.HotelOption.TotalPrice; // Combine Room //needtochange
+        //                                            drhotelRoom["FinalSellingPrice"] = preCheckResponse.PreBookRS.HotelOption.TotalPrice; // Combine Room
+        //                                            drhotelRoom["allocationDetails"] = SearchParam.Rooms.Count.ToString();
+        //                                            //if (ExtraPerson != string.Empty)
+        //                                            // drhotelRoom["EssentialInformation"] = ExtraPerson;
+
+        //                                            string RatePlanCode = ratePlanCode;
+        //                                            //advancedOptions.searchKeyAgoda + "^^" +
+        //                                            //drhotelRoom["RoomTypeId"] + "^^" +
+        //                                            //Item.SearchPara.Filters.HotelIDs + "^^" +
+        //                                            //drXmlHotel["MealName"] + "^^" +
+        //                                            ////drhotelRoom["BoardTypeID"] + "^^" +
+        //                                            //drhotelRoom["SupplierCurrency"] + "^^" +
+        //                                            ////drhotelRoom["OTHPromoCode"] + "^^" +
+        //                                            //HotelOptionIdRP + "$$$" + SearchKeyRP + "$$$" + RoomTokenRP + "$$$" + rm.Price + "^^" +
+        //                                            //MasterSupplierID + "^^" +
+        //                                            //"Travelbullz";
+
+        //                                            drhotelRoom["channel"] = ChainCode_Agoda;
+        //                                            drhotelRoom["RoomTypeCode"] = RatePlanCode;
+        //                                            DtHotelRoom.Rows.Add(drhotelRoom);
+
+        //                                            DataRow drHotelCancellation = dtCancellation.NewRow();
+        //                                            drHotelCancellation["SupplierName"] = "xmlout";
+        //                                            drHotelCancellation["OwnsystemHotelId"] = Item.SearchPara.Filters.HotelIDs;
+        //                                            drHotelCancellation["RoomNo"] = 1; // Convert.ToString(drRoomCategories[rc]["RoomNo"]);
+        //                                                                               //drHotelCancellation["RoomTypeId"] = rm.RoomToken;//Convert.ToString(drRoomCategories[rc]["RoomTypeId"]);
+        //                                            drHotelCancellation["RoomTypeId"] = processedRoomTypeID;// "123";// gimmonixDetail.GimmonixRoomId;//Convert.ToString(drRoomCategories[rc]["RoomTypeId"]);
+        //                                            drHotelCancellation["BoardTypeID"] = RoomToken;
+        //                                            drHotelCancellation["RoomTypeCode"] = RatePlanCode;
+        //                                            //drHotelCancellation["RoomTypeName"] = rm.RoomTypeName;//RoomDesc;
+        //                                            drHotelCancellation["RoomTypeName"] = RoomName;// "Stander";// gimmonixDetail.GimmonixRoomName;
+        //                                            drHotelCancellation["MealId"] = MealName;//Convert.ToString(drRoomCategories[rc]["BoardBasis"]);
+        //                                            if (k == 0)
+        //                                            {
+        //                                                k++;
+        //                                                if (Convert.ToInt32(spitid1[7]) > 0)
+        //                                                {
+        //                                                    //foreach (var cp in rm.CancellationPolicy)
+        //                                                    //{
+        //                                                    //    if (cp.CancellationPrice == 0)
+        //                                                    //    {
+        //                                                    //        drHotelCancellation["FromDate"] = cp.FromDate;
+        //                                                    //        drHotelCancellation["ToDate"] = cp.ToDate;
+
+        //                                                    //        DateTime from = DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null);
+        //                                                    //        DateTime to = Convert.ToDateTime(cp.ToDate);
+        //                                                    //        TimeSpan totaldays = Convert.ToDateTime(from) - Convert.ToDateTime(to);
+        //                                                    //        drHotelCancellation["daysBeforeCheckIn"] = Convert.ToString(Convert.ToInt32(totaldays.Days));
+        //                                                    //    }
+        //                                                    //    else
+        //                                                    //    {
+        //                                                    //        drHotelCancellation["CompanyCancellationPrice"] = cp.CancellationPrice;
+        //                                                    //        drHotelCancellation["AgentCancellationPrice"] = cp.CancellationPrice;
+        //                                                    //    }
+        //                                                    //}
+        //                                                    drHotelCancellation["daysBeforeCheckIn"] = Convert.ToString(Convert.ToInt32(spitid1[7]));
+        //                                                    drHotelCancellation["CompanyCancellationPrice"] = spitid2[3];
+        //                                                    drHotelCancellation["AgentCancellationPrice"] = spitid2[3];
+        //                                                    drHotelCancellation["SupplierCurrency"] = preCheckResponse.PreBookRS.Currency;
+        //                                                    //drHotelCancellation["BuyingPrice"] = rm.Price; // Single
+
+        //                                                    // ================
+        //                                                    // drHotelCancellation["BuyingPrice"] = price;// preCheckResponse.PreBookRS.HotelOption.TotalPrice; //Combine  //needtochange
+        //                                                    //drHotelCancellation["isNRF"] = Convert.ToBoolean(IsNonRef);
+
+
+        //                                                    drHotelCancellation["BuyingPrice"] = preCheckResponse.PreBookRS.HotelOption.TotalPrice; //Combine;
+        //                                                    // ================
+
+
+        //                                                    dtCancellation.Rows.Add(drHotelCancellation);
+        //                                                }
+        //                                                else
+        //                                                {
+        //                                                    dtCancellation.Rows.Add(drHotelCancellation);
+        //                                                }
+        //                                            }
+        //                                            DataRow drHotelRoomRateBreackUp = DtHotelRoomRateBreackUp.NewRow();
+        //                                            drHotelRoomRateBreackUp["RoomNo"] = 1;
+        //                                            drHotelRoomRateBreackUp["SupplierName"] = "xmlout";
+        //                                            drHotelRoomRateBreackUp["OwnsystemHotelId"] = Item.SearchPara.Filters.HotelIDs;
+        //                                            drHotelRoomRateBreackUp["ContractID"] = 0;
+        //                                            //drHotelRoomRateBreackUp["RoomTypeName"] = rm.RoomTypeName;
+        //                                            drHotelRoomRateBreackUp["RoomTypeName"] = "Stander";// gimmonixDetail.GimmonixRoomName;
+        //                                                                                                //drHotelRoomRateBreackUp["RoomTypeId"] = rm.RoomToken;
+        //                                            drHotelRoomRateBreackUp["RoomTypeId"] = processedRoomTypeID;// "123";// gimmonixDetail.GimmonixRoomId;
+        //                                            drHotelRoomRateBreackUp["RoomTypeCode"] = RatePlanCode;//RateplancodeSiteminder;
+        //                                            drHotelRoomRateBreackUp["BoardTypeID"] = RoomToken;
+        //                                            drHotelRoomRateBreackUp["MealId"] = MealName; // Convert.ToString(drRoomCategories[rc]["BoardBasis"]);
+        //                                            drHotelRoomRateBreackUp["Meal"] = MealName;// rm.MealName; //Convert.ToString(drRoomCategories[rc]["BoardBasis"]);
+        //                                            drHotelRoomRateBreackUp["BookingStatus"] = preCheckResponse.PreBookRS.HotelOption.Status;//Convert.ToString(drRoomCategories[rc]["BookingStatus"]);
+        //                                                                                                                                     //drHotelRoomRateBreackUp["DateOfWeek"] = WeekColumn;
+        //                                                                                                                                     //drHotelRoomRateBreackUp["Date"] = datetime;
+        //                                                                                                                                     //drHotelRoomRateBreackUp["Rate"] = rm.Price; // Single
+        //                                            drHotelRoomRateBreackUp["Rate"] = preCheckResponse.PreBookRS.HotelOption.TotalPrice; // Combine
+        //                                                                                                                                 //drHotelRoomRateBreackUp["RateType"] = Convert.ToString(DTdSurchargerdate[MP]["SurchargeName"]);
+        //                                                                                                                                 //drHotelRoomRateBreackUp["OrderNo"] = cntno;                                        
+        //                                            drHotelRoomRateBreackUp["SupplierCurrency"] = preCheckResponse.PreBookRS.Currency;
+        //                                            //drHotelRoomRateBreackUp["CompanyRate"] = Math.Round(Convert.ToDouble(DTdSurchargerdate[MP]["Price"]), 2);
+        //                                            //drHotelRoomRateBreackUp["NewRateType"] = Convert.ToString(DTdrdate[0]["RateType"]);
+        //                                            //drHotelRoomRateBreackUp["RateTypeId"] = Convert.ToString(DTdrdate[0]["RateTypeId"]);
+        //                                            //drHotelRoomRateBreackUp["SupplierId"] = Convert.ToString(DTdrdate[0]["SupplierId"]);
+        //                                            // drHotelRoomRateBreackUpSurcharge["RatePlanCode"] = RateplancodeSiteminder;                                        
+        //                                            //drHotelRoomRateBreackUp["BuyingPrice"] = rm.Price; //Single
+        //                                            drHotelRoomRateBreackUp["BuyingPrice"] = preCheckResponse.PreBookRS.HotelOption.TotalPrice; //Combine
+
+        //                                            DtHotelRoomRateBreackUp.Rows.Add(drHotelRoomRateBreackUp);
+        //                                        }
+        //                                    }
+
+        //                                    try
+        //                                    {
+        //                                        //DLConnection dBConnection = new DLConnection();
+
+        //                                        SqlParameter[] para = new SqlParameter[]{
+        //                                  new SqlParameter("@Action","INSERT"),
+        //                                  new SqlParameter("@SupplierID",SupplierID),
+        //                                  new SqlParameter("@RatePlanCode",ratePlanCode),
+        //                                  new SqlParameter("@BookingToken",preCheckResponse.PreBookRS.HotelOption.BookingToken),
+        //                                  new SqlParameter("@UniqueId",RoomUniqueId)
+        //                                };
+
+        //                                        //int p = dBConnection.ExecuteNonQuery("GetAgodaRoomDetailXMLOut", para);
+        //                                        int p = await _dlConnection.ExecuteNonQuery("GetAgodaRoomDetailXMLOut", para);
+
+        //                                    }
+        //                                    catch (System.Exception ex)
+        //                                    {
+        //                                        _exception.Error(ex);
+
+        //                                    }
+
+
+        //                                    //Options ops = (HotelXML_Suppliers.GetCommonRoomForSuppliers(Convert.ToInt64(giitaCode), commonSearch.tokenData, commonSearch.advancedOptions, LowestRate, drXmlHotel, DtHotelRoom, dtCancellation, DtHotelRoomRateBreackUp, SearchParam));
+        //                                    Options ops = (await _supplierRes.GetCommonRoomForSuppliers_agoda(Convert.ToInt64(giitaCode), commonSearch.tokenData, commonSearch.advancedOptions, LowestRate, drXmlHotel, DtHotelRoom, dtCancellation, DtHotelRoomRateBreackUp, SearchParam)); //SearchKeyRP
+        //                                    if (ops != null)
+        //                                        options.Add(ops);
+        //                                }
+        //                            }
+        //                            catch (Exception ex)
+        //                            {
+        //                                _exception.Error(ex);
+        //                                return options;
+        //                            }
+        //                            finally
+        //                            {
+        //                                drXmlHotel = null;
+        //                                DtHotelRoom = null;
+        //                                DtHotelRoomRateBreackUp = null;
+        //                                dtCancellation = null;
+        //                            }
+        //                        }
+        //                        //Options_agoda ops = (HotelXML_Suppliers.GetCommonRoomForSuppliers(Convert.ToInt64(giitaCode), commonSearch.tokenData, commonSearch.advancedOptions, LowestRate, drXmlHotel, DtHotelRoom, dtCancellation, DtHotelRoomRateBreackUp, SearchParam));
+        //                        //if (ops != null)
+        //                        //    options.Add(ops);
+        //                    }
+        //                    else
+        //                    {
+        //                        Item.ResponseType = "NoCount";
+        //                        Item.ResponseStatus = 404;
+        //                        try
+        //                        {
+        //                            Item.SupplierResponseError = Item.RQRS[0].Response;
+        //                        }
+        //                        catch (Exception ex)
+        //                        {
+        //                            _exception.Error(ex);
+
+        //                        }
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    Item.ResponseType = "NoCount";
+        //                    Item.ResponseStatus = 404;
+        //                    try
+        //                    {
+        //                        Item.SupplierResponseError = Item.RQRS[0].Response;
+        //                    }
+        //                    catch (Exception ex)
+        //                    {
+        //                        _exception.Error(ex);
+
+        //                    }
+        //                }
+        //            }
+        //            else
+        //            {
+        //                Item.ResponseType = "NoCount";
+        //                Item.ResponseStatus = 404;
+        //                try
+        //                {
+        //                    Item.SupplierResponseError = Item.RQRS[0].Response;
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    _exception.Error(ex);
+
+        //                }
+        //            }
+        //            return options;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _exception.Error(ex);
+        //            return options;
+        //        }
+        //        finally
+        //        {
+        //            //GC.Collect();
+        //            #region ResProcessTimer
+        //            try
+        //            {
+        //                timerroomx.Stop();
+        //                Item.CodeProcessingTimeSupplier = timerroomx.ElapsedMilliseconds;
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                await _exception.Error(ex);
+        //            }
+        //            #endregion
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Item.ResponseType = "NoCount";
+        //        Item.ResponseStatus = 204;
+
+        //    }
+        //    return options;
+        //}
+        #endregion
         public AgodaBookingRS XMLOutBookingProcess(AgodaBookingRQ agodaRQ, TokenData tokenData, Stopwatch Timer, string rateplanstring)
         {
 
