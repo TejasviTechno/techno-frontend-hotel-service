@@ -1824,12 +1824,6 @@ namespace XConnect.Supplier.Exely
                 if (result == null) return essential;
 
                 var parts = new List<string>();
-                if (result.Images != null && result.Images.Count > 0)
-                {
-                    string imageUrl = result.Images.FirstOrDefault()?.Url;
-                    if (!string.IsNullOrWhiteSpace(imageUrl))
-                        parts.Add("<img src=\"" + WebUtility.HtmlEncode(imageUrl) + "\" style=\"max-width:160px;max-height:120px;margin:4px;\" />");
-                }
 
                 if (result.Services != null && result.Services.Count > 0)
                 {
