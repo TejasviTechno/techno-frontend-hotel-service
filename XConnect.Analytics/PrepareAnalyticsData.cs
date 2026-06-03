@@ -295,7 +295,8 @@ namespace XConnect.Analytics
                     SiteType = _userContextAccessor?.SiteType ?? "",
                     SearchAvailTrace = SearchAvailTrace,
                     Source = analyticsData.source,
-                    ActualDescription = analyticsData.ActualDescription
+                    ActualDescription = analyticsData.ActualDescription,
+                    ChannelCode = analyticsData?.Channelcode ?? "",
 
                 };
 
