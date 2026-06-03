@@ -2447,10 +2447,7 @@ namespace XConnect.Supplier.GRNC
                 //Request.Headers.Add("Accept", "application/json");
                 //Request.Headers.Add("Accept-Encoding", "application/gzip");
                 Stream newStream = null;
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
-           | SecurityProtocolType.Tls11
-           | SecurityProtocolType.Tls12
-           | SecurityProtocolType.Ssl3;
+               
                 byte[] data = Encoding.ASCII.GetBytes(strxmlRQRS);
                 Request.ContentLength = data.Length;
                 newStream = Request.GetRequestStream();
