@@ -249,7 +249,7 @@ namespace XConnect.Supplier.DirectContracting
 
                 SBreq.Append("],");
                 SBreq.Append("\"Filters\":{");
-                SBreq.Append("\"IsOnlyAvailable\":\"" + true + "\",");
+                SBreq.Append("\"IsOnlyAvailable\":\"" + false + "\",");
                 SBreq.Append("\"StarRating\":{\"Min\":" + 1 + ",\"Max\":" + 5 + "},");
                 SBreq.Append("\"hotelIds\":[");
                 if (!string.IsNullOrEmpty(hotelid))
@@ -266,7 +266,10 @@ namespace XConnect.Supplier.DirectContracting
                 SBreq.Append("},");
                 SBreq.Append("\"AdvancedOptions\":{");
                 SBreq.Append("\"Currency\":\"" + Currency + "\",");
-                SBreq.Append("\"CustomerIpAddress\":\"" + Platform + "\",");
+                string ipAddress = Platform.Contains("$$")
+    ? Platform.Split(new[] { "$$" }, StringSplitOptions.None)[1]
+    : "103.19.248.46";
+                SBreq.Append("\"CustomerIpAddress\":\"" + ipAddress + "\",");
                 SBreq.Append("\"promotionCode\":null");
                 SBreq.Append("}");
                 SBreq.Append("}");
