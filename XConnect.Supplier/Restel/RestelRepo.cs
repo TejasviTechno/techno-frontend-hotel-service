@@ -339,9 +339,7 @@ namespace XConnect.Supplier.Restel
                         string ItemCode = Convert.ToString(Restel_Response.Tables["hot"].Rows[h]["cod"]);
                         string HotelName = Convert.ToString(Restel_Response.Tables["hot"].Rows[h]["nom"]);
                         int HotelId = Convert.ToInt32(Restel_Response.Tables["hot"].Rows[h]["hot_Id"]);
-                        //string starRating = Convert.ToString(TLData.Tables["hot"].Rows[h]["StarRating"]);
-                        //string Stars = Common.TravelLandaStarRating(starRating);
-
+                        
                         double FinalMinPrice = 0;
                         #region "When not Need Room"  
                         // add hotel code from price only and room code blank here
@@ -368,14 +366,7 @@ namespace XConnect.Supplier.Restel
                                 for (int hb = 0; hb < drhab.Length; hb++)
                                 {
                                     drreg = Restel_Response.Tables["reg"].Select("hab_Id='" + Convert.ToInt32(drhab[hb]["hab_Id"]) + "'");
-                                    //if (drreg.Length > 0)
-                                    //{
-                                    //    for (int nrm = 0; nrm < drreg.Length; nrm++)
-                                    //    {
-                                    //        regpricenew += Convert.ToDouble(drreg[0]["prr"]);
-                                    //    }
-                                    //}
-                                    //regprice = regpricenew;
+                                    
                                     regpricenew = Convert.ToDouble(drreg[0]["prr"]);
                                     if (hb != 0)
                                     {
@@ -486,7 +477,7 @@ namespace XConnect.Supplier.Restel
                                 if (SearchParam.Filters.IsShowRooms == 1)
                                 {
                                     double AgentPercentage = 0.0;
-                                    // Boolean blnIsShowSupplier = false;
+                                    
                                     double AgentMarkupAmount = 0.0;
                                     Boolean isPerce = true;
 
@@ -500,25 +491,15 @@ namespace XConnect.Supplier.Restel
                                     for (int i = 0; i < SearchParam.Rooms.Count; i++)
                                         maxOcupancy = maxOcupancy + SearchParam.Rooms[i].NoofChild + SearchParam.Rooms[i].NoofAdults;
                                     #region Supplier Room Code block
-                                    //DataSet MGHoliday_Response = Common.GetDataSetFromXMLString(Response);
-
+                                   
                                     if (Restel_Response.Tables["hotls"] != null)
                                     {
-
-                                        // for (int i = 0; i < Restel_Response.Tables["hot"].Rows.Count; i++)
                                         {
-
-                                            //int rshotel_id = Convert.ToInt32(Restel_Response.Tables["hot"].Rows[i]["hot_Id"]);
-                                            //int rspropertyid = Convert.ToInt32(Restel_Response.Tables["hot"].Rows[i]["cod"]);
-
                                             DataRow[] drpriceres = Restel_Response.Tables["res"].Select("hot_id='" + Convert.ToInt32(Restel_Response.Tables["hot"].Rows[h]["hot_Id"]) + "'");
-                                            //int rsres_id = Convert.ToInt32(drpriceres[0]["res_Id"]);
-
+                                           
 
                                             DataRow[] drpax = Restel_Response.Tables["pax"].Select("res_id='" + Convert.ToInt32(drpriceres[0]["res_Id"]) + "'");
-                                            //int rspax_id = Convert.ToInt32(drpax[0]["pax_Id"]);
-                                            //string adtchd = Convert.ToString(drpax[0]["cod"]);
-                                            //hab
+                                           
 
                                             DataRow[] drhab = Restel_Response.Tables["hab"].Select("pax_Id = '" + Convert.ToInt32(drpax[0]["pax_Id"]) + "'");
 
@@ -542,9 +523,6 @@ namespace XConnect.Supplier.Restel
                                                             break;
                                                     }
 
-                                                    //int rshab_Id = Convert.ToInt32(drhab[room]["hab_Id"]);
-
-
                                                     #region DataRaw and Variable Declaration
                                                     string Type = "id";
 
@@ -556,10 +534,8 @@ namespace XConnect.Supplier.Restel
                                                     {
                                                         Type = "token";
                                                     }
-                                                    //string RoomName = Convert.ToString(drhab[room]["desc"]);
+                                                 
                                                     string RoomName = Convert.ToString(drhab[room]["desc"]);//New
-
-
 
                                                     DataRow[] drreg = Restel_Response.Tables["reg"].Select("hab_Id = '" + Convert.ToInt32(drhab[room]["hab_Id"]) + "'");
 
@@ -567,7 +543,6 @@ namespace XConnect.Supplier.Restel
                                                     {
                                                         for (int ml = 0; ml < drreg.Length; ml++)
                                                         {
-                                                            //string guid = Guid.NewGuid().ToString().Substring(0, 4);
                                                             int reg_Id = Convert.ToInt32(drreg[ml]["reg_Id"]); //New
 
                                                             string BoardID = "";
@@ -577,7 +552,6 @@ namespace XConnect.Supplier.Restel
                                                             }
                                                             else
                                                             {
-                                                                //int drreg_Id = Convert.ToInt32(drreg[ml]["reg_Id"]);
                                                                 DataRow[] drlin = Restel_Response.Tables["lin"].Select("reg_Id = '" + Convert.ToInt32(drreg[ml]["reg_Id"]) + "'");
 
                                                                 for (int lin = 0; lin < drlin.Length; lin++)
@@ -588,12 +562,6 @@ namespace XConnect.Supplier.Restel
                                                             }
                                                             RoomCode = Guid.NewGuid().ToString().Substring(0, 4) + "|" + BoardID + "@@@" + ItemCode;
 
-
-
-                                                            //string Board_Text = Convert.ToString(drreg[ml]["cod"]);
-
-                                                            //double CompanyBuying = Convert.ToDouble(Convert.ToString(drreg[ml]["prr"]));
-                                                            //string bkstatus = Convert.ToString(drreg[ml]["prr"]);
                                                             string bkstatus = Convert.ToString(drreg[ml]["esr"]); //#add new change on 3-Mar-2024
 
                                                             string uniqid = Guid.NewGuid().ToString();
@@ -790,16 +758,12 @@ namespace XConnect.Supplier.Restel
                                                                                 if (lp == 0)
                                                                                 {
                                                                                     Penalty = 0;
-                                                                                    //StartDate = DateTime.Now.Date;
                                                                                     EndDate = Convert.ToDateTime(TvDate).AddDays(-(daysbefore + 1));
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    //Penalty = (CompanyBuying * 100) / 100;
+                                                                                  
                                                                                     Penalty = (ItemPrice * 100) / 100;
-                                                                                    //Penalty = Penalty * CurrencyFactorRestel;
-
-
                                                                                     StartDate = Convert.ToDateTime(TvDate).AddDays(-daysbefore);
                                                                                     EndDate = Convert.ToDateTime(TvDate);
                                                                                 }
@@ -813,11 +777,8 @@ namespace XConnect.Supplier.Restel
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    //Penalty = (CompanyBuying * 100) / 100;
                                                                                     Penalty = (ItemPrice * 100) / 100;
-                                                                                    //Penalty = Penalty * CurrencyFactorRestel;
-
-
+                                                                                    
                                                                                     StartDate = Convert.ToDateTime(TvDate).AddDays(-(daysbefore));
                                                                                     EndDate = Convert.ToDateTime(TvDate);
                                                                                 }
@@ -850,42 +811,29 @@ namespace XConnect.Supplier.Restel
                                                                             if (NowDate < EndDate && lp == 0)
                                                                             {
                                                                                 DateTime CheckInDate = Convert.ToDateTime(CheckIn);
-                                                                                //DateTime CheckInDate = Convert.ToDateTime(CheckIn);
+                                                                                
                                                                                 if (EndDate > CheckInDate)
                                                                                 {
                                                                                     EndDate = CheckInDate;
                                                                                 }
                                                                                 double charge = 0;
-                                                                                //dtLOH_W2M_Cancellation.Rows.Add(Common.setCancellationPolicyRow(ref charge, dtLOH_W2M_Cancellation.NewRow(), CurrencyFactorRestel, XMLHotelBookingCommon.RestelCurrency, provider, ownsystemid, Convert.ToString(roomno),
-                                                                                // Convert.ToString(RoomTypeId_Own), RoomName, MealID, Convert.ToDateTime(StartDate), EndDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "NO", "", Type, "", ""));
-                                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref charge, dtCancellation.NewRow(), CurrencyFactorRestel, currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(SeqNo),
+                                                                                 dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref charge, dtCancellation.NewRow(), CurrencyFactorRestel, currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(SeqNo),
                                                                                                                Convert.ToString(RoomCode), RoomName, BoardID, Convert.ToDateTime(curDate), EndDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "NO", "", Type, "", ""));
                                                                                 dtCancellation.AcceptChanges();
                                                                             }
                                                                             else
                                                                             {
                                                                                 DateTime CheckInDate = Convert.ToDateTime(CheckIn);
-                                                                                //DateTime CheckInDate = Convert.ToDateTime(CheckIn);
+                                                                              
                                                                                 if (EndDate > CheckInDate)
                                                                                 {
                                                                                     EndDate = CheckInDate;
                                                                                 }
 
-                                                                                //Penalty = (CompanyBuying * 100) / 100;
                                                                                 Penalty = (ItemPrice * 100) / 100;
 
-                                                                                //Penalty = Penalty * CurrencyFactorRestel;
-
-
-
                                                                                 double chargetype = Penalty;
-
-                                                                                // penaltynew = Common.ProcessHotelCancelationPrice_WithMarkup_wl(ref MainAgentCharge_wl, DsAgentDetail, ref CancelCharge_wl, ref VatOnPolicy, objSearPera.NoofNights, objSearPera.CityID, objSearPera.CountryId, Penalty, isPerce, B2CMarkup, AgentPercentage, AgentMarkupAmount, IsParentId, SubAgentMarkup, ref VatOnPolicy, TaxPer);
-
-                                                                                //dtLOH_W2M_Cancellation.Rows.Add(Common.setCancellationPolicyRow(ref chargetype, dtLOH_W2M_Cancellation.NewRow(), CurrencyFactorRestel, XMLHotelBookingCommon.RestelCurrency, provider, ownsystemid, Convert.ToString(roomno),
-                                                                                // Convert.ToString(RoomTypeId_Own), RoomName, MealID, curDate, EndDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "Yes", "", Type));
-                                                                                // dtLOH_W2M_Cancellation.AcceptChanges();
-                                                                                dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref chargetype, dtCancellation.NewRow(), CurrencyFactorRestel, currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(SeqNo),
+                                                                                 dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref chargetype, dtCancellation.NewRow(), CurrencyFactorRestel, currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(SeqNo),
                                                                                                                Convert.ToString(RoomCode), RoomName, BoardID, StartDate, CheckInDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "Yes", "", Type));
                                                                                 dtCancellation.AcceptChanges();
                                                                                 break;
@@ -895,11 +843,8 @@ namespace XConnect.Supplier.Restel
                                                                     }
                                                                     else
                                                                     {
-                                                                        //double Penalty = (CompanyBuying * 100) / 100;
                                                                         double Penalty = (ItemPrice * 100) / 100;
-                                                                        //Penalty = Penalty * CurrencyFactorRestel;
-
-
+                                                                       
                                                                         DateTime CancelDate = DateTime.Now.Date;
                                                                         if (Penalty == 0)
                                                                         {
@@ -943,21 +888,16 @@ namespace XConnect.Supplier.Restel
                                                                         else
                                                                         {
                                                                             DateTime CheckInDate = Convert.ToDateTime(CheckIn);
-                                                                            //DateTime CheckInDate = Convert.ToDateTime(CheckIn);
+                                                                           
                                                                             if (EndDate > CheckInDate)
                                                                             {
                                                                                 EndDate = CheckInDate;
                                                                                 EndDate = EndDate.AddDays(CutOffDays).Date; // added new 
                                                                             }
                                                                             double chargetype = Penalty;
-                                                                            // dtLOH_W2M_Cancellation.Rows.Add(Common.setCancellationPolicyRow(ref chargetype, dtLOH_W2M_Cancellation.NewRow(), CurrencyFactorRestel, XMLHotelBookingCommon.RestelCurrency, provider, ownsystemid, Convert.ToString(roomno),
-                                                                            // Convert.ToString(RoomTypeId_Own), RoomName, MealID, curDate, EndDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "Yes", "", Type));
-                                                                            //dtLOH_W2M_Cancellation.AcceptChanges();
                                                                             dtCancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref chargetype, dtCancellation.NewRow(), CurrencyFactorRestel, currency, Provider, Convert.ToString(OwnsystemHotelId), Convert.ToString(SeqNo), Convert.ToString(RoomCode), RoomName, BoardID, curDate, CheckInDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "Yes", "", Type));
                                                                             dtCancellation.AcceptChanges();
                                                                         }
-
-
                                                                     }
                                                                     //}
                                                                     #endregion
@@ -1033,8 +973,7 @@ namespace XConnect.Supplier.Restel
             try
             {
                 DataTable dtLOH_W2M_Cancellation = _commonMethod.GenerateCancellationDataTableNewV2();
-                //DataTable dtInrCurrency = Common.GetCountryCurrency(XMLHotelBookingCommon.RestelCurrency);
-                //double CurrencyFactorRestel = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
+                
                 double CurrencyFactorRestel = 1;//USD
                 #region Cancellation Policy RQ
                 Boolean isPerce = true;
@@ -1046,10 +985,7 @@ namespace XConnect.Supplier.Restel
                 double SubAgentMarkup = 0;
                 int IsParentId = 1;
                 Boolean blnIsShowSupplier = false;
-                //Int32 hotelRating = 0;
-                //hotelRating = Convert.ToInt32(rating);
-                //string CheckinDate = objSearPera.CheckInDate;
-                //_markup.getAgetMarkupSetting(Provider, GiataId, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, AgentId, hotelRating, objSearPera.CityID, Convert.ToString(objSearPera.CountryID), objSearPera.CheckInDate);
+                   //_markup.getAgetMarkupSetting(Provider, GiataId, dtSuplierMarkup, dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, AgentId, hotelRating, objSearPera.CityID, Convert.ToString(objSearPera.CountryID), objSearPera.CheckInDate);
                 _markup.getAgetMarkupSettingNew_new(Provider, Convert.ToString(GiataId), dtSuplierMarkup, dsCountryCityMarkup, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, AgentId, hotelRating, objSearPera.CityID, Convert.ToString(objSearPera.CountryID), objSearPera.CheckInDate);
 
                 if (dtAgentDetail != null)
@@ -1060,8 +996,7 @@ namespace XConnect.Supplier.Restel
                 int CutOffDays = XMLHotelBookingCommon.CutOffDays;
                 CutOffDays = _commonMethod.GetCutOffDays(dtSuplierMarkup, Provider);
                 DataRow[] drSuplierMarkup = (dtSuplierMarkup.Select("SupplierName='"+ Provider + "'"));
-                //string UserId = Convert.ToString(drSuplierMarkup[0]["UserName"]);
-                //string Password = Convert.ToString(drSuplierMarkup[0]["Password"]);
+               
                 string CheckIn = objSearPera.CheckInDate;
                 CheckIn = CheckIn.Substring(6, 4) + "-" + CheckIn.Substring(3, 2) + "-" + CheckIn.Substring(0, 2);
                 string RestelUrl = Convert.ToString(drSuplierMarkup[0]["WebSiteURL"]);
@@ -1088,9 +1023,7 @@ namespace XConnect.Supplier.Restel
                         ResponseDto responseDto = await GetRestelResponse("xml=" + EssentialRQ, RestelUrl, SearchTimeOut, Provider);
                         string EssenResponseData = responseDto.Response;
                         Error  = responseDto.Error;
-                        //ThirdPartyBookingHistory("testjac", "", CancelPolicyRQ, ResponseData, "testJac", "", "", "", "");
-
-
+                        
                         if (EssenResponseData == string.Empty || EssenResponseData.Contains("Error"))
                         {
                             cancellationDto.dsHotelData = dsHotel;
@@ -1125,14 +1058,9 @@ namespace XConnect.Supplier.Restel
                     }
                 }
 
-
-
                 string CancelPolicyRQ = Get_Restel_Policy_PriceCheckRQ(PropertyId, CheckIn, NoOfNights, RoomTypeId_Own, MealID, ref RoomName, Type, RoomNo);
                 _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(RoomTypeId_Own), Convert.ToString(ownsystemid), CancelPolicyRQ, "", "After Get Policy", Provider, "Request", SearchKey, "");
-
-
-                //Common.ThirdPartyBookingHistory(Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]), "", BookingDetailsRequest, "-", "Before Request hit BookingDetail for Supplier HotelDo", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "Request Confirm", "-", "WithinEarth");
-                #endregion
+                 #endregion
 
                 if (CancelPolicyRQ != null)
                 {
@@ -1149,10 +1077,7 @@ namespace XConnect.Supplier.Restel
                     timerroomprocess.Stop();
                     time = timerroomprocess.Elapsed.ToString();
 
-                    ////ThirdPartyBookingHistory("testjac", "", CancelPolicyRQ, ResponseData, "testJac", "", "", "", "");
-                    //ThirdPartyBookingHistory("restel", "", CancelPolicyRQ, ResponseData, "restel", "", "", "", "");
                     _commonMethod.ThirdPartyGetPolicyHistory(Convert.ToString(RoomTypeId_Own), Convert.ToString(ownsystemid), CancelPolicyRQ, Convert.ToString(ResponseData), "After Get Policy", Provider, "Response", SearchKey, "");
-
 
                     if (ResponseData == string.Empty || ResponseData.Contains("Error"))
                     {
@@ -1200,13 +1125,10 @@ namespace XConnect.Supplier.Restel
                     {
                         #region DataRaw
 
-
                         int parametros_Id = Convert.ToInt32(Restel_Response.Tables["parametros"].Rows[0]["parametros_Id"]);
 
                         DataRow[] drCancellation = (Restel_Response.Tables["politicaCanc"].Select("parametros_Id='" + parametros_Id + "'"));
-                        //for (int i = 0; i < drCancellation.Length; i++)
-                        //{
-
+                        
                         int daysbefore = Convert.ToInt32(drCancellation[0]["dias_antelacion"]);  //14
                         int hours = Convert.ToInt32(drCancellation[0]["horas_antelacion"]);
                         int nights = Convert.ToInt32(drCancellation[0]["noches_gasto"]);
@@ -1235,7 +1157,7 @@ namespace XConnect.Supplier.Restel
                                     if (lp == 0)
                                     {
                                         Penalty = 0;
-                                        //StartDate = DateTime.Now.Date;
+                                       
                                         EndDate = Convert.ToDateTime(TvDate).AddDays(-(daysbefore + 1));
                                     }
                                     else
@@ -1288,15 +1210,13 @@ namespace XConnect.Supplier.Restel
                                 if (NowDate < EndDate && lp == 0)
                                 {
                                     DateTime CheckInDate = Convert.ToDateTime(CheckIn);
-                                    //DateTime CheckInDate = Convert.ToDateTime(CheckIn);
+                                    
                                     if (EndDate > CheckInDate)
                                     {
                                         EndDate = CheckInDate;
                                     }
                                     double charge = 0;
-                                    //dtLOH_W2M_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref charge, dtLOH_W2M_Cancellation.NewRow(), CurrencyFactorRestel, RestelCurrency, Provider, ownsystemid, Convert.ToString(roomno),
-                                    //                               Convert.ToString(RoomTypeId_Own), RoomName, MealID, Convert.ToDateTime(StartDate), EndDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "NO", "", Type, "", ""));
-                                    //160725
+                                    
                                     dtLOH_W2M_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref charge, dtLOH_W2M_Cancellation.NewRow(), CurrencyFactorRestel, RestelCurrency, Provider, ownsystemid, Convert.ToString(roomno),
                                                                    Convert.ToString(RoomTypeId_Own), RoomName, MealID, Convert.ToDateTime(curDate), EndDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "NO", "", Type, "", ""));
                                     dtLOH_W2M_Cancellation.AcceptChanges();
@@ -1304,7 +1224,7 @@ namespace XConnect.Supplier.Restel
                                 else
                                 {
                                     DateTime CheckInDate = Convert.ToDateTime(CheckIn);
-                                    //DateTime CheckInDate = Convert.ToDateTime(CheckIn);
+                                    
                                     if (EndDate > CheckInDate)
                                     {
                                         EndDate = CheckInDate;
@@ -1314,9 +1234,7 @@ namespace XConnect.Supplier.Restel
                                     Penalty = Penalty * CurrencyFactorRestel;
 
                                     double chargetype = Penalty;
-                                    //dtLOH_W2M_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref chargetype, dtLOH_W2M_Cancellation.NewRow(), CurrencyFactorRestel, RestelCurrency, Provider, ownsystemid, Convert.ToString(roomno),
-                                    //                               Convert.ToString(RoomTypeId_Own), RoomName, MealID, curDate, EndDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "Yes", "", Type));
-                                    //160725
+                                   
                                     dtLOH_W2M_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref chargetype, dtLOH_W2M_Cancellation.NewRow(), CurrencyFactorRestel, RestelCurrency, Provider, ownsystemid, Convert.ToString(roomno),
                                                                    Convert.ToString(RoomTypeId_Own), RoomName, MealID, StartDate, CheckInDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "Yes", "", Type));
                                     dtLOH_W2M_Cancellation.AcceptChanges();
@@ -1327,7 +1245,6 @@ namespace XConnect.Supplier.Restel
                         {
                             double Penalty = (FinalSellPrice * 100) / 100;
                             Penalty = Penalty * CurrencyFactorRestel;
-
 
                             DateTime CancelDate = DateTime.Now.Date;
                             if (Penalty == 0)
@@ -1371,15 +1288,13 @@ namespace XConnect.Supplier.Restel
                             else
                             {
                                 DateTime CheckInDate = Convert.ToDateTime(CheckIn);
-                                //DateTime CheckInDate = Convert.ToDateTime(CheckIn);
+                                
                                 if (EndDate > CheckInDate)
                                 {
                                     EndDate = CheckInDate;
                                     EndDate = EndDate.AddDays(CutOffDays).Date; // added new 
                                 }
                                 double chargetype = Penalty;
-                                //dtLOH_W2M_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref chargetype, dtLOH_W2M_Cancellation.NewRow(), CurrencyFactorRestel, RestelCurrency, Provider, ownsystemid, Convert.ToString(roomno),
-                                //                               Convert.ToString(RoomTypeId_Own), RoomName, MealID, curDate, EndDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "Yes", "", Type));
                                 dtLOH_W2M_Cancellation.Rows.Add(_commonMethod.setCancellationPolicyRow(ref chargetype, dtLOH_W2M_Cancellation.NewRow(), CurrencyFactorRestel, RestelCurrency, Provider, ownsystemid, Convert.ToString(roomno),
                                                                Convert.ToString(RoomTypeId_Own), RoomName, MealID, curDate, CheckInDate, Penalty, Penalty, "0", VatOnPolicy, uniqid, "Yes", "", Type));
                                 dtLOH_W2M_Cancellation.AcceptChanges();
@@ -1652,7 +1567,6 @@ namespace XConnect.Supplier.Restel
 
             try
             {
-                //string HotelId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["ContractID"]);
                 string HotelId = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
                 int UserCartId = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartID"]);
                 int UserCartDetailId = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
@@ -1676,16 +1590,13 @@ namespace XConnect.Supplier.Restel
                 int NoOfNight = Convert.ToInt32((Convert.ToDateTime(CheckOut1) - Convert.ToDateTime(CheckIn1)).TotalDays);
                 //End--
 
-                //DataTable dtInrCurrency = _commonMethod.GetCountryCurrency(XMLHotelBookingCommon.RestelCurrency);
-                //double CurrencyFactorRestel = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
-
+               
                 double CurrencyFactorRestel = _commonMethod.GetROEByCurrency(RestelCurrency, tokenData.dtROE);
 
 
                 StringBuilder resprice = new StringBuilder();
                 #region Price Only and Room Only RQ            
-                //string chkin = String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(SearchParam.CheckInDate, "dd/MM/yyyy", null));
-                //string chkout = String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(SearchParam.CheckOutDate, "dd/MM/yyyy", null));
+                
                 string chkin = String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(CheckIn2, "dd/MM/yyyy", null));
                 string chkout = String.Format("{0:MM/dd/yyyy}", DateTime.ParseExact(CheckOut2, "dd/MM/yyyy", null));
 
@@ -1736,38 +1647,7 @@ namespace XConnect.Supplier.Restel
                     }
                 }
 
-                //for (int s = 0; s < NoOfRooms; s++)
-                //{
-                //    int TotalAdult = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[s]["NoOfAdults"]);
-                //    int TotalChild = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[s]["NoOfChild"]);
-
-                //    string childAgeData = Convert.ToString(dsCartDetails.Tables[1].DefaultView[s]["ChildAge"]);
-                //    string childage = "";
-
-                //    // Build child age string dynamically
-                //    if (!string.IsNullOrEmpty(childAgeData))
-                //    {
-                //        var childAges = childAgeData
-                //            .Split(',')
-                //            .Where(x => !string.IsNullOrWhiteSpace(x))
-                //            .Select(x => x.Trim());
-
-                //        childage = string.Join(",", childAges);
-                //    }
-
-                //    // numhab
-                //    if (s == 0)
-                //        resreq.Append("<numhab" + (s + 1) + ">" + NoOfRooms + "</numhab" + (s + 1) + ">");
-                //    else
-                //        resreq.Append("<numhab" + (s + 1) + ">0</numhab" + (s + 1) + ">");
-
-                //    // paxes
-                //    resreq.Append("<paxes" + (s + 1) + ">" + TotalAdult + "-" + TotalChild + "</paxes" + (s + 1) + ">");
-
-                //    // edades
-                //    resreq.Append("<edades" + (s + 1) + ">" + childage + "</edades" + (s + 1) + ">");
-                //}
-
+               
                 resreq.Append("<idioma>2</idioma>");
                 resreq.Append("<duplicidad>1</duplicidad>");
                 resreq.Append("<comprimido>2</comprimido>");
@@ -2139,32 +2019,12 @@ namespace XConnect.Supplier.Restel
             {
                 #region Booking RQ
 
-                //string CheckIn = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckInDate"]);
-               // string CheckIn = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckInDate);
-               // CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
-                //string CheckOut = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["CheckOutDate"]);
-                //string CheckOut = Convert.ToString(bookRequest.userCart.UserCartDetails[j].CheckOutDate);
-               // CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
-                //string PropertyId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["ContractID"]);
-               // string PropertyId = Convert.ToString(dsCartDetails.Tables[0].DefaultView[i]["XMLHotelId"]);
-               
-               // string MealId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["MealPlanCode"]);
                 string MealId = Convert.ToString(bookRequest.userCart.UserCartDetails[j].MealPlan);
 
-
-
-
                 string ExternalReference = "BOOK_" + AgentUniqueNo + "_" + UniqueNo;
-                //string ExternalReference = bookRequest.BookRQ.InternalReference +"_"+ UniqueNo;
-               // int NoOfNoghts = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["NoOfNight"]);
+               
                 int NoOfNoghts = Convert.ToInt32(bookRequest.userCart.NoOfNight);
 
-
-
-                
-
-
-                //string SPUI = Convert.ToString(bookRequest.userCart.UserCartDetails[j].spui);
                 string RoomType = "";
                 if (IsPriceUpdate)
                     RoomType = "";
@@ -2280,12 +2140,7 @@ namespace XConnect.Supplier.Restel
                         BookRQ.Append("</pax>");
                     }
                 }
-                //<pax>
-                //  <titulo>Sra.</titulo>
-                //  <nombrePax>PruebaUno</nombrePax>
-                //  <apellidos>PruebasUno PruebasUno </ apellidos >
-                //  < edad ></ edad >
-                //</ pax >
+               
                 BookRQ.Append("</paxes>");
                 BookRQ.Append("</parametros>");
                 BookRQ.Append("</peticion>");

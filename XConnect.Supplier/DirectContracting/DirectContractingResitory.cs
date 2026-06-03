@@ -79,7 +79,8 @@ namespace XConnect.Supplier.DirectContracting
                                 _commonMethod.GetPrefferedHotelCodes(ref Ids, ref xmlbase, ref LetsDCSearchConfig, Supplier, dtPreferredDataHotel, SearchPara.IsSearchFor);
 
                                 List<HotelCodeByCity> filter = new List<HotelCodeByCity>();
-                                filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
+                                //filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
+                                filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, LetDCDetails.HotelSupplier);
 
                                 if (filter.Count > 0)
                                 {
