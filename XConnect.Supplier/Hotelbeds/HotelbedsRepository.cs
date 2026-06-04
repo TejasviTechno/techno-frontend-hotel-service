@@ -116,7 +116,7 @@ namespace Xconnect.Hotelbeds
                                             xhotel.PassWord = Convert.ToString(HBV1Details[0].Password); //ConfigurationManager.AppSettings["HBV1_New_PassWord"]; 
                                             xhotel.SearchTimeOut = Convert.ToInt32(HBV1SearchConfig[k].HotelSearchTimeOut);
                                             //if (Hit > 0)
-                                                xhotel.ProcessTimeout = Convert.ToInt32(HBV1SearchConfig[k].HotelSearchTimeOut2);
+                                            xhotel.ProcessTimeout = Convert.ToInt32(HBV1SearchConfig[k].HotelSearchTimeOut2);
 
                                             xhotel.DebugeMode = DebugMode;
                                             xhotel.MethoodType = "POST";
@@ -190,7 +190,7 @@ namespace Xconnect.Hotelbeds
         {
             try
             {
-                
+
                 List<StarRating> lstRating = new List<StarRating>();
                 lstRating = _commonMethod.GetStarRatingStringList_xtg(SearchPara);
 
@@ -292,7 +292,7 @@ namespace Xconnect.Hotelbeds
                                                             xhotel.PassWord = Convert.ToString(HotelbedsChild.Password); //ConfigurationManager.AppSettings["HBV1_New_PassWord"]; 
                                                             xhotel.SearchTimeOut = Convert.ToInt32(HotelbedsSearchConfig[k].HotelSearchTimeOut);
                                                             //if (Hit > 0)
-                                                                xhotel.ProcessTimeout = Convert.ToInt32(HotelbedsSearchConfig[k].HotelSearchTimeOut2);
+                                                            xhotel.ProcessTimeout = Convert.ToInt32(HotelbedsSearchConfig[k].HotelSearchTimeOut2);
 
                                                             xhotel.DebugeMode = DebugMode;
                                                             xhotel.MethoodType = "POST";
@@ -1404,7 +1404,7 @@ namespace Xconnect.Hotelbeds
                 Boolean blnIsShowSupplier = false;
                 string ConvertXml = "";
 
-                
+
 
                 int CutOffDays = CacheMaster.CutOffDays;
                 // CutOffDays = Common.GetCutOffDays(commonSearch.dtSuplierMarkup, "HotelBedsV1");
@@ -1412,7 +1412,7 @@ namespace Xconnect.Hotelbeds
                 //for (int h = 1; h < counthotel; h++)
                 {
                     Item.ResponseType = "Success";
-                    
+
                     double FinalPrice = 1;
                     #region "When not Need Room"  
                     // add hotel code from price only and room code blank here
@@ -1438,7 +1438,7 @@ namespace Xconnect.Hotelbeds
                         Item.ResponseType = "NoCount";
                         return options;
                     }
-                    
+
                     int counthotel = HBResponse.hotels.hotels.Count();
                     for (int h = 0; h < counthotel; h++)
                     {
@@ -1450,7 +1450,7 @@ namespace Xconnect.Hotelbeds
                             if (commonSearch.tokenData.AgentId != 1899)
                             {
                                 FinalPrice = 0;
-                            for (int c = 0; c < SearchParam.Rooms.Count(); c++)
+                                for (int c = 0; c < SearchParam.Rooms.Count(); c++)
                                 {
                                     int NoOfAdults = SearchParam.Rooms[c].NoofAdults;
                                     bool chk = false;
@@ -1604,7 +1604,7 @@ namespace Xconnect.Hotelbeds
                                 double SubAgentMarkup = 0;
                                 double ratePerNight = 0;
                                 int IsParentId = 1;
-                                
+
                                 //_markup.getAgetMarkupSetting(Provider, GiataId.ToString(), commonSearch.dtSuplierMarkup, commonSearch.dtMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, SearchParam.CountryID.ToString(), SearchParam.CheckInDate);
 
                                 _markup.getAgetMarkupSettingNew_new(Provider, Convert.ToString(GiataId), commonSearch.dtSuplierMarkup, commonSearch.dsMarkupDetails, ref AgentPercentage, ref AgentMarkupAmount, ref blnIsShowSupplier, ref isPerce, commonSearch.AgentId, RatingHotel, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), SearchParam.CheckInDate);
@@ -1620,14 +1620,30 @@ namespace Xconnect.Hotelbeds
 
                                         string Token = Convert.ToString(HBResponse.auditData.token);
 
-                                        // for (int h = 0; h <= dsHotelBeds.Tables["hotels"].Rows.Count - 1; h++)
-                                        {
-                                            string Hotelcode = Convert.ToString(HBResponse.hotels.hotels[h].code);
-                                            string Hotelname = Convert.ToString(HBResponse.hotels.hotels[h].name);
-                                        
+                                        string Hotelcode = Convert.ToString(HBResponse.hotels.hotels[h].code);
+                                        string Hotelname = Convert.ToString(HBResponse.hotels.hotels[h].name);
 
-                                            for (int i = 0; i < HBResponse.hotels.hotels[h].rooms.Length; i++)
+                                        for (int i = 0; i < HBResponse.hotels.hotels[h].rooms.Length; i++)
+                                        {
+                                            if (commonSearch.AgentId == 4440 || commonSearch.AgentId == 4901)
                                             {
+                                                if (i > CacheMaster.RoomLimit_20 && SearchByOneID == false)
+                                                    break;
+                                            }
+                                            else
+                                            {
+                                                if (i > CacheMaster.RoomLimit_10 && SearchByOneID == false)
+                                                    break;
+                                            }
+
+
+                                            string code = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].code);
+                                            string roomtyprname = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].name);
+                                            for (int j = 0; j < HBResponse.hotels.hotels[h].rooms[i].rates.Length; j++)
+                                            {
+                                                string EssentialInformation = "";
+                                                string rateCommentsId = "";
+
                                                 if (commonSearch.AgentId == 4440 || commonSearch.AgentId == 4901)
                                                 {
                                                     if (i > CacheMaster.RoomLimit_20 && SearchByOneID == false)
@@ -1640,162 +1656,146 @@ namespace Xconnect.Hotelbeds
                                                 }
 
 
-                                                string code = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].code);
-                                                string roomtyprname = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].name);
-                                                for (int j = 0; j < HBResponse.hotels.hotels[h].rooms[i].rates.Length; j++)
+                                                string Ratekey = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].rateKey);
+                                                string Rateclass = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].rateClass);
+                                                RateType = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].rateType);
+
+                                                #region  New 100325
+                                                if (HBResponse.hotels.hotels[h].rooms[i].rates[j].rateType != "BOOKABLE")
                                                 {
-                                                    string EssentialInformation = "";
-                                                    string rateCommentsId = "";
-
-                                                    if (commonSearch.AgentId == 4440 || commonSearch.AgentId == 4901)
+                                                    EssentialInformation = "N/A";
+                                                }
+                                                else
+                                                {
+                                                    if (HBResponse.hotels.hotels[h].rooms[i].rates[j].rateComments != null)
                                                     {
-                                                        if (i > CacheMaster.RoomLimit_20 && SearchByOneID == false)
-                                                            break;
+                                                        Essen = HBResponse.hotels.hotels[h].rooms[i].rates[j].rateComments;
+                                                        EssentialInformation = Essen;
                                                     }
                                                     else
                                                     {
-                                                        if (i > CacheMaster.RoomLimit_10 && SearchByOneID == false)
-                                                            break;
+                                                        EssentialInformation = " ";
                                                     }
+                                                }
 
-
-                                                    string Ratekey = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].rateKey);
-                                                    string Rateclass = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].rateClass);
-                                                    RateType = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].rateType);
-
-                                                    #region  New 100325
-                                                    if (HBResponse.hotels.hotels[h].rooms[i].rates[j].rateType != "BOOKABLE")
+                                                if (HBResponse.hotels.hotels[h].rooms[i].rates[j].promotions != null)
+                                                {
+                                                    string Promotion = "";
+                                                    string PromotionRemark = "";
+                                                    if (HBResponse.hotels.hotels[h].rooms[i].rates[j].promotions.Length > 0)
                                                     {
-                                                        EssentialInformation = "N/A";
+                                                        Promotion = HBResponse.hotels.hotels[h].rooms[i].rates[j].promotions[0].name;
+                                                        PromotionRemark = HBResponse.hotels.hotels[h].rooms[i].rates[j].promotions[0].remark;
+                                                        EssentialInformation = Essen + "<br><br> <b>Promotions : </b>" + Promotion + "<br>" + PromotionRemark + "<br>";
+                                                    }
+                                                }
+                                                #endregion
+
+                                                double Net = Convert.ToDouble(HBResponse.hotels.hotels[h].rooms[i].rates[j].net);
+                                                Net = Net * CurrencyFactor;
+                                                if (HBResponse.hotels.hotels[h].rooms[i].rates[j].rateCommentsId != null)
+                                                {
+                                                    rateCommentsId = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].rateCommentsId);
+                                                }
+                                                string packaging = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].packaging);
+                                                string boardCode = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].boardCode);
+
+                                                string boardName = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].boardName);
+
+                                                int Adult = Convert.ToInt32(HBResponse.hotels.hotels[h].rooms[i].rates[j].adults);
+                                                int children = Convert.ToInt32(HBResponse.hotels.hotels[h].rooms[i].rates[j].children);
+                                                int rooms = Convert.ToInt32(HBResponse.hotels.hotels[h].rooms[i].rates[j].rooms);
+
+                                                string TotalCount = Convert.ToString(Adult + "," + children);
+
+
+                                                string childrenAges = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].childrenAges);
+                                                string ResponseChild1Age = "0";
+                                                string ResponseChild2Age = "0";
+                                                if (childrenAges != null)
+                                                {
+                                                    if (childrenAges.Contains(","))
+                                                    {
+                                                        string[] childrenAgesCount = null;
+                                                        childrenAgesCount = childrenAges.Split(new String[] { "," }, StringSplitOptions.None);
+
+                                                        ResponseChild1Age = childrenAgesCount[0];
+                                                        ResponseChild2Age = childrenAgesCount[1];
                                                     }
                                                     else
+                                                        ResponseChild1Age = childrenAges;
+                                                }
+
+                                                for (int o = 0; o < SearchParam.Rooms.Count; o++)
+                                                {
+                                                    int SearchAdult = Convert.ToInt32(SearchParam.Rooms[o].NoofAdults);
+                                                    int SearchChild = Convert.ToInt32(SearchParam.Rooms[o].NoofChild);
+                                                    string SearchTotalCount = Convert.ToString(SearchAdult + "," + SearchChild);
+
+                                                    string ChildAge1 = Convert.ToString(SearchParam.Rooms[o].Child1Age);
+                                                    string ChildAge2 = Convert.ToString(SearchParam.Rooms[o].Child2Age);
+                                                    int Roomno = o + 1;
+
+                                                    if (Roomno == rooms && SearchAdult == Adult && SearchChild == children && ChildAge1 == ResponseChild1Age && ChildAge2 == ResponseChild2Age)
                                                     {
-                                                        if (HBResponse.hotels.hotels[h].rooms[i].rates[j].rateComments != null)
+                                                        #region Added For Cancellation Policy
+
+                                                        DateTime FinalFromDate = DateTime.Now;
+
+                                                        if (RateType.ToLower() == "bookable" && HBResponse.hotels.hotels[h].rooms[i].rates[j].cancellationPolicies != null && HBResponse.hotels.hotels[h].rooms[i].rates[j].cancellationPolicies.Length > 0)
                                                         {
-                                                            Essen = HBResponse.hotels.hotels[h].rooms[i].rates[j].rateComments;
-                                                            EssentialInformation = Essen;
-                                                        }
-                                                        else
-                                                        {
-                                                            EssentialInformation = " ";
-                                                        }
-                                                    }
-
-                                                    if (HBResponse.hotels.hotels[h].rooms[i].rates[j].promotions != null)
-                                                    {
-                                                        string Promotion = "";
-                                                        string PromotionRemark = "";
-                                                        if (HBResponse.hotels.hotels[h].rooms[i].rates[j].promotions.Length > 0)
-                                                        {
-                                                            Promotion = HBResponse.hotels.hotels[h].rooms[i].rates[j].promotions[0].name;
-                                                            PromotionRemark = HBResponse.hotels.hotels[h].rooms[i].rates[j].promotions[0].remark;
-                                                            EssentialInformation = Essen + "<br><br> <b>Promotions : </b>" + Promotion + "<br>" + PromotionRemark + "<br>";
-                                                        }
-                                                    }
-                                                    #endregion
-
-                                                    double Net = Convert.ToDouble(HBResponse.hotels.hotels[h].rooms[i].rates[j].net);
-                                                    Net = Net * CurrencyFactor;
-                                                    if (HBResponse.hotels.hotels[h].rooms[i].rates[j].rateCommentsId != null)
-                                                    {
-                                                        rateCommentsId = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].rateCommentsId);
-                                                    }
-                                                    string packaging = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].packaging);
-                                                    string boardCode = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].boardCode);
-
-                                                    string boardName = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].boardName);
-
-                                                    int Adult = Convert.ToInt32(HBResponse.hotels.hotels[h].rooms[i].rates[j].adults);
-                                                    int children = Convert.ToInt32(HBResponse.hotels.hotels[h].rooms[i].rates[j].children);
-                                                    string TotalCount = Convert.ToString(Adult + "," + children);
-
-
-                                                    string childrenAges = Convert.ToString(HBResponse.hotels.hotels[h].rooms[i].rates[j].childrenAges);
-                                                    string ResponseChild1Age = "0";
-                                                    string ResponseChild2Age = "0";
-                                                    if (childrenAges != null)
-                                                    {
-                                                        if (childrenAges.Contains(","))
-                                                        {
-                                                            string[] childrenAgesCount = null;
-                                                            childrenAgesCount = childrenAges.Split(new String[] { "," }, StringSplitOptions.None);
-
-                                                            ResponseChild1Age = childrenAgesCount[0];
-                                                            ResponseChild2Age = childrenAgesCount[1];
-                                                        }
-                                                        else
-                                                            ResponseChild1Age = childrenAges;
-                                                    }
-
-                                                    for (int o = 0; o < SearchParam.Rooms.Count; o++)
-                                                    {
-                                                        int SearchAdult = Convert.ToInt32(SearchParam.Rooms[o].NoofAdults);
-                                                        int SearchChild = Convert.ToInt32(SearchParam.Rooms[o].NoofChild);
-                                                        string SearchTotalCount = Convert.ToString(SearchAdult + "," + SearchChild);
-
-                                                        string ChildAge1 = Convert.ToString(SearchParam.Rooms[o].Child1Age);
-                                                        string ChildAge2 = Convert.ToString(SearchParam.Rooms[o].Child2Age);
-
-                                                        if (SearchAdult == Adult && SearchChild == children && ChildAge1 == ResponseChild1Age && ChildAge2 == ResponseChild2Age)
-                                                        {
-                                                            #region Added For Cancellation Policy
-
-                                                            DateTime FinalFromDate = DateTime.Now;
-
-                                                            if (RateType.ToLower() == "bookable" && HBResponse.hotels.hotels[h].rooms[i].rates[j].cancellationPolicies != null && HBResponse.hotels.hotels[h].rooms[i].rates[j].cancellationPolicies.Length > 0)
+                                                            for (int l = 0; l < HBResponse.hotels.hotels[h].rooms[i].rates[j].cancellationPolicies.Length; l++)
                                                             {
-                                                                for (int l = 0; l < HBResponse.hotels.hotels[h].rooms[i].rates[j].cancellationPolicies.Length; l++)
-                                                                {
-                                                                    double Amount = Convert.ToDouble(HBResponse.hotels.hotels[h].rooms[i].rates[j].cancellationPolicies[l].amount);
-                                                                    DateTime FromDate = Convert.ToDateTime(HBResponse.hotels.hotels[h].rooms[i].rates[j].cancellationPolicies[l].from);
+                                                                double Amount = Convert.ToDouble(HBResponse.hotels.hotels[h].rooms[i].rates[j].cancellationPolicies[l].amount);
+                                                                DateTime FromDate = Convert.ToDateTime(HBResponse.hotels.hotels[h].rooms[i].rates[j].cancellationPolicies[l].from);
 
-                                                                    if (l == 0)
+                                                                if (l == 0)
+                                                                {
+                                                                    FinalFromDate = FromDate;
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (FinalFromDate > FromDate)
                                                                     {
                                                                         FinalFromDate = FromDate;
                                                                     }
-                                                                    else
-                                                                    {
-                                                                        if (FinalFromDate > FromDate)
-                                                                        {
-                                                                            FinalFromDate = FromDate;
-                                                                        }
-                                                                    }
                                                                 }
                                                             }
-
-
-                                                            #endregion
-
-                                                            string RoomTypeId = Convert.ToString(10 + "$$$" + Ratekey + "$$$" + rateCommentsId + "$$$" + roomtyprname + "$$$" + Guid.NewGuid().ToString());
-                                                            #region Rooms
-                                                            DataRow drHotelbedsv1Room = DtHotelBedsV1_HotelRoom.NewRow();
-                                                            drHotelbedsv1Room["OwnSystemHotelId"] = OwnsystemHotelId;
-                                                            drHotelbedsv1Room["RoomTypeName"] = roomtyprname;
-                                                            drHotelbedsv1Room["RoomTypeCode"] = ""; //RoomTypeId;
-                                                            drHotelbedsv1Room["MealId"] = boardCode;
-                                                            drHotelbedsv1Room["MealName"] = boardCode;
-                                                            drHotelbedsv1Room["ContractID"] = "0";
-                                                            drHotelbedsv1Room["BoardType"] = boardCode;
-                                                            drHotelbedsv1Room["RoomTypeId"] = RoomTypeId;
-                                                            drHotelbedsv1Room["AdultsOccupancy"] = SearchAdult;
-                                                            drHotelbedsv1Room["ChildOccupancy"] = SearchChild;
-                                                            drHotelbedsv1Room["RoomNo"] = o + 1;
-                                                            drHotelbedsv1Room["Type"] = RateType;
-                                                            drHotelbedsv1Room["UniqueNo"] = Hotelcode;
-                                                            drHotelbedsv1Room["OfferDescription"] = "";
-                                                            drHotelbedsv1Room["OfferCode"] = "";
-                                                            drHotelbedsv1Room["EssentialInformation"] = EssentialInformation;
-                                                            drHotelbedsv1Room["SupplierCurrency"] = currency;
-                                                            drHotelbedsv1Room["FinalSellingPrice"] = Net;
-                                                            drHotelbedsv1Room["FinalFromDate"] = FinalFromDate; //Added by Jay
-                                                            DtHotelBedsV1_HotelRoom.Rows.Add(drHotelbedsv1Room);
-                                                            #endregion
-
                                                         }
+
+
+                                                        #endregion
+
+                                                        string RoomTypeId = Convert.ToString(10 + "$$$" + Ratekey + "$$$" + rateCommentsId + "$$$" + roomtyprname + "$$$" + Guid.NewGuid().ToString());
+                                                        #region Rooms
+                                                        DataRow drHotelbedsv1Room = DtHotelBedsV1_HotelRoom.NewRow();
+                                                        drHotelbedsv1Room["OwnSystemHotelId"] = OwnsystemHotelId;
+                                                        drHotelbedsv1Room["RoomTypeName"] = roomtyprname;
+                                                        drHotelbedsv1Room["RoomTypeCode"] = ""; //RoomTypeId;
+                                                        drHotelbedsv1Room["MealId"] = boardCode;
+                                                        drHotelbedsv1Room["MealName"] = boardCode;
+                                                        drHotelbedsv1Room["ContractID"] = "0";
+                                                        drHotelbedsv1Room["BoardType"] = boardCode;
+                                                        drHotelbedsv1Room["RoomTypeId"] = RoomTypeId;
+                                                        drHotelbedsv1Room["AdultsOccupancy"] = SearchAdult;
+                                                        drHotelbedsv1Room["ChildOccupancy"] = SearchChild;
+                                                        drHotelbedsv1Room["RoomNo"] = o + 1;
+                                                        drHotelbedsv1Room["Type"] = RateType;
+                                                        drHotelbedsv1Room["UniqueNo"] = Hotelcode;
+                                                        drHotelbedsv1Room["OfferDescription"] = "";
+                                                        drHotelbedsv1Room["OfferCode"] = "";
+                                                        drHotelbedsv1Room["EssentialInformation"] = EssentialInformation;
+                                                        drHotelbedsv1Room["SupplierCurrency"] = currency;
+                                                        drHotelbedsv1Room["FinalSellingPrice"] = Net;
+                                                        drHotelbedsv1Room["FinalFromDate"] = FinalFromDate; //Added by Jay
+                                                        DtHotelBedsV1_HotelRoom.Rows.Add(drHotelbedsv1Room);
+                                                        #endregion
+
                                                     }
                                                 }
                                             }
                                         }
+
                                         #endregion
                                     }
                                 }
@@ -1806,10 +1806,9 @@ namespace Xconnect.Hotelbeds
 
                                 var Meal = DtHotelBedsV1_HotelRoom.DefaultView.ToTable(true, "MealName");
                                 var Room = DtHotelBedsV1_HotelRoom.DefaultView.ToTable(true, "RoomNo");
-                               
+
                                 for (int a = 0; a < Meal.Rows.Count; a++)
                                 {
-
                                     DataView view = DtHotelBedsV1_HotelRoom.DefaultView;
                                     view.Sort = "RoomNo ASC";
                                     DataTable sortedDate = view.ToTable();
@@ -1863,7 +1862,7 @@ namespace Xconnect.Hotelbeds
                                                     RoomTypeID = RoomTypeID + "##$$" + drOther[b]["RoomTypeId"];
                                                     ADTOCC += Convert.ToInt32(drOther[b]["AdultsOccupancy"]);
                                                     CLDOCC += Convert.ToInt32(drOther[b]["ChildOccupancy"]);
-                                               
+
                                                     #region Added For Policy by Jay                                                                                                    
                                                     strRoomPolicy.Add(Convert.ToDateTime(drOther[b]["FinalFromDate"]));
                                                     #endregion
@@ -1872,7 +1871,7 @@ namespace Xconnect.Hotelbeds
 
                                                 }
                                             }
-                                           
+
                                             #region "Logic For Room Name "
                                             string[] spitid = RoomName.Split(new String[] { "$$$" }, StringSplitOptions.None);
                                             if (SearchParam.Rooms.Count != spitid.Length)
@@ -1896,7 +1895,7 @@ namespace Xconnect.Hotelbeds
                                                 string RoomNme = roomlist[p].RoomName;
                                                 RoomNameMain = RoomNameMain + "(" + (p + 1) + ")" + RoomNme + " ";
                                             }
-                                          
+
                                             #endregion
 
                                             #region Find Cheapest date form Policy
@@ -2044,9 +2043,9 @@ namespace Xconnect.Hotelbeds
                     Item.CodeProcessingTimeSupplier = timer_room_HotelbedsV1.ElapsedMilliseconds;
                     if (SearchParam != null && ResProccessTimerLogActive == "1" && timer_room_HotelbedsV1.ElapsedMilliseconds > Convert.ToInt32(ResProccessTimeValueforSaveLog))
                     {
-                       
+
                         SearchParam.SupplierTime += ",|Finish:HotelbedsV1 Process Response  " + "|Time :" + timer_room_HotelbedsV1.Elapsed.ToString();
-                        _= Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_HotelbedsV1.Elapsed.ToString(), "HotelbedsV1", SearchParam.SearchKey, 1, SearchParam.AgentID));
+                        _ = Task.Run(() => _commonMethod.FireAway_SQL_ResPorcessTimeLog("", timer_room_HotelbedsV1.Elapsed.ToString(), "HotelbedsV1", SearchParam.SearchKey, 1, SearchParam.AgentID));
                     }
                 }
                 catch (Exception x)
@@ -2058,7 +2057,7 @@ namespace Xconnect.Hotelbeds
             return options;
         }
 
-        public async Task<ResponseRecheck> HotelBedsV1_cancellation_For_Recheck_OnlyRead_EssInfo(string roomtypeid, DataTable dtSuplierMarkup, string provider, string CompanyBuyPrice, int AgentId,string SearchKey)
+        public async Task<ResponseRecheck> HotelBedsV1_cancellation_For_Recheck_OnlyRead_EssInfo(string roomtypeid, DataTable dtSuplierMarkup, string provider, string CompanyBuyPrice, int AgentId, string SearchKey)
         {
 
             ResponseRecheck res = new ResponseRecheck();
@@ -2327,7 +2326,7 @@ namespace Xconnect.Hotelbeds
             }
         }
 
-        public async Task<ResponseDto> GetHotelBedsSupplierResponseOlny(string strHost, string Username, string Password, Int32 TimeOut, string strxmlRQRS, string methodtype,  string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "")
+        public async Task<ResponseDto> GetHotelBedsSupplierResponseOlny(string strHost, string Username, string Password, Int32 TimeOut, string strxmlRQRS, string methodtype, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "")
         {
 
             ResponseDto responseDto = new ResponseDto();
@@ -2419,13 +2418,13 @@ namespace Xconnect.Hotelbeds
                 responseDto.Error = Error;
             }
 
-           
+
             return responseDto;
         }
 
-        public async Task<CancellationDto> HotelBedsV1_cancellation(string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, string GiataId = "0", int hotelRating = 0,string SearchKey="")
+        public async Task<CancellationDto> HotelBedsV1_cancellation(string roomtypecode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, string GiataId = "0", int hotelRating = 0, string SearchKey = "")
         {
-            CancellationDto cancellationDto = new CancellationDto();    
+            CancellationDto cancellationDto = new CancellationDto();
             try
             {
                 DataTable dtHotelBedsV1RoomCacelationPolicy = _commonMethod.GenerateCancellationDataTableNewV2();
@@ -2698,7 +2697,7 @@ namespace Xconnect.Hotelbeds
                                 ISBookable = false;
                             }
                             //added on 30-07-2024 # 49944
-                            
+
                             int NoOfRoomSearch = Convert.ToInt32(SearchPara.Rooms.Count());
                             if (allotment >= NoOfRoomSearch)
                             {
@@ -2808,7 +2807,7 @@ namespace Xconnect.Hotelbeds
             return cancellationDto;
         }
 
-        public async Task<ResponseDto> GetHotelBedsSupplierResponse_timeout(string strHost, string Username, string Password, string referenceNumber, string CheckIn, string CheckOut, Int32 TimeOut, string strxmlRQRS, string methodtype, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "",bool fromCancel=false)
+        public async Task<ResponseDto> GetHotelBedsSupplierResponse_timeout(string strHost, string Username, string Password, string referenceNumber, string CheckIn, string CheckOut, Int32 TimeOut, string strxmlRQRS, string methodtype, string Provider = "", HotelSearchParameter para = null, bool DebugMode = false, string Searchkey = "", bool fromCancel = false)
         {
             ResponseDto responseDto = new ResponseDto();
 
@@ -2841,7 +2840,7 @@ namespace Xconnect.Hotelbeds
                 Request.Headers.Add("Accept-Encoding", "gzip");
                 Request.Timeout = TimeOut;
 
-                if(!fromCancel)
+                if (!fromCancel)
                 {
                     Stream newStream = null;
                     byte[] data = Encoding.ASCII.GetBytes(strxmlRQRS);
@@ -2849,7 +2848,7 @@ namespace Xconnect.Hotelbeds
                     newStream = Request.GetRequestStream();
                     newStream.Write(data, 0, data.Length);
                 }
-              
+
                 string respXml; /* will contain response from api in string form */
 
                 try
@@ -2870,15 +2869,15 @@ namespace Xconnect.Hotelbeds
                     {
                         para.SupplierTime += ",SupplierName :" + Provider + " : " + "Execution Time :" + timer.Elapsed.ToString();
                         if (DebugMode)
-                            _ = _commonMethod.XMLRequestResponseTrack(strxmlRQRS, strOutput, Provider, "Proper","", Searchkey);
+                            _ = _commonMethod.XMLRequestResponseTrack(strxmlRQRS, strOutput, Provider, "Proper", "", Searchkey);
                     }
 
 
                     if (Convert.ToString(_keySettings.IsLogTrack) == "1")
                     {
                         TimeSpan timeTaken = timer.Elapsed;
-                       // _exception.ErrorLog(Convert.ToString(_keySettings.LogTrackPath), Provider + "->" + strHost + "-> Execution Time : " + timer.Elapsed.ToString());
-                        _ = _commonMethod.XMLRequestResponseTrack(strxmlRQRS, strOutput, Provider, "Proper","", Searchkey);
+                        // _exception.ErrorLog(Convert.ToString(_keySettings.LogTrackPath), Provider + "->" + strHost + "-> Execution Time : " + timer.Elapsed.ToString());
+                        _ = _commonMethod.XMLRequestResponseTrack(strxmlRQRS, strOutput, Provider, "Proper", "", Searchkey);
                     }
                 }
                 catch (WebException webExcp)
@@ -2941,7 +2940,7 @@ namespace Xconnect.Hotelbeds
                         _ = _exception.Error(ex1, Searchkey);
                     }
                     return responseDto;
-                   
+
                 }
             }
             catch (Exception ex)
@@ -3067,7 +3066,7 @@ namespace Xconnect.Hotelbeds
 
             return responseDto;
         }
-       //prebook
+        //prebook
         public async Task<PriceCheckCMDto> PriceUpdateHotelBedsV1(string HTL_RoomCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] HotelBedsV1Details, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string Searchkey = "", int AgentId = 0)
         {
             PriceCheckCMDto priceCheckCMDto = null;
@@ -3261,7 +3260,7 @@ namespace Xconnect.Hotelbeds
             }
             catch (Exception ex)
             {
-                _ = _exception.ErrorNew(ex,_LogAPI.Book);
+                _ = _exception.ErrorNew(ex, _LogAPI.Book);
                 return "";
             }
         }
@@ -3328,7 +3327,7 @@ namespace Xconnect.Hotelbeds
                 return "";
             }
         }
-        public  string HotelBedsdV1BookindgRequest_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, bool IsPRiceUpdate, bool IsError, int j, string AgentCode)
+        public string HotelBedsdV1BookindgRequest_newversion(DataTable dtPassengers, BookRequest_newversion bookRequest, bool IsPRiceUpdate, bool IsError, int j, string AgentCode)
         {
             try
             {
@@ -3363,7 +3362,7 @@ namespace Xconnect.Hotelbeds
 
                     string[] HBRoomCount = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId).Split(new String[] { "##$$" }, StringSplitOptions.None);
 
-                    
+
 
                     HBV1.Append("\"rooms\": [");
 
@@ -3383,7 +3382,8 @@ namespace Xconnect.Hotelbeds
                         {
                             if (b >= 1)
                                 HBV1.Append("},{");
-                            HBV1.Append("\"roomId\":\"1\",");
+                            //HBV1.Append("\"roomId\":\"1\",");
+                            HBV1.Append("\"roomId\":" + (Ro + 1) + ",");
                             string PaxTypeHB = "";
                             if (Convert.ToString(dtnewpassanger.Rows[b]["PaxType"]) == "Adult")
                                 PaxTypeHB = "AD";
@@ -3403,7 +3403,7 @@ namespace Xconnect.Hotelbeds
                     }
                     HBV1.Append("],");
                     HBV1.Append("\"clientReference\":\"" + InternalReference + "\",");
-                   // HBV1.Append("\"remark\":\"" + remark + "\",");
+                    // HBV1.Append("\"remark\":\"" + remark + "\",");
                     HBV1.Append("\"tolerance\":\"" + 0 + "\"");
                     HBV1.Append("}");
 
