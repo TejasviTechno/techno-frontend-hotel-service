@@ -52766,8 +52766,15 @@ new SqlParameter("@AgentId", AgentId),
                                             {
                                                 System.Diagnostics.Stopwatch timerTBO = new System.Diagnostics.Stopwatch();
                                                 timerTBO.Start();
-
-                                                ResponseDto responseDto = await _techno.GetSupplierResponseWE_DMC(Withinearth_DMCBookReq, BookUrlWE, 200000, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, UniqueNo);// XMLHotelBookingCommon.GetQTechResponse(Withinearth_DMCBookReq);
+                                                ResponseDto responseDto;
+                                                if (TechName.ToLower() == "techno_new")
+                                                {
+                                                    responseDto = await _techno.GetSupplierResponseWE_DMC_New(Withinearth_DMCBookReq, BookUrlWE, 200000, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, UniqueNo, "", PasswordWE, TechName);
+                                                }
+                                                else
+                                                {
+                                                    responseDto = await _techno.GetSupplierResponseWE_DMC(Withinearth_DMCBookReq, BookUrlWE, 200000, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, UniqueNo, "", PasswordWE, TechName);
+                                                }
                                                 ResponsebookWE = responseDto.Response;
                                                 Error = responseDto.Error;
 
