@@ -1836,14 +1836,17 @@ namespace XConnect.Supplier.Exely
                     );
 
                     if (!string.IsNullOrWhiteSpace(serviceList))
-                        parts.Add("Services: " + serviceList);
+                    {
+                        parts.Add("<b>Services:</b> " + serviceList);
+                        parts.Add("");
+                    }
                 }
                 if (result.Policy != null)
                 {
                     if (!string.IsNullOrWhiteSpace(result.Policy.CheckInTime))
-                        parts.Add("CheckIn: " + result.Policy.CheckInTime);
+                        parts.Add("<b>CheckIn:</b> " + result.Policy.CheckInTime);
                     if (!string.IsNullOrWhiteSpace(result.Policy.CheckOutTime))
-                        parts.Add("CheckOut: " + result.Policy.CheckOutTime);
+                        parts.Add("<b>CheckOut:</b> " + result.Policy.CheckOutTime);
                 }
                 if (result.Amenities != null && result.Amenities.Count > 0)
                 {
@@ -1852,7 +1855,10 @@ namespace XConnect.Supplier.Exely
                         .Select(a => a.DisplayName ?? a.Code));
 
                     if (!string.IsNullOrWhiteSpace(amenityList))
-                        parts.Add("Amenities: " + amenityList);
+                    {
+                        parts.Add("<b>Amenity :</b> " + amenityList);
+                        parts.Add("");
+                    }
                 }
                 if (result.RoomTypes != null && result.RoomTypes.Count > 0)
                 {
@@ -1862,9 +1868,9 @@ namespace XConnect.Supplier.Exely
                     if (room != null)
                     {
                         if (!string.IsNullOrWhiteSpace(room.Name))
-                            parts.Add("Room Type: " + room.Name);
+                            parts.Add("<b>Room Type:</b> " + room.Name);
                         if (!string.IsNullOrWhiteSpace(room.Description))
-                            parts.Add("Room Details: " + room.Description);
+                            parts.Add("<b>Room Details:</b> " + room.Description);
 
                         if (room?.Amenities != null && room.Amenities.Count > 0)
                         {
@@ -1876,7 +1882,10 @@ namespace XConnect.Supplier.Exely
                             );
 
                             if (!string.IsNullOrWhiteSpace(roomAmenityList))
-                                parts.Add("Room Amenities: " + roomAmenityList);
+                            {
+                                parts.Add("<b>Room Amenities:</b> " + roomAmenityList);
+                                parts.Add("");
+                            }
                         }
                     }
                 }
@@ -1886,18 +1895,19 @@ namespace XConnect.Supplier.Exely
                     var ratePlan = GetExelyRatePlanById(result, ratePlanCode);
                     if (ratePlan != null)
                     {
+                        parts.Add("");
                         if (!string.IsNullOrWhiteSpace(ratePlan.Name))
-                            parts.Add("Rate Plan: " + ratePlan.Name);
+                            parts.Add("<b>Rate Plan:</b> " + ratePlan.Name);
                         if (!string.IsNullOrWhiteSpace(ratePlan.Description))
-                            parts.Add("Plan Details: " + ratePlan.Description);
+                            parts.Add("<b>Plan Details:</b> " + ratePlan.Description);
                         if (!string.IsNullOrWhiteSpace(ratePlan.Currency))
-                            parts.Add("Currency: " + ratePlan.Currency);
-                        parts.Add("IsStayWithChildrenOnly: " + (ratePlan.IsStayWithChildrenOnly ? "true" : "false"));
+                            parts.Add("<b>Currency:</b> " + ratePlan.Currency);
+                        parts.Add("<b>IsStayWithChildrenOnly:</b> " + (ratePlan.IsStayWithChildrenOnly ? "true" : "false"));
                         //if (!string.IsNullOrWhiteSpace(ratePlan.CancellationRuleId))
                         //    parts.Add("CancellationRuleId: " + ratePlan.CancellationRuleId);
                         //if (!string.IsNullOrWhiteSpace(ratePlan.ExtraStayRuleId))
                         //    parts.Add("ExtraStayRuleId: " + ratePlan.ExtraStayRuleId);
-                        parts.Add("CorporateOnly: " + (ratePlan.CorporateOnly ? "true" : "false"));
+                        parts.Add("<b>CorporateOnly:</b> " + (ratePlan.CorporateOnly ? "true" : "false"));
                     }
                 }
                 essential = string.Join("<br/>", parts).Replace("<br>", " ").Trim();
