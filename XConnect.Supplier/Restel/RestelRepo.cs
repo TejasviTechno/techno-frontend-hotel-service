@@ -1542,7 +1542,7 @@ namespace XConnect.Supplier.Restel
         public async Task<PriceCheckCMDto> Get_Restel_PriceCheck(DataSet dsCartDetails, DataRow[] RestelDetails, int i, int j, string UniqueNo, string AgentUniqueNo, double FinalPrice, string a, double CompanyBuyingPrice, string PreBookingToken, DataTable dtCheckPriceReqStructure, string Searchkey, int AgentId = 0,TokenData tokenData=null,string TechName="")
         {
             System.Diagnostics.Stopwatch timercodeprocess = new System.Diagnostics.Stopwatch();
-            timercodeprocess.Start();
+            
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
 
             string responsetype = "Success";
@@ -1673,6 +1673,7 @@ namespace XConnect.Supplier.Restel
                 timerroomprocess.Stop();
                 time = timerroomprocess.Elapsed.ToString();
 
+                timercodeprocess.Start();
                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), resreq.ToString(), ResponseData + Error, "After get price " + SupplierName + " request hit " + j + "is for Price Check" + false, SupplierName, "response confirm", "-", "Withinearth",Searchkey);
 
                 if (ResponseData == string.Empty || ResponseData.Contains("Error"))

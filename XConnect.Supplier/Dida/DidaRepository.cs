@@ -1641,7 +1641,7 @@ namespace Xconnect.Expedia
             // flag:4= Room is OnRequest or N/A at priceCheck
             // flag:5= Price is Changed...!
             System.Diagnostics.Stopwatch timerroomcodeprocess = new System.Diagnostics.Stopwatch();
-            timerroomcodeprocess.Start();
+            
             string responsetype = "Success";
             string time = "";
             string SupplierName = "Dida";
@@ -1719,6 +1719,7 @@ namespace Xconnect.Expedia
                 timerroomprocess.Stop();
                 time = timerroomprocess.Elapsed.ToString();
 
+                timerroomcodeprocess.Start();
                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), Req, ResponseData + Error, "After Get Price Dida Request hit booking" + j + "isForBooking" + isForBooking, "Dida", "Response Confirm", "-", "WithinEarth",Searchkey);
                 if (ResponseData == string.Empty || !ResponseData.Contains("Success"))
                 {
