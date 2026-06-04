@@ -3199,7 +3199,7 @@ namespace XConnect.Supplier.IWTX
         public async Task<PriceCheckCMDto> PriceUpdate_IWTX(string RoomTypeCode, string MealPlanCode, string RoomType, string ContractTokenId, string XmlCity, string Uniqueid, int NoOfAdults, int NoofChild, int Child1Age, int Child2Age, int RoomConfigurationId, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] IWTXDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string iwtxprice, int AgentId, string Searchkey, TokenData tokenData, string Supplier,string TechName="")
         {
             System.Diagnostics.Stopwatch timercodeprocess = new System.Diagnostics.Stopwatch();
-            timercodeprocess.Start();
+            
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
             string responsetype = "Success";
             string time = "";
@@ -3259,7 +3259,7 @@ namespace XConnect.Supplier.IWTX
 
                 timerroomprocess.Stop();
                 time = timerroomprocess.Elapsed.ToString();
-
+                timercodeprocess.Start();
                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), Request, ResponseData + Error, "After Request hit Price Check" + IsFor, Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Response Confirm", "-", "WithInEarth",Searchkey);
 
                 if (ResponseData.ToLower().Contains("errors") || ResponseData.Trim() == "")

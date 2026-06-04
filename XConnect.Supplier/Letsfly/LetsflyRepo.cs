@@ -996,7 +996,7 @@ namespace XConnect.Supplier.Letsfly
         public async Task<PriceCheckCMDto> GetLetsflyPriceCheckREQRES_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, DataRow[] letsflyDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData, string Searchkey,string TechName="")
         {
             System.Diagnostics.Stopwatch timercodeprocess = new System.Diagnostics.Stopwatch();
-            timercodeprocess.Start(); 
+            
 
             PriceCheckCMDto priceCheckDto = new PriceCheckCMDto();
             string time = "";
@@ -1049,6 +1049,7 @@ namespace XConnect.Supplier.Letsfly
                     timerroomprocess.Stop();
                     time = timerroomprocess.Elapsed.ToString();
 
+                    timercodeprocess.Start();
                     _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, ResponseData + Error, "After Hit Price Check Response", SupplierName, "Price Check Response Confirm", "-", "withinearth",Searchkey);
 
                     if (string.IsNullOrEmpty(ResponseData) || ResponseData.Contains("Error"))

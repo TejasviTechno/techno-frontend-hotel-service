@@ -2206,7 +2206,7 @@ namespace XConnect.Supplier.ETG
         public async Task<PriceCheckCMDto> Get_Ostrovok_Prebook_new(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, DataRow[] OstrovokDetails, double FinalPrice, double CompanyBuyingPrice, TokenData TokenData, string Searchkey, int AgentId, int i = 0, string Supplier = "",string TechName="")
         {
             System.Diagnostics.Stopwatch timercodeprocess = new System.Diagnostics.Stopwatch();
-            timercodeprocess.Start();
+            
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
             string responsetype = "Success";
             string time = "";
@@ -2285,6 +2285,7 @@ namespace XConnect.Supplier.ETG
                     timerroomprocess.Stop();
                     time = timerroomprocess.Elapsed.ToString();
 
+                    timercodeprocess.Start();
                     _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), UserCartDetailId, PrebookRQ, PrebookResponseData + Error, "After Hit Prebook Response", SupplierName, "Prebook Response Confirm", "-", "Withinearth",Searchkey);
 
 

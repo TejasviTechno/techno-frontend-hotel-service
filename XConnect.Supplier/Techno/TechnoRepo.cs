@@ -1363,6 +1363,7 @@ namespace XConnect.Supplier.Techno
 
         public async Task<PriceCheckDidaDto> Get_Withinearth_DMC_PreBookingReqRes(string Provider, bool IsCombine, DataSet dsCartDetails, string ReferenceNo, string ID, string Password, int HotelCode, string RoomToken, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int RoomNo, string SearchKey, string HotelOptionId, string Currency, double CurrencyFactorWithinearth_DMC, string Searchkey, int AgentId = 0, string IP = "",string TechName="")
         {
+            System.Diagnostics.Stopwatch timercodeprocess = new System.Diagnostics.Stopwatch();
             PriceCheckDidaDto priceCheckDidaDto = new PriceCheckDidaDto();
             string responsetype = "Success";
             string time = "";
@@ -1379,6 +1380,17 @@ namespace XConnect.Supplier.Techno
             string Req = "";
             string ResponseData = "";
 
+            int srphotelid = 0;
+            string srphotelhotelname = "";
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+                srphotelhotelname = Convert.ToString(dsCartDetails.Tables[0].Rows[0]["ServiceName"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
             try
             {
                 //double Totalprice = 0;
@@ -1427,7 +1439,7 @@ namespace XConnect.Supplier.Techno
                 timerroomprocess.Stop();
                 time = timerroomprocess.Elapsed.ToString();
 
-
+                timercodeprocess.Start();
                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), Req, ResponseData + Error, "After Get Price " + Provider + " Request hit booking" + j + "isForBooking" + isForBooking, Provider, "Response Confirm", Searchkey, "WithinEarth");
 
                 PreBookResponse WE_DMCResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<PreBookResponse>(ResponseData);
@@ -1436,8 +1448,9 @@ namespace XConnect.Supplier.Techno
                 {
                     try
                     {
+                        timercodeprocess.Stop();
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey,TechName);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey,TechName, srphotelid, srphotelhotelname, timercodeprocess);
                     }
                     catch (Exception e)
                     {
@@ -1459,8 +1472,9 @@ namespace XConnect.Supplier.Techno
                         case "error":
                             try
                             {
+                                timercodeprocess.Stop();
                                 responsetype = "GeneralError";
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                             }
                             catch (Exception e)
                             {
@@ -1474,8 +1488,9 @@ namespace XConnect.Supplier.Techno
                         case "notallowed":
                             try
                             {
+                                timercodeprocess.Stop();
                                 responsetype = "GeneralError";
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                             }
                             catch (Exception e)
                             {
@@ -1518,9 +1533,10 @@ namespace XConnect.Supplier.Techno
                 {
                     try
                     {
+                        timercodeprocess.Stop();
                         ResponseData = "#Price Changed " + "#Main Price = " + OriginalRate + " #New Price = " + FinalPrice + " #Response= " + ResponseData;
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                     }
                     catch (Exception e)
                     {
@@ -1535,8 +1551,9 @@ namespace XConnect.Supplier.Techno
             {
                 try
                 {
+                    timercodeprocess.Stop();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
                 }
                 catch (Exception e)
                 {
@@ -1551,8 +1568,9 @@ namespace XConnect.Supplier.Techno
 
             try
             {
+                timercodeprocess.Stop();
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Req, ResponseData, Error, Searchkey, TechName, srphotelid, srphotelhotelname, timercodeprocess);
             }
             catch (Exception e)
             {

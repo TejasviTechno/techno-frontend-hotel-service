@@ -1173,7 +1173,7 @@ namespace XConnect.Supplier.GoGlobal
         public async Task<PriceCheckCMDto> PriceCheckGoGlobal(int i, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] GGDetails, string UniqueNo, string AgentUniqueNo, string IsFor, bool IsError, string supplier, double CompanyBuyPrice, double itemprice, bool PolicyChange, int AgentId = 0, string SearchKey = "",string TechName="")
         {
             System.Diagnostics.Stopwatch timercodeprocess = new System.Diagnostics.Stopwatch();
-            timercodeprocess.Start();
+           
 
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
             bool PriceUpdate = false;
@@ -1220,6 +1220,7 @@ namespace XConnect.Supplier.GoGlobal
                 timerroomprocess.Stop();
                 time = timerroomprocess.Elapsed.ToString();
 
+                timercodeprocess.Start();
                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), Request, Response + Error, "After Request BookingValueation (After Price Check BookingTime)", "GoGlobal", "Response Confirm", "-", "RaynaB2B");
 
 

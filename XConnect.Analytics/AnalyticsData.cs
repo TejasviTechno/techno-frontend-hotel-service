@@ -34,7 +34,7 @@ namespace XConnect.Analytics
         public string ActualDescription { get; set; } = string.Empty; // new added 21052026
         public int srphotelid { get; set; }  // new added 26052026
         public string srphotelhotelname { get; set; } = string.Empty; // new added 26052026
-
+        public string Channelcode { get; set; } = string.Empty;
         //public string ErrorCode { get; set; } = string.Empty;
         //public string CheckIn { get; set; } = string.Empty;
         //public string CheckOut { get; set; } = string.Empty;
