@@ -54285,7 +54285,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 agentVoucher.AgentVoucherNo = "";
                                                 agentVoucher.XMLRequest = XtgReq;
                                                 agentVoucher.XMLResponse = objResponse.Response;
-                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);//check this status //060526 
                                                 agentVoucher.SupplierName = suppliername;
                                                 agentVouchers.Add(agentVoucher);
                                                 //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
