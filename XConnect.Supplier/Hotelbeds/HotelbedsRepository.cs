@@ -3383,7 +3383,7 @@ namespace Xconnect.Hotelbeds
                             if (b >= 1)
                                 HBV1.Append("},{");
                             //HBV1.Append("\"roomId\":\"1\",");
-                            HBV1.Append("\"roomId\":" + (Ro + 1) + ",");
+                            HBV1.Append("\"roomId\":" + (Ro + 1) + ","); //060526 
                             string PaxTypeHB = "";
                             if (Convert.ToString(dtnewpassanger.Rows[b]["PaxType"]) == "Adult")
                                 PaxTypeHB = "AD";
