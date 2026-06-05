@@ -15042,12 +15042,12 @@ new SqlParameter("@AgentId", AgentId),
                                 {
                                     essential = essential + ", MealName:" + selectedRoom.MappedMealName;
                                 }
-                                finalResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].EssentialInformation += essential;
-                                selectedRoom.EssentialInformation = finalResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].EssentialInformation;
-                                int st = _cacheMaster.UpdateCacheForHotelListMaster_mongodb(giataSequence_RQ, policyRQ.SearchKey, CacheMaster.CacheKey_Extension, policyRQ.SearchKey, tokenData, ref finalResponse, Convert.ToInt32(_CacheOperation.update), cacheRoomToken);//#MongoDB
+                                    finalResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].EssentialInformation += essential;
+                                    selectedRoom.EssentialInformation = finalResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].EssentialInformation;
+                                    int st = _cacheMaster.UpdateCacheForHotelListMaster_mongodb(giataSequence_RQ, policyRQ.SearchKey, CacheMaster.CacheKey_Extension, policyRQ.SearchKey, tokenData, ref finalResponse, Convert.ToInt32(_CacheOperation.update), cacheRoomToken);//#MongoDB
+                                }
                             }
                         }
-                    }
                     else
                     {
                         if (tokenData.AgentCode.ToLower() == "dida" || tokenData.AgentCode.ToLower() == "inst" || tokenData.AgentCode.ToLower() == "mtbo" || tokenData.AgentCode.ToLower() == "spet" || tokenData.AgentCode.ToLower() == "fzcb" || tokenData.AgentCode.ToLower() == "mwrl" || tokenData.AgentCode.ToLower() == "expa" || tokenData.AgentCode.ToLower() == "guji" || tokenData.AgentCode.ToLower() == "ostr" || tokenData.AgentCode.ToLower() == "vibe" || tokenData.AgentCode.ToLower() == "dazz" || tokenData.AgentCode.ToLower() == "mapa" || tokenData.AgentCode.ToLower() == "reis" || tokenData.AgentCode.ToLower() == "pres")
@@ -59446,7 +59446,16 @@ new SqlParameter("@AgentId", AgentId),
                                     //Cancelltion Charges Request
                                     CheckHotelCancellationCharges = _techno.CheckHotelCancellationChargesRequest(SupplierDetailsCommon, RefNO, Currency, IP);
                                     _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CheckHotelCancellationCharges), "-", "Before Request hit CancelCharges", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WE_xmlout");
-                                    ResponseDto responseDto = await _techno.GetSupplierResponseWE_DMC(CheckHotelCancellationCharges, Withinearth_DMC_URL, 200000, Convert.ToString(Supplier), null, false, RefNO, PNRNO_Cancel);
+                                    ResponseDto responseDto;
+                                    if (TechName.ToLower() == "techno_new")
+                                    {
+                                        responseDto = await _techno.GetSupplierResponseWE_DMC_New(CheckHotelCancellationCharges, Withinearth_DMC_URL, 200000, Convert.ToString(Supplier), null, false, RefNO, PNRNO_Cancel);
+
+                                    }
+                                    else
+                                    {
+                                        responseDto = await _techno.GetSupplierResponseWE_DMC(CheckHotelCancellationCharges, Withinearth_DMC_URL, 200000, Convert.ToString(Supplier), null, false, RefNO, PNRNO_Cancel);
+                                    }
                                     string CheckHotelCancellationChargesResponse = responseDto.Response;
                                     Error = responseDto.Error;
 
@@ -59481,8 +59490,15 @@ new SqlParameter("@AgentId", AgentId),
                                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancellationXML), "-", "Before Request hit Cancel", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WE_xmlout");
 
                                                 string CancellationURL = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + TechnoInfo.WE_DMCCancelBookingURL;
-                                                ResponseDto responseDto1 = await _techno.GetSupplierResponseWE_DMC(CancellationXML, CancellationURL, 200000, Convert.ToString(Supplier), null, false, RefNO, PNRNO_Cancel);
-
+                                                ResponseDto responseDto1;
+                                                if (TechName.ToLower() == "techno_new")
+                                                {
+                                                    responseDto1 = await _techno.GetSupplierResponseWE_DMC_New(CancellationXML, CancellationURL, 200000, Convert.ToString(Supplier), null, false, RefNO, PNRNO_Cancel);
+                                                }
+                                                else
+                                                {
+                                                    responseDto1 = await _techno.GetSupplierResponseWE_DMC(CancellationXML, CancellationURL, 200000, Convert.ToString(Supplier), null, false, RefNO, PNRNO_Cancel);
+                                                }
                                                 ResponseData = responseDto1.Response;
                                                 Error = responseDto1.Error;
                                                 _commonMethod.ThirdPartyCancellationHistory(Convert.ToString(AgentVoucherNo_Cancle), Convert.ToString(AgentId), Convert.ToString(CancellationXML), Convert.ToString(ResponseData + Error), "After Request hit Cancel", Convert.ToString(Supplier), "Request Confirm", Convert.ToString(PNRNO_Cancel), "WE_xmlout");
