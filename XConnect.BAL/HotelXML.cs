@@ -52177,7 +52177,7 @@ new SqlParameter("@AgentId", AgentId),
                                             timerbookprocess.Start();
 
                                             ResponseDto responseDto = await _hotelbeds.GetHotelBedsSupplierResponse_timeout(Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings, Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), ReferenceNo, CheckIn, CheckOut, 180000, HBV1BookingReq, "POST", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, bookRequest.SearchKey);
-
+                                        
                                             ResponseDataHotelBedsV1 = responseDto.Response;
                                             Error = responseDto.Error;
 
@@ -54285,7 +54285,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 agentVoucher.AgentVoucherNo = "";
                                                 agentVoucher.XMLRequest = XtgReq;
                                                 agentVoucher.XMLResponse = objResponse.Response;
-                                                agentVoucher.RoomStatus = Convert.ToString(2);
+                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                 agentVoucher.SupplierName = suppliername;
                                                 agentVouchers.Add(agentVoucher);
                                                 //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
