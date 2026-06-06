@@ -70356,7 +70356,7 @@ new SqlParameter("@AgentId", AgentId),
             catch (Exception ex)
             {
                 // Common.Error(ex);
-                // _exception.Error(ex);  //neetochange
+                 _exception.Error(ex);  //neetochange
                 return null;
             }
             finally
@@ -72337,7 +72337,7 @@ new SqlParameter("@AgentId", AgentId),
             }
             catch (Exception ex)
             {
-                // _exception.Error();
+                _exception.Error(ex);
                 agodaCancelReturn.ReturnStatus = "Error";
                 return agodaCancelReturn;
             }
