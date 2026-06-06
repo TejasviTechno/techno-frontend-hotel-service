@@ -421,7 +421,7 @@ namespace XConnect.Markup
                         Supplier = "hotelbedsv1";
                     // if (Supplier.ToLower() == "iol_b2c" || Supplier.ToLower() == "iolx3_b2b" || Supplier.ToLower() == "iol_cug" || Supplier.ToLower() == "iol_b2b")
                     // if (Supplier.ToLower() == "etg_b2b_tp" || Supplier.ToLower() == "etg_b2b_dc")
-                    if (Supplier.IndexOf("etg_") >= 0)
+                    if (Supplier.IndexOf("etg_") >= 0 || Supplier.IndexOf("ratehawk_") >= 0)
                             Supplier = "ratehawk";
                     if (Supplier != null &&
     Supplier.IndexOf("GoGlobal", StringComparison.OrdinalIgnoreCase) >= 0)
