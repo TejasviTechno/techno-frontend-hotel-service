@@ -54095,11 +54095,12 @@ new SqlParameter("@AgentId", AgentId),
                                                     System.Diagnostics.Stopwatch timerroomprocess_xtg = new System.Diagnostics.Stopwatch();
                                                     timerroomprocess_xtg.Start();
 
-                                                   objResponse = _xtg.GetXTGResponse(ref Error, XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_BOOK_Query, Newtonsoft.Json.Linq.JObject.Parse(XtgReq), XTGApiKey, Convert.ToInt32(120000));
-                                             
-                                                   RequestSPR = Convert.ToString(XtgReq);
-                                                    ReponseSPR = Convert.ToString(objResponse);
-                                                    timerroomprocess_xtg.Stop();
+                                               objResponse = _xtg.GetXTGResponse(ref Error, XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_BOOK_Query, Newtonsoft.Json.Linq.JObject.Parse(XtgReq), XTGApiKey, Convert.ToInt32(120000));
+                                                
+                                                RequestSPR = Convert.ToString(XtgReq);
+                                                ReponseSPR = Convert.ToString(objResponse);
+                                               
+                                                timerroomprocess_xtg.Stop();
                                                     time = timerroomprocess_xtg.Elapsed.ToString();
                                                 }
                                                 objResponse.Response = objResponse.Response.Replace("&lt;", "<");
@@ -54115,7 +54116,7 @@ new SqlParameter("@AgentId", AgentId),
                                                 //}
                                             
 
-                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), XtgReq, objResponse.Response + "Status:" + Convert.ToString(objResponse.IsError), "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Response Confirm", ReferenceNo, "API Out");
+                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), XtgReq, objResponse.Response + "Status:" + Convert.ToString(objResponse.IsError), "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Response Confirm", ReferenceNo, "API Out");
                                             #region "UnSuccessFull"
                                             if (objResponse.IsError || objResponse.Response == string.Empty)
                                             {
@@ -54282,10 +54283,10 @@ new SqlParameter("@AgentId", AgentId),
 
                                                 agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].UserCartId);
                                                 agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[0].UserCartDetailId);
-                                                agentVoucher.AgentVoucherNo = "";
+                                                agentVoucher.AgentVoucherNo = AgentVoucherNo; //check this  060626
                                                 agentVoucher.XMLRequest = XtgReq;
                                                 agentVoucher.XMLResponse = objResponse.Response;
-                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);//check this status //060526 
+                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus); 
                                                 agentVoucher.SupplierName = suppliername;
                                                 agentVouchers.Add(agentVoucher);
                                                 //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
