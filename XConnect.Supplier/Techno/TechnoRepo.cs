@@ -1818,7 +1818,7 @@ namespace XConnect.Supplier.Techno
                 return "";
             }
         }
-        public async Task<WE_BookingDetail> GetBookingDetailWE(string AGTRef, string UserID, string BookingId, string URL, string UniqueNo, string AgentUniqueNo, string Currency, string Request, string Search_Key,string IP,string Supplier)
+        public async Task<WE_BookingDetail> GetBookingDetailWE(string AGTRef, string UserID, string BookingId, string URL, string UniqueNo, string AgentUniqueNo, string Currency, string Request, string Search_Key,string IP,string Supplier, string Password = "", string TechName = "")
         {
             WE_BookingDetail wE_BookingDetail = new WE_BookingDetail();
             string Error = "";
@@ -1840,7 +1840,15 @@ namespace XConnect.Supplier.Techno
                 Request = SBReq.ToString();
                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), Request, "-", "Before Block Request hit WE_DMCBookingDetail", "travab_dmc", "Request Confirm j=" + 0 + "", AGTRef, "WE");
 
-                ResponseDto responseDto = await GetSupplierResponseWE_DMC(Request, URL, 200000, Supplier, null, false, UniqueNo, Search_Key);
+                ResponseDto responseDto;
+                if (TechName.ToLower() == "techno_new")
+                {
+                    responseDto = await GetSupplierResponseWE_DMC_New(Request, URL, 200000, Supplier, null, false, UniqueNo, Search_Key, Password, TechName);
+                }
+                else
+                {
+                    responseDto = await GetSupplierResponseWE_DMC(Request, URL, 200000, Supplier, null, false, UniqueNo, Search_Key, Password, TechName);
+                }
                 Response = responseDto.Response;
                 Error = responseDto.Error;
                 _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), Request, Response + Error, "After Block Request hit WE_DMCBookingDetail", "travab_dmc", "Request Confirm j=" + 0 + "", AGTRef, "WE");

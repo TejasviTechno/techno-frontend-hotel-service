@@ -25,7 +25,7 @@ namespace XConnect.Supplier.Techno.Interface
         string Withinearth_DMCBookingRequest(DataRow[] Withinearth_DMCDetails, string SearchKey, string BToken, double TotalPrice, string InternalReference, string RoomNo, DataSet dsCartDetails, DataTable dtPassengers, string UniqueNo, string AgentUniqueNo, string WE_DMCCurrency,string IP);
         string Withinearth_DMCBookingRequest_newversion(DataRow[] Withinearth_DMCDetails, string SearchKey, string BToken, double TotalPrice, string InternalReference, string RoomNo, BookRequest_newversion bookRequest, DataTable dtPassengers, string UniqueNo, string AgentUniqueNo, string WE_DMCCurrency,string IP);
 
-        Task<WE_BookingDetail> GetBookingDetailWE(string AGTRef, string UserID, string BookingId, string URL, string UniqueNo, string AgentUniqueNo, string Currency, string Request, string Search_Key, string IP, string Supplier);
+        Task<WE_BookingDetail> GetBookingDetailWE(string AGTRef, string UserID, string BookingId, string URL, string UniqueNo, string AgentUniqueNo, string Currency, string Request, string Search_Key, string IP, string Supplier, string Password = "", string TechName = "");
 
         string CheckHotelCancellationChargesRequest(DataRow[] Withinearth_DMCDetails, string BookingRef, string Currency, string IP);
         string Withinearth_DMCBookingDetailRequest(DataRow[] Withinearth_DMCDetails, string BookingId, string InternalReference, string Currency = "USD", string IP = "");

@@ -52835,7 +52835,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         string InternalReference_WE = Convert.ToString(WEBookResponse.BookRS.InternalReference);
                                                         //Reference_No 
                                                         //Booking Details
-                                                        WE_BookingDetail wE_BookingDetail = await _techno.GetBookingDetailWE(InternalReferenceWE, UserIDWE, BookingIdWE, WebSiteURLWE, UniqueNo, AgentUniqueNo, WE_DMCCurrency, BookingDetailREQ, bookRequest.SearchKey, IP, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName));//GetBooking Details
+                                                        WE_BookingDetail wE_BookingDetail = await _techno.GetBookingDetailWE(InternalReferenceWE, UserIDWE, BookingIdWE, WebSiteURLWE, UniqueNo, AgentUniqueNo, WE_DMCCurrency, BookingDetailREQ, bookRequest.SearchKey, IP, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), PasswordWE, TechName);//GetBooking Details
                                                         ResponseDetailWE = wE_BookingDetail.Response;
                                                         BookingDetailREQ = wE_BookingDetail.Request;
 
@@ -52960,7 +52960,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     else
                                                     {
                                                         //Booking Details
-                                                        WE_BookingDetail wE_BookingDetail1 = await _techno.GetBookingDetailWE(InternalReferenceWE, UserIDWE, BookingIdWE, WebSiteURLWE, UniqueNo, AgentUniqueNo, WE_DMCCurrency, BookingDetailREQ, bookRequest.SearchKey, IP, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName));//GetBooking Details
+                                                        WE_BookingDetail wE_BookingDetail1 = await _techno.GetBookingDetailWE(InternalReferenceWE, UserIDWE, BookingIdWE, WebSiteURLWE, UniqueNo, AgentUniqueNo, WE_DMCCurrency, BookingDetailREQ, bookRequest.SearchKey, IP, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), PasswordWE, TechName);//GetBooking Details
                                                         ResponseDetailWE = wE_BookingDetail1.Response;
                                                         BookingDetailREQ = wE_BookingDetail1.Request;
 
