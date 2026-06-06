@@ -1818,7 +1818,7 @@ namespace XConnect.Supplier.Techno
                 return "";
             }
         }
-        public async Task<WE_BookingDetail> GetBookingDetailWE(string AGTRef, string UserID, string BookingId, string URL, string UniqueNo, string AgentUniqueNo, string Currency, string Request, string Search_Key,string IP,string Supplier, string Password = "", string TechName = "")
+        public async Task<WE_BookingDetail> GetBookingDetailWE(string AGTRef, string UserID, string BookingId, string URL, string UniqueNo, string AgentUniqueNo, string Currency, string Request, string Search_Key,string IP,string Supplier, string Password = "", string TechName = "", string ReferenceNo = "")
         {
             WE_BookingDetail wE_BookingDetail = new WE_BookingDetail();
             string Error = "";
@@ -1832,7 +1832,7 @@ namespace XConnect.Supplier.Techno
                 SBReq.Append("\"BookingDetailRQ\": {");
                 SBReq.Append("\"BookingId\": \"" + BookingId + "\",");
                 SBReq.Append("\"InternalReference\": \"" + AGTRef + "\",");
-                SBReq.Append("\"ReferenceNo\": \"\"");
+                SBReq.Append("\"ReferenceNo\": \"" + ReferenceNo + "\"");
                 SBReq.Append("}},\"AdvancedOptions\": {");
                 SBReq.Append("\"Currency\": \"" + Currency + "\",");
                 SBReq.Append("\"CustomerIpAddress\":\"" + IP + "\"");
