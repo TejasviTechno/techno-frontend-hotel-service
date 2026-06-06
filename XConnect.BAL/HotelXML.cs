@@ -45452,7 +45452,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                         string InternalReference_WE = Convert.ToString(WEBookResponse.BookRS.InternalReference);
                                                                                         //Reference_No 
                                                                                         //Booking Details
-                                                                                        WE_BookingDetail wE_BookingDetail = await _techno.GetBookingDetailWE(InternalReferenceWE, UserIDWE, BookingIdWE, WebSiteURLWE, UniqueNo, AgentUniqueNo, WE_DMCCurrency, BookingDetailREQ, SearchKey, IP, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]));//GetBooking Details
+                                                                                        WE_BookingDetail wE_BookingDetail = await _techno.GetBookingDetailWE(InternalReferenceWE, UserIDWE, BookingIdWE, WebSiteURLWE, UniqueNo, AgentUniqueNo, WE_DMCCurrency, BookingDetailREQ, SearchKey, IP, Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), ReferenceNo: Reference_No);//GetBooking Details
                                                                                         ResponseDetailWE = wE_BookingDetail.Response;
                                                                                         BookingDetailREQ = wE_BookingDetail.Request;
 
@@ -45464,7 +45464,7 @@ new SqlParameter("@AgentId", AgentId),
                                                                                         {
                                                                                             for (int rr = 0; rr < dsCartDetails.Tables[1].DefaultView.Count; rr++)
                                                                                             {
-                                                                                                bookingStatus = 1;
+                                                                                                bookingStatus = !string.IsNullOrWhiteSpace(Reference_No) ? 6 : 1;
                                                                                                 AgentVoucherNo = Reference_No + "|" + rr;
 
                                                                                                 if (bookingStatus == 6)
@@ -52835,7 +52835,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         string InternalReference_WE = Convert.ToString(WEBookResponse.BookRS.InternalReference);
                                                         //Reference_No 
                                                         //Booking Details
-                                                        WE_BookingDetail wE_BookingDetail = await _techno.GetBookingDetailWE(InternalReferenceWE, UserIDWE, BookingIdWE, WebSiteURLWE, UniqueNo, AgentUniqueNo, WE_DMCCurrency, BookingDetailREQ, bookRequest.SearchKey, IP, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName));//GetBooking Details
+                                                        WE_BookingDetail wE_BookingDetail = await _techno.GetBookingDetailWE(InternalReferenceWE, UserIDWE, BookingIdWE, WebSiteURLWE, UniqueNo, AgentUniqueNo, WE_DMCCurrency, BookingDetailREQ, bookRequest.SearchKey, IP, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), PasswordWE, TechName, Reference_No);//GetBooking Details
                                                         ResponseDetailWE = wE_BookingDetail.Response;
                                                         BookingDetailREQ = wE_BookingDetail.Request;
 
@@ -52847,7 +52847,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             for (int rr = 0; rr < bookRequest.userCart.UserCartDetails.Count; rr++)
                                                             {
-                                                                bookingStatus = 1;
+                                                                bookingStatus = !string.IsNullOrWhiteSpace(Reference_No) ? 6 : 1;
                                                                 AgentVoucherNo = Reference_No + "|" + rr;
 
                                                                 if (bookingStatus == 6)
@@ -52960,7 +52960,7 @@ new SqlParameter("@AgentId", AgentId),
                                                     else
                                                     {
                                                         //Booking Details
-                                                        WE_BookingDetail wE_BookingDetail1 = await _techno.GetBookingDetailWE(InternalReferenceWE, UserIDWE, BookingIdWE, WebSiteURLWE, UniqueNo, AgentUniqueNo, WE_DMCCurrency, BookingDetailREQ, bookRequest.SearchKey, IP, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName));//GetBooking Details
+                                                        WE_BookingDetail wE_BookingDetail1 = await _techno.GetBookingDetailWE(InternalReferenceWE, UserIDWE, BookingIdWE, WebSiteURLWE, UniqueNo, AgentUniqueNo, WE_DMCCurrency, BookingDetailREQ, bookRequest.SearchKey, IP, Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), PasswordWE, TechName);//GetBooking Details
                                                         ResponseDetailWE = wE_BookingDetail1.Response;
                                                         BookingDetailREQ = wE_BookingDetail1.Request;
 
@@ -70357,7 +70357,7 @@ new SqlParameter("@AgentId", AgentId),
             catch (Exception ex)
             {
                 // Common.Error(ex);
-                // _exception.Error(ex);  //neetochange
+                 _exception.Error(ex);  //neetochange
                 return null;
             }
             finally
@@ -72338,7 +72338,7 @@ new SqlParameter("@AgentId", AgentId),
             }
             catch (Exception ex)
             {
-                // _exception.Error();
+                _exception.Error(ex);
                 agodaCancelReturn.ReturnStatus = "Error";
                 return agodaCancelReturn;
             }

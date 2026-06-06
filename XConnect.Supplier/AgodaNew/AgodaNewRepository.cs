@@ -2040,8 +2040,8 @@ namespace XConnect.Supplier.AgodaNew
                             if (commonXMLBookResponse != null && commonXMLBookResponse.Error.Count > 0)
 
                             {
-                                //ObjRespond.referenceId = commonXMLBookResponse.BookRS.ReferenceNo;
-                                //ObjRespond.bookingReferenceId = commonXMLBookResponse.BookRS.InternalReference;
+                                ObjRespond.referenceId = commonXMLBookResponse.BookRS.ReferenceNo;
+                                ObjRespond.bookingReferenceId = commonXMLBookResponse.BookRS.InternalReference;
                                 ObjRespond.status = "BOOKING_FAILED";
                                 ObjRespond.remark = commonXMLBookResponse.Error[0].description;
                             }
@@ -2119,13 +2119,23 @@ namespace XConnect.Supplier.AgodaNew
                 }
                 catch (System.Exception ex)
                 {
+                    //ObjRespond.referenceId = commonXMLBookResponse.BookRS.ReferenceNo;
+                    //ObjRespond.bookingReferenceId = commonXMLBookResponse.BookRS.InternalReference;
+                    //ObjRespond.status = "BOOKING_FAILED";
+                    //ObjRespond.remark = commonXMLBookResponse.Error[0].description;
                     _exception.Error(ex);
                 }
-                return null;
+                return ObjRespond;
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return null;
+                //ObjRespond.referenceId = commonXMLBookResponse.BookRS.ReferenceNo;
+                //ObjRespond.bookingReferenceId = commonXMLBookResponse.BookRS.InternalReference;
+                //ObjRespond.status = "BOOKING_FAILED";
+                //ObjRespond.remark = commonXMLBookResponse.Error[0].description;
+                _exception.Error(ex);
+                return ObjRespond;
             }
 
         }
