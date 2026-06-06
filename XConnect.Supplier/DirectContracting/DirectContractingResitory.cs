@@ -4,7 +4,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using XConnect.CommonUtilities;
@@ -798,22 +800,22 @@ namespace XConnect.Supplier.DirectContracting
             string HotelId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["XMLHotelId"]);
             string RoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]);
             string[] roomTypeIds = RoomTypeId.Split(new string[] { "##" }, StringSplitOptions.RemoveEmptyEntries);
-            string Nationality = roomTypeIds[5];
+            string Nationality = roomTypeIds.Length > 0 ? roomTypeIds[roomTypeIds.Length - 1] : "";
             string SupplierName = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]).ToLower();
 
             try
             {
                 prebookRequest = DCEPriceCheckRequest(RoomTypeId, j, HotelId, dsCartDetails, Nationality);
-                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, "", "Before Hit Price Check Response", SupplierName, "Price Check Request Confirm", "-", "withinearth", Searchkey);
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, "", "Before Hit Price Check Request", SupplierName, "Price Check Request Confirm", "-", "withinearth", Searchkey);
 
                 if (prebookRequest != "")
                 {
                     string Url = Convert.ToString(letsflyDetails[0]["WebSiteURL"]) + _supplierConfig.DirectContract.HotelSearchURL;
-                    
+
                     System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                     timerroomprocess.Start();
 
-                    ResponseDto responseDto = null;//await GetletsflyResponse(Url, prebookRequest, Error, UniqueNo);
+                    ResponseDto responseDto = await GetDCEPriceCheckResponse(Url, prebookRequest, 200000, SupplierName, Searchkey);
                     ResponseData = responseDto.Response;
                     Error = responseDto.Error;
 
@@ -837,9 +839,9 @@ namespace XConnect.Supplier.DirectContracting
                         return priceCheckDto;
                     }
 
-                    letsflyprebook.letsflyprebookresponse letsflyprebookresponse = Newtonsoft.Json.JsonConvert.DeserializeObject<letsflyprebook.letsflyprebookresponse>(ResponseData);
+                    RootObject_DC.Root directContractResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<RootObject_DC.Root>(ResponseData);
 
-                    if (letsflyprebookresponse == null || letsflyprebookresponse.status != 0 && letsflyprebookresponse.rooms == null)
+                    if (directContractResponse == null || directContractResponse.result == null || !TryGetDCEPriceCheckRoom(directContractResponse, RoomTypeId, out RootObject_DC.HotelRoom priceCheckRoom, out string CurrencyCode))
                     {
                         try
                         {
@@ -858,85 +860,44 @@ namespace XConnect.Supplier.DirectContracting
                     {
                         try
                         {
-                            if (letsflyprebookresponse.rooms != null)
+                            double Price = Convert.ToDouble(priceCheckRoom.price);
+
+                            if (Price > 0 && Convert.ToString(priceCheckRoom.bookingStatus).ToLower() == "available")
                             {
-                                for (int r = 0; r < letsflyprebookresponse.rooms.Count; r++)
+                                string sessionid = "";
+                                string roomid = Convert.ToString(priceCheckRoom.room?.roomId);
+                                string roomname = Convert.ToString(priceCheckRoom.room?.roomType?.name);
+                                string roomtypeid = roomid + "$$$" + sessionid + "$$$" + Price + "$$$" + roomname;
+
+                                bool IsSuccess = await _commonMethod.GetRoomNameUpdate(roomtypeid, UserCartId);
+
+                                double CurrencyFactor = 1;
+                                if (Convert.ToString(CurrencyCode).ToLower() != tokenData.SiteCurrency.ToLower())
                                 {
-
-                                    double Price = Convert.ToDouble(letsflyprebookresponse.rooms[r].totalprice);
-
-                                    if (Price > 0)
-                                    {
-                                        string sessionid = Convert.ToString(letsflyprebookresponse.sessionid);
-                                        string roomid = Convert.ToString(letsflyprebookresponse.rooms[r].id);
-                                        string roomname = Convert.ToString(letsflyprebookresponse.rooms[r].name);
-                                        string roomtypeid = roomid + "$$$" + sessionid + "$$$" + Price + "$$$" + roomname;
-
-                                        string CurrencyCode = Convert.ToString(letsflyprebookresponse.rooms[r].currency);
-                                        bool IsSuccess = await _commonMethod.GetRoomNameUpdate(roomtypeid, UserCartId);
-
-                                        double CurrencyFactor = 1;
-                                        if (Convert.ToString(CurrencyCode).ToLower() != tokenData.SiteCurrency.ToLower())
-                                        {
-
-                                            try
-                                            {
-                                                responsetype = "GeneralError";
-                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
-
-                                            }
-                                            MainPrice = 0;
-
-                                            priceCheckDto.Flag = true;
-                                            priceCheckDto.ItemPrice = MainPrice;
-                                            return priceCheckDto;
-                                        }
-
-                                        MainPrice = Price * CurrencyFactor;
-                                        priceCheckDto.ItemPrice = MainPrice;
-
-                                        if (Math.Round(CompanyBuyingPrice, 2) != Math.Round(MainPrice, 2))
-                                        {
-                                            try
-                                            {
-                                                responsetype = "GeneralError";
-                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
-
-                                            }
-                                            MainPrice = 0;
-
-                                            priceCheckDto.Flag = true;
-                                            priceCheckDto.ItemPrice = MainPrice;
-                                            return priceCheckDto;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        try
-                                        {
-                                            responsetype = "GeneralError";
-                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
-
-                                        }
-                                        MainPrice = 0;
-
-                                        priceCheckDto.Flag = true;
-                                        priceCheckDto.ItemPrice = MainPrice;
-                                        return priceCheckDto;
-                                    }
+                                    CurrencyFactor = _commonMethod.GetROEByCurrency(CurrencyCode, tokenData.dtROE);
                                 }
+
+                                MainPrice = Price * CurrencyFactor;
+                                priceCheckDto.ItemPrice = MainPrice;
+                                priceCheckDto.Flag = Math.Round(CompanyBuyingPrice, 2) != Math.Round(MainPrice, 2);
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    responsetype = "GeneralError";
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                                }
+                                catch (Exception e)
+                                {
+                                    _ = _exception.ErrorNew(e, ErrorLog._LogAPI.Prebook);
+
+                                }
+                                MainPrice = 0;
+
+                                priceCheckDto.Flag = true;
+                                priceCheckDto.ItemPrice = MainPrice;
+                                return priceCheckDto;
                             }
                         }
                         catch (Exception ex)
@@ -961,6 +922,14 @@ namespace XConnect.Supplier.DirectContracting
                         }
                     }
 
+                }
+                else
+                {
+                    Error = "DirectContracting price check request generation failed.";
+                    _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UserCartDetailId), Convert.ToString(UniqueNo), prebookRequest, Error, "Before Hit Price Check Request", SupplierName, "Price Check Request Error", "-", "withinearth", Searchkey);
+                    priceCheckDto.Flag = true;
+                    priceCheckDto.ItemPrice = 0;
+                    return priceCheckDto;
                 }
 
             }
@@ -1000,17 +969,129 @@ namespace XConnect.Supplier.DirectContracting
             return priceCheckDto;
         }
 
-        public string DCEPriceCheckRequest(string roomtypeid, int j, string HotelIds, DataSet dsCartDetails,string Nationlity)
+        private async Task<ResponseDto> GetDCEPriceCheckResponse(string url, string request, int timeout, string provider, string searchKey = "")
+        {
+            ResponseDto responseDto = new ResponseDto();
+            string error = "";
+            string responseData = "";
+
+            try
+            {
+                HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(url);
+                httpRequest.Timeout = timeout;
+                httpRequest.Proxy = null;
+                httpRequest.Method = "POST";
+                httpRequest.ContentType = "application/json";
+                httpRequest.Accept = "application/json";
+                httpRequest.KeepAlive = false;
+                httpRequest.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+                byte[] data = Encoding.UTF8.GetBytes(request);
+                httpRequest.ContentLength = data.Length;
+
+                using (Stream requestStream = await httpRequest.GetRequestStreamAsync())
+                {
+                    await requestStream.WriteAsync(data, 0, data.Length);
+                }
+
+                using (HttpWebResponse httpResponse = (HttpWebResponse)await httpRequest.GetResponseAsync())
+                using (Stream responseStream = httpResponse.GetResponseStream())
+                using (StreamReader reader = new StreamReader(responseStream, Encoding.UTF8))
+                {
+                    responseData = await reader.ReadToEndAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                _ = _exception.ErrorNew(ex, ErrorLog._LogAPI.Prebook);
+                _commonMethod.ThirdPartyBookingHistory("", "", request, ex.ToString(), "Error Hit Price Check Response", provider, "Price Check Response Error", "-", "withinearth", searchKey);
+            }
+
+            responseDto.Response = responseData;
+            responseDto.Error = error;
+            return responseDto;
+        }
+
+        private bool TryGetDCEPriceCheckRoom(RootObject_DC.Root response, string roomTypeId, out RootObject_DC.HotelRoom priceCheckRoom, out string currency)
+        {
+            priceCheckRoom = null;
+            currency = Convert.ToString(response?.result?.currency);
+
+            if (response?.result?.hotelResult == null)
+                return false;
+
+            string[] roomTypeParts = Convert.ToString(roomTypeId).Split(new string[] { "##" }, StringSplitOptions.None);
+            int selectedRoomId = 0;
+            int selectedRatePlanId = 0;
+
+            if (roomTypeParts.Length > 2)
+            {
+                int.TryParse(roomTypeParts[1], out selectedRoomId);
+                int.TryParse(roomTypeParts[2], out selectedRatePlanId);
+            }
+
+            RootObject_DC.HotelRoom firstRoom = null;
+            string firstRoomCurrency = currency;
+
+            foreach (RootObject_DC.HotelResult hotel in response.result.hotelResult)
+            {
+                if (hotel?.hotelOption == null)
+                    continue;
+
+                foreach (RootObject_DC.HotelOption option in hotel.hotelOption)
+                {
+                    if (option?.hotelRooms == null)
+                        continue;
+
+                    foreach (List<RootObject_DC.HotelRoom> roomGroup in option.hotelRooms)
+                    {
+                        if (roomGroup == null)
+                            continue;
+
+                        foreach (RootObject_DC.HotelRoom room in roomGroup)
+                        {
+                            if (room == null)
+                                continue;
+
+                            if (firstRoom == null)
+                            {
+                                firstRoom = room;
+                                firstRoomCurrency = !string.IsNullOrEmpty(option.currency) ? option.currency : currency;
+                            }
+
+                            if (selectedRoomId > 0 && selectedRatePlanId > 0 &&
+                                room.room?.roomId == selectedRoomId &&
+                                room.ratePlan?.ratePlanId == selectedRatePlanId)
+                            {
+                                priceCheckRoom = room;
+                                currency = !string.IsNullOrEmpty(option.currency) ? option.currency : currency;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (firstRoom == null)
+                return false;
+
+            priceCheckRoom = firstRoom;
+            currency = firstRoomCurrency;
+            return true;
+        }
+
+        public string DCEPriceCheckRequest(string roomtypeid, int j, string HotelIds, DataSet dsCartDetails, string Nationlity)
         {
             try
             {
 
                 string CheckIn = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["CheckInDate"]);//"20180327"
-                CheckIn = CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
+                CheckIn = CheckIn.Contains("-") ? CheckIn : CheckIn.Substring(0, 4) + "-" + CheckIn.Substring(4, 2) + "-" + CheckIn.Substring(6, 2);
                 string CheckOut = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["CheckOutDate"]);
-                CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
-                int NoofNight = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["NoofNight"]);
-                int HotelId = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[j]["XMLHotelId"]);
+                CheckOut = CheckOut.Contains("-") ? CheckOut : CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
+                int NoofNight = 0;
+                NoofNight = (DateTime.ParseExact(CheckOut, "yyyy-MM-dd", CultureInfo.InvariantCulture) - DateTime.ParseExact(CheckIn, "yyyy-MM-dd", CultureInfo.InvariantCulture)).Days;
                 //int RoomNo = Searchpara.Rooms.Count;
                 //int NoofNights = Searchpara.NoofNights;
                 StringBuilder SBreq = new StringBuilder();
@@ -1028,19 +1109,20 @@ namespace XConnect.Supplier.DirectContracting
                 {
                     SBreq.Append("{");
                     SBreq.Append("\"roomNo\":" + (i + 1) + ",");
-                    SBreq.Append("\"noOfAdults\":" + dsCartDetails.Tables[1].Rows[i]["NoOfAdults"] + ",");
-                    SBreq.Append("\"noOfChild\":" + dsCartDetails.Tables[1].Rows[i]["NoofChild"] + ",");
+                    SBreq.Append("\"noOfAdults\":" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["NoOfAdults"]) + ",");
+                    SBreq.Append("\"noOfChild\":" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["NoofChild"]) + ",");
 
                     // Child Ages Array
                     SBreq.Append("\"childAges\":[");
 
                     List<int> childAges = new List<int>();
+                    int childAge = 0;
 
-                    if (Convert.ToInt32(dsCartDetails.Tables[1].Rows[i]["Child1Age"]) > 0)
-                        childAges.Add(Convert.ToInt32(dsCartDetails.Tables[1].Rows[i]["Child1Age"]));
+                    if (TryGetColumnInt(dsCartDetails.Tables[1].DefaultView[i], out childAge, "Child1Age", "ChildAge1") && childAge > 0)
+                        childAges.Add(childAge);
 
-                    if (Convert.ToInt32(dsCartDetails.Tables[1].Rows[i]["Child2Age"]) > 0)
-                        childAges.Add(Convert.ToInt32(dsCartDetails.Tables[1].Rows[i]["Child2Age"]));
+                    if (TryGetColumnInt(dsCartDetails.Tables[1].DefaultView[i], out childAge, "Child2Age", "ChildAge2") && childAge > 0)
+                        childAges.Add(childAge);
 
                     for (int c = 0; c < childAges.Count; c++)
                     {
@@ -1074,14 +1156,12 @@ namespace XConnect.Supplier.DirectContracting
                 SBreq.Append("]");
                 SBreq.Append("},");
                 SBreq.Append("\"AdvancedOptions\":{");
-                SBreq.Append("\"Currency\":\"" + Convert.ToString(dsCartDetails.Tables[0].Rows[0]["SupplierCurrency"] + "\","));
+                SBreq.Append("\"Currency\":\"" + Convert.ToString(dsCartDetails.Tables[0].Rows[0]["SupplierCurrency"]) + "\",");
                 SBreq.Append("\"CustomerIpAddress\":\"" + "::1" + "\",");//need change
                 SBreq.Append("\"promotionCode\":null");
                 SBreq.Append("}");
                 SBreq.Append("}");
                 return SBreq.ToString();
-                string abc = "";
-                return abc;
             }
             catch (Exception ex)
             {
@@ -1089,6 +1169,19 @@ namespace XConnect.Supplier.DirectContracting
                 return "";
             }
 
+        }
+
+        private bool TryGetColumnInt(DataRowView row, out int value, params string[] columnNames)
+        {
+            value = 0;
+
+            foreach (string columnName in columnNames)
+            {
+                if (row.Row.Table.Columns.Contains(columnName) && int.TryParse(Convert.ToString(row[columnName]), out value))
+                    return true;
+            }
+
+            return false;
         }
 
     }
