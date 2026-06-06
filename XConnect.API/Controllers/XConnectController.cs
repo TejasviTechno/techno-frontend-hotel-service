@@ -6270,7 +6270,8 @@ namespace XConnect.API.Controllers
                         }
                         if (agodaBookingRS == null || agodaBookingRS.status == null)
                         {
-                            erroragoda = _hotelXML.GetAgodaErrorMsg("BOOKING_FAIL", "", "cannot create booking.");
+                            //erroragoda = _hotelXML.GetAgodaErrorMsg("BOOKING_FAIL", "", "cannot create booking.");
+                            erroragoda = _hotelXML.GetAgodaErrorMsg("BOOKING_FAIL", _keySettings.AgodaVersion, "cannot create booking.");
                             timer.Stop();
                             #region Elastic
                             try
