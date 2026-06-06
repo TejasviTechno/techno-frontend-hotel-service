@@ -1824,7 +1824,7 @@ namespace XConnect.Supplier.Techno
             string Error = "";
             try
             {
-                URL = URL + TechnoInfo.WE_DMCBookingDetailURL;// ConfigurationManager.AppSettings["WE_DMCBookingDetailURL"];
+                URL = URL + _supplierConfig.Techno.WE_DMCBookingDetailURL;// ConfigurationManager.AppSettings["WE_DMCBookingDetailURL"];
                 string Response = "";
                 StringBuilder SBReq = new StringBuilder();
                 SBReq.Append("{\"Token\": \"" + UserID + "\",");
