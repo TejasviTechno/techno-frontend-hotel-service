@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols;
 using MongoDB.Bson.IO;
@@ -40,10 +42,9 @@ namespace Xconnect.Expedia
         private readonly IMemoryCache _cache;
         private readonly KeySettings _keySettings;
         private readonly SupplierConfiguration _supplierConfig;//Added on 26-FEB-26
+        private readonly ILogger<Exception> _logger;
 
-
-
-        public DidaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig)
+        public DidaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig, ILogger<Exception> logger)
         {
             _commonMethod = commonMethod;
             _markup = markup;
@@ -52,6 +53,7 @@ namespace Xconnect.Expedia
             _keySettings = keySettings.Value;
             _exception = exception;
             _supplierConfig = supplierConfig.Value;
+            _logger = logger;
         }
         public void GetDidaRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, string SupplierName, HotelSearchParameter SearchPara, List<SupplierDetails> DidaDetails, List<SupplierSearchConfig> DidaSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string XMLCountry, string Xmlnationality, int Hit, string AgentCode, DataTable dtROE, TokenData tokenData)
         {
@@ -1286,7 +1288,7 @@ namespace Xconnect.Expedia
         }
 
 
-        public string DidaRedXMLFileData(string FileName, string FieldToSearch, string FieldSearchFor, string ReturnField, string Supplier)
+        public string DidaRedXMLFileData_bkp080626(string FileName, string FieldToSearch, string FieldSearchFor, string ReturnField, string Supplier)
         {
             try
             {
@@ -1330,7 +1332,59 @@ namespace Xconnect.Expedia
                 return string.Empty;
             }
         }
+        public string DidaRedXMLFileData(string FileName, string FieldToSearch,
+     string FieldSearchFor, string ReturnField, string Supplier)
+        {
+            try
+            {
+                string ReturnText = "";
+                DataSet dsMeal = new DataSet();
 
+                if (!_cache.TryGetValue(Supplier + "_" + FileName, out dsMeal))
+                {
+                    string xmlPath = Path.Combine(
+     AppContext.BaseDirectory,
+     "Config",
+     Supplier + "_" + FileName + ".xml");
+
+                    dsMeal = new DataSet();
+                    dsMeal.ReadXml(xmlPath);
+
+                    _cache.Set(
+                        Supplier + "_" + FileName,
+                        dsMeal,
+                        new MemoryCacheEntryOptions()
+                            .SetAbsoluteExpiration(TimeSpan.FromHours(24)));
+                }
+
+                DataRow[] drdsMeal = null;
+
+                if (dsMeal.Tables.Count > 2)
+                {
+                    foreach (DataRow row in dsMeal.Tables[2].Rows)
+                    {
+                        if (Convert.ToString(row[FieldToSearch])
+                            .Equals(FieldSearchFor, StringComparison.OrdinalIgnoreCase))
+                        {
+                            drdsMeal = new DataRow[] { row };
+                            break;
+                        }
+                    }
+                }
+
+                if (drdsMeal != null)
+                {
+                    ReturnText = Convert.ToString(drdsMeal[0][ReturnField]);
+                }
+
+                return ReturnText;
+            }
+            catch (Exception ex)
+            {
+                _exception.Error(ex);
+                return string.Empty;
+            }
+        }
         #region Recheck - 270525
         public async Task<int> CheckDidaPrebookOnRecheck(string hotelcode, string ownsystemid, DataTable dtCheckPriceReqStructure, string roomtypeid, HotelSearchParameter SearchPara, string DidaPassword, string DidaURL, string Username, string SearchKey, string Provider, string checkindate, string checkoutdate, int Adults,
  int Childs, int Rooms, string AgodaSearchUrl, string AgodaApiKey, string ChildAge, bool isForBooking, double Rate, string AgentUniqueNo, string ISBooking, DataTable dtROE, bool IsPriceChange, double FinalPrice = 0, string SupplierCurrency = "USD")////new added on 03-May-2025

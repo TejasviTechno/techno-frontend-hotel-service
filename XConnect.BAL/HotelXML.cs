@@ -14469,7 +14469,8 @@ new SqlParameter("@AgentId", AgentId),
                         if (dsHotelData.Tables[2].DefaultView.Count == 0)
                         {
 
-                            cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy_New(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData, TechName);
+                           // cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy_New(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData, TechName);
+                            cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy_New(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsCountryCityMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData, TechName);
                         }
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
                         break;
@@ -17149,6 +17150,23 @@ new SqlParameter("@AgentId", AgentId),
                 //AutoVoucherDays = Convert.ToInt32(dtAgentDetails.Rows[0]["AutoVoucherDays"]);//No such config in new version 10-JAN-26
                 AutoVoucherDays = 0;
 
+                DataSet datadue = await GetAgentDetails(tokenData);
+
+                if(datadue != null &&
+    datadue.Tables.Count > 0 &&
+    datadue.Tables[0].Rows.Count > 0)
+{
+                    dtAgentDetails = datadue.Tables[0];
+
+                    AutoVoucherDays = dtAgentDetails.Rows[0]["DueDate"] != DBNull.Value
+                        ? Convert.ToInt32(dtAgentDetails.Rows[0]["DueDate"])
+                        :3;
+                }
+else
+                {
+                    AutoVoucherDays = 3;
+                }
+
 
                 try
                 {
@@ -17896,6 +17914,29 @@ new SqlParameter("@AgentId", AgentId),
 
         }
 
+
+        public async Task<DataSet> GetAgentDetails(TokenData tokenData)
+        {
+            try
+            {
+                SqlParameter[] para = new SqlParameter[]{
+               new SqlParameter("@AgentId", Convert.ToString(tokenData.Type).ToLower() == "subagent" ? Convert.ToInt32(tokenData.ParentId) : Convert.ToInt32(tokenData.AgentId)),
+               new SqlParameter("@SubUserId",tokenData.SubUserId),
+               new SqlParameter("@AgentCode",tokenData.AgentCode)
+             
+
+            };
+
+                DataSet ds = await _dlConnection.GetDataSet("GetAgenDetails", para);
+                return ds;
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return null;
+            }
+
+        }
         public async Task<int> SaveCartForHotelNew(Shopping_CartDataForHotelXML cart, Int32 Rayna_ID, string IP)
         {
             int SubUserId = 0;
