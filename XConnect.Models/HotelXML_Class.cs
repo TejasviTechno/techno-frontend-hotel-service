@@ -619,6 +619,9 @@ namespace XConnect.Models
     {
         public int HotelId { get; set; }
         public bool IsRecommand { get; set; }
+        public string Category { get; set; } = "";
+        public decimal StarRating { get; set; }
+
     }
 
     public class StaticDataCity

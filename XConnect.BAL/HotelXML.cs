@@ -34528,14 +34528,14 @@ else
 
                                                         }
                                                         #region SupplierPR Price Check
-                                                        try
-                                                        {
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
-                                                        }
-                                                        catch (Exception e)
-                                                        {
-                                                            _ = _exception.ErrorBooking(e, AgentId.ToString(), "", "");
-                                                        }
+                                                        //try
+                                                        //{
+                                                        //    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName);
+                                                        //}
+                                                        //catch (Exception e)
+                                                        //{
+                                                        //    _ = _exception.ErrorBooking(e, AgentId.ToString(), "", "");
+                                                        //}
                                                         #endregion
                                                     }
                                                     catch (Exception ex)
