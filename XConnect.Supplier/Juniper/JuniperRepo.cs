@@ -124,22 +124,19 @@ namespace XConnect.Supplier.Juniper
 
                                                             if (!string.IsNullOrEmpty(IdsForSearch))
                                                             {
-                                                                //string IdsForSearch = Convert.ToString(paramValues1);
                                                                 HotelX xhotel = new HotelX();
                                                                 xhotel.Supplier = Supplier;
                                                                 xhotel.DebugeMode = DebugMode;
                                                                 xhotel.SearchTimeOut = Convert.ToInt32(JuniperSearchConfig[k].HotelSearchTimeOut);
-                                                                //if (Hit > 0)
+                                                             
                                                                 xhotel.ProcessTimeout = Convert.ToInt32(JuniperSearchConfig[k].HotelSearchTimeOut2);
 
-                                                                //xhotel.URL = Convert.ToString(JuniperChild.WebSiteURL) + JuniperInfo.HotelAvail;
                                                                 if (_keySettings.SupplierProxy == "0")
-                                                                    //xhotel.URL = Convert.ToString(JuniperChild.WebSiteURL) + JuniperInfo.HotelAvail;
+                                                                 
                                                                     xhotel.URL = Convert.ToString(JuniperChild.WebSiteURL) + _supplierConfig.Juniper.HotelAvail;
                                                                 else
-                                                                    //xhotel.URL = Convert.ToString(JuniperChild.WebSiteURLforAPI) + JuniperInfo.HotelAvail;
+                                                                    
                                                                     xhotel.URL = Convert.ToString(JuniperChild.WebSiteURLforAPI) + _supplierConfig.Juniper.HotelAvail;
-
 
                                                                 xhotel.UserId = Convert.ToString(JuniperChild.UserID);
                                                                 xhotel.UserName = Convert.ToString(JuniperChild.UserName);
@@ -150,7 +147,6 @@ namespace XConnect.Supplier.Juniper
                                                                 xhotel.XmlNationality = dataForSearch.XmlNationality;
                                                                 xhotel.XmlCity = dataForSearch.xmlCity;
                                                                 xhotel.XmlCountry = "";
-
 
                                                                 #region "CoomonCode"
                                                                 bool IsHitSeperate = _commonMethod.IsSuppliersWithSeperateRoomRquest(xhotel.Supplier);
@@ -278,7 +274,6 @@ namespace XConnect.Supplier.Juniper
 
             AlphaTours_RQ.Append("<HotelCategories>");
 
-            //AlphaTours_W2M_RQ.Append("<HotelCategory Type=\"" + star +"\"est\" \"/>");
             if (HotelId == string.Empty)
             {
                 star = star + "est";
@@ -2103,20 +2098,15 @@ namespace XConnect.Supplier.Juniper
                 string UserId = Convert.ToString(drSuplierMarkup[0]["UserId"]);
                 string Password = Convert.ToString(drSuplierMarkup[0]["Password"]);
 
-
                 string Currency = Convert.ToString(drSuplierMarkup[0]["CurrencyShortName"]);
 
-
-                //string Currency = "";
-                //Currency = Common.Get_JuniperNEW_Currency(provider);
                 double CurrencyFactor = 1;
                 if (Currency.ToLower() != tokenData.SiteCurrency.ToLower())
                 {
-                    //dtInrCurrency = Common.Get_JuniperNewCurrencyFactorTable(provider);
+                    
                     dtInrCurrency = _commonMethod.GetCountryCurrency(Currency); ;
                     CurrencyFactor = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
                 }
-
 
                 string CheckIn = objSearPera.CheckInDate;
                 CheckIn = CheckIn.Substring(6, 4) + "-" + CheckIn.Substring(3, 2) + "-" + CheckIn.Substring(0, 2);
@@ -2159,7 +2149,7 @@ namespace XConnect.Supplier.Juniper
                 {
                     #region Cancellation Policy RS
                     string URL = Url + _supplierConfig.Juniper.CheckAvail;
-                    //string ResponseData = GetSupplierResponse(ref Error, "", searchRQString, URL, SearchTimeOut, provider, objSearPera);
+                   
                     ResponseDto responseDto = await GetSupplierResponse("", searchRQString, URL, SearchTimeOut, provider, objSearPera);
                     string ResponseData = responseDto.Response;
                     Error = responseDto.Error;
@@ -2173,7 +2163,6 @@ namespace XConnect.Supplier.Juniper
 
                     }
 
-                    //ResponseData = ResponseData.Replace("<Address>", "").Replace("</Address>", "");
                     String Data2 = ResponseData.Substring(ResponseData.IndexOf("<HotelContent"), ResponseData.IndexOf("</HotelContent>") - ResponseData.IndexOf("<HotelContent")) + "</HotelContent>";
                     ResponseData = ResponseData.Replace(Data2, "");
 
@@ -2272,25 +2261,11 @@ namespace XConnect.Supplier.Juniper
                             FirstDayCostCancellation_Text = Convert.ToString(DateTime.Now.Date);
                         }
 
-
-                        //DataRow[] drCancellationPolicy = (Response.Tables["CancellationPolicy"].Select("CancellationPolicy_Id='" + HotelOption_Id + "'"));
-                        //int CancellationPolicy_Id = Convert.ToInt32(drCancellationPolicy[0]["CancellationPolicy_Id"]);
-
-                        //DataRow[] drFirstDayCostCancellation = (Response.Tables["FirstDayCostCancellation"].Select("CancellationPolicy_Id='" + CancellationPolicy_Id + "'"));
-                        //string FirstDayCostCancellation_Text = Convert.ToString(drFirstDayCostCancellation[0]["FirstDayCostCancellation_Text"]);
-
-                        //DataRow[] drPolicyRules = (Response.Tables["PolicyRules"].Select("PolicyRules_Id='" + CancellationPolicy_Id + "'"));
-                        //int PolicyRules_Id = Convert.ToInt32(drPolicyRules[0]["PolicyRules_Id"]);
-
-                        //DateTime curDate = Common.GetTimeZoneDate(objSearPera.CurrentDate);
                         string uniqid = Guid.NewGuid().ToString();
                         #endregion
 
                         #region Cancellation Policy Logic and Row
-                        //Response.Tables["Rule"].DefaultView.Sort = "DateFrom ASC";
-
-                        //DataRow[] drRule = (Response.Tables["Rule"].DefaultView.ToTable().Select("PolicyRules_Id='" + PolicyRules_Id + "'"));
-                        #region Essential Info
+                         #region Essential Info
                         string EssentialInfo = "";
                         if (Response.Tables["Comment"] != null)
                         {
@@ -2325,10 +2300,7 @@ namespace XConnect.Supplier.Juniper
                             }
                         }
                         #endregion
-                        //for (int j = 0; j < drRule.Length; j++)//for (int j = drRule.Length; j-- > 0;)
-                        //{
-                        //    if (j < 2)
-                        //    {
+                       
                         double CancelCharge = Gross;
 
                         DateTime CancelDate = DateTime.Now.Date;
@@ -2370,9 +2342,7 @@ namespace XConnect.Supplier.Juniper
                                                                            DateTime.ParseExact(objSearPera.CheckInDate, "dd/MM/yyyy", null), MainAgentCharge, CancelCharge, "", 0, uniqid, "Yes", "", EssentialInfo));
                             dtJuniperNew_Cancellation.AcceptChanges();
                         }
-                        //}
-                        //}
-
+                        
                         #endregion
                     }
                 }
@@ -2426,12 +2396,11 @@ namespace XConnect.Supplier.Juniper
 
                 if (xslrequest != "")
                 {
-                    //Common.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), xslrequest, "", "Before get price " + SupplierName + " request hit " + j + "is for Price Check" + isForBooking, SupplierName, "response confirm", "-", "API Out");
                     if (!isForBooking)
                         dtCheckPriceReqStructure.Rows.Add(_commonMethod.AddCheckPriceReq(dtCheckPriceReqStructure.NewRow(), j + 1, UserCartId, UserCartDetailId, RoomTypeId, SupplierName, xslrequest));
 
                     #region PriceCheck RS
-                    //string URL = Convert.ToString(SupplierDetails[0]["websiteurl"]) + JuniperInfo.CheckAvail;
+                    
                     string URL = Convert.ToString(SupplierDetails[0]["websiteurl"]) + _supplierConfig.Juniper.CheckAvail;
 
                     System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
@@ -2852,7 +2821,6 @@ namespace XConnect.Supplier.Juniper
             string SupplierName = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]);
             try
             {
-            
                 #region Declaration
                 AgentVoucherNo = "";
                 bookingStatus = 6;
@@ -2871,8 +2839,6 @@ namespace XConnect.Supplier.Juniper
                 UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
                 bool IsError = false;
                 string BookingRequest = "";
-
-
 
                 #endregion
 
@@ -3069,8 +3035,6 @@ namespace XConnect.Supplier.Juniper
 
                 try
                 {
-                    //responsetype = "GeneralError";
-                    // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
                     _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "Book", AgentId, time, responsetype, BookingRequest, ResponseDatatest, Error);
                 }
                 catch (Exception e)
@@ -3091,7 +3055,7 @@ namespace XConnect.Supplier.Juniper
                 newRowEgyptExpress["PackageId"] = Convert.ToInt32(dsCartDetails.Tables[0].Rows[i]["PackageId"]);
                 dtAgentVoucher.Rows.Add(newRowEgyptExpress);
                 #endregion
-                //}
+                
             }
             catch (Exception e)
             {
@@ -3105,7 +3069,7 @@ namespace XConnect.Supplier.Juniper
                             #region APISO VC for release if my booking is non con
 
                             int usercartdetailsid = Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]);
-                            //get bookingid and detailsid
+                            
                             DataTable dtbookingdata = _commonMethod.GetApisoBookingData(usercartdetailsid);
                             if (dtbookingdata != null)
                             {
