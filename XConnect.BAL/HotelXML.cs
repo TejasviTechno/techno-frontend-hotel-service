@@ -265,8 +265,6 @@ namespace Xconnect.BLL
 
         #endregion
 
-
-
         public HotelXML(IDLConnection dlConnection, IMemoryCache cache, IException exception, ICommonMethod commonMethod, IExpedia expedia, IOptions<KeySettings> keySettings, IOptions<ConnectionStrings> connectionStrings, IFitruums fitruums, IAgoda agoda, IIwtx iwtx, IiBoosy iboosy, IJuniper juniper, IAllXTG xtg, IOth oth, IDerbySoft derbySoft, ISiteMinder siteMinder, IHotelbeds hotelbeds, IDida dida, IOptions<MongoSettings> mongoSettings, IQtech qtech, IRateTiger rateTiger, IRateGain rateGain, IHotelRunner hotelRunner, IDedge dedge, ITravelclick travelclick, IHoteldo hoteldo, IWebbeds webbeds, IBooking booking, IHyperguest hyperguest, IMgbedbank mgbedbank, IWebhoteliter webhoteliter, IOmnibees omnibees, IGoGlobal goglobal, IStaah staah, ITraveloka traveloka, IPaximum paximum, IUkTravco ukTravco, IYalago yalago, IHotelsPro hotelspro, INuitee nuitee, IDarina darina, IHttpClientFactory httpClientFactory, IGrnc grnc, ITbo tbo, IRakuten rakuten, IInfiniteHotelsFrance infinitehotelsfrance, IRestel restel, ITravellanda travellanda, IAdonis adonis, ICacheMaster cacheMaster, IMarkup markup, IJumeirah jumeirah, ISaltours saltours, ITechno techno, IHoteltrader hoteltrader, IParsec parsec, IEtg etg, IRezlive rezlive, IHotelsTrack hotelstrack, RadisConnection redisConnection, IPkFare pkfare, IPriceTravel pricetravel, ILetsfly letsfly, IVCN vcn, IOptions<SupplierConfiguration> supplierConfig, IAnalytics analytic, IAkbartravel akbartravel, IDingus dingus, IOptions<RemoteServices> remoteServices, IWelcomebeds welcomebeds, IExely iExely, IConfiguration configuration, IAgodaNew agodanew, ILogger<Exception> logger, IDirectcontracting directcontracting, IHttpContextAccessor httpContextAccessor)
         {
             _dlConnection = dlConnection;
@@ -52246,7 +52244,7 @@ new SqlParameter("@AgentId", AgentId),
                                                         {
                                                             string reference = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["reference"]);
                                                            string clientReference = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["clientReference"]);
-                                                            AgentVoucherNo = reference + "-" + clientReference;
+                                                            AgentVoucherNo = reference + "&&&" + clientReference;
 
                                                         }
 
@@ -62393,7 +62391,7 @@ new SqlParameter("@AgentId", AgentId),
 
                                 _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(FastPayHotelsBookingCancelRQ), "-", "Before Request hit booking[" + Supplier + "]", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
 
-                                string FastPayHotels_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + JuniperInfo.Booking;
+                                string FastPayHotels_Url = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + _supplierConfig.Juniper.Booking;
                                 #endregion
 
                                 #region Booking Cancel RS
@@ -62488,7 +62486,7 @@ new SqlParameter("@AgentId", AgentId),
                       
                                try
                                 {
-                                    string[] spitid = AgentVoucherNo_Cancle.Split(new String[] { "-" }, StringSplitOptions.None);
+                                    string[] spitid = AgentVoucherNo_Cancle.Split(new String[] { "&&&" }, StringSplitOptions.None);
                                 
                                      string AgentVoucherNo = spitid[0].ToString();
                                     //string VoucherNumber = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/1.0/bookings/" + AgentVoucherNo_Cancle;
