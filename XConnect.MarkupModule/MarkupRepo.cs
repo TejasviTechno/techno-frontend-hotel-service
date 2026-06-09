@@ -935,7 +935,7 @@ namespace XConnect.Markup
         {
             bool isCombinable = row["IsCombinable"] != DBNull.Value
                                 && Convert.ToBoolean(row["IsCombinable"]);
-
+           
             if (isCombinable)
             {
                 if (dtCombineMarkupTable == null || dtCombineMarkupTable.Rows.Count == 0)
@@ -943,7 +943,11 @@ namespace XConnect.Markup
 
                 // Filter Table 2 by same priority as Table 1 row — once, outside loop
                 int rowPriority = Convert.ToInt32(row["Priority"]);
-                DataRow[] combineRowsForPriority = dtCombineMarkupTable.Select($"Priority = '{rowPriority}'");
+                //DataRow[] combineRowsForPriority = dtCombineMarkupTable.Select($"Priority = '{rowPriority}'");
+
+                int HotelMarkupRuleId = Convert.ToInt32(row["HotelMarkupRuleId"]);
+
+                DataRow[] combineRowsForPriority = dtCombineMarkupTable.Select($"Priority = '{rowPriority}' AND HotelMarkupRuleId = {HotelMarkupRuleId}");
 
                 if (combineRowsForPriority.Length == 0)
                     return null;
