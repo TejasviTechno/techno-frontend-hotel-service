@@ -863,6 +863,7 @@ namespace XConnect.Analytics
             return new ClientDetails
             {
                 ClientName = _userContextAccessor?.ClientStats?.ClientName ?? "",
+                RequestURL = _analyticsData?.RequestURL ?? "",
             };
         }
 

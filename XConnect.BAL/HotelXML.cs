@@ -12613,7 +12613,7 @@ new SqlParameter("@AgentId", AgentId),
                         // Log data
                         //string Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
                         string Website = "";//Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
+                        Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
                         hostName = System.Net.Dns.GetHostName();
 
                         #region Elastic
@@ -12686,7 +12686,8 @@ new SqlParameter("@AgentId", AgentId),
                                     Description = ErrorCode,
                                     Errorcode = ErrorCode,
                                     Search_Key = Search_Key,
-                                    source = source
+                                    source = source,
+                                    RequestURL = Website
 
                                 });
                             }
