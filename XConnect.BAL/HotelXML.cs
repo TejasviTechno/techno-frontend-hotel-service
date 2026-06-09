@@ -12617,7 +12617,7 @@ new SqlParameter("@AgentId", AgentId),
                         #region Elastic
                         try
                         {
-                            Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
+                            //Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
                             if (APIName.ToLower() == "availability"
                                  || APIName.ToLower() == "availabilitywithcancellation"
                                  || APIName.ToLower() == "availabilitywithcancellationv2"
@@ -12686,7 +12686,7 @@ new SqlParameter("@AgentId", AgentId),
                                     Errorcode = ErrorCode,
                                     Search_Key = Search_Key,
                                     source = source,
-                                    RequestURL = Website
+                                    RequestURL = hostName
 
                                 });
                             }
