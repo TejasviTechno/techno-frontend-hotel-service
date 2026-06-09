@@ -72702,11 +72702,20 @@ else
                         //cancellationInfo.cancellationDate = Convert.ToString(BookingDetail.Tables[0].Rows[0]["cancellationDate"]);
                         string originalCancellationDate = Convert.ToString(BookingDetail.Tables[0].Rows[0]["cancellationDate"]);
                         DateTime parsedDate;
-                        if (DateTime.TryParseExact(originalCancellationDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
+                        //if (DateTime.TryParseExact(originalCancellationDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
+                        //{
+                        //    TimeSpan offset = TimeSpan.FromHours(8);
+                        //    DateTimeOffset dateWithOffset = new DateTimeOffset(parsedDate, offset);
+                        //    cancellationInfo.cancellationDate = dateWithOffset.ToString("yyyy-MM-ddTHH:mm:sszzz");
+                        //}
+                        //else
+                        //{
+                        //    cancellationInfo.cancellationDate = null;
+                        //}
+                        if (DateTimeOffset.TryParse(originalCancellationDate, out var dto))
                         {
-                            TimeSpan offset = TimeSpan.FromHours(8);
-                            DateTimeOffset dateWithOffset = new DateTimeOffset(parsedDate, offset);
-                            cancellationInfo.cancellationDate = dateWithOffset.ToString("yyyy-MM-ddTHH:mm:sszzz");
+                            cancellationInfo.cancellationDate =
+                                dto.ToString("yyyy-MM-ddTHH:mm:sszzz");
                         }
                         else
                         {
