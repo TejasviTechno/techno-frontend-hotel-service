@@ -27,20 +27,19 @@ namespace XConnect.Supplier.Parsec
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
         private readonly KeySettings _keySettings;
-        
-        public ParsecRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings  )
+        private readonly SupplierConfiguration _supplierConfig;
+
+        public ParsecRepo(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IException exception, IOptions<KeySettings> keySettings, IOptions<SupplierConfiguration> supplierConfig)
         {
             _commonMethod = commonMethod;
             _markup = markup;
             _supplierRes = supplierRes;
             _exception = exception;
             _keySettings = keySettings.Value;
-            
+            _supplierConfig = supplierConfig.Value;
         }
         public void GetParsesRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, DataTable dtROE, HotelSearchParameter SearchPara, List<SupplierDetails> lstParsecDetail, List<SupplierSearchConfig> lstParsecConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, int Hit, DataSet dtXMLCity, TokenData tokenData)
         {
-
-
             if (lstParsecDetail != null && lstParsecDetail.Count > 0)
             {
                 List<StarRating> lstRating = new List<StarRating>();
@@ -130,14 +129,12 @@ namespace XConnect.Supplier.Parsec
                                                             else
                                                             {
                                                                 if (_keySettings.SupplierProxy == "0")
-                                                                    xhotel.URL = Convert.ToString(ParsecDetail.WebSiteURL) + ParsecInfo.HotelSearch;
+                                                                    xhotel.URL = Convert.ToString(ParsecDetail.WebSiteURL) + _supplierConfig.Parsec.HotelSearch;
                                                                 else
-                                                                    xhotel.URL = Convert.ToString(ParsecDetail.WebSiteURLforAPI) + ParsecInfo.HotelSearch;
+                                                                    xhotel.URL = Convert.ToString(ParsecDetail.WebSiteURLforAPI) + _supplierConfig.Parsec.HotelSearch;
 
                                                             }
-
-                                                            // xhotel.URL = Convert.ToString(ParsecDetail.WebSiteURL);
-
+;
                                                             xhotel.UserId = Convert.ToString(ParsecDetail.UserID);
                                                             xhotel.UserName = Convert.ToString(ParsecDetail.UserName);
                                                             xhotel.PassWord = Convert.ToString(ParsecDetail.Password);
@@ -146,7 +143,6 @@ namespace XConnect.Supplier.Parsec
                                                             xhotel.XmlNationality = dataForSearch.XmlNationality;
                                                             xhotel.XmlCity = dataForSearch.xmlCity;
                                                             xhotel.XmlCountry = dataForSearch.xmlCountry;
-
 
                                                             #region "CoomonCode"
                                                             bool IsHitSeperate = _commonMethod.IsSuppliersWithSeperateRoomRquest(xhotel.Supplier);
@@ -188,9 +184,9 @@ namespace XConnect.Supplier.Parsec
                                                 else
                                                 {
                                                     if (_keySettings.SupplierProxy == "0")
-                                                        xhotel.URL = Convert.ToString(ParsecDetail.WebSiteURL) + ParsecInfo.HotelSearch;
+                                                        xhotel.URL = Convert.ToString(ParsecDetail.WebSiteURL) + _supplierConfig.Parsec.HotelSearch;
                                                     else
-                                                        xhotel.URL = Convert.ToString(ParsecDetail.WebSiteURLforAPI) + ParsecInfo.HotelSearch;
+                                                        xhotel.URL = Convert.ToString(ParsecDetail.WebSiteURLforAPI) + _supplierConfig.Parsec.HotelSearch;
                                                 }
 
                                                 xhotel.UserId = Convert.ToString(ParsecDetail.UserID);
@@ -201,7 +197,6 @@ namespace XConnect.Supplier.Parsec
                                                 xhotel.XmlNationality = dataForSearch.XmlNationality;
                                                 xhotel.XmlCity = dataForSearch.xmlCity;
                                                 xhotel.XmlCountry = dataForSearch.xmlCountry;
-
 
                                                 #region "CoomonCode"
                                                 bool IsHitSeperate = _commonMethod.IsSuppliersWithSeperateRoomRquest(xhotel.Supplier);
@@ -419,9 +414,7 @@ namespace XConnect.Supplier.Parsec
                             //// if (TotalAmount > 0)
                             DtHotel.Rows.Add(drXmlHotel);
 
-
                             #endregion
-
 
                             if (FinalMinPrice > 0)
                             {
@@ -562,13 +555,9 @@ namespace XConnect.Supplier.Parsec
                                             }
                                         }
                                     }
-                                    //double Amount = Convert.ToDouble(BastPrice[0]["Amount"]);
-                                    // string Currency = Convert.ToString(BastPrice[0]["currency"]);
-                                    //DataTable dtInrCurrency = Common.GetCountryCurrency(Currency);
-                                    // double CurrencyFactor = Convert.ToDouble(dtInrCurrency.Rows[0]["AmtToExch"]);
-                                    // double TotalAmount = Amount * CurrencyFactor;
+                                    
                                     DataRow[] Rooms = ResponseData.Tables["Rooms"].Select("Hotel_Id=" + ResponseData.Tables["hotel"].Rows[hh]["Hotel_Id"] + "");
-                                    // int Rooms_Id = Convert.ToInt32(Rooms[0]["Rooms_Id"]);
+                                   
                                     DataRow[] Room = ResponseData.Tables["Room"].Select("Rooms_Id=" + Rooms[0]["Rooms_Id"] + "");
                                     int RoomCode = 0;
                                     for (int k = 0; k < Room.Length; k++)
@@ -664,6 +653,10 @@ namespace XConnect.Supplier.Parsec
                                                         string RoomCurrency = Convert.ToString(Total[m]["Currency"]);
 
                                                         double Commision = Convert.ToDouble(Total[0]["Commission"]);
+                                                        if (RoomCurrency.ToLower() != commonSearch.tokenData.SiteCurrency.ToLower())
+                                                        {
+                                                            CurrencyFactor = _commonMethod.GetROEByCurrency(RoomCurrency, dtROE);
+                                                        }
                                                         RoomAmount = Convert.ToDouble(Total[0]["Amount"]) * CurrencyFactor;
 
                                                         #region Ratebreakup
@@ -687,7 +680,10 @@ namespace XConnect.Supplier.Parsec
                                                                 double VatonPolicy = 0;
                                                                 DataRow[] Charge = ResponseData.Tables["Charge"].Select("CancelPenalty_Id=" + CancelPenalty_Id + "");
                                                                 string CancellationCurrency = Convert.ToString(Charge[0]["Currency"]);
-
+                                                                if (CancellationCurrency.ToLower() != commonSearch.tokenData.SiteCurrency.ToLower())
+                                                                {
+                                                                    CurrencyFactor = _commonMethod.GetROEByCurrency(CancellationCurrency, dtROE);
+                                                                }
                                                                 double CancellationAmount = Convert.ToDouble(Charge[0]["Amount"]) * CurrencyFactor;
                                                                 #region Vat
                                                                 CancellationAmount = _markup.ProcessHotelCancelationPrice_WithMarkup(ref CancellationAmount, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), CancellationAmount, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref VatonPolicy);
@@ -843,6 +839,10 @@ namespace XConnect.Supplier.Parsec
                                                     string RoomCurrency = Convert.ToString(Total[m]["Currency"]);
 
                                                     double Commision = Convert.ToDouble(Total[0]["Commission"]);
+                                                    if (RoomCurrency.ToLower() != commonSearch.tokenData.SiteCurrency.ToLower())
+                                                    {
+                                                        CurrencyFactor = _commonMethod.GetROEByCurrency(RoomCurrency, dtROE);
+                                                    }
                                                     RoomAmount = Convert.ToDouble(Total[0]["Amount"]) * CurrencyFactor;
 
                                                     #region Ratebreakup
@@ -866,7 +866,10 @@ namespace XConnect.Supplier.Parsec
                                                             double VatonPolicy = 0;
                                                             DataRow[] Charge = ResponseData.Tables["Charge"].Select("CancelPenalty_Id=" + CancelPenalty_Id + "");
                                                             string CancellationCurrency = Convert.ToString(Charge[0]["Currency"]);
-
+                                                            if (CancellationCurrency.ToLower() != commonSearch.tokenData.SiteCurrency.ToLower())
+                                                            {
+                                                                CurrencyFactor = _commonMethod.GetROEByCurrency(CancellationCurrency, dtROE);
+                                                            }
                                                             double CancellationAmount = Convert.ToDouble(Charge[0]["Amount"]) * CurrencyFactor;
 
                                                             #region Vat
@@ -1003,16 +1006,16 @@ namespace XConnect.Supplier.Parsec
             string ResponseDataAbreu = "";
             try
             {
-                string URLContent = ParsecInfo.URLContent;
+                string URLContent = _supplierConfig.Parsec.URLContent;
                 if (supplier.ToLower() == "olympia")
                 {
-                    URLContent = ParsecInfo.olympiaURLContent;
+                    URLContent = _supplierConfig.Parsec.olympiaURLContent;
                 }
                 string InternalReference = "Api_" + Convert.ToString(AgentCode + "_" + UniqueNo);
 
                 PreBookingRequest = ParsecPreBooking(dsCartDetails, Convert.ToString(AbreuDetails[0]["UserName"]), Convert.ToString(AbreuDetails[0]["Password"]), Convert.ToString(AbreuDetails[0]["UserId"]), InternalReference);
 
-                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), PreBookingRequest, "-", "Before Request hit Price Check", Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["SupplierName"]), "Request Confirm", " - ", "Withinearth");
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), PreBookingRequest, "-", "Before Request hit Price Check", Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["SupplierName"]), "Request Confirm", Searchkey, "Withinearth");
                 dtCheckPriceReqStructure.Rows.Add(_commonMethod.AddCheckPriceReq(dtCheckPriceReqStructure.NewRow(), i + 1, Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[i]["UserCartID"]), Convert.ToInt32(dsCartDetails.Tables[1].DefaultView[i]["UserCartDetailId"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["RoomTypeID"]), Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["SupplierName"]).ToLower(), PreBookingRequest));
 
                 System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
@@ -1025,7 +1028,7 @@ namespace XConnect.Supplier.Parsec
                 timerroomprocess.Stop();
                 time = timerroomprocess.Elapsed.ToString();
 
-                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), PreBookingRequest, ResponseDataAbreu + Error, "After Get Price Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["SupplierName"]), "Response Confirm", "-", "Withinearth");
+                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), PreBookingRequest, ResponseDataAbreu + Error, "After Get Price Request hit booking", Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["SupplierName"]), "Response Confirm", Searchkey, "Withinearth");
                 if (ResponseDataAbreu != null)
                 {
                     DataSet RoomResponse = _commonMethod.GetDataSetFromXMLString(ResponseDataAbreu);

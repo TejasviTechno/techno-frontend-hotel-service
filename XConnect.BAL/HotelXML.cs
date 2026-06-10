@@ -55927,10 +55927,10 @@ else
 
                                                     #region FruadChacking
                                                     {
-                                                        string URLContent = "/NewAvailabilityServlet/hotelres/OTA2014Compact";
+                                                        string URLContent = _supplierConfig.Parsec.URLContent;
                                                         if (suppliername.ToLower() == "olympia")
                                                         {
-                                                            URLContent = "/ReservationServlet/hotelres/OTA2014Compact";
+                                                            URLContent = _supplierConfig.Parsec.olympiaURLContent;
                                                         }
 
                                                         System.Diagnostics.Stopwatch timerparsec = new System.Diagnostics.Stopwatch();
@@ -55998,8 +55998,6 @@ else
                                                         agentVouchers.Add(agentVoucher);
                                                         #endregion
 
-                                                        //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
-
                                                         bookResponse_1.agentVouchers = agentVouchers;
                                                     }
                                                     else
@@ -56036,8 +56034,6 @@ else
 
                                                         try
                                                         {
-                                                            //responsetype = "GeneralError";
-                                                            // int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
                                                             string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername.ToLower(), "Book", tokenData.AgentId, time, responsetype, ParsecBookingRequest, ParsecResponse, Error);
                                                         }
                                                         catch (Exception ex)
@@ -56056,7 +56052,7 @@ else
                                                         agentVoucher.SupplierName = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName);
                                                         #endregion
 
-                                                        //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+                                                        
 
                                                         bookResponse_1.agentVouchers = agentVouchers;
                                                     }
