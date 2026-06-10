@@ -72696,8 +72696,10 @@ else
                     agodaBookingDetailRS.Price = price;
 
                     AgodaBookingDetailRSF.CancellationInfo cancellationInfo = new AgodaBookingDetailRSF.CancellationInfo();
-                    if (Convert.ToString(BookingDetail.Tables[0].Rows[0]["bookingStatus"]).ToLower() == "cancelled")
-                    {
+                    //if (Convert.ToString(BookingDetail.Tables[0].Rows[0]["bookingStatus"]).ToLower() == "cancelled")
+                    if (Convert.ToString(BookingDetail.Tables[0].Rows[0]["bookingStatus"]).ToLower() == "cancelled" || Convert.ToString(BookingDetail.Tables[0].Rows[0]["bookingStatus"]).ToLower() == "cancel charge")
+
+                     {
                         cancellationInfo.cancellationFee = Convert.ToDecimal(BookingDetail.Tables[0].Rows[0]["cancellationFee"]);
                         //cancellationInfo.cancellationDate = Convert.ToString(BookingDetail.Tables[0].Rows[0]["cancellationDate"]);
                         string originalCancellationDate = Convert.ToString(BookingDetail.Tables[0].Rows[0]["cancellationDate"]);
