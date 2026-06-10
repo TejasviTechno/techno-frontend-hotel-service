@@ -77,7 +77,7 @@ namespace XConnect.Supplier.Letsfly
                                 _commonMethod.GetPrefferedHotelCodes(ref Ids, ref xmlbase, ref LetsFlySearchConfig, Supplier, dtPreferredDataHotel, SearchPara.IsSearchFor);
 
                                 List<HotelCodeByCity> filter = new List<HotelCodeByCity>();
-                                filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
+                                filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, LetsFlyDetails.HotelSupplier);
 
                                 if (filter.Count > 0)
                                 {
