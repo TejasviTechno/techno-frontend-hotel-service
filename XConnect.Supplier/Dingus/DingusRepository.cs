@@ -1400,9 +1400,9 @@ namespace XConnect.Supplier.Dingus
                                                         if (Dingus_Currency.ToLower() != commonSearch.tokenData.SiteCurrency)
                                                         {
                                                             DingusFactor = _commonMethod.GetROEByCurrency(Dingus_Currency, dtROE); // added on 14-05-2025
-                                                            FinalSellingPrice = FinalSellingPrice * DingusFactor;
+                                                            
                                                         }
-
+                                                        FinalSellingPrice = FinalSellingPrice * DingusFactor;
                                                         if (roomStay.RoomTypes != null)
                                                         {
                                                             List<OTA_HotelAvailRSRoomStayRoomType> filteredRoomTypeName = roomStay.RoomTypes

@@ -25,10 +25,10 @@ namespace XConnect.Models
         public QtechConfig Qtech { get; set; }
         public HyperguestConfig Hyperguest { get; set; }
         public WelcomebedsConfig Welcomebeds { get; set; }
-
         public GRNCConfig GRNC { get; set; }
         public ExelyConfig Exely { get; set; }
         public DirectContractingConfig DirectContract { get; set; }
+        public ParsecConfig Parsec { get; set; }
     }
 
     public class ExpediaConfig
@@ -305,5 +305,12 @@ namespace XConnect.Models
     {
         public string HotelSearchURL { get; set; }
 
+    }
+    public class ParsecConfig
+    {
+        public string HotelSearch { get; set; }
+        public string olympiaURLContent { get; set; }
+        public string URLContent { get; set; }
+       
     }
 }
