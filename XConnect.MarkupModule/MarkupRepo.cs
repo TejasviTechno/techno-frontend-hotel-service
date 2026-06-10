@@ -428,6 +428,11 @@ namespace XConnect.Markup
                     {
                         Supplier = "GoGlobal";
                     }
+                    if (Supplier != null &&(
+    Supplier.IndexOf("Hibeds", StringComparison.OrdinalIgnoreCase) >= 0 || Supplier.IndexOf("letsfly", StringComparison.OrdinalIgnoreCase) >= 0))
+                    {
+                        Supplier = "letsfly";
+                    }
                     if (Supplier.ToLower() == "pricetraveluop_xtg" ||   Supplier.ToLower() == "pricetravelop_xtg")
                             Supplier = "pricetravel";
                   
