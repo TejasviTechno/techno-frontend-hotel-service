@@ -6480,6 +6480,10 @@ namespace XConnect.CommonUtilities
                     {
                         stage = "SearchById";
                     }
+
+                    var allHotelIds = searchpara?.Filters?.HotelIDs?.Split(',', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+                    int firstHotelId = allHotelIds.Length > 0 ? Convert.ToInt32(allHotelIds[0]) : 0;
+
                     _analyticSupplier.PushHotelSearchSupplierDataForAnalyticsAsyc(new AnalyticsData
                     {
                         Result = AllTask,
@@ -6492,6 +6496,7 @@ namespace XConnect.CommonUtilities
                         Description = "Supplier request",
                         StaticResult = null,
                         Search_Key = searchpara.SearchKey,
+                        srphotelid = firstHotelId
                     });
                 }
                 catch (Exception ex)

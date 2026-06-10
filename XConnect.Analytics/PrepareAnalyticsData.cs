@@ -379,7 +379,7 @@ namespace XConnect.Analytics
             _dlConnection = dlConnection;
         }
 
-        public void PushHotelSearchSupplierDataForAnalyticsAsyc(AnalyticsData analyticsData)
+        public async void PushHotelSearchSupplierDataForAnalyticsAsyc(AnalyticsData analyticsData)
         {
             try
             {
@@ -402,6 +402,9 @@ namespace XConnect.Analytics
                 var isDebugMode = _configuration.GetValue<bool>("EnvironmentType:isDebug");
                 var clientsLocalTimeZone = _configuration.GetValue<string>("EnvironmentType:clientsLocalTimeZone") ?? "Arabian Standard Time";
 
+                int hotelid = Convert.ToInt32(analyticsData?.srphotelid ?? 0); //added 
+                GetHotelDetails gethoteldetail = await GetHotelDetailsByHotelId(hotelid);
+
                 if (allTasks != null)
                 {
                     for (int i = 0; i < allTasks.Count; i++)
@@ -410,14 +413,14 @@ namespace XConnect.Analytics
                         //under work
                         var analyticsDataSupplier = new AnalyticsData
                         {
-                            Action = analyticsData.Action,
-                            Version = analyticsData.Version,
+                            Action = analyticsData?.Action?? "anonymous",
+                            Version = analyticsData?.Version?? "anonymous",
                             HttpStatusCode = allTasks[i].ResponseStatus,// allTasks[i].SupplierResponse.HttpStatusCode,
-                            Stage = analyticsData.Stage,
+                            Stage = analyticsData?.Stage ?? "anonymous",
                             ElapsedTime = (long)TimeSpan.Parse(allTasks[i].RSTimeout).TotalMilliseconds,
                             Description = description,//allTasks[i].ResponseType,
                             CodeProcessingTimenew = allTasks[i].CodeProcessingTimeSupplier,
-                            Search_Key = analyticsData.Search_Key,
+                            Search_Key = analyticsData?.Search_Key ?? "anonymous",
                             SuppliersearchResponseError = allTasks[i].SupplierResponseError,
                         };
                         
@@ -425,13 +428,17 @@ namespace XConnect.Analytics
 
                         var locationInfo = new AnalyticsLocationInfo
                         {
-                            City = mainSearchPayload?.CityName ?? "anonymous",
-                            Country = mainSearchPayload?.CountryCode ?? "anonymous",
+                            //City = mainSearchPayload?.CityName ?? "anonymous",
+                            //Country = mainSearchPayload?.CountryCode ?? "anonymous",
+                            City = gethoteldetail?.CityName ?? "anonymous",
+                            Country = gethoteldetail?.CountryName ?? "anonymous",
                             Lat = 0,
                             Long = 0,
-                            IsoCountry = mainSearchPayload?.CountryCode ?? "anonymous",
+                            IsoCountry = gethoteldetail?.CountryName ?? "anonymous",
+                            //IsoCountry = mainSearchPayload?.CountryCode ?? "anonymous",
                             IsoNationality = mainSearchPayload?.Nationality ?? "anonymous",
-                            LocationType = mainSearchPayload?.CountryCode ?? "anonymous",
+                            LocationType = gethoteldetail?.CountryName ?? "anonymous",
+                            //LocationType = mainSearchPayload?.CountryCode ?? "anonymous",
                             Nationality = mainSearchPayload?.Nationality ?? "anonymous",
 
                         };
