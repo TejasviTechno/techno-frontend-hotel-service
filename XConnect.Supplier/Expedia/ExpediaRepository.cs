@@ -2207,7 +2207,7 @@ namespace XConnect.Expedia
 
                                             FinalPrice = (!commonSearch.tokenData.IsFromB2B && _keySettings.MultiexpediaIsActive)
                                                 ? FinalPrice
-                                                : FinalPrice - OurProfit;
+                                                : FinalPrice;//- OurProfit;
                                         }
                                     }
 
@@ -2723,7 +2723,7 @@ namespace XConnect.Expedia
                                             double VatOnRateBrackUp = 0;
                                             double tempmin = (!commonSearch.tokenData.IsFromB2B && _keySettings.MultiexpediaIsActive)
                                                 ? MainPrice
-                                                : MainPrice - OurProfit;
+                                                : MainPrice; //- OurProfit;
 
                                             tempmin = _markup.ProcessHotelRateBreakupPrice_WithMarkup(
                                                 1, SearchParam.CityID, Convert.ToString(SearchParam.CountryID),
@@ -2772,7 +2772,7 @@ namespace XConnect.Expedia
                                             if (!commonSearch.tokenData.IsFromB2B && _keySettings.MultiexpediaIsActive)
                                                 MainPrice = MainPrice;
                                             else
-                                                MainPrice = MainPrice - OurProfit;
+                                                MainPrice = MainPrice;//- OurProfit;
 
                                             double ItemPrice = MainPrice;
 
