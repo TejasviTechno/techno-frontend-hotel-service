@@ -9,7 +9,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -39,6 +39,7 @@ namespace Xconnect.Expedia
         private readonly IException _exception;
         private readonly IMarkup _markup;
         private readonly ISupplierRes _supplierRes;
+        private readonly IWebHostEnvironment _environment;
         private readonly IMemoryCache _cache;
         private readonly KeySettings _keySettings;
         private readonly SupplierConfiguration _supplierConfig;//Added on 26-FEB-26
@@ -1332,52 +1333,67 @@ namespace Xconnect.Expedia
                 return string.Empty;
             }
         }
-        public string DidaRedXMLFileData(string FileName, string FieldToSearch,
-     string FieldSearchFor, string ReturnField, string Supplier)
+        public DidaRepository(
+    IWebHostEnvironment environment,
+    IMemoryCache cache)
+        {
+            _environment = environment;
+            _cache = cache;
+        }
+        public string DidaRedXMLFileData(
+    string fileName,
+    string fieldToSearch,
+    string fieldSearchFor,
+    string returnField,
+    string supplier)
         {
             try
             {
-                string ReturnText = "";
-                DataSet dsMeal = new DataSet();
+                string cacheKey = $"{supplier}_{fileName}";
+                DataSet dsMeal;
 
-                if (!_cache.TryGetValue(Supplier + "_" + FileName, out dsMeal))
+                if (!_cache.TryGetValue(cacheKey, out dsMeal))
                 {
                     string xmlPath = Path.Combine(
-     AppContext.BaseDirectory,
-     "Config",
-     Supplier + "_" + FileName + ".xml");
+                        _environment.ContentRootPath,
+                        "Config",
+                        $"{supplier}_{fileName}.xml");
+
+                    //_exception.Error(ex,xmlPath);
+
+                    if (!File.Exists(xmlPath))
+                    {
+                        throw new FileNotFoundException(
+                            $"XML file not found. Path: {xmlPath}");
+                    }
 
                     dsMeal = new DataSet();
                     dsMeal.ReadXml(xmlPath);
 
                     _cache.Set(
-                        Supplier + "_" + FileName,
+                        cacheKey,
                         dsMeal,
-                        new MemoryCacheEntryOptions()
-                            .SetAbsoluteExpiration(TimeSpan.FromHours(24)));
+                        new MemoryCacheEntryOptions
+                        {
+                            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24)
+                        });
                 }
 
-                DataRow[] drdsMeal = null;
+                if (dsMeal.Tables.Count <= 2)
+                    return string.Empty;
 
-                if (dsMeal.Tables.Count > 2)
+                foreach (DataRow row in dsMeal.Tables[2].Rows)
                 {
-                    foreach (DataRow row in dsMeal.Tables[2].Rows)
+                    if (string.Equals(
+                        Convert.ToString(row[fieldToSearch]),
+                        fieldSearchFor,
+                        StringComparison.OrdinalIgnoreCase))
                     {
-                        if (Convert.ToString(row[FieldToSearch])
-                            .Equals(FieldSearchFor, StringComparison.OrdinalIgnoreCase))
-                        {
-                            drdsMeal = new DataRow[] { row };
-                            break;
-                        }
+                        return Convert.ToString(row[returnField]) ?? string.Empty;
                     }
                 }
 
-                if (drdsMeal != null)
-                {
-                    ReturnText = Convert.ToString(drdsMeal[0][ReturnField]);
-                }
-
-                return ReturnText;
+                return string.Empty;
             }
             catch (Exception ex)
             {
