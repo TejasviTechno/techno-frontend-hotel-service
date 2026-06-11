@@ -70138,7 +70138,7 @@ else
                                                 {
 
                                                     // _logger.LogError(ex, "newhotelsearch_agoda", result);
-                                                   // _logger.LogError(ex, "newhotelsearch_agoda {@Result}", result);
+                                                    _logger.LogError(ex, "newhotelsearch_agoda {@Result}", result);
                                                     _exception.Error(ex);
                                                     return null;
                                                 }
