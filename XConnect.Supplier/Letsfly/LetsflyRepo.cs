@@ -1565,7 +1565,7 @@ namespace XConnect.Supplier.Letsfly
                 int NoOfAdults = 0;
                 int NoOfChild = 0;
                 string ChildAge = "";
-                ReferenceNo = ReferenceNo + "|" + UserCartDetailId;
+                ReferenceNo =  "|" + UserCartDetailId;
                 List<int> Child = new List<int>();
                 for (int k = 0; k < NoOfRooms; k++)
                 {
