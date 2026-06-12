@@ -632,10 +632,11 @@ namespace Xconnect.Auth
         public async Task<AuthData> AgodaAuthentication(TokenData tokenData, CommonRequest commonRequest)
         {
             AuthData authData = new AuthData();
+            string Headrertoken = string.Empty;
 
             try
             {
-                string Headrertoken = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
+                Headrertoken = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].ToString();
                 commonRequest.Token = _keySettings.agoda_token;
                 authData = await Authenticate_agoda(tokenData, commonRequest);
 
@@ -644,7 +645,8 @@ namespace Xconnect.Auth
             }
             catch (Exception ex)
             {
-                _ = _exception.Error(ex);
+                //_ = _exception.Error(ex);
+                _exception.Error(ex, Headrertoken, "Basic token for agoda");
                 return null;
             }
             return authData;
