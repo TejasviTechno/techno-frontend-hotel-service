@@ -25,6 +25,7 @@ using XConnect.Supplier.Techno;
 using Microsoft.Extensions.Logging;
 using XConnect.Analytics;
 using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 //using static XConnect.Supplier.AgodaNew.AgodaNew;
 //using CommoXMLOutPreCheckRequest = XConnect.Supplier.AgodaNew.AgodaNew.CommoXMLOutPreCheckRequest;
 //using CommoXMLOutPreCheckResponse = XConnect.Supplier.AgodaNew.AgodaNew.CommoXMLOutPreCheckResponse;
@@ -41,12 +42,13 @@ namespace XConnect.Supplier.AgodaNew
         private readonly KeySettings _keySettings;
         private readonly ILogger<Exception> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpClientFactory _httpClientFactory;
 
 
 
 
 
-        public AgodaNewRepository(ICommonMethod commonMethod, IException exception, ISupplierRes supplierRes, IDLConnection dlConnection, IOptions<KeySettings> keySettings, ILogger<Exception> logger, IHttpContextAccessor httpContextAccessor) 
+        public AgodaNewRepository(ICommonMethod commonMethod, IException exception, ISupplierRes supplierRes, IDLConnection dlConnection, IOptions<KeySettings> keySettings, ILogger<Exception> logger, IHttpContextAccessor httpContextAccessor, IHttpClientFactory httpClientFactory) 
         { 
              _commonMethod= commonMethod;
             _exception = exception;
@@ -55,6 +57,8 @@ namespace XConnect.Supplier.AgodaNew
             _keySettings = keySettings.Value;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
+            _httpClientFactory = httpClientFactory;
+
         }
 
         public async Task<List<Options>> XMLOut_HotelSearchWithRooms(string requestName, HotelX Item, CommonSearch commonSearch, DataSet GTAResponse, string HotelID, HotelSearchParameter SearchParam, DataTable dtAgentDetail, DataTable dtMarkupDetails, AdvancedOptions advancedOptions, DataSet DTChainCode, DataSet DTCountryblock)
@@ -2140,7 +2144,7 @@ namespace XConnect.Supplier.AgodaNew
 
         }
 
-        public async Task<string> GetSupplierResponseFinalNew_new(HotelX Item, string requestName)
+        public async Task<string> GetSupplierResponseFinalNew_new_12062026(HotelX Item, string requestName)
         {
             int HttpStatusCode = 0;
             string responsedata = "";
@@ -2311,6 +2315,131 @@ namespace XConnect.Supplier.AgodaNew
 
             return responsedata;
         }
+
+
+        public async Task<string> GetSupplierResponseFinalNew_new(HotelX item, string requestName)
+        {
+            int httpStatusCode = 0;
+            string responseData = string.Empty;
+            string catchType = string.Empty;
+            string reqId = DateTime.Now.Ticks.ToString();
+            var timer = Stopwatch.StartNew();
+            try
+            {
+                requestName = requestName?.ToLowerInvariant() ?? string.Empty;
+                string finalUrl = string.Empty;
+                switch (requestName)
+                {
+                    case "availability":
+                        item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutAvailabilityTimeOut);
+                        //finalUrl = $ "{_keySettings.EndPointXMLOut.TrimEnd('/')}/" + $ "{_keySettings.AvailabilitywithcancellationXMLOut.TrimStart('/')}";
+                        finalUrl = $"{_keySettings.EndPointXMLOut.TrimEnd('/')}/{_keySettings.AvailabilitywithcancellationXMLOut.TrimStart('/')}";
+
+                        break;
+                    case "precheck":
+                        item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutPrebookTimeOut);
+                        //finalUrl = $ "{_keySettings.EndPointforprebook.TrimEnd('/')}/" + $ "{_keySettings.AddHotelToCartXMLOut.TrimStart('/')}";
+                        finalUrl = $"{_keySettings.EndPointforprebook.TrimEnd('/')}/{_keySettings.AddHotelToCartXMLOut.TrimStart('/')}";
+
+                        break;
+                    case "book":
+                        item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutBookTimeOut);
+                        // finalUrl = $ "{_keySettings.EndPointforbook.TrimEnd('/')}/" + $ "{_keySettings.BookXMLOut.TrimStart('/')}";
+                        finalUrl = $"{_keySettings.EndPointforbook.TrimEnd('/')}/{_keySettings.BookXMLOut.TrimStart('/')}";
+
+                        break;
+                    case "bookingdetail":
+                        item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutBookingDetailTimeOut);
+                        //finalUrl = $ "{_keySettings.EndPointforbookingdetail.TrimEnd('/')}/" + $ "{_keySettings.BookingDetailXMLOut.TrimStart('/')}";
+                        finalUrl = $"{_keySettings.EndPointforbookingdetail.TrimEnd('/')}/{_keySettings.BookingDetailXMLOut.TrimStart('/')}";
+
+                        break;
+                    case "checkhotelcancellationcharges":
+                        item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutCancellationChargesTimeOut);
+                        //finalUrl = $ "{_keySettings.EndPointforCheckHotelCancellationCharges.TrimEnd('/')}/" + $ "{_keySettings.CheckHotelCancellationChargesXMLOut.TrimStart('/')}";
+                        finalUrl = $"{_keySettings.EndPointforCheckHotelCancellationCharges.TrimEnd('/')}/{_keySettings.CheckHotelCancellationChargesXMLOut.TrimStart('/')}";
+
+                        break;
+                    case "cancelbooking":
+                        item.SearchTimeOut = Convert.ToInt32(_keySettings.XMLOutCancelBookingTimeOut);
+                        //finalUrl = $ "{_keySettings.EndPointforCancelBooking.TrimEnd('/')}/" + $ "{_keySettings.CancelBookingXMLOut.TrimStart('/')}";
+                        finalUrl = $"{_keySettings.EndPointforCancelBooking.TrimEnd('/')}/{_keySettings.CancelBookingXMLOut.TrimStart('/')}";
+
+                        break;
+                    default:
+                        // throw new ArgumentException($ "Unsupported request type: {requestName}");
+                        throw new ArgumentException($"Unsupported request type: {requestName}");
+                }
+                Console.WriteLine("FINAL URL: " + finalUrl);
+
+                var client = _httpClientFactory.CreateClient("AgodaClient");
+                client.Timeout = TimeSpan.FromMilliseconds(item.SearchTimeOut);
+
+
+
+
+                string requestBody = item.RQRS[0].Request;
+                using
+                var request = new HttpRequestMessage(HttpMethod.Post, finalUrl);
+                request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _keySettings.agoda_token);
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var clientIp = _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+                var existingForwardedFor = _httpContextAccessor.HttpContext?.Request?.Headers["X-Forwarded-For"].FirstOrDefault();
+                //var xForwardedFor = string.IsNullOrWhiteSpace(existingForwardedFor) ? clientIp : $ "{existingForwardedFor}, {clientIp}";
+                var xForwardedFor = string.IsNullOrEmpty(existingForwardedFor) ? clientIp : $"{existingForwardedFor}, {clientIp}";
+                request.Headers.Add("X-Custom-Host", "AgodaReverse");
+                request.Headers.Add("X-Time-Zone", "Arabian Standard Time");
+                request.Headers.Add("X-Accept-Language", "abc");
+                request.Headers.Add("User-Agent", "PostmanRuntime/7.51.1");
+                if (!string.IsNullOrWhiteSpace(xForwardedFor))
+                {
+                    request.Headers.Add("X-Forwarded-For", xForwardedFor);
+                }
+                using
+                var response = await client.SendAsync(request, HttpCompletionOption.ResponseContentRead);
+                httpStatusCode = (int)response.StatusCode;
+                responseData = await response.Content.ReadAsStringAsync();
+                // await _commonMethod.XMLRequestResponseTrack_agoda($ "{finalUrl} | {requestBody}", responseData, "xmlout", "Proper", reqId);
+                await _commonMethod.XMLRequestResponseTrack_agoda(
+                                finalUrl + " | " + requestBody,
+                                responseData,
+                                "xmlout",
+                                "Proper",
+                                reqId
+                            );
+            }
+            catch (TaskCanceledException ex)
+            {
+                catchType = ex.Message;
+                //Console.WriteLine($ "TIMEOUT: {ex.Message}");
+                Console.WriteLine("TIMEOUT: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                catchType = ex.Message;
+                // Console.WriteLine($ "ERROR: {ex.Message}");
+                Console.WriteLine("ERROR: " + ex.Message);
+
+            }
+            finally
+            {
+                timer.Stop();
+                item.RSTimeout = timer.Elapsed.ToString();
+            }
+            if (!string.IsNullOrWhiteSpace(responseData))
+            {
+                item.ResponseType = "NoCount";
+                item.ResponseStatus = httpStatusCode;
+            }
+            else
+            {
+                item.ResponseType = catchType.Contains("timeout", StringComparison.OrdinalIgnoreCase) || catchType.Contains("task was canceled", StringComparison.OrdinalIgnoreCase) ? "Timeout" : "NoCount";
+                item.ResponseStatus = httpStatusCode;
+            }
+            return responseData;
+        }
+
 
         public List<XMLOutRoomDetail> GetXMLOutRoomDetail(int numberOfRooms, int numberOfPassengers, string numberOfChildAge)
         {

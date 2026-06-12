@@ -6038,11 +6038,11 @@ namespace XConnect.API.Controllers
                                 {
                                     Action = requestName,
                                     Result = lstFiltOption,
-                                    HttpStatusCode = Convert.ToInt32(500),
+                                    HttpStatusCode = Convert.ToInt32(404),
                                     Stage = requestName == "availability" ? "Search" : "Recheck",
                                     ElapsedTime = timer.ElapsedMilliseconds,
                                     Description = erroragoda.responseStatus,
-                                    Errorcode = "INTERNAL_ERROR",
+                                    Errorcode = "NOT_SUCCESSFULL",
                                     source = "APIOut",
                                     AgentName = "Agoda",
                                     ActualDescription =  erroragoda.remark,
@@ -6058,7 +6058,7 @@ namespace XConnect.API.Controllers
                             }
                             #endregion
                             //return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.InternalError, "0", HttpStatusCode.InternalServerError, SearchKeyar);
-                            return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.NoError, "0", HttpStatusCode.OK, SearchKeyar); //28052026
+                            return await _hotelXML.CreateResponseCompressed_agodahotelsearch(HttpContext, 200, lstFiltOption, "application/json", commonRQ, lstFiltOption, tokenData, requestName, EnterLogs, timer.Elapsed.ToString(), ErrorCode.SomeError, "0", HttpStatusCode.OK, SearchKeyar); //28052026
 
                         }
                     }

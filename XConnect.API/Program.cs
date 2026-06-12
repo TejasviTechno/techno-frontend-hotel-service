@@ -29,6 +29,7 @@ using QueueManager.Config;
 using QueueManager.Contracts.Models.ElasticSearch;
 using XConnect.Analytics.Interface;
 using XConnect.Analytics;
+using System.Net;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -186,6 +187,14 @@ builder.Services.AddHttpClient("Default", client =>
     //ExpectContinueTimeout = TimeSpan.FromMilliseconds(300)  // NEW
 })
 .SetHandlerLifetime(TimeSpan.FromMinutes(5));
+builder.Services.AddHttpClient("AgodaClient")
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        Proxy = null,
+        AutomaticDecompression =
+            DecompressionMethods.GZip |
+            DecompressionMethods.Deflate
+    });
 
 builder.Services.AddUserContextValue();//Added on 10-JAN-26
 builder.Services.AddMemoryCache();
