@@ -71,7 +71,8 @@ namespace XConnect.Supplier.Techno
 
                                 DataForSearch dataForSearch = _commonMethod.GetXmlDataForSearchTechwise(SearchPara.Nationality, dtXMLCity, Supplier, WE_DMCDetails.TechName);
                                 dataForSearch.XmlNationality = Convert.ToString(SearchPara.Nationality);
-                                if (dataForSearch.XmlNationality != "")
+                                //if (dataForSearch.XmlNationality != "")
+                                if (dataForSearch.XmlNationality != "" && dataForSearch.xmlCountry != "" && dataForSearch.xmlCountry != null)
                                 {
                                     string[] spitid = Platform.Split(new String[] { "$$" }, StringSplitOptions.None);
                                     string IP_DMC = Convert.ToString(spitid[1]);
