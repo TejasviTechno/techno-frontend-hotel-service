@@ -927,22 +927,22 @@ namespace Xconnect.BLL
                 {
                     if (SearchPara.HotelID != "")
                     {
-                        if (SearchPara.HotelID != "")
-                        {
-                            SearchByHotel = true;
-                            SearchPara.Filters.SearchByHotel = true;
-                            SearchPara.HotelID = SearchPara.HotelID.Replace("\n", "");
+                        SearchByHotel = true;
+                        SearchPara.Filters.SearchByHotel = true;
+                        SearchPara.HotelID = SearchPara.HotelID.Replace("\n", "").Trim();
 
-                            string[] arr = SearchPara.HotelID.Split(',');
-                            for (int i = 0; i < (arr.Length); i++)
-                            {
-                                // HotelIDS.Add(Convert.ToString("'" + arr[i].Trim() + "'"));
-                                HotelIDS_INT.Add(Convert.ToInt64(Convert.ToString(arr[i].Trim())));
-                            }
-                            if (HotelIDS_INT.Count == 1)
-                                SearchByOneID = true;
+                        string[] arr = SearchPara.HotelID.Split(',');
+                        for (int i = 0; i < (arr.Length); i++)
+                        {
+                            // HotelIDS.Add(Convert.ToString("'" + arr[i].Trim() + "'"));
+                            HotelIDS_INT.Add(Convert.ToInt64(Convert.ToString(arr[i].Trim())));
                         }
-                        SearchPara.HotelID = "";
+                        if (HotelIDS_INT.Count == 1)
+                            SearchByOneID = true;
+
+                        if (!SearchByOneID)
+                            SearchPara.HotelID = "";
+                    
                         //SearchByOneID = false;
                         #region For OTH & CM MappingManage Code
                         if (dsAgentDetails.Tables[1].Rows.Count > 0)
@@ -37088,7 +37088,6 @@ else
 
                                                         if (IsPriceUpdatesE && itempriceE > 0)
                                                         {
-                                                            responsetype = "GeneralError";
                                                             #region "Price update logic with markup"
                                                             double UpdatedPrice = Convert.ToDouble(itempriceE);
                                                             #region "Markup Logic Supplierwise"
@@ -55439,6 +55438,8 @@ else
 
                                         string groupToken = GetCommonExelyCreateBookingToken(bookRequest.userCart.UserCartDetails.Select(r => r.RoomTypeId));
                                         string exelyPropertyId = groupPropertyId;
+                                        bool skipGroupBooking = false;
+
                                         if (string.IsNullOrWhiteSpace(groupToken))
                                         {
                                             // Attempt a verify call to obtain a createBookingToken for the group
@@ -55467,35 +55468,38 @@ else
                                                 }
                                             }
                                             catch { }
-                                        }
 
-                                        if (string.IsNullOrWhiteSpace(groupToken))
-                                        {
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, string.Empty, "Exely createBookingToken missing from prebook response.", "Exely Group Book token missing", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
-                                            RequestSPR = string.Empty;
-                                            ReponseSPR = string.Empty;
-                                            Error = "Exely createBookingToken missing from prebook response.";
-                                            time = "00:00:00.000000";
-                                            responsetype = "GeneralError";
-
-                                            try { _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error); }
-                                            catch { }
-                                            for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
+                                            // If still missing after verify attempt => mark as failed and skip booking
+                                            if (string.IsNullOrWhiteSpace(groupToken))
                                             {
-                                                agentVouchers.Add(new AgentVoucher
+                                                _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, string.Empty, "Exely createBookingToken missing from prebook response.", "Exely Group Book token missing", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
+                                                RequestSPR = string.Empty;
+                                                ReponseSPR = string.Empty;
+                                                Error = "Exely createBookingToken missing from prebook response.";
+                                                time = "00:00:00.000000";
+                                                responsetype = "GeneralError";
+
+                                                try { _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(suppliername, "Book", tokenData.AgentId, time, responsetype, RequestSPR, ReponseSPR, Error); }
+                                                catch { }
+                                                for (int j = 0; j < bookRequest.userCart.UserCartDetails.Count; j++)
                                                 {
-                                                    UserCartId = bookRequest.userCart.UserCartDetails[j].UserCartId,
-                                                    UserCartDetailId = bookRequest.userCart.UserCartDetails[j].UserCartDetailId,
-                                                    AgentVoucherNo = "",
-                                                    XMLRequest = RequestSPR,
-                                                    XMLResponse = Error,
-                                                    RoomStatus = "2",
-                                                    SupplierName = suppliername
-                                                });
+                                                    agentVouchers.Add(new AgentVoucher
+                                                    {
+                                                        UserCartId = bookRequest.userCart.UserCartDetails[j].UserCartId,
+                                                        UserCartDetailId = bookRequest.userCart.UserCartDetails[j].UserCartDetailId,
+                                                        AgentVoucherNo = "",
+                                                        XMLRequest = RequestSPR,
+                                                        XMLResponse = Error,
+                                                        RoomStatus = "2",
+                                                        SupplierName = suppliername
+                                                    });
+                                                }
+                                                bookResponse_1.agentVouchers = agentVouchers;
+                                                skipGroupBooking = true;
                                             }
-                                            bookResponse_1.agentVouchers = agentVouchers;
                                         }
-                                        else
+
+                                        if (!skipGroupBooking)
                                         {
                                             /*if (string.IsNullOrWhiteSpace(RequestSPR))
                                             {
@@ -68592,21 +68596,21 @@ else
                 {
                     if (SearchPara.HotelID != "")
                     {
-                        if (SearchPara.HotelID != "")
-                        {
-                            SearchByHotel = true;
-                            SearchPara.HotelID = SearchPara.HotelID.Replace("\n", "");
+                        SearchByHotel = true;
+                        SearchPara.HotelID = SearchPara.HotelID.Replace("\n", "").Trim();
 
-                            string[] arr = SearchPara.HotelID.Split(',');
-                            for (int i = 0; i < (arr.Length); i++)
-                            {
-                                // HotelIDS.Add(Convert.ToString("'" + arr[i].Trim() + "'"));
-                                HotelIDS_INT.Add(Convert.ToInt64(Convert.ToString(arr[i].Trim())));
-                            }
-                            if (HotelIDS_INT.Count == 1)
-                                SearchByOneID = true;
+                        string[] arr = SearchPara.HotelID.Split(',');
+                        for (int i = 0; i < (arr.Length); i++)
+                        {
+                            // HotelIDS.Add(Convert.ToString("'" + arr[i].Trim() + "'"));
+                            HotelIDS_INT.Add(Convert.ToInt64(Convert.ToString(arr[i].Trim())));
                         }
-                        SearchPara.HotelID = "";
+                        if (HotelIDS_INT.Count == 1)
+                            SearchByOneID = true;
+
+                        if (!SearchByOneID)
+                            SearchPara.HotelID = "";
+                    
                         //if (dsAgentDetails.Tables[6] != null && dsAgentDetails.Tables[6].Rows.Count > 0)
                         //{
                         //    DataRow[] rowsRayna = dsAgentDetails.Tables[6].Select("RaynaId IN (" +
