@@ -2628,7 +2628,7 @@ namespace Xconnect.Expedia
         }
 
         #endregion
-        public async Task<PriceCheckDto> DoAgoda_NewPriceCheck(string supplier,bool IsFromBook, DataTable dtCheckPriceReqStructure, DataTable dtPriceUpdateTable, DataTable dtPriceDetail ,double serviceTot, DataRow[] AgodaV1Details, DataSet dsCartDetails, DataSet dsAgentDetails, int i, string UniqueNo, string AgentUniqueNo, DataRow[] AgodaSearchConfig, DataTable dtCountryCityMarkup, bool isPerce, double AgentMarkupAmount, bool IsB2C, double B2CMarkup, double SubAgentMarkup, int IsParentId, double FinalPrice, int AgentId)
+        public async Task<PriceCheckDto> DoAgoda_NewPriceCheck(string supplier,bool IsFromBook, DataTable dtCheckPriceReqStructure, DataTable dtPriceUpdateTable, DataTable dtPriceDetail ,double serviceTot, DataRow[] AgodaV1Details, DataSet dsCartDetails, DataSet dsAgentDetails, int i, string UniqueNo, string AgentUniqueNo, DataRow[] AgodaSearchConfig, DataTable dtCountryCityMarkup, bool isPerce, double AgentMarkupAmount, bool IsB2C, double B2CMarkup, double SubAgentMarkup, int IsParentId, double FinalPrice, int AgentId, string Searchkey = "", string TechName = "")
         {
             PriceCheckDto priceCheckDto = new PriceCheckDto();
 
@@ -2639,6 +2639,15 @@ namespace Xconnect.Expedia
             string AgodaRequestRoom = "";
             string AgodaResponseRoom = "";
             //int AgentIdgta = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
             try
             {
                 string AgodaLaguage = AgodaInfo.AgodaLaguage;
@@ -2712,7 +2721,7 @@ namespace Xconnect.Expedia
                 #region SupplierPR Price Check
                 try
                 {
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "PreBook", AgentId, time, responsetype, AgodaRequestRoom, AgodaResponseRoom, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "PreBook", AgentId, time, responsetype, AgodaRequestRoom, AgodaResponseRoom, Error, Searchkey, TechName, srphotelid);
                 }
                 catch (Exception ex)
                 {
@@ -2728,7 +2737,7 @@ namespace Xconnect.Expedia
                 {
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "PreBook", AgentId, time, responsetype, AgodaRequestRoom, AgodaResponseRoom, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]), "PreBook", AgentId, time, responsetype, AgodaRequestRoom, AgodaResponseRoom, Error, Searchkey, TechName, srphotelid);
                 }
                 catch (Exception e)
                 {

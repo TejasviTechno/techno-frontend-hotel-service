@@ -1084,13 +1084,22 @@ namespace XConnect.Supplier.Traveloka
 
         //prebook 22-07-25
 
-        public async Task<PriceCheckTravelokaDto> Get_Traveloka_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] TravelokaDetails, int i, int j, DataTable dtCheckPriceReqStructure, double FinalPrice, bool isFromBooking, string time, string responsetype, double CompanyBuyingPrice, TokenData tokenData,string Supplier, int AgentId = 0, string platform = "")
+        public async Task<PriceCheckTravelokaDto> Get_Traveloka_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] TravelokaDetails, int i, int j, DataTable dtCheckPriceReqStructure, double FinalPrice, bool isFromBooking, string time, string responsetype, double CompanyBuyingPrice, TokenData tokenData,string Supplier, int AgentId = 0, string platform = "", string SearchKey = "", string TechName = "")
         {
             PriceCheckTravelokaDto priceCheckTravelokaDto = new PriceCheckTravelokaDto();
             string SupplierName = Supplier;
             string Error = "";
             string Request = "";
             string ResponseData = "";
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, SearchKey);
+            }
             try
             {
                 #region Price Check RQ and Declaration
@@ -1196,7 +1205,7 @@ namespace XConnect.Supplier.Traveloka
                 {
                     responsetype = "GeneralError";
                     //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error, SearchKey, TechName, srphotelid);
                 }
                 catch (Exception e)
                 {
@@ -1211,7 +1220,7 @@ namespace XConnect.Supplier.Traveloka
                     {
                         ResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + ResponseData;
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error, SearchKey, TechName, srphotelid);
                     }
                     catch (Exception e)
                     {
@@ -1223,7 +1232,7 @@ namespace XConnect.Supplier.Traveloka
                     try
                     {
                         responsetype = "Success";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, ResponseData, Error, SearchKey, TechName, srphotelid);
                     }
                     catch (Exception e)
                     {

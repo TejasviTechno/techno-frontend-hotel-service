@@ -1059,7 +1059,7 @@ namespace XConnect.Supplier.Saltours
             return options;
         }
 
-        public async Task<PriceCheckDto> SaltoursPriceCheck(DataSet dsCartDetails, DataRow[] saltoursDetails, int j, double FinalPrice,  double CurrencyFactorsaltours, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int i, string Nationality, double saltoursCurrency,int AgentId,TokenData tokenData)
+        public async Task<PriceCheckDto> SaltoursPriceCheck(DataSet dsCartDetails, DataRow[] saltoursDetails, int j, double FinalPrice,  double CurrencyFactorsaltours, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int i, string Nationality, double saltoursCurrency,int AgentId,TokenData tokenData, string SearchKey = "", string TechName = "")
         {
             PriceCheckDto priceCheckDto = new PriceCheckDto();
 
@@ -1069,6 +1069,15 @@ namespace XConnect.Supplier.Saltours
             string time = "";
             //string request = "";
             string Error = "";
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, SearchKey);
+            }
             try
             {
                 string username = Convert.ToString(saltoursDetails[0]["UserName"]);
@@ -1107,7 +1116,7 @@ namespace XConnect.Supplier.Saltours
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, "purchaseToken");
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, "purchaseToken",SearchKey,TechName,srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -1204,7 +1213,7 @@ namespace XConnect.Supplier.Saltours
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error,SearchKey,TechName,srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -1218,7 +1227,7 @@ namespace XConnect.Supplier.Saltours
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error,SearchKey,TechName,srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -1300,7 +1309,7 @@ namespace XConnect.Supplier.Saltours
                     try
                     {
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, SearchKey, TechName, srphotelid);
                     }
                     catch (Exception e)
                     {

@@ -20,7 +20,7 @@ namespace XConnect.Supplier.Rezlive.Interface
 
         Task<ResponseDto> Rezlive_Response_Supplier_new(string Request_Text, string APIUrl, int SearchTimeOut, string SupplieName, string SearchKey = "", HotelSearchParameter para = null, bool DebugMode = false);
 
-        Task<PriceCheckRezliveDto> Get_Rezlive_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] RezliveDetails, string PaxPassPort, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string HasKey_IntCode, string IsPrcCheck_Book, string Supplier, int AgentId, TokenData tokenData);
+        Task<PriceCheckRezliveDto> Get_Rezlive_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] RezliveDetails, string PaxPassPort, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string HasKey_IntCode, string IsPrcCheck_Book, string Supplier, int AgentId, TokenData tokenData,  string Searchkey = "", string TechName = "");
 
         string Get_Rezlive_BookingRequest(DataSet dsCartDetails, DataTable dtPassengers, DataRow[] RezliveDetails, string ExternalReference, bool IsPriceUpdate, int i, int j, string BookingKey);
 

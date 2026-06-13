@@ -1133,7 +1133,7 @@ namespace XConnect.Supplier.Yalago
             return responseDto;
         }
 
-        public async Task<PriceCheckCMDto> Get_Yalago_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] YalagoDetails, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, bool isForBooking, double CompanyBuyingPriceA, string xmlhotelid, string IsFor, bool IssErrorY, double itempriceY, string Searchkey, int AgentId = 0,TokenData tokenData=null)
+        public async Task<PriceCheckCMDto> Get_Yalago_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] YalagoDetails, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, bool isForBooking, double CompanyBuyingPriceA, string xmlhotelid, string IsFor, bool IssErrorY, double itempriceY, string Searchkey, int AgentId = 0,TokenData tokenData=null, string TechName = "")
         {
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();    
 
@@ -1143,6 +1143,15 @@ namespace XConnect.Supplier.Yalago
             string Error = "";
             string Request = "";
             string YalagoResponse = "";
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
             try
             {
                 #region "PriceCheck RQ"
@@ -1195,7 +1204,7 @@ namespace XConnect.Supplier.Yalago
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, YalagoResponse, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, YalagoResponse, Error,Searchkey,TechName,srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -1238,7 +1247,7 @@ namespace XConnect.Supplier.Yalago
                                     {
                                         YalagoResponse = "#Price Changed " + "#Main Price = " + CompanyBuyingPriceA + " #New Price = " + itempriceY + " #Response= " + YalagoResponse;
                                         responsetype = "GeneralError";
-                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, YalagoResponse, Error);
+                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, YalagoResponse, Error, Searchkey, TechName, srphotelid);
                                     }
                                     catch (Exception e)
                                     {
@@ -1258,7 +1267,7 @@ namespace XConnect.Supplier.Yalago
                                     {
                                         YalagoResponse = "#Price Changed " + "#Main Price = " + CompanyBuyingPriceA + " #New Price = " + itempriceY + " #Response= " + YalagoResponse;
                                         responsetype = "GeneralError";
-                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, YalagoResponse, Error);
+                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, YalagoResponse, Error, Searchkey, TechName, srphotelid);
                                     }
                                     catch (Exception e)
                                     {
@@ -1281,7 +1290,7 @@ namespace XConnect.Supplier.Yalago
                 {
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, YalagoResponse, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, YalagoResponse, Error, Searchkey, TechName, srphotelid);
                    
                 }
                 catch (Exception e)
@@ -1295,7 +1304,7 @@ namespace XConnect.Supplier.Yalago
             try
             {
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, YalagoResponse, Error);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, Request, YalagoResponse, Error, Searchkey, TechName, srphotelid);
             }
             catch (Exception e)
             {

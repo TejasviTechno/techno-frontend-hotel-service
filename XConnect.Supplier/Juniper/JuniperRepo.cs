@@ -2362,7 +2362,7 @@ namespace XConnect.Supplier.Juniper
             }
         }
 
-        public async Task<PriceCheckCMDto> Get_JuniperNew_PriceCheckRQRS(int i, DataSet dsCartDetails, DataRow[] SupplierDetails, string SupplierName, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, string HotelId, int UserCartId, int UserCartDetailId, string RoomTypeId, double CompanyBuyingPrice, string NewRatePlan, bool IsError, string Currency, string Searchkey = "", int AgentId = 0)
+        public async Task<PriceCheckCMDto> Get_JuniperNew_PriceCheckRQRS(int i, DataSet dsCartDetails, DataRow[] SupplierDetails, string SupplierName, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, string HotelId, int UserCartId, int UserCartDetailId, string RoomTypeId, double CompanyBuyingPrice, string NewRatePlan, bool IsError, string Currency, string Searchkey = "", int AgentId = 0,string TechName="")
         {
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
 
@@ -2371,6 +2371,15 @@ namespace XConnect.Supplier.Juniper
             string Error = "";
             string xslrequest = "";
             string Responsedata_Ex = "";
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
             try
             {
                 #region PriceCheck RQ
@@ -2420,7 +2429,7 @@ namespace XConnect.Supplier.Juniper
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error,Searchkey,TechName,srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -2447,7 +2456,7 @@ namespace XConnect.Supplier.Juniper
                                 try
                                 {
                                     responsetype = "GeneralError";
-                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error);
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error, Searchkey, TechName, srphotelid);
                                 }
                                 catch (Exception e)
                                 {
@@ -2490,7 +2499,7 @@ namespace XConnect.Supplier.Juniper
                                     {
                                         Responsedata_Ex = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + Responsedata_Ex;
                                         responsetype = "GeneralError";
-                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error);
+                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error, Searchkey, TechName, srphotelid);
                                     }
                                     catch (Exception e)
                                     {
@@ -2508,7 +2517,7 @@ namespace XConnect.Supplier.Juniper
                                 try
                                 {
                                     responsetype = "GeneralError";
-                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error);
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error, Searchkey, TechName, srphotelid);
                                 }
                                 catch (Exception e)
                                 {
@@ -2525,7 +2534,7 @@ namespace XConnect.Supplier.Juniper
                             {
                                 responsetype = "GeneralError";
                                 Error = ex.Message + ex.StackTrace.ToString();
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error, Searchkey, TechName, srphotelid);
                             }
                             catch (Exception e)
                             {
@@ -2546,7 +2555,7 @@ namespace XConnect.Supplier.Juniper
                 {
                     Error = e.Message + e.StackTrace.ToString() + "#= " + Error;
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error, Searchkey, TechName, srphotelid);
                 }
                 catch (Exception ex)
                 {
@@ -2561,7 +2570,7 @@ namespace XConnect.Supplier.Juniper
             try
             {
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslrequest, Responsedata_Ex, Error, Searchkey, TechName, srphotelid);
             }
             catch (Exception e)
             {

@@ -1231,7 +1231,7 @@ namespace XConnect.Supplier.MGBedBank
         }
 
 
-        public async Task<PriceCheckCMDto> Get_MgBedBank_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] MgBedBankDetails, string PaxPassPort, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string HasKey_IntCode, string IsPrcCheck_Book, string Supplier, string Searchkey = "", int AgentId = 0, TokenData tokenData = null)
+        public async Task<PriceCheckCMDto> Get_MgBedBank_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] MgBedBankDetails, string PaxPassPort, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string HasKey_IntCode, string IsPrcCheck_Book, string Supplier, string Searchkey = "", int AgentId = 0, TokenData tokenData = null, string TechName = "")
         {
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
 
@@ -1242,6 +1242,15 @@ namespace XConnect.Supplier.MGBedBank
             string ErrorResponse = "";
             string xslRequest = "";
             string ResponseData = "";
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
             try
             {
                 #region Price Check RQ and Declaration
@@ -1341,7 +1350,7 @@ namespace XConnect.Supplier.MGBedBank
                             try
                             {
                                 responsetype = "GeneralError";
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse, Searchkey, TechName, srphotelid);
                             }
                             catch (Exception e)
                             {
@@ -1361,7 +1370,7 @@ namespace XConnect.Supplier.MGBedBank
                             try
                             {
                                 responsetype = "GeneralError";
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse, Searchkey, TechName, srphotelid);
                             }
                             catch (Exception e)
                             {
@@ -1398,7 +1407,7 @@ namespace XConnect.Supplier.MGBedBank
                                     try
                                     {
                                         responsetype = "GeneralError";
-                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse);
+                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse, Searchkey, TechName, srphotelid);
                                     }
                                     catch (Exception e)
                                     {
@@ -1435,7 +1444,7 @@ namespace XConnect.Supplier.MGBedBank
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse, Searchkey, TechName, srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -1453,7 +1462,7 @@ namespace XConnect.Supplier.MGBedBank
                 try
                 {
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse, Searchkey, TechName, srphotelid);
                 }
                 catch (Exception ex)
                 {
@@ -1470,7 +1479,7 @@ namespace XConnect.Supplier.MGBedBank
             try
             {
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, ErrorResponse, Searchkey, TechName, srphotelid);
             }
             catch (Exception e)
             {

@@ -21,7 +21,7 @@ namespace XConnect.Supplier.HotelDo.Interface
         #endregion
 
         //prebook
-        Task<PriceCheckCMDto> HotelDoPriceCheck_v2(DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] HotelDoDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice,  bool IsError,  double itemprice, string Searchkey = "", int AgentId = 0);
+        Task<PriceCheckCMDto> HotelDoPriceCheck_v2(DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] HotelDoDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice,  bool IsError,  double itemprice, string Searchkey = "", int AgentId = 0,string TechName="");
 
         string HotelDoBookingRequest_v2(string PassWord, string AffiliateId, string HotelCode, DataTable dtPassengers, DataSet dsCartDetails, string UniqueNo, bool IsPriceUpdates, bool IsErrors, int i = 0);
 

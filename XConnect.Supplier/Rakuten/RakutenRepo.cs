@@ -1533,13 +1533,22 @@ namespace XConnect.Supplier.Rakuten
             return responseDto;
         }
 
-        public async Task<PriceCheckCMDto> PriceUpdateRakuten(DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] RakutenDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, int AgentId, bool IsError, double itemprice, TokenData tokenData)
+        public async Task<PriceCheckCMDto> PriceUpdateRakuten(DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] RakutenDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, int AgentId, bool IsError, double itemprice, TokenData tokenData, string SearchKey = "", string TechName = "")
         {
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
             string Error = "";
             string RequestSPR = "-", ReponseSPR = "-";
             string time = "00:00";
             string responsetype = "Success";
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, SearchKey);
+            }
             try
             {
                 string RakutenCurrency = Convert.ToString(RakutenDetails[0]["CurrencyShortName"]);
@@ -1762,7 +1771,7 @@ namespace XConnect.Supplier.Rakuten
                 #region SupplierPR Price Check
                 try
                 {
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook("Rakuten", "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook("Rakuten", "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, SearchKey, TechName, srphotelid);
                 }
                 catch (Exception e)
                 {
@@ -1780,7 +1789,7 @@ namespace XConnect.Supplier.Rakuten
                 {
                     Error = e.Message + e.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook("Rakuten", "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook("Rakuten", "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, SearchKey, TechName, srphotelid);
                 }
                 catch (Exception ex)
                 {

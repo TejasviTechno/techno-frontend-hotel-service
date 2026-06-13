@@ -2497,7 +2497,7 @@ namespace XConnect.Supplier.Hyperguest
             return priceCheckDto;
         }
 
-        public async Task<PriceCheckDto> hyperguestPriceCheck_new(DataSet dsCartDetails, DataRow[] hyperguestDetails, int j, double FinalPrice, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int i, double CompanyBuyingPrice, int AgentId, TokenData tokenData, string Searchkey = "")
+        public async Task<PriceCheckDto> hyperguestPriceCheck_new(DataSet dsCartDetails, DataRow[] hyperguestDetails, int j, double FinalPrice, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int i, double CompanyBuyingPrice, int AgentId, TokenData tokenData, string Searchkey = "", string TechName = "")
         {
             PriceCheckDto priceCheckDto = new PriceCheckDto();
             string CancellationPolicyRQ = "";
@@ -2509,6 +2509,15 @@ namespace XConnect.Supplier.Hyperguest
             double Finalprice1 = 0;
             string currency = "";
             double CurrencyFactor = 1;
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
             try
             {
                 string username = Convert.ToString(hyperguestDetails[0]["UserName"]);
@@ -2543,7 +2552,7 @@ namespace XConnect.Supplier.Hyperguest
                     try
                     {
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);//"purchaseToken"
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error,Searchkey,TechName,srphotelid);//"purchaseToken"
                     }
                     catch (Exception e)
                     {
@@ -2657,7 +2666,7 @@ namespace XConnect.Supplier.Hyperguest
                         {
                             ResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + ResponseData;
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);//"purchaseToken"
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, Searchkey, TechName, srphotelid);//"purchaseToken"
                         }
                         catch (Exception e)
                         {
@@ -2675,7 +2684,7 @@ namespace XConnect.Supplier.Hyperguest
                     FinalPrice = 0;
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);//"purchaseToken"
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, Searchkey, TechName, srphotelid);//"purchaseToken"
                 }
                 catch (Exception e)
                 {
@@ -2690,7 +2699,7 @@ namespace XConnect.Supplier.Hyperguest
             try
             {
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error); //"purchaseToken"
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, Searchkey, TechName, srphotelid); //"purchaseToken"
             }
             catch (Exception e)
             {

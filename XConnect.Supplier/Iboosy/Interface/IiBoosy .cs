@@ -22,7 +22,7 @@ namespace XConnect.Supplier.Iboosy.Interface
         Task<CancellationDto> MethaBook_Cancellation(string MealCode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, string SearchKey,string GiataId = "0", int hotelRating = 0);
 
         //prebook - 260625
-        Task<PriceCheckCMDto> MethaBookPriceCheck(string AvailabilityCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] MethaBookDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string BookingCode, string MealCode, TokenData tokenData, string Searchkey = "", int AgentId = 0);
+        Task<PriceCheckCMDto> MethaBookPriceCheck(string AvailabilityCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] MethaBookDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string BookingCode, string MealCode, TokenData tokenData, string Searchkey = "", int AgentId = 0,string TechName="");
 
         string MethaBookBookingRequest(string BookingCode, List<string> RoomCode, string HotelCode, DataTable dtPassengers, DataSet dsCartDetails, string ClientReference, string UniqueNo, bool IsErrors);
         string MethaBookBookingRequest_newversion(string BookingCode, List<string> RoomCode, string HotelCode, DataTable dtPassengers, BookRequest_newversion bookRequest, string ClientReference, string UniqueNo, bool IsErrors);

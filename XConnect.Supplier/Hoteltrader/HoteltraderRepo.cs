@@ -861,7 +861,7 @@ namespace XConnect.Supplier.Hoteltrader
         }
 
         //Prebook 22-07-25
-        public async Task<PriceCheckDto> HotelTraderPriceCheck(DataSet dsCartDetails, DataRow[] HotelTraderDetails, int j, double CompanyBuyingPrice,double FinalPrice, double CurrencyFactorHotelTrader, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int AgentId, TokenData tokenData)
+        public async Task<PriceCheckDto> HotelTraderPriceCheck(DataSet dsCartDetails, DataRow[] HotelTraderDetails, int j, double CompanyBuyingPrice,double FinalPrice, double CurrencyFactorHotelTrader, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int AgentId, TokenData tokenData, string SearchKey = "", string TechName = "")
         {
             PriceCheckDto priceCheckDto = new PriceCheckDto();
             string CancellationPolicyRQ = "";
@@ -869,6 +869,15 @@ namespace XConnect.Supplier.Hoteltrader
             string ResponseData = "-";
             string time = "";
             string Error = "", request = "-";
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, SearchKey);
+            }
             try
             {
 
@@ -903,7 +912,7 @@ namespace XConnect.Supplier.Hoteltrader
                     try
                     {
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, SearchKey, TechName, srphotelid);
                     }
                     catch (Exception e)
                     {
@@ -941,7 +950,7 @@ namespace XConnect.Supplier.Hoteltrader
                     try
                     {
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, SearchKey, TechName, srphotelid);
                     }
                     catch (Exception e)
                     {
@@ -956,7 +965,7 @@ namespace XConnect.Supplier.Hoteltrader
                     {
                         ResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + ResponseData;
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, CancellationPolicyRQ, ResponseData, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, CancellationPolicyRQ, ResponseData, Error, SearchKey, TechName, srphotelid);
                     }
                     catch (Exception e)
                     {
@@ -972,7 +981,7 @@ namespace XConnect.Supplier.Hoteltrader
                 {
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, SearchKey, TechName, srphotelid);
                 }
                 catch (Exception e)
                 {
@@ -985,7 +994,7 @@ namespace XConnect.Supplier.Hoteltrader
             try
             {
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, SearchKey, TechName, srphotelid);
             }
             catch (Exception ex)
             {
