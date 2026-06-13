@@ -11802,7 +11802,7 @@ new SqlParameter("@AgentId", AgentId),
                 {
                     SqlParameter[] para = new SqlParameter[]{
                          //new SqlParameter("@CityId",  cityid),
-                         new SqlParameter("@HotelIds_Mapping",  dtHotelId),
+                         new SqlParameter("@HotelIds_Mapping",  dtHotelId)
                          //new SqlParameter("@AgentId",  AgentId),
 
 
@@ -11811,11 +11811,13 @@ new SqlParameter("@AgentId", AgentId),
                     if (_keySettings.Use_ReplicationDB == "1")
                         //CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB("GetHotelDataForList_category_byhotel_JUNIPER_V1_HID_AITO", para, 2);
                         //CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB("GetHotelDataForList", para,20);
+                       // CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB_Host("GetHotelDataForList", para, 20);
                         CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB_Host("GetHotelDataForList", para, 20);
                     else
                         //CityWiseHotelInformation = await _dlConnection.GetDataSet_Limitbalancer("GetHotelDataForList_category_byhotel_JUNIPER_V1_HID_AITO", para);
                         //CityWiseHotelInformation = await _dlConnection.GetDataSet_Limitbalancer("GetHotelDataForList", para);
                         CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB_Host("GetHotelDataForList", para, 20);
+                       // CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB_Host("GetHotelDataForList", para, 20);
                 }
                 catch (Exception ex)
                 {
