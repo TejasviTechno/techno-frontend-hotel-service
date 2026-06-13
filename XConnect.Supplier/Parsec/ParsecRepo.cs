@@ -995,7 +995,7 @@ namespace XConnect.Supplier.Parsec
             }
         }
 
-        public async Task<PriceCheckCMDto> PriceCheckParsec(int i, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] AbreuDetails, string UniqueNo, string AgentUniqueNo, string IsFor, bool IsError, string supplier, string AgentCode, string Searchkey = "", int AgentId = 0)
+        public async Task<PriceCheckCMDto> PriceCheckParsec(int i, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] AbreuDetails, string UniqueNo, string AgentUniqueNo, string IsFor, bool IsError, string supplier, string AgentCode, string Searchkey = "", int AgentId = 0, string TechName = "")
         {
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
             string responsetype = "Success";
@@ -1004,6 +1004,15 @@ namespace XConnect.Supplier.Parsec
             string Error = "";
             string PreBookingRequest = "";
             string ResponseDataAbreu = "";
+             int srphotelid = 0;
+ try
+ {
+     srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+ }
+ catch (Exception ex)
+ {
+     _ = _exception.Error(ex, Searchkey);
+ }
             try
             {
                 string URLContent = _supplierConfig.Parsec.URLContent;
@@ -1040,7 +1049,7 @@ namespace XConnect.Supplier.Parsec
                             try
                             {
                                 responsetype = "Success";
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PreBookingRequest, ResponseDataAbreu, Error);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PreBookingRequest, ResponseDataAbreu, Error, Searchkey, TechName, srphotelid);
                             }
                             catch (Exception e)
                             {
@@ -1055,7 +1064,7 @@ namespace XConnect.Supplier.Parsec
                             try
                             {
                                 responsetype = "GeneralError";
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PreBookingRequest, ResponseDataAbreu, Error);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PreBookingRequest, ResponseDataAbreu, Error, Searchkey, TechName, srphotelid);
                             }
                             catch (Exception e)
                             {
@@ -1072,7 +1081,7 @@ namespace XConnect.Supplier.Parsec
                     try
                     {
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PreBookingRequest, ResponseDataAbreu, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PreBookingRequest, ResponseDataAbreu, Error, Searchkey, TechName, srphotelid);
                     }
                     catch (Exception e)
                     {
@@ -1089,7 +1098,7 @@ namespace XConnect.Supplier.Parsec
                 {
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PreBookingRequest, ResponseDataAbreu, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PreBookingRequest, ResponseDataAbreu, Error, Searchkey, TechName, srphotelid);
                 }
                 catch (Exception e)
                 {
@@ -1104,7 +1113,7 @@ namespace XConnect.Supplier.Parsec
             try
             {
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PreBookingRequest, ResponseDataAbreu, Error);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, PreBookingRequest, ResponseDataAbreu, Error, Searchkey, TechName, srphotelid);
             }
             catch (Exception e)
             {

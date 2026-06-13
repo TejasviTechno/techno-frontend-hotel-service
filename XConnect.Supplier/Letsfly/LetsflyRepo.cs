@@ -77,7 +77,7 @@ namespace XConnect.Supplier.Letsfly
                                 _commonMethod.GetPrefferedHotelCodes(ref Ids, ref xmlbase, ref LetsFlySearchConfig, Supplier, dtPreferredDataHotel, SearchPara.IsSearchFor);
 
                                 List<HotelCodeByCity> filter = new List<HotelCodeByCity>();
-                                filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, Supplier);
+                                filter = _commonMethod.FilterWithOutCity_Code(ratingcount, hotelcount, DtHotelDAta, lstRating, LetsFlyDetails.HotelSupplier);
 
                                 if (filter.Count > 0)
                                 {
@@ -993,7 +993,7 @@ namespace XConnect.Supplier.Letsfly
             priceCheckDto.Flag = false;
             return priceCheckDto;
         }
-        public async Task<PriceCheckCMDto> GetLetsflyPriceCheckREQRES_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, DataRow[] letsflyDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData, string Searchkey,string TechName="")
+        public async Task<PriceCheckCMDto> GetLetsflyPriceCheckREQRES_newversion(Shopping_CartDataForHotelXML objdata, DataSet dsCartDetails, DataRow[] letsflyDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData, string Searchkey="",string TechName="")
         {
             System.Diagnostics.Stopwatch timercodeprocess = new System.Diagnostics.Stopwatch();
             
@@ -1565,7 +1565,7 @@ namespace XConnect.Supplier.Letsfly
                 int NoOfAdults = 0;
                 int NoOfChild = 0;
                 string ChildAge = "";
-                ReferenceNo = ReferenceNo + "|" + UserCartDetailId;
+                ReferenceNo =  "|" + UserCartDetailId;
                 List<int> Child = new List<int>();
                 for (int k = 0; k < NoOfRooms; k++)
                 {

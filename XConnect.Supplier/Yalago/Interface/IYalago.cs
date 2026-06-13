@@ -21,7 +21,7 @@ namespace XConnect.Supplier.Yalago.Interface
         Task<CancellationDto> Get_Yalago_CancellationPolicy(int roomno, string hotelcode, DataSet dsHotel, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtMarkupDetails, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string OptionCode, int AgentId, double roomprice, double Companybuy,string Searchkey,string Supplier, string GiataId = "0", int hotelRating = 0);
 
         //prebook 02-07-25
-        Task<PriceCheckCMDto> Get_Yalago_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] YalagoDetails, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, bool isForBooking, double CompanyBuyingPriceA, string xmlhotelid, string IsFor, bool IssErrorY, double itempriceY, string Searchkey, int AgentId = 0,TokenData tokenData= null);
+        Task<PriceCheckCMDto> Get_Yalago_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] YalagoDetails, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, bool isForBooking, double CompanyBuyingPriceA, string xmlhotelid, string IsFor, bool IssErrorY, double itempriceY, string Searchkey, int AgentId = 0,TokenData tokenData= null, string TechName = "");
 
         string Get_Yalago_BookingRequest(DataSet dsCartDetails, DataTable dtPassengers, string UniqueNo, int i, int j, string hotelcode, string CheckIn, string CheckOut, string Currency, string Nationality, string agtCode);
 

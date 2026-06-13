@@ -1659,7 +1659,7 @@ namespace XConnect.Supplier.Rezlive
             return responseDto;
         }
 
-        public async Task<PriceCheckRezliveDto> Get_Rezlive_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] RezliveDetails, string PaxPassPort, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string HasKey_IntCode, string IsPrcCheck_Book, string Supplier, int AgentId, TokenData tokenData)
+        public async Task<PriceCheckRezliveDto> Get_Rezlive_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] RezliveDetails, string PaxPassPort, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string HasKey_IntCode, string IsPrcCheck_Book, string Supplier, int AgentId, TokenData tokenData,  string Searchkey = "", string TechName = "")
         {
             PriceCheckRezliveDto priceCheckRezliveDto = new PriceCheckRezliveDto();
             string responsetype = "Success";
@@ -1668,6 +1668,15 @@ namespace XConnect.Supplier.Rezlive
             string Error = "";
             string xslRequest = "";
             string ResponseData = "";
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
             try
             {
                 #region Price Check RQ and Declaration
@@ -1741,7 +1750,7 @@ namespace XConnect.Supplier.Rezlive
                             {
                                 responsetype = "GeneralError";
                                 //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                             }
                             catch (Exception e)
                             {
@@ -1756,7 +1765,7 @@ namespace XConnect.Supplier.Rezlive
                             {
                                 responsetype = "GeneralError";
                                 //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                             }
                             catch (Exception e)
                             {
@@ -1783,7 +1792,7 @@ namespace XConnect.Supplier.Rezlive
                             {
                                 responsetype = "GeneralError";
                                 //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                             }
                             catch (Exception e)
                             {
@@ -1806,7 +1815,7 @@ namespace XConnect.Supplier.Rezlive
                                 {
                                     responsetype = "GeneralError";
                                     //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                                    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                                 }
                                 catch (Exception e)
                                 {
@@ -1829,7 +1838,7 @@ namespace XConnect.Supplier.Rezlive
                                     ResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + FinalPrice + " #Response= " + ResponseData;
                                     responsetype = "GeneralError";
                                     //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                                    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                                 }
                                 catch (Exception e)
                                 {
@@ -1846,7 +1855,7 @@ namespace XConnect.Supplier.Rezlive
                                 {
                                     responsetype = "Success";
                                     //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                                    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                                 }
                                 catch (Exception e)
                                 {
@@ -1874,7 +1883,7 @@ namespace XConnect.Supplier.Rezlive
                     //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
                     Error = ex.Message.ToString() + "#=" + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                    _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
 
                 }
                 catch (Exception e)
@@ -1891,7 +1900,7 @@ namespace XConnect.Supplier.Rezlive
             {
                 responsetype = "Success";
                 //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype);
+                _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
             }
             catch (Exception e)
             {

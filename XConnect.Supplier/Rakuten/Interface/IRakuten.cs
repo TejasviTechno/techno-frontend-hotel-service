@@ -20,7 +20,7 @@ namespace XConnect.Supplier.Rakuten.Interface
         Task<CancellationDto> Rakuten_Cancellation(double CompanyBuy, string MealCode, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter SearchPara, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, string GiataId = "0", int hotelRating = 0);
 
         //Prebook 22-07-25
-        Task<PriceCheckCMDto> PriceUpdateRakuten(DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] RakutenDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, int AgentId, bool IsError, double itemprice, TokenData tokenData);
+        Task<PriceCheckCMDto> PriceUpdateRakuten(DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] RakutenDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, int AgentId, bool IsError, double itemprice, TokenData tokenData, string SearchKey = "", string TechName = "");
 
         string Rakuten_PriBookingRQ(DataSet dsCartDetails, DataTable dtPassengers, DataRow[] DerbySoftDetails, string UniqueNo, bool IsPriceUpdate, int i, int j, string PreBookingToken, string UserName, string Password, string ExternalReference, string xmlNationality);
         Task<ResponseDto> Response_RakutenSupplier(string request, string Password, string type, string name);

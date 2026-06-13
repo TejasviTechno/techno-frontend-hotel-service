@@ -25,7 +25,7 @@ namespace XConnect.Supplier.Juniper.Interface
         #endregion
 
         //prebook 25-06-25
-        Task<PriceCheckCMDto> Get_JuniperNew_PriceCheckRQRS(int i, DataSet dsCartDetails, DataRow[] SupplierDetails, string SupplierName, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo,double FinalPrices_JuniperNew, bool isForBooking, string HotelId, int UserCartId, int UserCartDetailId, string RoomTypeId, double CompanyBuyingPrice,  string NewRatePlan,bool IsError_JuniperNew,  string Currency, string Searchkey = "", int AgentId = 0);
+        Task<PriceCheckCMDto> Get_JuniperNew_PriceCheckRQRS(int i, DataSet dsCartDetails, DataRow[] SupplierDetails, string SupplierName, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo,double FinalPrices_JuniperNew, bool isForBooking, string HotelId, int UserCartId, int UserCartDetailId, string RoomTypeId, double CompanyBuyingPrice,  string NewRatePlan,bool IsError_JuniperNew,  string Currency, string Searchkey = "", int AgentId = 0,string TechName="");
 
         //book 210825
         void Get_Juniper_BookingProcess(string AgentCode, ref DataTable dtAgentVoucher, ref DataSet dsCartDetails, ref DataTable dtCheckPriceReqStructure, ref DataTable dtPassengers, ref DataTable dtCAncellationPolicy, HotelSearchParameter SearchPara, DataRow[] SupplierDetails,TokenData tokenData, ref string AgentVoucherNo, ref int bookingStatus, ref string UniqueNo, ref string AgentUniqueNo, ref bool isNonRefundable, int i, string SearchKey, int AgentId, bool IsPruvo);

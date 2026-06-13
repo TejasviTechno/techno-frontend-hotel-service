@@ -970,7 +970,7 @@ namespace XConnect.Supplier.PkFare
             responseDto.Error = Error;
             return responseDto;
         }
-        public async Task<PriceCheckCMDto> GetPkfarePriceCheckREQRES(DataSet dsCartDetails, DataRow[] PkFareDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData)
+        public async Task<PriceCheckCMDto> GetPkfarePriceCheckREQRES(DataSet dsCartDetails, DataRow[] PkFareDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData,  string Searchkey = "", string TechName = "")
         {
             PriceCheckCMDto priceCheckDto = new PriceCheckCMDto();
             string time = "";
@@ -985,6 +985,15 @@ namespace XConnect.Supplier.PkFare
             string RoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeID"]);
             SupplierName = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]).ToLower();
 
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
             try
             {
                 prebookRequest = PkFarePriceCheckRequest(RoomTypeId, j, HotelId, dsCartDetails);
@@ -1014,7 +1023,7 @@ namespace XConnect.Supplier.PkFare
                         {
                             responsetype = "GeneralError";
                             //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -1032,7 +1041,7 @@ namespace XConnect.Supplier.PkFare
                         {
                             responsetype = "GeneralError";
                             //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -1085,7 +1094,7 @@ namespace XConnect.Supplier.PkFare
                                                 responsetype = "GeneralError";
                                                 ResponseData = "#Policy Changed " + "#Old Date = " + purchaseToken + " #New Date = " + lastdate + " #Response= " + ResponseData;
                                                 //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                                             }
                                             catch (Exception e)
                                             {
@@ -1125,7 +1134,7 @@ namespace XConnect.Supplier.PkFare
                                             {
                                                 responsetype = "GeneralError";
                                                 //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                                             }
                                             catch (Exception e)
                                             {
@@ -1145,7 +1154,7 @@ namespace XConnect.Supplier.PkFare
                                         {
                                             responsetype = "GeneralError";
                                             //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                                         }
                                         catch (Exception e)
                                         {
@@ -1167,7 +1176,7 @@ namespace XConnect.Supplier.PkFare
                             {
                                 responsetype = "GeneralError";
                                 //int AgentIdgta = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                             }
                             catch (Exception e)
                             {
@@ -1193,7 +1202,7 @@ namespace XConnect.Supplier.PkFare
                 {
                     responsetype = "GeneralError";
                     //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                 }
                 catch (Exception e)
                 {
@@ -1213,7 +1222,7 @@ namespace XConnect.Supplier.PkFare
             {
                 responsetype = "Success";
                 //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, prebookRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
             }
             catch (Exception e)
             {

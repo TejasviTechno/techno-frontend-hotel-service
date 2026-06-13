@@ -30,10 +30,10 @@ namespace XConnect.Supplier.Booking.Com.Interface
 
         //prebook 02-07-25
 
-        Task<PriceCheckBDCDto> Get_BookingDotCom_PriceCheck(DataSet dsCartDetails, DataRow[] BDCDetails, string UserName, string Password, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string IsFor, double commission, TokenData tokenData, int AgentId);
+        Task<PriceCheckBDCDto> Get_BookingDotCom_PriceCheck(DataSet dsCartDetails, DataRow[] BDCDetails, string UserName, string Password, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string IsFor, double commission, TokenData tokenData, int AgentId, string SearchKey = "", string TechName = "");
 
         //prebook 23-07-25
-        Task<PriceCheckBDCDto> Get_BookingDotCom_PriceCheck_v3(DataSet dsCartDetails, DataRow[] BDCDetails, string UserName, string Password, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string IsFor, double commission, TokenData tokenData, int AgentId);
+        Task<PriceCheckBDCDto> Get_BookingDotCom_PriceCheck_v3(DataSet dsCartDetails, DataRow[] BDCDetails, string UserName, string Password, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string IsFor, double commission, TokenData tokenData, int AgentId, string Searchkey = "", string TechName = "");
 
         Task<ResponseDto> BookingDotComv3Response(string Request, string Url, string UserName, string Password, int TimeOut);
 

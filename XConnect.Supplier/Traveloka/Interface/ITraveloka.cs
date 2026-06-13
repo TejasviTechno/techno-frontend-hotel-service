@@ -18,7 +18,7 @@ namespace XConnect.Supplier.Traveloka.Interface
         void Get_Traveloka_Token(ref string TravelokaToken, string Url);
         Task<List<Options>> Traveloka_HotelSearchWithRooms(HotelX Item, CommonSearch commonSearch, string Currency, string ResponseData, string CityCode, HotelSearchParameter SearchParam, double CurrencyFactorTBO, string XMLnationality, string URLandRequest, string UserName, string PassWord, string URL, Int32 SearchTimeOut, string custIP, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog);
 
-        Task<PriceCheckTravelokaDto> Get_Traveloka_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] TravelokaDetails, int i, int j, DataTable dtCheckPriceReqStructure, double FinalPrice, bool isFromBooking, string time, string responsetype, double CompanyBuyingPrice, TokenData tokenData,string Supplier, int AgentId = 0,string platform ="");
+        Task<PriceCheckTravelokaDto> Get_Traveloka_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] TravelokaDetails, int i, int j, DataTable dtCheckPriceReqStructure, double FinalPrice, bool isFromBooking, string time, string responsetype, double CompanyBuyingPrice, TokenData tokenData,string Supplier, int AgentId = 0,string platform ="", string SearchKey = "", string TechName = "");
 
         string Get_Traveloka_BookingRequest(DataSet dsCartDetails, DataTable dtPassengers, string RoomTypeId, string ReferenceNo, int i, int UserCartDetailId, string TravelokaCurrency, string Platform);
 

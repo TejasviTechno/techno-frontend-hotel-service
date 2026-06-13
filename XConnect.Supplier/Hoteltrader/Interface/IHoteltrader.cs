@@ -17,7 +17,7 @@ namespace XConnect.Supplier.Hoteltrader.Interface
         Task<List<Options>> HotelTrader_HotelSearchWithRooms(HotelX Item, CommonSearch commonSearch, string currency, string ResponseData1, string CityCode, HotelSearchParameter SearchParam, double CurrencyFactorHotelTader, string Supplier, DataSet dsAgentDetails, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string StoreSupplierResErrorLog, DataTable DtROE);
 
         //Prebook
-        Task<PriceCheckDto> HotelTraderPriceCheck(DataSet dsCartDetails, DataRow[] HotelTraderDetails, int j, double CompanyBuyingPrice, double FinalPrice, double CurrencyFactorHotelTrader, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int AgentId, TokenData tokenData);
+        Task<PriceCheckDto> HotelTraderPriceCheck(DataSet dsCartDetails, DataRow[] HotelTraderDetails, int j, double CompanyBuyingPrice, double FinalPrice, double CurrencyFactorHotelTrader, string UniqueNo, string AgentUniqueNo, double ResPrice, string SupplierName, int AgentId, TokenData tokenData, string SearchKey = "", string TechName = "");
         string HotelTraderBookingRequest(DataSet dsCartDetails, DataRow[] hotelTraderDetails, int i, int j, double resPrice, DataTable dtPassengers, string AgentCode, ref string AgtRef);
 
         Task<ResponseDto> GetHotelTraderResponse(string Request, string url, string Password, Int32 TimeOut = 120000);

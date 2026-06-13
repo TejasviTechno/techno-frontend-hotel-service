@@ -33,7 +33,7 @@ namespace Xconnect.Hotelbeds.Interface
         #endregion
 
         //prebook - 24-06-25
-        Task<PriceCheckCMDto> PriceUpdateHotelBedsV1(string HTL_RoomCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] HotelBedsV1Details, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string Searchkey = "", int AgentId = 0);
+        Task<PriceCheckCMDto> PriceUpdateHotelBedsV1(string HTL_RoomCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] HotelBedsV1Details, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string Searchkey = "", int AgentId = 0,string TechName="");
 
         //book 210825
         string HotelBedsdV1BookindgRequest(DataTable dtPassengers, DataSet dsCartDetails, bool IsPRiceUpdate, bool IsError, int j, string AgentCode);

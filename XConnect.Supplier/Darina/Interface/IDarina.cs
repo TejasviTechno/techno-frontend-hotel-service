@@ -19,7 +19,7 @@ namespace XConnect.Supplier.Darina.Interface
         Task<CancellationDto> Darina_Prebook(DataRow[] DarinaDetails, double AgentCompanyPercentage, string IsB2BOrB2C, int CityID, string CountryId, int NoofNights, string mealid, string Currency, double Factor, string checkin, string checkout, int ChildAge1, int ChildAge2, int NoofChild, int NoOfAdult, DataSet dsHotel, string hotelcode, string ownsystemid, string roomtypeid, DataTable dtAgentDetail, DataTable dtSuplierMarkup, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, double CompanyBuy, string SearchKey, string GiataId = "0", int hotelRating = 0);
 
         //prebook - 240625
-        Task<string> Darina_Prebook_WithoutPolicy(DataRow[] DarinaDetails, string checkin, string checkout, int ChildAge1, int ChildAge2, int NoofChild, int NoOfAdult, string hotelcode, string roomtypeid, string provider, int AgentId, double CompanyBuy);
+        Task<string> Darina_Prebook_WithoutPolicy(DataRow[] DarinaDetails, string checkin, string checkout, int ChildAge1, int ChildAge2, int NoofChild, int NoOfAdult, string hotelcode, string roomtypeid, string provider, int AgentId, double CompanyBuy, string SearchKey = "", string TechName = "", int srphotelid = 0);
 
         //book 14/8/25
         string GetDarinaBookingRequest(DataSet dsCartDetails, DataTable dtPassengers, int i, int j, String ClientID, string UserName, string Password, string SecurityKey, string AgentCode, string SearchKey);

@@ -20,7 +20,7 @@ namespace XConnect.Supplier.Qtech.Interface
         //recheck - 300525
         Task<CancellationDto> GetQTechCancelationPolicy(DataSet dsHotel, string ownsystemid, string RoomTypeId_Own, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtMarkupDetails, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string roomno, string HotelId, string Provider, int AgentId, string GiataId, int hotelRating, string RoomTypename, string mealId, string type,string Searchkey);
 
-        Task<PriceCheckQTDto> QTechPriceCheck(DataSet dsCartDetails, DataRow[] MercanDetails, int j, double FinalPrice, double CurrencyFactorQTech, string UniqueNo, string AgentUniqueNo, double ResPrice, int AgentId, string Searchkey = "");
+        Task<PriceCheckQTDto> QTechPriceCheck(DataSet dsCartDetails, DataRow[] MercanDetails, int j, double FinalPrice, double CurrencyFactorQTech, string UniqueNo, string AgentUniqueNo, double ResPrice, int AgentId, string Searchkey = "",string TechName="");
 
         string QTechBookingRequest(ref string Error, string agentcode, DataSet dsCartDetails, DataRow[] MercanDetails, int i, int j, double ResPrice, DataTable dtPassengers, ref string AGTRef,string SearchKey= "");
 

@@ -19,7 +19,7 @@ namespace XConnect.Supplier.InfiniteHotelsFrance.Interface
         Task<string> Get_Infinitehotelsfrance_EInfo(string hotelcode, string ownsystemid, string RoomTypeId_Own, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string provider, string SearchKey);
         //prebook 02-07-25
 
-       Task<PriceCheckDidaDto> Get_Infinitehotelsfrance_PreBookingReqRes(TokenData tokenData, string Currency, string ID, string Password, string HotelCode, string RCode, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int NoOfRoom, string UserName, string Newoffercode, string Searchkey, int AgentId = 0);
+       Task<PriceCheckDidaDto> Get_Infinitehotelsfrance_PreBookingReqRes(TokenData tokenData, string Currency, string ID, string Password, string HotelCode, string RCode, string CheckInDate, string CheckOutDate, string URL, double Rate, double FinalPrice, int UserCartId, int UserCartDetailId, DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int NoOfRoom, string UserName, string Newoffercode, string Searchkey, int AgentId = 0, string TechName = "", int srphotelid = 0);
 
         string Get_Infinitehotelsfrance_BookingRequest(string password, string customerkey, string hotelCode, string code, DataSet dsCartDetails, DataTable dtPassengers, DataRow[] InfinitehotelsfranceDetails, string UniqueNo, int i, int j, string PreBookingToken, string UserName, string Newoffercode, string AgentCode);
 

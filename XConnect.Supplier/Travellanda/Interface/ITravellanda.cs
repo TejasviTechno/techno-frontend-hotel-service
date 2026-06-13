@@ -21,7 +21,7 @@ namespace XConnect.Supplier.Travellanda.Interface
         #endregion
 
         //prebook - 25-06-25
-        Task<PriceCheckCMDto> PriceCheckTravelLada(string OptionCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] TravelLandaDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string Searchkey = "", int AgentId = 0);
+        Task<PriceCheckCMDto> PriceCheckTravelLada(string OptionCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] TravelLandaDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string Searchkey = "", int AgentId = 0,string TechName="");
 
         //book 210825
 

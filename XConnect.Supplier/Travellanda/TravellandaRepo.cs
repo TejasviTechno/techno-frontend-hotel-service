@@ -936,13 +936,22 @@ namespace XConnect.Supplier.Travellanda
             }
         }
 
-        public async Task<PriceCheckCMDto> PriceCheckTravelLada(string OptionCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] TravelLandaDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string Searchkey = "", int AgentId = 0)
+        public async Task<PriceCheckCMDto> PriceCheckTravelLada(string OptionCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] TravelLandaDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, string Searchkey = "", int AgentId = 0,string TechName="")
         {
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
             string responsetype = "Success";
             string time = "";
             string SupplierName = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]);
             string Error = "";
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
 
             string TLRequest = GetTravelLandaPolicyRequest(Convert.ToString(TravelLandaDetails[0]["UserName"]), Convert.ToString(TravelLandaDetails[0]["Password"]), OptionCode);
             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), TLRequest, "-", "Before Request hit Price Check", Convert.ToString(dsCartDetails.Tables[1].DefaultView[i]["SupplierName"]), "Request Confirm", " - ", "Withinearth");
@@ -967,7 +976,7 @@ namespace XConnect.Supplier.Travellanda
                 try
                 {
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, TLRequest, TLResponse, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, TLRequest, TLResponse, Error,Searchkey,TechName,srphotelid);
                 }
                 catch (Exception e)
                 {
@@ -990,7 +999,7 @@ namespace XConnect.Supplier.Travellanda
                         {
                             responsetype = "GeneralError";
                             TLResponse = "#Price Changed " + "#Main Price = " + CompanyBuyPrice + " #New Price = " + itemprice + " #Response= " + TLResponse;
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, TLRequest, TLResponse, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, TLRequest, TLResponse, Error, Searchkey, TechName, srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -1008,7 +1017,7 @@ namespace XConnect.Supplier.Travellanda
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, TLRequest, TLResponse, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, TLRequest, TLResponse, Error, Searchkey, TechName, srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -1026,7 +1035,7 @@ namespace XConnect.Supplier.Travellanda
                 {
                     Error = e.Message + e.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, TLRequest, TLResponse, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, TLRequest, TLResponse, Error, Searchkey, TechName, srphotelid);
                 }
                 catch (Exception ex)
                 {
@@ -1039,7 +1048,7 @@ namespace XConnect.Supplier.Travellanda
             try
             {
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, TLRequest, TLResponse, Error);
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, TLRequest, TLResponse, Error, Searchkey, TechName, srphotelid);
             }
             catch (Exception e)
             {

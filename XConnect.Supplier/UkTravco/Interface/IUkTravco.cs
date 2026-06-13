@@ -17,7 +17,7 @@ namespace XConnect.Supplier.UkTravco.Interface
         Task<List<Options>> UkTravco_HotelSearchWithRooms(HotelX Item, CommonSearch commonSearch, string ResponseData, HotelSearchParameter SearchParam, string XMLCITY, string XMLCountry, string Currency, double CurrencyFactoruk_travco, Int32 processTimeout, string ResProccessTimerLogActive, string ResProccessTimeValueforSaveLog, string XmlNationality = "");
 
         //prebook  - 24-06-25
-        Task<PriceCheckDto> AllocationEnqiry(string AgentCode, string AgentPassword, string HotelCode, string RCode, int NoOfAdults, int NoOfChild, string CheckInDate, string CheckOutDate, string uk_travco_URL, double Rate,double FinalPrice, int UserCartId, int UserCartDetailId,DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int ChildAge1, int ChildAge2, string Searchkey = "", int AgentId = 0,string Supplier="");
+        Task<PriceCheckDto> AllocationEnqiry(string AgentCode, string AgentPassword, string HotelCode, string RCode, int NoOfAdults, int NoOfChild, string CheckInDate, string CheckOutDate, string uk_travco_URL, double Rate,double FinalPrice, int UserCartId, int UserCartDetailId,DataTable dtCheckPriceReqStructure, int j, string UniqueNo, string AgentUniqueNo, bool isForBooking, int ChildAge1, int ChildAge2, string Searchkey = "", int AgentId = 0,string Supplier="",string TechName="", int srphotelid = 0);
 
         string Getuk_travcoBookingRequest_combineBook(DataSet dsCartDetails, DataTable dtPassengers, int i, int j, string ClientID, string UserName, string Password, string UniqueNo,string searchKey);
 

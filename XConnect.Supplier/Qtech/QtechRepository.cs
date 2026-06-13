@@ -2687,7 +2687,7 @@ namespace XConnect.Supplier.Qtech
             return responseDto;
         }
 
-        public async Task<PriceCheckQTDto> QTechPriceCheck(DataSet dsCartDetails, DataRow[] MercanDetails, int j, double FinalPrice, double CurrencyFactorQTech, string UniqueNo, string AgentUniqueNo, double ResPrice, int AgentId, string Searchkey = "")
+        public async Task<PriceCheckQTDto> QTechPriceCheck(DataSet dsCartDetails, DataRow[] MercanDetails, int j, double FinalPrice, double CurrencyFactorQTech, string UniqueNo, string AgentUniqueNo, double ResPrice, int AgentId, string Searchkey = "",string TechName="")
         {
             PriceCheckQTDto priceCheckQTDto = new PriceCheckQTDto();
 
@@ -2698,6 +2698,15 @@ namespace XConnect.Supplier.Qtech
             string time = "00:00";
             string responsetype = "Success";
             string Error = "";
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
             try
             {
                 string[] MBArray = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]).Split(new String[] { "###" }, StringSplitOptions.None);
@@ -2781,7 +2790,7 @@ namespace XConnect.Supplier.Qtech
                 #region SupplierPR Price Check
                 try
                 {
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Price Check", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Price Check", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error,Searchkey,TechName,srphotelid);
                 }
                 catch (Exception e)
                 {
@@ -2798,7 +2807,7 @@ namespace XConnect.Supplier.Qtech
                 {
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Price Check", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["SupplierName"]), "Price Check", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid);
                 }
                 catch (Exception e)
                 {

@@ -723,7 +723,7 @@ namespace XConnect.Supplier.Welcomebeds
             return options;
 
         }
-        public async Task<PriceCheckWelcomebedsDto> welcomebedsPriceCheck(DataSet dsCartDetails, DataRow[] welcombedsDetails, int j, double FinalPrice, double CurrencyFactorwelcombeds, string UniqueNo, string AgentUniqueNo, string SupplierName, int i, double CompanyBuyingPrice, DataTable dtRoE, int AgentId, TokenData  tokenData,string Searchkey = "")
+        public async Task<PriceCheckWelcomebedsDto> welcomebedsPriceCheck(DataSet dsCartDetails, DataRow[] welcombedsDetails, int j, double FinalPrice, double CurrencyFactorwelcombeds, string UniqueNo, string AgentUniqueNo, string SupplierName, int i, double CompanyBuyingPrice, DataTable dtRoE, int AgentId, TokenData  tokenData,string Searchkey = "",string TechName="")
         {
             string request = "";
             string responsetype = "Success";
@@ -731,7 +731,15 @@ namespace XConnect.Supplier.Welcomebeds
             string time = "";
             string Error = "";
             PriceCheckWelcomebedsDto priceCheckWelcomebedsDto = new PriceCheckWelcomebedsDto();
-
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
             try
             {
                 string username = Convert.ToString(welcombedsDetails[0]["UserName"]);
@@ -759,7 +767,7 @@ namespace XConnect.Supplier.Welcomebeds
                     try
                     {
                         responsetype = "GeneralError";
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, Searchkey, TechName, srphotelid);
 
                     }
                     catch (Exception e)
@@ -777,7 +785,7 @@ namespace XConnect.Supplier.Welcomebeds
                     {
                         responsetype = "GeneralError";
                         //int AgentId = Convert.ToInt32(Common.getSession("UserId") == "" ? "0" : Common.getSession("UserId"));
-                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);//"purchaseToken"
+                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, Searchkey, TechName, srphotelid);//"purchaseToken"
                     }
                     catch (Exception e)
                     {
@@ -829,7 +837,7 @@ namespace XConnect.Supplier.Welcomebeds
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error);//"purchaseToken"
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, Searchkey, TechName, srphotelid);//"purchaseToken"
                         }
                         catch (Exception e)
                         {
@@ -858,7 +866,7 @@ namespace XConnect.Supplier.Welcomebeds
                 {
                     FinalPrice = 0;
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, ex.Message.ToString());//"purchaseToken"
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, ex.Message.ToString(), Searchkey, TechName, srphotelid);//"purchaseToken"
                 }
                 catch (Exception e)
                 {
@@ -872,7 +880,7 @@ namespace XConnect.Supplier.Welcomebeds
             try
             {
                 responsetype = "Success";
-                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error); //"purchaseToken"
+                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, request, ResponseData, Error, Searchkey, TechName, srphotelid); //"purchaseToken"
                 priceCheckWelcomebedsDto.Flag = true;
                 return priceCheckWelcomebedsDto;
             }

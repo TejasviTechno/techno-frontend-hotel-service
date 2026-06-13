@@ -22,7 +22,7 @@ namespace XConnect.Supplier.HotelsPro.Interface
         #endregion
 
         //prebook 24-06-25
-        Task<PriceCheckhotelsproDto> GetPriceUpdateRQRS(string supplierName, string HTL_RoomCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] HotelsProDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice,  bool IsError,  double itemprice,  string roomCode, string Searchkey = "", int AgentId = 0);
+        Task<PriceCheckhotelsproDto> GetPriceUpdateRQRS(string supplierName, string HTL_RoomCode, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] HotelsProDetails, string UniqueNo, string AgentUniqueNo, int i, string IsFor, double CompanyBuyPrice,  bool IsError,  double itemprice,  string roomCode, string Searchkey = "", int AgentId = 0,string TechName="");
 
         string HotelsProBookindgRequestNEW(DataTable dtPassengers, DataSet dsCartDetails, string UniqueNo, bool IsPRiceUpdate, bool IsError, string AgentCode, string roomCodeHP, string SearchKey);
 

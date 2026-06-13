@@ -952,7 +952,7 @@ namespace XConnect.Supplier.Jumeirah
             return strOutput;
         }
 
-        public async Task<PriceCheckCMDto> GetJumeirahPriceCheck(DataSet dsCartDetails, DataRow[] JumeirahDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, string HotelId, int UserCartId, int UserCartDetailId, string RoomTypeId, string SupplierName, double CompanyBuyingPrice, int NoOfAdults, int NoOfChild, string CheckIn, string CheckOut, TokenData tokenData, int AgentId = 0)
+        public async Task<PriceCheckCMDto> GetJumeirahPriceCheck(DataSet dsCartDetails, DataRow[] JumeirahDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, string HotelId, int UserCartId, int UserCartDetailId, string RoomTypeId, string SupplierName, double CompanyBuyingPrice, int NoOfAdults, int NoOfChild, string CheckIn, string CheckOut, TokenData tokenData, int AgentId = 0,string Searchkey = "", string TechName = "")
         {
             PriceCheckCMDto priceCheckCMDto = new PriceCheckCMDto();
 
@@ -961,6 +961,15 @@ namespace XConnect.Supplier.Jumeirah
             string Error = "";
             var xslRequest = "";
             string ResponseData = "";
+            int srphotelid = 0;
+            try
+            {
+                srphotelid = Convert.ToInt32(dsCartDetails.Tables[0].Rows[0]["ServiceId"]);
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex, Searchkey);
+            }
             try
             {
                 string RoomTypeCode = "";
@@ -1013,7 +1022,7 @@ namespace XConnect.Supplier.Jumeirah
                     {
                         try
                         {
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error,Searchkey,TechName,srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -1046,7 +1055,7 @@ namespace XConnect.Supplier.Jumeirah
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                         }
                         catch (Exception ex)
                         {
@@ -1081,7 +1090,7 @@ namespace XConnect.Supplier.Jumeirah
                                 {
                                     ResponseData = "#Price Changed " + "#Main Price = " + CompanyBuyingPrice + " #New Price = " + MainPrice + " #Response= " + ResponseData;
                                     responsetype = "GeneralError";
-                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                                 }
                                 catch (Exception ex)
                                 {
@@ -1105,7 +1114,7 @@ namespace XConnect.Supplier.Jumeirah
                                 MainPrice = 0;
                                 Error = ex.Message.ToString() + "#=" + ex.StackTrace.ToString();
                                 responsetype = "GeneralError";
-                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook("Jumeirah", "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                                string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook("Jumeirah", "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                             }
                             catch (Exception e)
                             {
@@ -1123,7 +1132,7 @@ namespace XConnect.Supplier.Jumeirah
                         try
                         {
                             responsetype = "GeneralError";
-                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook("Jumeirah", "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                            string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook("Jumeirah", "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                         }
                         catch (Exception e)
                         {
@@ -1144,7 +1153,7 @@ namespace XConnect.Supplier.Jumeirah
                 {
                     Error = ex.Message + ex.StackTrace.ToString();
                     responsetype = "GeneralError";
-                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook("Jumeirah", "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error);
+                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook("Jumeirah", "PreBook", AgentId, time, responsetype, xslRequest, ResponseData, Error, Searchkey, TechName, srphotelid);
                 }
                 catch (Exception e)
                 {

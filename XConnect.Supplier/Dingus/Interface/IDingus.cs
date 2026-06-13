@@ -22,7 +22,7 @@ namespace XConnect.Supplier.Dingus.Interface
         Task<List<Options>> XMLDingusPriceOnly_Async_Multiroom(HotelX Item, CommonSearch commonSearch, string ResponseData, HotelSearchParameter SearchParam, string XMLCITY, string XMLCountry, string Currency, double CurrencyFactor, string XmlNationality, DataTable dtAgentDetail, string Provider, DataSet dsAgentDetails, DataTable dtVatHotelList, int SupplierID, string GIATACode, DataTable dtROE);
 
 
-        Task<PriceCheckCMDto> PriceUpdateDingus(string supplierName, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] DingusDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, TokenData tokenData, string Searchkey, int AgentId = 0);
+        Task<PriceCheckCMDto> PriceUpdateDingus(string supplierName, DataTable dtCheckPriceReqStructure, DataSet dsCartDetails, DataRow[] DingusDetails, string UniqueNo, string AgentUniqueNo, int i, int j, string IsFor, double CompanyBuyPrice, bool IsError, double itemprice, TokenData tokenData, string Searchkey, int AgentId = 0, string TechName = "");
 
         string Get_Dingus_BookingRequestNew(BookRequest_newversion bookRequest, DataTable dtPassengers, DataRow[] DingusDetails, string UniqueNo, int i, int jj, string ReferenceNo, string SpecialRequestToPass, string CheckIn, string CheckOut);
        

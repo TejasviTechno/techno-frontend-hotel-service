@@ -20,6 +20,6 @@ namespace XConnect.Supplier.HotelsTrack.Interface
         string Get_HotelsTrack_Booking_RQ(DataSet dsCartDetails, DataTable dtPassenger, DataRow[] HotelsTrackDetails, string ExternalRef, bool IsPriceUpdate, int i, int j, string HasKey_IntCode, string Nationality);
         Task<ResponseDto> Response_SupplierHotelsTrack(string Request_Text, string APIUrl, int SearchTimeOut, string SupplieName, bool DebugMode = false);
 
-        Task<PriceCheckHTDto> Get_HotelsTrack_PriceCheck_RQRS(DataSet dsCartDetails, DataRow[] HotelsTrackDetails, string PaxPassPort, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string HasKey_IntCode, string IsPrcCheck_Book, string Supplier, int AgentId, TokenData tokenData);
+        Task<PriceCheckHTDto> Get_HotelsTrack_PriceCheck_RQRS(DataSet dsCartDetails, DataRow[] HotelsTrackDetails, string PaxPassPort, int i, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string HasKey_IntCode, string IsPrcCheck_Book, string Supplier, int AgentId, TokenData tokenData, string Searchkey = "", string TechName = "");
     }
 }

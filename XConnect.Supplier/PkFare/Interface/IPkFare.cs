@@ -17,7 +17,7 @@ namespace XConnect.Supplier.PkFare.Interface
 
         Task<string> Get_PkFare_EInfo(string hotelcode, HotelSearchParameter SearchPara, string Password, string Action, string Username, string SearchKey, string UserID, string Provider,string URL);
 
-        Task<PriceCheckCMDto> GetPkfarePriceCheckREQRES(DataSet dsCartDetails, DataRow[] PkFareDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData);
+        Task<PriceCheckCMDto> GetPkfarePriceCheckREQRES(DataSet dsCartDetails, DataRow[] PkFareDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double MainPrice, int UserCartId, double CompanyBuyingPrice, int AgentId, TokenData tokenData, string Searchkey = "", string TechName = "");
 
         string PkFare_BookingRequest(DataTable dtPassengers, DataSet dsCartDetails, string RoomTypeId, ref string ReferenceNo, int i, int j);
 

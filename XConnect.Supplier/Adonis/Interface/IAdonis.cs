@@ -19,7 +19,7 @@ namespace XConnect.Supplier.Adonis.Interface
 
         Task<CancellationDto> Get_Adonis_CancellationPolicy(double CompanyBuy, string Type, DataSet dsHotel, string hotelcode, string ownsystemid, string RoomTypeId_Own, string MealID, string Board_Text, DataTable dtAgentDetail, DataTable dtSuplierMarkup, DataTable dtSearchConfig, HotelSearchParameter objSearPera, string roomno, string provider, int AgentId, DataTable dtMarkupDetails, string SearchKey,TokenData tokenData, string GiataId = "0", int hotelRating = 0, DataTable dtXmlNationality = null);
 
-        Task<PriceCheckAdonisDto> Get_Adonis_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] AdonisDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string PreBookingToken, string Searchkey = "", int AgentId = 0,TokenData tokenData = null);
+        Task<PriceCheckAdonisDto> Get_Adonis_PriceCheckRQRS(DataSet dsCartDetails, DataRow[] AdonisDetails, int j, DataTable dtCheckPriceReqStructure, string UniqueNo, string AgentUniqueNo, double FinalPrice, bool isForBooking, double CompanyBuyingPrice, string PreBookingToken, string Searchkey = "", int AgentId = 0,TokenData tokenData = null,string TechName= "");
 
         string Get_Adonis_BookingRequest(DataSet dsCartDetails, DataTable dtPassengers, DataRow[] JacTravelDetails, string UniqueNo, bool IsPriceUpdate, int i, int j, string PreBookingToken, string AgentCode);
 
