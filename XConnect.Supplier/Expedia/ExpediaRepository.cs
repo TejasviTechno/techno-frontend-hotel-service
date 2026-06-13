@@ -2354,23 +2354,23 @@ namespace XConnect.Expedia
                                         string TotalAmenities = "";
                                         if (Root[h].rooms[j].rates[k].amenities != null)
                                         {
-                                            // ✅ B2B: EANMealLogic config check
-                                            //if (Convert.ToInt32(_supplierConfig.Expedia.EANMealLogic) == 1)
-                                            //{
-                                            //    var StrMealList = new List<string>();
-                                            //    foreach (var item in Root[h].rooms[j].rates[k].amenities)
-                                            //    {
-                                            //        string aName = Convert.ToString(item.Value.name);
-                                            //        if (MealNameCheck(aName)) StrMealList.Add(aName);
-                                            //    }
-                                            //    StrMealList.Sort();
-                                            //    // ✅ Bug fix: i → correct index variable
-                                            //    for (int mi = 0; mi < StrMealList.Count; mi++)
-                                            //        TotalAmenities = TotalAmenities == string.Empty
-                                            //            ? StrMealList[mi]
-                                            //            : TotalAmenities + " , " + StrMealList[mi];
-                                            //}
-                                            //else
+                                             
+                                            if (true)//(Convert.ToInt32(_supplierConfig.Expedia.EANMealLogic) == 1)
+                                            {
+                                                var StrMealList = new List<string>();
+                                                foreach (var item in Root[h].rooms[j].rates[k].amenities)
+                                                {
+                                                    string aName = Convert.ToString(item.Value.name);
+                                                    if (MealNameCheck(aName)) StrMealList.Add(aName);
+                                                }
+                                                StrMealList.Sort();
+                                                // ✅ Bug fix: i → correct index variable
+                                                for (int mi = 0; mi < StrMealList.Count; mi++)
+                                                    TotalAmenities = TotalAmenities == string.Empty
+                                                        ? StrMealList[mi]
+                                                        : TotalAmenities + " , " + StrMealList[mi];
+                                            }
+                                            else
                                             {
                                                 foreach (var item in Root[h].rooms[j].rates[k].amenities)
                                                 {
@@ -2709,8 +2709,8 @@ namespace XConnect.Expedia
                                                             DtRoomRateBreackUp.Rows.Add(dr);
                                                         }
 
-                                                        AddFeeRow("Pay at Property Fees", "mandatory_tax");
-                                                        AddFeeRow("Pay at Property Fees", "mandatory_fee");
+                                                        AddFeeRow("Mandatory tax", "mandatory_tax");
+                                                        AddFeeRow("Mandatory fee", "mandatory_fee");
                                                         AddFeeRow("Resort Fees", "resort_fee");
                                                     }
 

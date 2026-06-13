@@ -921,12 +921,15 @@ namespace XConnect.Markup
                     {
                         AgentPercentage = markupVal;
                         isPerce = true;
+                       
                     }
                     else
                     {
                         AgentMarkupAmount = markupVal;
                         isPerce = false;
+                        
                     }
+                    
                     return;
                 }
             }
