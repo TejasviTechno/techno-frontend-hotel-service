@@ -45,7 +45,7 @@ namespace Xconnect.Expedia
         private readonly SupplierConfiguration _supplierConfig;//Added on 26-FEB-26
         private readonly ILogger<Exception> _logger;
 
-        public DidaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig, ILogger<Exception> logger)
+        public DidaRepository(ICommonMethod commonMethod, IMarkup markup, ISupplierRes supplierRes, IMemoryCache cache, IOptions<KeySettings> keySettings, IException exception, IOptions<SupplierConfiguration> supplierConfig, ILogger<Exception> logger, IWebHostEnvironment environment)
         {
             _commonMethod = commonMethod;
             _markup = markup;
@@ -55,7 +55,10 @@ namespace Xconnect.Expedia
             _exception = exception;
             _supplierConfig = supplierConfig.Value;
             _logger = logger;
+            _environment = environment;
         }
+
+       
         public void GetDidaRequestOnly_Async(DataRow[] commonCode, List<StarRating> listRating, string SupplierName, HotelSearchParameter SearchPara, List<SupplierDetails> DidaDetails, List<SupplierSearchConfig> DidaSearchConfig, DataTable dtPreferredDataHotel, ref ConcurrentBag<HotelX> AllTask, string XMLCity, string XMLCountry, string Xmlnationality, int Hit, string AgentCode, DataTable dtROE, TokenData tokenData)
         {
             try
@@ -1333,33 +1336,35 @@ namespace Xconnect.Expedia
                 return string.Empty;
             }
         }
-        public DidaRepository(
-    IWebHostEnvironment environment,
-    IMemoryCache cache)
-        {
-            _environment = environment;
-            _cache = cache;
-        }
+
         public string DidaRedXMLFileData(
-    string fileName,
-    string fieldToSearch,
-    string fieldSearchFor,
-    string returnField,
-    string supplier)
+     string fileName,
+     string fieldToSearch,
+     string fieldSearchFor,
+     string returnField,
+     string supplier)
         {
             try
             {
+                // Validate injected dependencies
+                if (_cache == null)
+                    throw new NullReferenceException("_cache is null.");
+
+                if (_environment == null)
+                    throw new NullReferenceException("_environment is null.");
+
                 string cacheKey = $"{supplier}_{fileName}";
                 DataSet dsMeal;
 
-                if (!_cache.TryGetValue(cacheKey, out dsMeal))
+                // Try cache first
+                if (!_cache.TryGetValue(cacheKey, out dsMeal) || dsMeal == null)
                 {
                     string xmlPath = Path.Combine(
-                        _environment.ContentRootPath,
+                        _environment.ContentRootPath ?? string.Empty,
                         "Config",
                         $"{supplier}_{fileName}.xml");
 
-                    //_exception.Error(ex,xmlPath);
+                   // _exception?.Info($"Reading XML file: {xmlPath}");
 
                     if (!File.Exists(xmlPath))
                     {
@@ -1370,6 +1375,11 @@ namespace Xconnect.Expedia
                     dsMeal = new DataSet();
                     dsMeal.ReadXml(xmlPath);
 
+                    if (dsMeal == null)
+                    {
+                        throw new Exception("DataSet is null after ReadXml.");
+                    }
+
                     _cache.Set(
                         cacheKey,
                         dsMeal,
@@ -1379,13 +1389,47 @@ namespace Xconnect.Expedia
                         });
                 }
 
-                if (dsMeal.Tables.Count <= 2)
-                    return string.Empty;
-
-                foreach (DataRow row in dsMeal.Tables[2].Rows)
+                if (dsMeal.Tables == null)
                 {
+                    throw new Exception("DataSet.Tables is null.");
+                }
+
+                if (dsMeal.Tables.Count <= 2)
+                {
+                    //_exception?.Info(
+                    //    $"XML loaded but contains only {dsMeal.Tables.Count} tables. Expected at least 3.");
+                    return string.Empty;
+                }
+
+                DataTable table = dsMeal.Tables[2];
+
+                if (table == null)
+                {
+                    throw new Exception("Table[2] is null.");
+                }
+
+                if (!table.Columns.Contains(fieldToSearch))
+                {
+                    throw new Exception(
+                        $"Column '{fieldToSearch}' not found in table '{table.TableName}'.");
+                }
+
+                if (!table.Columns.Contains(returnField))
+                {
+                    throw new Exception(
+                        $"Column '{returnField}' not found in table '{table.TableName}'.");
+                }
+
+                foreach (DataRow row in table.Rows)
+                {
+                    if (row == null)
+                        continue;
+
+                    string searchValue =
+                        Convert.ToString(row[fieldToSearch]) ?? string.Empty;
+
                     if (string.Equals(
-                        Convert.ToString(row[fieldToSearch]),
+                        searchValue,
                         fieldSearchFor,
                         StringComparison.OrdinalIgnoreCase))
                     {
@@ -1397,7 +1441,15 @@ namespace Xconnect.Expedia
             }
             catch (Exception ex)
             {
-                _exception.Error(ex);
+                _exception?.Error(
+                    //$"Error in DidaRedXMLFileData. " +
+                    //$"FileName={fileName}, " +
+                    //$"Supplier={supplier}, " +
+                    //$"FieldToSearch={fieldToSearch}, " +
+                    //$"FieldSearchFor={fieldSearchFor}, " +
+                    //$"ReturnField={returnField}",
+                    ex);
+
                 return string.Empty;
             }
         }
