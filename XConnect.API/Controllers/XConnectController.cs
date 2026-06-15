@@ -5851,7 +5851,8 @@ namespace XConnect.API.Controllers
                                         CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds,
                                         srphotelid = requestName == "availability" ? Convert.ToInt32(commonRQ.hotels[0]) : Convert.ToInt32(commonRQ.hotel),
                                         Search_Key = SearchKeyar,
-                                        Channelcode = ChainCode_Agoda
+                                        Channelcode = ChainCode_Agoda,
+                                        Payload=payload
                                     });
                                 }
                                 catch (Exception exx)
@@ -5885,7 +5886,8 @@ namespace XConnect.API.Controllers
                                         CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds,
                                         srphotelid = requestName == "availability" ? Convert.ToInt32(commonRQ.hotels[0]) : Convert.ToInt32(commonRQ.hotel),
                                         Search_Key = SearchKeyar,
-                                        Channelcode = ChainCode_Agoda
+                                        Channelcode = ChainCode_Agoda,
+                                        Payload = payload
                                     });
                                 }
                                 catch (Exception exx)
@@ -5910,7 +5912,7 @@ namespace XConnect.API.Controllers
                                 {
                                     Action = requestName,
                                     Result = lstFiltOption,
-                                    HttpStatusCode = Convert.ToInt32(500),
+                                    HttpStatusCode = Convert.ToInt32(404),
                                     Stage = requestName == "availability" ? "Search" : "Recheck",
                                     ElapsedTime = timer.ElapsedMilliseconds,
                                     Description = erroragoda.responseStatus,
@@ -5921,7 +5923,8 @@ namespace XConnect.API.Controllers
                                     CodeProcessingTimenew = timerforagodaconvert.Elapsed.TotalMilliseconds,
                                     srphotelid = requestName == "availability" ? Convert.ToInt32(commonRQ.hotels[0]) : Convert.ToInt32(commonRQ.hotel),
                                     Search_Key = SearchKeyar,
-                                    Channelcode = ChainCode_Agoda
+                                    Channelcode = ChainCode_Agoda,
+                                    Payload = payload
                                 });
                             }
                             catch (Exception exx)
@@ -5979,7 +5982,8 @@ namespace XConnect.API.Controllers
                                         CodeProcessingTimenew = timerforagodaconvert2.Elapsed.TotalMilliseconds,
                                         srphotelid = requestName == "availability" ? Convert.ToInt32(commonRQ.hotels[0]) : Convert.ToInt32(commonRQ.hotel),
                                         Search_Key = SearchKeyar,
-                                        Channelcode = ChainCode_Agoda
+                                        Channelcode = ChainCode_Agoda,
+                                        Payload = payload
                                     });
                                 }
                                 catch (Exception exx)
@@ -6010,7 +6014,8 @@ namespace XConnect.API.Controllers
                                         CodeProcessingTimenew = timerforagodaconvert2.Elapsed.TotalMilliseconds,
                                         srphotelid = requestName == "availability" ? Convert.ToInt32(commonRQ.hotels[0]) : Convert.ToInt32(commonRQ.hotel),
                                         Search_Key = SearchKeyar,
-                                        Channelcode = ChainCode_Agoda
+                                        Channelcode = ChainCode_Agoda,
+                                        Payload = payload
                                     });
                                 }
                                 catch (Exception exx)
@@ -6049,7 +6054,8 @@ namespace XConnect.API.Controllers
                                     CodeProcessingTimenew = timerforagodaconvert2.Elapsed.TotalMilliseconds,
                                     srphotelid = requestName == "availability" ? Convert.ToInt32(commonRQ.hotels[0]) : Convert.ToInt32(commonRQ.hotel),
                                     Search_Key = SearchKeyar,
-                                    Channelcode = ChainCode_Agoda
+                                    Channelcode = ChainCode_Agoda,
+                                    Payload = payload
                                 });
                             }
                             catch (Exception exx)
