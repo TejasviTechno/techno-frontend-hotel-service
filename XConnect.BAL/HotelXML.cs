@@ -942,7 +942,7 @@ namespace Xconnect.BLL
 
                         if (!SearchByOneID)
                             SearchPara.HotelID = "";
-                    
+
                         //SearchByOneID = false;
                         #region For OTH & CM MappingManage Code
                         if (dsAgentDetails.Tables[1].Rows.Count > 0)
@@ -11811,13 +11811,13 @@ new SqlParameter("@AgentId", AgentId),
                     if (_keySettings.Use_ReplicationDB == "1")
                         //CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB("GetHotelDataForList_category_byhotel_JUNIPER_V1_HID_AITO", para, 2);
                         //CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB("GetHotelDataForList", para,20);
-                       // CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB_Host("GetHotelDataForList", para, 20);
+                        // CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB_Host("GetHotelDataForList", para, 20);
                         CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB_Host("GetHotelDataForList", para, 20);
                     else
                         //CityWiseHotelInformation = await _dlConnection.GetDataSet_Limitbalancer("GetHotelDataForList_category_byhotel_JUNIPER_V1_HID_AITO", para);
                         //CityWiseHotelInformation = await _dlConnection.GetDataSet_Limitbalancer("GetHotelDataForList", para);
                         CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB_Host("GetHotelDataForList", para, 20);
-                       // CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB_Host("GetHotelDataForList", para, 20);
+                    // CityWiseHotelInformation = await _dlConnection.GetDataSet_ReplicationDB_Host("GetHotelDataForList", para, 20);
                 }
                 catch (Exception ex)
                 {
@@ -12613,7 +12613,7 @@ new SqlParameter("@AgentId", AgentId),
                         // Log data
                         //string Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
                         string Website = "";//Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                       // Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
+                                            // Website = System.Environment.GetEnvironmentVariable("APP_POOL_ID", EnvironmentVariableTarget.Process);
                         hostName = System.Net.Dns.GetHostName();
 
                         #region Elastic
@@ -14447,14 +14447,14 @@ new SqlParameter("@AgentId", AgentId),
                     #endregion
                     #region "_techno"
                     case "techno":
-                   // case "techno_new":
-                    //case "travab_dmc":
-                    //case "bedlinker_techno":
-                    //case "travelbullz_techno":
-                    //case "hotelinx_techno":
-                    //case "rayna_techno":
-                    //case "khayi_techno":
-                    //case "farhat_techno":
+                        // case "techno_new":
+                        //case "travab_dmc":
+                        //case "bedlinker_techno":
+                        //case "travelbullz_techno":
+                        //case "hotelinx_techno":
+                        //case "rayna_techno":
+                        //case "khayi_techno":
+                        //case "farhat_techno":
                         dsHotelData.Tables[2].DefaultView.RowFilter = "OwnsystemHotelId=" + hotelid + "and RoomTypeId='" + roomtypeid + "' and RoomNo='" + roomno + "'";
                         if (dsHotelData.Tables[2].DefaultView.Count == 0)
                         {
@@ -14471,7 +14471,7 @@ new SqlParameter("@AgentId", AgentId),
                         if (dsHotelData.Tables[2].DefaultView.Count == 0)
                         {
 
-                           // cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy_New(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData, TechName);
+                            // cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy_New(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData, TechName);
                             cancellationDto = await _techno.Get_Withinearth_DMC_CancelationPolicy_New(dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dsCountryCityMarkup, dsAgentDetails.Tables[2], SearchPara, Convert.ToString(roomno), hotelcode, Supplier, AgentId, GiataId, hotelRating, roomtypename, Mealid, ToeknData.dtROE, SearchKey, IP, ToeknData, TechName);
                         }
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
@@ -15045,12 +15045,12 @@ new SqlParameter("@AgentId", AgentId),
                                 {
                                     essential = essential + ", MealName:" + selectedRoom.MappedMealName;
                                 }
-                                    finalResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].EssentialInformation += essential;
-                                    selectedRoom.EssentialInformation = finalResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].EssentialInformation;
-                                    int st = _cacheMaster.UpdateCacheForHotelListMaster_mongodb(giataSequence_RQ, policyRQ.SearchKey, CacheMaster.CacheKey_Extension, policyRQ.SearchKey, tokenData, ref finalResponse, Convert.ToInt32(_CacheOperation.update), cacheRoomToken);//#MongoDB
-                                }
+                                finalResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].EssentialInformation += essential;
+                                selectedRoom.EssentialInformation = finalResponse.AvailabilityRS.HotelResult[giataid_Seq_Found].HotelOption[hotelid_Seq_Found].HotelRooms[cacheRoomToken.Room_seqno][cacheRoomToken.roomno].EssentialInformation;
+                                int st = _cacheMaster.UpdateCacheForHotelListMaster_mongodb(giataSequence_RQ, policyRQ.SearchKey, CacheMaster.CacheKey_Extension, policyRQ.SearchKey, tokenData, ref finalResponse, Convert.ToInt32(_CacheOperation.update), cacheRoomToken);//#MongoDB
                             }
                         }
+                    }
                     else
                     {
                         if (tokenData.AgentCode.ToLower() == "dida" || tokenData.AgentCode.ToLower() == "inst" || tokenData.AgentCode.ToLower() == "mtbo" || tokenData.AgentCode.ToLower() == "spet" || tokenData.AgentCode.ToLower() == "fzcb" || tokenData.AgentCode.ToLower() == "mwrl" || tokenData.AgentCode.ToLower() == "expa" || tokenData.AgentCode.ToLower() == "guji" || tokenData.AgentCode.ToLower() == "ostr" || tokenData.AgentCode.ToLower() == "vibe" || tokenData.AgentCode.ToLower() == "dazz" || tokenData.AgentCode.ToLower() == "mapa" || tokenData.AgentCode.ToLower() == "reis" || tokenData.AgentCode.ToLower() == "pres")
@@ -17154,17 +17154,17 @@ new SqlParameter("@AgentId", AgentId),
 
                 DataSet datadue = await GetAgentDetails(tokenData);
 
-                if(datadue != null &&
+                if (datadue != null &&
     datadue.Tables.Count > 0 &&
     datadue.Tables[0].Rows.Count > 0)
-{
+                {
                     dtAgentDetails = datadue.Tables[0];
 
                     AutoVoucherDays = dtAgentDetails.Rows[0]["DueDate"] != DBNull.Value
                         ? Convert.ToInt32(dtAgentDetails.Rows[0]["DueDate"])
-                        :3;
+                        : 3;
                 }
-else
+                else
                 {
                     AutoVoucherDays = 3;
                 }
@@ -17668,17 +17668,17 @@ else
                             hotelPolicy_Prebook.FromDate = fromDate.ToString("MM/dd/yyyy HH:mm:ss");
                             hotelPolicy_Prebook.Todate = toDate.ToString("MM/dd/yyyy HH:mm:ss");
 
-                            hotelPolicy_Prebook.CancellationAmount = Math.Round(Convert.ToDouble(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)),2);
+                            hotelPolicy_Prebook.CancellationAmount = Math.Round(Convert.ToDouble(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]) / _commonMethod.GetROEByCurrency(objdata.SupplierCurrency, tokenData.dtROE)), 2);
 
-                            hotelPolicy_Prebook.BaseCancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]),2);
+                            hotelPolicy_Prebook.BaseCancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]), 2);
 
-                            hotelPolicy_Prebook.AgentcancellationAmount = Math.Round(Convert.ToDouble(Convert.ToDecimal(drPolicy[p]["AgentCancellationPrice"]).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency)),2);
+                            hotelPolicy_Prebook.AgentcancellationAmount = Math.Round(Convert.ToDouble(Convert.ToDecimal(drPolicy[p]["AgentCancellationPrice"]).CalculatePrice(tokenData, advancedOptions, objdata.SupplierCurrency)), 2);
 
-                            hotelPolicy_Prebook.BaseAgentcancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]),2);
+                            hotelPolicy_Prebook.BaseAgentcancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["AgentCancellationPrice"]), 2);
 
-                            hotelPolicy_Prebook.CompanyCancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["BuyingPrice"]),2);
+                            hotelPolicy_Prebook.CompanyCancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["BuyingPrice"]), 2);
 
-                            hotelPolicy_Prebook.BaseCompanyCancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["BuyingPrice"]),2);
+                            hotelPolicy_Prebook.BaseCompanyCancellationAmount = Math.Round(Convert.ToDouble(drPolicy[p]["BuyingPrice"]), 2);
 
                             hotelPolicy_Prebooks.Add(hotelPolicy_Prebook);
 
@@ -17925,7 +17925,7 @@ else
                new SqlParameter("@AgentId", Convert.ToString(tokenData.Type).ToLower() == "subagent" ? Convert.ToInt32(tokenData.ParentId) : Convert.ToInt32(tokenData.AgentId)),
                new SqlParameter("@SubUserId",tokenData.SubUserId),
                new SqlParameter("@AgentCode",tokenData.AgentCode)
-             
+
 
             };
 
@@ -28299,7 +28299,7 @@ else
                                             && Convert.ToString(dsCartDetails.Tables[0].Rows[i]["xmlhotelid"]) == XMLHotelCode
                                             && ProvideFmly.ToLower() == MapSupplierName.ToLower()
                                             )))
-                                           // if (true)
+                                        // if (true)
                                         {
                                             switch (TechName.ToLower())
                                             {
@@ -28819,7 +28819,7 @@ else
                                                         #region SupplierPR PreBook
                                                         try
                                                         {
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook("oth", "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error,Searchkey,TechName,srphotelid);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook("oth", "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -28837,7 +28837,7 @@ else
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook("oth", "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error,Searchkey,TechName,srphotelid);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook("oth", "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -31163,7 +31163,7 @@ else
                                                     }
                                                     try
                                                     {
-                                                        _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, timedotw, responsetypedotw, dotwBockReq, ResponseDatadet, Errordotw,Searchkey,TechName,srphotelid);
+                                                        _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, timedotw, responsetypedotw, dotwBockReq, ResponseDatadet, Errordotw, Searchkey, TechName, srphotelid);
                                                     }
                                                     catch (Exception e)
                                                     {
@@ -31202,7 +31202,7 @@ else
                                                                 string HotelId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["XMLHotelId"]);
                                                                 string RoomTypeId = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]);
                                                                 double CompanyBuyingPricedarina = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
-                                                                purchaseTokenDarina = await _darina.Darina_Prebook_WithoutPolicy(DarinaDetails, checkin, checkout, ChildAge1, ChildAge2, NoofChild, NoOfAdult, HotelId, RoomTypeId, Supplier, AgentId, CompanyBuyingPricedarina,Searchkey,TechName,srphotelid);
+                                                                purchaseTokenDarina = await _darina.Darina_Prebook_WithoutPolicy(DarinaDetails, checkin, checkout, ChildAge1, ChildAge2, NoofChild, NoOfAdult, HotelId, RoomTypeId, Supplier, AgentId, CompanyBuyingPricedarina, Searchkey, TechName, srphotelid);
                                                                 await _commonMethod.GetRoomNameUpdate(purchaseTokenDarina, UsercartID);
                                                             }
 
@@ -31322,7 +31322,7 @@ else
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook("Darina", "PreBook", AgentId, time, responsetype, "", "", Error,Searchkey,TechName,srphotelid);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook("Darina", "PreBook", AgentId, time, responsetype, "", "", Error, Searchkey, TechName, srphotelid);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -31365,7 +31365,7 @@ else
                                                             double ResPrice = 0;
                                                             bool IsErrors = false;
                                                             //int Flag = Common.SaltoursPriceCheck(dsCartDetails, SaltoursDetails, j, ref FinalPrice, CurrencyFactorsaltours, UniqueNo, AgentUniqueNo, ref ResPrice, Supplier, i, Nationality, saltoursCurrency);
-                                                            PriceCheckDto priceCheckDto = await _saltours.SaltoursPriceCheck(dsCartDetails, SaltoursDetails, j, FinalPrice, CurrencyFactorsaltours, UniqueNo, AgentUniqueNo, ResPrice, Supplier, i, Nationality, saltoursCurrency, AgentId, TokenData,Searchkey,TechName);
+                                                            PriceCheckDto priceCheckDto = await _saltours.SaltoursPriceCheck(dsCartDetails, SaltoursDetails, j, FinalPrice, CurrencyFactorsaltours, UniqueNo, AgentUniqueNo, ResPrice, Supplier, i, Nationality, saltoursCurrency, AgentId, TokenData, Searchkey, TechName);
                                                             int Flag = priceCheckDto.Flag;
                                                             FinalPrice = priceCheckDto.FinalPrice;
 
@@ -31435,7 +31435,7 @@ else
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error,Searchkey,TechName,srphotelid);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -31485,7 +31485,7 @@ else
                                                             string WebSiteURL = Convert.ToString(uk_travcoDetails[0]["WebSiteUrl"]);
                                                             double FinalPrice = 0;
                                                             UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
-                                                            PriceCheckDto priceCheckDto = await _ukTravco.AllocationEnqiry(UserID, Password, XMLHotelId, RoomTypeId, NoOfAdults, NoOfChild, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, UniqueNo, AgentUniqueNo, false, ChildAge1, ChildAge2, Searchkey, AgentId, Supplier,TechName,srphotelid);
+                                                            PriceCheckDto priceCheckDto = await _ukTravco.AllocationEnqiry(UserID, Password, XMLHotelId, RoomTypeId, NoOfAdults, NoOfChild, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, UniqueNo, AgentUniqueNo, false, ChildAge1, ChildAge2, Searchkey, AgentId, Supplier, TechName, srphotelid);
 
                                                             int flag = priceCheckDto.Flag;
                                                             FinalPrice = priceCheckDto.FinalPrice;
@@ -31568,7 +31568,7 @@ else
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error,Searchkey,TechName,srphotelid);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -31605,7 +31605,7 @@ else
                                                         //     priceCheckhotelsproDto = await _hotelspro.GetPriceUpdateRQRS(Supplier, HTL_RoomCode, dtCheckPriceReqStructure, dsCartDetails, HotelsProDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice, Searchkey, AgentId);
                                                         //else
 
-                                                        PriceCheckhotelsproDto priceCheckhotelsproDto = await _hotelspro.GetPriceUpdateRQRS(Supplier, HTL_RoomCode, dtCheckPriceReqStructure, dsCartDetails, HotelsProApiDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice, IsErrors, itemprice, roomCodeHP, Searchkey, AgentId,TechName);
+                                                        PriceCheckhotelsproDto priceCheckhotelsproDto = await _hotelspro.GetPriceUpdateRQRS(Supplier, HTL_RoomCode, dtCheckPriceReqStructure, dsCartDetails, HotelsProApiDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice, IsErrors, itemprice, roomCodeHP, Searchkey, AgentId, TechName);
 
                                                         IsPriceUpdates = priceCheckhotelsproDto.Flag;
                                                         itemprice = priceCheckhotelsproDto.FinalPrice;
@@ -31725,7 +31725,7 @@ else
 
                                                             if (ReCheckHit.ToLower() != "notavailable")
                                                             {
-                                                                PriceCheckCMDto priceCheckCMDto = await _hotelbeds.PriceUpdateHotelBedsV1(RoomCode, dtCheckPriceReqStructure, dsCartDetails, HotelBedsV1Details, UniqueNo, AgentUniqueNo, j, "P", CompanyBuyPrice, IsErrors, itemprice, Searchkey, AgentId,TechName);
+                                                                PriceCheckCMDto priceCheckCMDto = await _hotelbeds.PriceUpdateHotelBedsV1(RoomCode, dtCheckPriceReqStructure, dsCartDetails, HotelBedsV1Details, UniqueNo, AgentUniqueNo, j, "P", CompanyBuyPrice, IsErrors, itemprice, Searchkey, AgentId, TechName);
                                                                 IsErrors = priceCheckCMDto.IsError;
                                                                 itemprice = priceCheckCMDto.ItemPrice;
                                                                 IsPriceUpdates = priceCheckCMDto.Flag;
@@ -31936,7 +31936,7 @@ else
                                                         {
                                                             Error = ex.Message + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error,Searchkey,TechName,srphotelid);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -32003,8 +32003,8 @@ else
                                                                 {
                                                                     if (DeadLine == 0 || DeadLine == Convert.ToDouble(ResponseDataXTG.Tables["cancelPenalties"].Rows[0]["hoursBefore"]))// new added UniqueNo 18 - June - 2025
                                                                     {
-                                                                         double CurrencyFactor = 1;
-                                                                        
+                                                                        double CurrencyFactor = 1;
+
                                                                         string optionRefId = Convert.ToString(ResponseDataXTG.Tables["optionQuote"].Rows[0]["optionRefId"]);
                                                                         //bool IsSuccess = await _commonMethod.GetHasKeyUpdateStaus_xtg(optionRefId, Convert.ToInt32(UniqueNo));//new added UniqueNo 18-June-2025
                                                                         objdata.ShoppingCartDetails[0].EachoToken = optionRefId; //010626
@@ -32022,7 +32022,7 @@ else
                                                                             #region "Price update logic with markup"
                                                                             double UpdatedPrice = Price;
                                                                             #region "Markup Logic Supplierwise"
-                                                                            
+
                                                                             int SupplierID = 0;
                                                                             if (dsAgentDetails.Tables[1] != null)
                                                                             {
@@ -32076,7 +32076,7 @@ else
                                                         #region SupplierPR PreBook
                                                         try
                                                         {
-                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error,Searchkey,TechName,srphotelid);
+                                                            _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -32131,7 +32131,7 @@ else
                                                             bool IsErrors = false;
                                                             double itemprice = 0;
                                                             //bool IsPriceUpdates = Common.PriceCheckTravelLada(OptionCode, dtCheckPriceReqStructure, dsCartDetails, TravelLandaDetails, UniqueNo, AgentUniqueNo, j, "P", Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]), ref IsErrors, ref itemprice, Searchkey, AgentId);
-                                                            PriceCheckCMDto priceCheckCMDto = await _travellanda.PriceCheckTravelLada(OptionCode, dtCheckPriceReqStructure, dsCartDetails, TravelLandaDetails, UniqueNo, AgentUniqueNo, j, "P", Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]), IsErrors, itemprice, Searchkey, AgentId,TechName);
+                                                            PriceCheckCMDto priceCheckCMDto = await _travellanda.PriceCheckTravelLada(OptionCode, dtCheckPriceReqStructure, dsCartDetails, TravelLandaDetails, UniqueNo, AgentUniqueNo, j, "P", Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]), IsErrors, itemprice, Searchkey, AgentId, TechName);
                                                             bool IsPriceUpdates = priceCheckCMDto.Flag;
                                                             itemprice = priceCheckCMDto.ItemPrice;
                                                             IsErrors = priceCheckCMDto.IsError;
@@ -32192,7 +32192,7 @@ else
                                                         #region SupplierPR PreBook
                                                         try
                                                         {
-                                                           // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                            // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -32352,7 +32352,7 @@ else
                                                         #region JuniperNew Price Check RQ RS
                                                         //IsPriceUpdate_JuniperNew = _juniper.Get_JuniperNew_PriceCheckRQRS(i, dsCartDetails, SupplierDetail, Provider_JuniperNew, 0, ref dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, ref FinalPrices_JuniperNew, false, HotelIds_JuniperNew, UserCartIDS_JuniperNew, UserCartDetailIds_JuniperNew, RoomTypeIds_JuniperNew, CompanyBuyingPrices_JuniperNew, ref NewRatePlan_JuniperNew, ref IsError_JuniperNew, SupplierCurrency, Searchkey, AgentId);
 
-                                                        PriceCheckCMDto priceCheckCMDto = await _juniper.Get_JuniperNew_PriceCheckRQRS(i, dsCartDetails, SupplierDetail, Provider_JuniperNew, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrices_JuniperNew, false, HotelIds_JuniperNew, UserCartIDS_JuniperNew, UserCartDetailIds_JuniperNew, RoomTypeIds_JuniperNew, CompanyBuyingPrices_JuniperNew, NewRatePlan_JuniperNew, IsError_JuniperNew, SupplierCurrency, Searchkey, AgentId,TechName);
+                                                        PriceCheckCMDto priceCheckCMDto = await _juniper.Get_JuniperNew_PriceCheckRQRS(i, dsCartDetails, SupplierDetail, Provider_JuniperNew, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrices_JuniperNew, false, HotelIds_JuniperNew, UserCartIDS_JuniperNew, UserCartDetailIds_JuniperNew, RoomTypeIds_JuniperNew, CompanyBuyingPrices_JuniperNew, NewRatePlan_JuniperNew, IsError_JuniperNew, SupplierCurrency, Searchkey, AgentId, TechName);
                                                         IsPriceUpdate_JuniperNew = priceCheckCMDto.Flag;
                                                         FinalPrices_JuniperNew = priceCheckCMDto.ItemPrice;
                                                         IsError_JuniperNew = priceCheckCMDto.IsError;
@@ -32804,7 +32804,7 @@ else
                                                         double FinalPrice = Rate;
                                                         double ResPrice = 0;
                                                         //int flag = Common.QTechPriceCheck(dsCartDetails, QTechDetails, 0, ref FinalPrice, CurrencyFactorHotel24x7, UniqueNo, AgentUniqueNo, ref ResPrice, AgentId, Searchkey);
-                                                        PriceCheckQTDto priceCheckQTDto = await _qtech.QTechPriceCheck(dsCartDetails, QTechDetails, 0, FinalPrice, CurrencyFactorHotel24x7, UniqueNo, AgentUniqueNo, ResPrice, AgentId, Searchkey,TechName);
+                                                        PriceCheckQTDto priceCheckQTDto = await _qtech.QTechPriceCheck(dsCartDetails, QTechDetails, 0, FinalPrice, CurrencyFactorHotel24x7, UniqueNo, AgentUniqueNo, ResPrice, AgentId, Searchkey, TechName);
                                                         int flag = priceCheckQTDto.Flag;
                                                         FinalPrice = priceCheckQTDto.FinalPrice;
                                                         ResPrice = priceCheckQTDto.ResPrice;
@@ -32920,7 +32920,7 @@ else
                                                         bool IsErrors1 = false;
                                                         double itemprice = 0;
                                                         string BookingCode = "";
-                                                        PriceCheckCMDto priceCheckCMDto = await _iboosy.MethaBookPriceCheck(AvailabilityCode, dtCheckPriceReqStructure, dsCartDetails, MethaBookDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice1, IsErrors1, itemprice, BookingCode, MealCode, TokenData, Searchkey, AgentId,TechName);
+                                                        PriceCheckCMDto priceCheckCMDto = await _iboosy.MethaBookPriceCheck(AvailabilityCode, dtCheckPriceReqStructure, dsCartDetails, MethaBookDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice1, IsErrors1, itemprice, BookingCode, MealCode, TokenData, Searchkey, AgentId, TechName);
                                                         bool IsPriceUpdates1 = priceCheckCMDto.Flag;
                                                         itemprice = priceCheckCMDto.ItemPrice;
                                                         IsErrors1 = priceCheckCMDto.IsError;
@@ -32981,7 +32981,7 @@ else
                                                         #region SupplierPR PreBook
                                                         try
                                                         {
-                                                           // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                            // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -33022,7 +33022,7 @@ else
                                                         bool IsErrors2 = false;
                                                         double itemprice = 0;
                                                         //bool IsPriceUpdate1 = Common.HotelDoPriceCheck(dtCheckPriceReqStructure, dsCartDetails, HotelDoDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice2, ref IsErrors2, ref itemprice, Searchkey, AgentId);
-                                                        PriceCheckCMDto priceCheckCMDto = await _hoteldo.HotelDoPriceCheck_v2(dtCheckPriceReqStructure, dsCartDetails, HotelDoDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice2, IsErrors2, itemprice, Searchkey, AgentId,TechName);
+                                                        PriceCheckCMDto priceCheckCMDto = await _hoteldo.HotelDoPriceCheck_v2(dtCheckPriceReqStructure, dsCartDetails, HotelDoDetails, UniqueNo, AgentUniqueNo, i, "P", CompanyBuyPrice2, IsErrors2, itemprice, Searchkey, AgentId, TechName);
                                                         bool IsPriceUpdate1 = priceCheckCMDto.Flag;
                                                         IsErrors2 = priceCheckCMDto.IsError;
                                                         itemprice = priceCheckCMDto.ItemPrice;
@@ -33176,7 +33176,7 @@ else
                                                                 string xmlhotelid = Convert.ToString(dsCartDetails.Tables[0].Rows[i]["XMLHotelId"]);
                                                                 bool ispriceupdate = true;
                                                                 bool IsPolicyChangeTBO = false;
-                                                                PriceCheckTboDto priceCheckTboDto = await _tbo.TBO_PriceCheckRQRSJson(dsAgentDetails, dsCartDetails, TBOV1Details, UserName, Password, i, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, PreBookingToken, xmlhotelid, IsPolicyChangeTBO, TokenData, agentID,Searchkey,TechName);
+                                                                PriceCheckTboDto priceCheckTboDto = await _tbo.TBO_PriceCheckRQRSJson(dsAgentDetails, dsCartDetails, TBOV1Details, UserName, Password, i, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, PreBookingToken, xmlhotelid, IsPolicyChangeTBO, TokenData, agentID, Searchkey, TechName);
                                                                 ispriceupdate = priceCheckTboDto.Flag;
                                                                 IsPolicyChangeTBO = priceCheckTboDto.IsPolicyChangeTBO;
                                                                 FinalPrice = priceCheckTboDto.ItemPrice;
@@ -34179,7 +34179,7 @@ else
                                                     try
                                                     {
                                                         //bool IsPriceUpdatesY = _yalago.Get_Yalago_PriceCheckRQRS(dsCartDetails, YalagoDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, false, CompanyBuyPriceA, Hotelcode, "P", IsErrorY, itempriceY, Searchkey, AgentId,TokenData);
-                                                        PriceCheckCMDto priceCheckCMDto = await _yalago.Get_Yalago_PriceCheckRQRS(dsCartDetails, YalagoDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, false, CompanyBuyPriceA, Hotelcode, "P", IsErrorY, itempriceY, Searchkey, AgentId, TokenData,TechName);
+                                                        PriceCheckCMDto priceCheckCMDto = await _yalago.Get_Yalago_PriceCheckRQRS(dsCartDetails, YalagoDetails, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, false, CompanyBuyPriceA, Hotelcode, "P", IsErrorY, itempriceY, Searchkey, AgentId, TokenData, TechName);
                                                         bool IsPriceUpdatesY = priceCheckCMDto.Flag;
                                                         itempriceY = priceCheckCMDto.ItemPrice;
                                                         IsErrorY = priceCheckCMDto.IsError;
@@ -34326,7 +34326,7 @@ else
                                                         if (true)
                                                         {
                                                             // bool ispriceupdate = _mgbedbank.Get_MgBedBank_PriceCheckRQRS(dsCartDetails, MgBedBankDetails, PaxPassport, i, 0, ref dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, ref FinalPrice, false, CompanyBuyingPrice, ref HasKey, "P", Supplier, Searchkey, AgentId, TokenData);
-                                                            PriceCheckCMDto priceCheckCMDto = await _mgbedbank.Get_MgBedBank_PriceCheckRQRS(dsCartDetails, MgBedBankDetails, PaxPassport, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, HasKey, "P", Supplier, Searchkey, AgentId, TokenData,TechName);
+                                                            PriceCheckCMDto priceCheckCMDto = await _mgbedbank.Get_MgBedBank_PriceCheckRQRS(dsCartDetails, MgBedBankDetails, PaxPassport, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, HasKey, "P", Supplier, Searchkey, AgentId, TokenData, TechName);
                                                             bool ispriceupdate = priceCheckCMDto.Flag;
                                                             FinalPrice = priceCheckCMDto.ItemPrice;
                                                         }
@@ -34603,7 +34603,7 @@ else
                                                             if (offercode == "")
                                                             {
                                                                 //flag = HotelXML_Suppliers.Get_Infinitehotelsfrance_PreBookingReqRes(ref ReferenceNo, UserID, Password, XMLHotelId, RoomTypeId, CheckInDate, CheckOut, WebSiteURL, Rate, ref FinalPrice, UserCartId, UserCartDetailId, ref dtCheckPriceReqStructure, j, UniqueNo, AgentUniqueNo, false, NoOfRoom, UserName, ref Newoffercode, Searchkey, AgentId);
-                                                                PriceCheckDidaDto priceCheckDidaDto = await _infinitehotelsfrance.Get_Infinitehotelsfrance_PreBookingReqRes(TokenData, Currency, UserID, Password, XMLHotelId, RoomTypeId, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, UniqueNo, AgentUniqueNo, false, NoOfRoom, UserName, Newoffercode, Searchkey, AgentId,TechName,srphotelid);
+                                                                PriceCheckDidaDto priceCheckDidaDto = await _infinitehotelsfrance.Get_Infinitehotelsfrance_PreBookingReqRes(TokenData, Currency, UserID, Password, XMLHotelId, RoomTypeId, CheckInDate, CheckOut, WebSiteURL, Rate, FinalPrice, UserCartId, UserCartDetailId, dtCheckPriceReqStructure, j, UniqueNo, AgentUniqueNo, false, NoOfRoom, UserName, Newoffercode, Searchkey, AgentId, TechName, srphotelid);
                                                                 flag = priceCheckDidaDto.Flag;
                                                                 FinalPrice = priceCheckDidaDto.FinalPrice;
                                                                 Newoffercode = priceCheckDidaDto.ReferenceNo;
@@ -34749,7 +34749,7 @@ else
                                                             bool ispriceupdate = true;
 
                                                             //ispriceupdate = ThirdPartyXML.Get_Adonis_PriceCheckRQRS(dsCartDetails, AdonisDetails, AD, ref dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, ref FinalPrice, false, CompanyBuyingPrice, ref PreBookingToken, Searchkey, AgentId);
-                                                            PriceCheckAdonisDto priceCheckAdonisDto = await _adonis.Get_Adonis_PriceCheckRQRS(dsCartDetails, AdonisDetails, AD, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, PreBookingToken, Searchkey, AgentId, TokenData,TechName);
+                                                            PriceCheckAdonisDto priceCheckAdonisDto = await _adonis.Get_Adonis_PriceCheckRQRS(dsCartDetails, AdonisDetails, AD, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, PreBookingToken, Searchkey, AgentId, TokenData, TechName);
                                                             ispriceupdate = priceCheckAdonisDto.Flag;
                                                             FinalPrice = priceCheckAdonisDto.FinalPrice;
                                                             PreBookingToken = priceCheckAdonisDto.PreBookingToken;
@@ -34875,7 +34875,7 @@ else
                                                                         UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
                                                                         CompanyBuyingPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
                                                                         //ispriceupdate = Common.Get_BookingDotCom_PriceCheck(dsCartDetails, bookingDotComDetails, UserName, Password, i, j, dtCheckPriceReqStructure, UniqueNo, agentcode, ref FinalPrice, false, CompanyBuyingPrice, "P", ref commission);
-                                                                        PriceCheckBDCDto priceCheckBDCDto = await _booking.Get_BookingDotCom_PriceCheck(dsCartDetails, bookingDotComDetails, UserName, Password, i, j, dtCheckPriceReqStructure, UniqueNo, agentcode, FinalPrice, false, CompanyBuyingPrice, "P", commission, TokenData, agentID,Searchkey,TechName);
+                                                                        PriceCheckBDCDto priceCheckBDCDto = await _booking.Get_BookingDotCom_PriceCheck(dsCartDetails, bookingDotComDetails, UserName, Password, i, j, dtCheckPriceReqStructure, UniqueNo, agentcode, FinalPrice, false, CompanyBuyingPrice, "P", commission, TokenData, agentID, Searchkey, TechName);
                                                                         FinalPrice = FinalPrice - commission;
                                                                         if ((FinalPrice).TruncateDecimalPlaces(0) > (CompanyBuyingPrice).TruncateDecimalPlaces(0))
                                                                         {
@@ -35011,7 +35011,7 @@ else
                                                             bool ispriceupdate = true;
 
 
-                                                            PriceCheckNuiteeDto priceCheckNuiteeDto = await _nuitee.NuiteePriceCheckRQRS(dsCartDetails, nuiteeDetails, UserName, Password, i, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, PreBookingToken, xmlhotelid, Ipadress, TokenData, Searchkey, AgentId,TechName);
+                                                            PriceCheckNuiteeDto priceCheckNuiteeDto = await _nuitee.NuiteePriceCheckRQRS(dsCartDetails, nuiteeDetails, UserName, Password, i, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, PreBookingToken, xmlhotelid, Ipadress, TokenData, Searchkey, AgentId, TechName);
 
                                                             ispriceupdate = priceCheckNuiteeDto.Flag;
                                                             FinalPrice = priceCheckNuiteeDto.ItemPrice;
@@ -35234,7 +35234,7 @@ else
                                                             string timeout = "";
                                                             string RSType = "";
 
-                                                            PriceCheckTravelokaDto priceCheckTravelokaDto = await _traveloka.Get_Traveloka_PriceCheckRQRS(dsCartDetails, TravelokaDetails, i, 0, dtCheckPriceReqStructure, FinalPrice, false, timeout, RSType, CompanyBuyingPrice, TokenData, Supplier, AgentId, platform,Searchkey,TechName);
+                                                            PriceCheckTravelokaDto priceCheckTravelokaDto = await _traveloka.Get_Traveloka_PriceCheckRQRS(dsCartDetails, TravelokaDetails, i, 0, dtCheckPriceReqStructure, FinalPrice, false, timeout, RSType, CompanyBuyingPrice, TokenData, Supplier, AgentId, platform, Searchkey, TechName);
                                                             FinalPrice = priceCheckTravelokaDto.FinalPrice;
                                                             timeout = priceCheckTravelokaDto.time;
                                                             RSType = priceCheckTravelokaDto.responsetype;
@@ -35326,7 +35326,7 @@ else
                                                             bool IsErrors = false;
                                                             double itemprice = 0;
                                                             UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]);
-                                                            PriceCheckCMDto priceCheckCMDto = await _rakuten.PriceUpdateRakuten(dtCheckPriceReqStructure, dsCartDetails, RakutenDetails, UniqueNo, AgentUniqueNo, i, 0, "P", CompanyBuyPrice, AgentId, IsErrors, itemprice, TokenData,Searchkey,TechName);
+                                                            PriceCheckCMDto priceCheckCMDto = await _rakuten.PriceUpdateRakuten(dtCheckPriceReqStructure, dsCartDetails, RakutenDetails, UniqueNo, AgentUniqueNo, i, 0, "P", CompanyBuyPrice, AgentId, IsErrors, itemprice, TokenData, Searchkey, TechName);
                                                             bool IsPriceUpdates = priceCheckCMDto.Flag;
                                                             itemprice = priceCheckCMDto.ItemPrice;
 
@@ -35510,7 +35510,7 @@ else
                                                             #region SupplierPR Price Check
                                                             try
                                                             {
-                                                               // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
+                                                                // _ = _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error);
                                                             }
                                                             catch (Exception e)
                                                             {
@@ -35684,7 +35684,7 @@ else
                                                             double FinalPrice = 0;
                                                             double ResPrice = 0;
                                                             //PriceCheckDto priceCheckDto = await _hyperguest.hyperguestPriceCheck(dsCartDetails, hyperguestDetails, j, FinalPrice, CurrencyFactorhyperguest, UniqueNo, AgentUniqueNo, ResPrice, Supplier, i, Rate, AgentId, TokenData);
-                                                            PriceCheckDto priceCheckDto = await _hyperguest.hyperguestPriceCheck_new(dsCartDetails, hyperguestDetails, j, FinalPrice, UniqueNo, AgentUniqueNo, ResPrice, Supplier, i, Rate, AgentId, TokenData, Searchkey,TechName);
+                                                            PriceCheckDto priceCheckDto = await _hyperguest.hyperguestPriceCheck_new(dsCartDetails, hyperguestDetails, j, FinalPrice, UniqueNo, AgentUniqueNo, ResPrice, Supplier, i, Rate, AgentId, TokenData, Searchkey, TechName);
                                                             int Flag = priceCheckDto.Flag;
                                                             FinalPrice = priceCheckDto.FinalPrice;
 
@@ -35833,7 +35833,7 @@ else
                                                         CheckOut = CheckOut.Substring(0, 4) + "-" + CheckOut.Substring(4, 2) + "-" + CheckOut.Substring(6, 2);
 
                                                         bool IsUpdte = false;
-                                                        PriceCheckCMDto priceCheckCMDto = await _jumeirah.GetJumeirahPriceCheck(dsCartDetails, JumeirahDetails, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, HotelId, UserCartId, UserCartDetailId, RoomTypeId, SupplierName, CompanyBuyingPrice, NoOfAdults, NoOfChild, CheckIn, CheckOut, TokenData, AgentId,Searchkey,TechName);
+                                                        PriceCheckCMDto priceCheckCMDto = await _jumeirah.GetJumeirahPriceCheck(dsCartDetails, JumeirahDetails, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, HotelId, UserCartId, UserCartDetailId, RoomTypeId, SupplierName, CompanyBuyingPrice, NoOfAdults, NoOfChild, CheckIn, CheckOut, TokenData, AgentId, Searchkey, TechName);
                                                         bool ispriceupdate = priceCheckCMDto.Flag;
                                                         FinalPrice = priceCheckCMDto.ItemPrice;
 
@@ -36026,7 +36026,7 @@ else
                                                         int p = 0;
                                                         //if (Supplier.ToLower() == "agoda_v1")
                                                         //{
-                                                        PriceCheckDto priceCheckDto = await _agoda.DoAgoda_NewPriceCheck(Supplier, false, dtCheckPriceReqStructure, dtPriceUpdateTable, dtPriceDetail, serviceTot, AgodaV1Details, dsCartDetails, dsAgentDetails, i, UniqueNo, AgentUniqueNo, AgodaV1SearchConfig, dtCountryCityMarkup, isPerce, AgentMarkupAmount, IsB2C, B2CMarkup, SubAgentMarkup, IsParentId, FinalPrice, agentID,Searchkey,TechName);
+                                                        PriceCheckDto priceCheckDto = await _agoda.DoAgoda_NewPriceCheck(Supplier, false, dtCheckPriceReqStructure, dtPriceUpdateTable, dtPriceDetail, serviceTot, AgodaV1Details, dsCartDetails, dsAgentDetails, i, UniqueNo, AgentUniqueNo, AgodaV1SearchConfig, dtCountryCityMarkup, isPerce, AgentMarkupAmount, IsB2C, B2CMarkup, SubAgentMarkup, IsParentId, FinalPrice, agentID, Searchkey, TechName);
                                                         p = priceCheckDto.Flag;
                                                         FinalPrice = priceCheckDto.FinalPrice;
 
@@ -36115,7 +36115,7 @@ else
                                                                     {
                                                                         UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["UserCartDetailId"]);
                                                                         CompanyBuyingPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
-                                                                        PriceCheckBDCDto priceCheckBDCDto = await _booking.Get_BookingDotCom_PriceCheck_v3(dsCartDetails, bookingDotComv3Details, UserName, Password, i, j, dtCheckPriceReqStructure, UniqueNo, agentcode, FinalPrice, false, CompanyBuyingPrice, "P", commission, TokenData, AgentId,Searchkey,TechName);
+                                                                        PriceCheckBDCDto priceCheckBDCDto = await _booking.Get_BookingDotCom_PriceCheck_v3(dsCartDetails, bookingDotComv3Details, UserName, Password, i, j, dtCheckPriceReqStructure, UniqueNo, agentcode, FinalPrice, false, CompanyBuyingPrice, "P", commission, TokenData, AgentId, Searchkey, TechName);
                                                                         ispriceupdate = priceCheckBDCDto.Flag;
                                                                         FinalPrice = priceCheckBDCDto.FinalPrice;
                                                                         commission = priceCheckBDCDto.commission;
@@ -36266,7 +36266,7 @@ else
                                                         DataRow[] SupplierDetails = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
 
                                                         UniqueNo = Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailId"]);
-                                                        PriceCheckCMDto priceCheckCMDto = await _parsec.PriceCheckParsec(i, dtCheckPriceReqStructure, dsCartDetails, SupplierDetails, UniqueNo, AgentUniqueNo, "P", IsErrors, Supplier, AgentCode, Searchkey, AgentId,TechName);
+                                                        PriceCheckCMDto priceCheckCMDto = await _parsec.PriceCheckParsec(i, dtCheckPriceReqStructure, dsCartDetails, SupplierDetails, UniqueNo, AgentUniqueNo, "P", IsErrors, Supplier, AgentCode, Searchkey, AgentId, TechName);
                                                         bool IsPriceUpdates = priceCheckCMDto.Flag;
 
                                                         if (IsPriceUpdates)
@@ -36372,7 +36372,7 @@ else
                                                             double FinalPrice = 0;
                                                             bool ErrorPop = false;
 
-                                                            PriceCheckCMDto priceCheckCMDto = await _pkfare.GetPkfarePriceCheckREQRES(dsCartDetails, PkFareDetails, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData,Searchkey,TechName);
+                                                            PriceCheckCMDto priceCheckCMDto = await _pkfare.GetPkfarePriceCheckREQRES(dsCartDetails, PkFareDetails, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData, Searchkey, TechName);
 
                                                             ErrorPop = priceCheckCMDto.Flag;
                                                             FinalPrice = priceCheckCMDto.ItemPrice;
@@ -36695,7 +36695,7 @@ else
                                                             string Haskey = "", Paxpassport = "";
                                                             if (IsB2C == true)
                                                                 AgentPercentage = 0;
-                                                            PriceCheckHTDto priceCheckHTDto = await _hotelstrack.Get_HotelsTrack_PriceCheck_RQRS(dsCartDetails, HotelstrackDetails, Paxpassport, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, Haskey, "P", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower(), AgentId, TokenData,Searchkey,TechName);
+                                                            PriceCheckHTDto priceCheckHTDto = await _hotelstrack.Get_HotelsTrack_PriceCheck_RQRS(dsCartDetails, HotelstrackDetails, Paxpassport, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, Haskey, "P", Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower(), AgentId, TokenData, Searchkey, TechName);
                                                             bool Ispriceupdate = priceCheckHTDto.Flag;
                                                             FinalPrice = priceCheckHTDto.FinalPrice;
 
@@ -36809,7 +36809,7 @@ else
 
                                                             if (true)
                                                             {
-                                                                PriceCheckRezliveDto priceCheckRezliveDto = await _rezlive.Get_Rezlive_PriceCheckRQRS(dsCartDetails, RezliveDetails, PaxPassport, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, HasKey, "P", Supplier, AgentId, TokenData,Searchkey,TechName);
+                                                                PriceCheckRezliveDto priceCheckRezliveDto = await _rezlive.Get_Rezlive_PriceCheckRQRS(dsCartDetails, RezliveDetails, PaxPassport, i, 0, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, false, CompanyBuyingPrice, HasKey, "P", Supplier, AgentId, TokenData, Searchkey, TechName);
                                                                 bool ispriceupdate = priceCheckRezliveDto.Flag;
                                                                 FinalPrice = priceCheckRezliveDto.FinalPrice;
                                                                 HasKey = priceCheckRezliveDto.HasKey_IntCode;
@@ -36854,7 +36854,7 @@ else
                                                         {
                                                             Error = ex.Message.ToString() + "#=" + ex.StackTrace.ToString();
                                                             responsetype = "GeneralError";
-                                                            _ = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error,Searchkey,TechName,srphotelid);
+                                                            _ = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(Supplier, "PreBook", AgentId, time, responsetype, RequestSPR, ReponseSPR, Error, Searchkey, TechName, srphotelid);
                                                         }
                                                         catch (Exception e)
                                                         {
@@ -36882,7 +36882,7 @@ else
                                                         double Rate = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
                                                         double FinalPrice = 0;
                                                         double CurrencyFactorwelcomebeds = 1;
-                                                        PriceCheckWelcomebedsDto priceCheckWelcomebedsDto = await _welcomebeds.welcomebedsPriceCheck(dsCartDetails, WelcomebedsDetails, j, FinalPrice, CurrencyFactorwelcomebeds, UniqueNo, AgentUniqueNo, Supplier, i, Rate, TokenData.dtROE, AgentId, TokenData, Searchkey,TechName);
+                                                        PriceCheckWelcomebedsDto priceCheckWelcomebedsDto = await _welcomebeds.welcomebedsPriceCheck(dsCartDetails, WelcomebedsDetails, j, FinalPrice, CurrencyFactorwelcomebeds, UniqueNo, AgentUniqueNo, Supplier, i, Rate, TokenData.dtROE, AgentId, TokenData, Searchkey, TechName);
                                                         bool ispriceupdate = priceCheckWelcomebedsDto.Flag;
                                                         FinalPrice = priceCheckWelcomebedsDto.FinalPrice;
                                                         HasKey = priceCheckWelcomebedsDto.HasKey_IntCode;
@@ -37006,7 +37006,7 @@ else
                                                             DataRow[] SupplierDetail1 = dsAgentDetails.Tables[1].Select("SupplierName ='" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["SupplierName"]).ToLower() + "'");
 
 
-                                                            PriceCheckCMDto priceCheckDingus = await _dingus.PriceUpdateDingus(Supplier.ToLower(), dtCheckPriceReqStructure, dsCartDetails, SupplierDetail1, UniqueNo, AgentUniqueNo, i, j, "P", CompanyBuyPrice, IsErrors, itemprice, TokenData, Searchkey, AgentId,TechName);
+                                                            PriceCheckCMDto priceCheckDingus = await _dingus.PriceUpdateDingus(Supplier.ToLower(), dtCheckPriceReqStructure, dsCartDetails, SupplierDetail1, UniqueNo, AgentUniqueNo, i, j, "P", CompanyBuyPrice, IsErrors, itemprice, TokenData, Searchkey, AgentId, TechName);
                                                             bool IsPriceUpdates = priceCheckDingus.Flag;
                                                             itemprice = priceCheckDingus.ItemPrice;
                                                             IsErrors = priceCheckDingus.IsError;
@@ -37208,7 +37208,7 @@ else
                                                             double CompanyBuyingPrice = Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]);
                                                             bool ErrorPop = false;
                                                             string[] HBArray = Convert.ToString(dsCartDetails.Tables[1].DefaultView[j]["RoomTypeId"]).Split(new String[] { "$$$" }, StringSplitOptions.None);
-                                                            PriceCheckCMDto priceCheckCMDto = await _directcontracting.GetDCEPriceCheckREQRES(dsCartDetails, DCE_Details, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData, Searchkey,TechName);
+                                                            PriceCheckCMDto priceCheckCMDto = await _directcontracting.GetDCEPriceCheckREQRES(dsCartDetails, DCE_Details, j, dtCheckPriceReqStructure, UniqueNo, AgentUniqueNo, FinalPrice, UserCartId, CompanyBuyingPrice, AgentId, TokenData, Searchkey, TechName);
                                                             ErrorPop = priceCheckCMDto.Flag;
                                                             FinalPrice = priceCheckCMDto.ItemPrice;
                                                             if (Convert.ToDouble(Math.Round(FinalPrice, 2)) > (Math.Round(Convert.ToDouble(dsCartDetails.Tables[1].DefaultView[j]["CompanyBuyingPrice"]), 2)))
@@ -50292,7 +50292,7 @@ else
                                             string ChildSupplier = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName).ToLower();
                                             bool IsB2B = true;
                                             string CID = Convert.ToString(XPDetails[0]["UserID"]);
-                                             string Uesrname= Convert.ToString(XPDetails[0]["UserName"]);
+                                            string Uesrname = Convert.ToString(XPDetails[0]["UserName"]);
                                             if (Uesrname == "5gme52r0dlt7t")
                                             {
                                                 EANBookRequest = _expedia.EANStringForBookV3_newversion_gujju(bookRequest, dtPassengers, j, Ex_Guid, ChildSupplier.ToLower());
@@ -51049,157 +51049,151 @@ else
                                         string BookingRequest_restel = "";
                                         try
                                         {
-                                                #region Declaration
-                                               
+                                            #region Declaration
+
+                                            AgentVoucherNo = "";
+                                            bookingStatus = 6;
+                                            double FinalPrices = 0;
+                                            string RatePlanCode = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
+                                            string SupplierName = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName);
+                                            int UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                            double CompanyBuyingPrices = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].BaseServiceBuyingAmount);
+                                            bool IsPriceUpdate = false;
+                                            UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                            #endregion
+
+                                            #region PriceCkeck, Booking RQ, Booking URL
+                                            string UserName = "";
+                                            string Password = "";
+                                            string ResponseDatatest = "";
+
+
+                                            BookingRequest_restel = _restel.Get_Restel_BookingRequest_newversion(bookRequest, dtPassengers, XPDetails, UniqueNo, IsPriceUpdate, 0, j, "", UserName, Password, AgentUniqueNo);
+
+                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest_restel, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "RaynaB2B");
+
+                                            string Url = Convert.ToString(XPDetails[0]["WebSiteURL"]);
+
+                                            isNonRefundable = false;
+                                            #endregion
+
+                                            #region Fraud 
+
+                                            System.Diagnostics.Stopwatch timerroomprocessRestel = new System.Diagnostics.Stopwatch();
+                                            timerroomprocessRestel.Start();
+
+                                            ResponseDto responseDto = await _restel.GetRestelResponse("xml=" + BookingRequest_restel, Url, 120000, SupplierName);
+                                            ResponseDatatest = responseDto.Response;
+                                            Error = responseDto.Error;
+
+                                            RequestSPR = BookingRequest_restel;
+                                            ReponseSPR = ResponseDatatest;
+                                            timerroomprocessRestel.Stop();
+                                            time = timerroomprocessRestel.Elapsed.ToString();
+
+                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest_restel, ResponseDatatest + Error, "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "RaynaB2B");
+                                            #endregion
+
+                                            #region Booking Confirm, On Request, Rejected
+                                            ResponseDatatest = ResponseDatatest.Replace("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>", "");
+                                            ResponseDatatest = ResponseDatatest.Replace("<!DOCTYPE respuesta SYSTEM \"http://xml.hotelresb2b.com/xml/dtd/res_reserva.dtd\">", "");
+                                            ResponseDatatest = ResponseDatatest.Replace("<![CDATA[", "");
+                                            ResponseDatatest = ResponseDatatest.Replace("]]>", "");
+                                            DataSet RestelBook_Response = _commonMethod.GetDataSetFromXMLString(ResponseDatatest);
+
+                                            bool IsTrue = Convert.ToBoolean(RestelBook_Response.Tables["parametros"].Rows.Count > 0);
+
+                                            if (ResponseDatatest == "" || ResponseDatatest == null || IsTrue == false)
+                                            {
                                                 AgentVoucherNo = "";
-                                                bookingStatus = 6;
-                                                double FinalPrices = 0;
-                                                string RatePlanCode = Convert.ToString(bookRequest.userCart.UserCartDetails[j].RoomTypeId);
-                                                string SupplierName = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName);
-                                                int UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                                double CompanyBuyingPrices = Convert.ToDouble(bookRequest.userCart.UserCartDetails[j].BaseServiceBuyingAmount);
-                                                bool IsPriceUpdate = false;
-                                                UniqueNo = Convert.ToString(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                bookingStatus = 2;
+                                                if (isNonRefundable)
+                                                    bookingStatus = 1;
+
+                                                #region BookingData
+
+
+                                                AgentVoucher agentVoucher = new AgentVoucher();
+                                                agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                agentVoucher.XMLRequest = BookingRequest_restel;
+                                                agentVoucher.XMLResponse = ResponseDatatest;
+                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                agentVoucher.SupplierName = suppliername;
+                                                agentVouchers.Add(agentVoucher);
+                                                //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
+
                                                 #endregion
-
-                                                #region PriceCkeck, Booking RQ, Booking URL
-                                                string UserName = "";
-                                                string Password = "";
-                                                string ResponseDatatest = "";
-
-
-                                                BookingRequest_restel = _restel.Get_Restel_BookingRequest_newversion(bookRequest, dtPassengers, XPDetails, UniqueNo, IsPriceUpdate, 0, j, "", UserName, Password, AgentUniqueNo);
-
-                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest_restel, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "RaynaB2B");
-
-                                                string Url = Convert.ToString(XPDetails[0]["WebSiteURL"]);
-
-                                                isNonRefundable = false;
-                                                #endregion
-
-                                                #region Fraud 
-
-                                                System.Diagnostics.Stopwatch timerroomprocessRestel = new System.Diagnostics.Stopwatch();
-                                                timerroomprocessRestel.Start();
-
-                                                ResponseDto responseDto = await _restel.GetRestelResponse("xml=" + BookingRequest_restel, Url, 120000, SupplierName);
-                                                ResponseDatatest = responseDto.Response;
-                                                Error = responseDto.Error;
-
-                                                RequestSPR = BookingRequest_restel;
-                                                ReponseSPR = ResponseDatatest;
-                                                timerroomprocessRestel.Stop();
-                                                time = timerroomprocessRestel.Elapsed.ToString();
-
-                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), BookingRequest_restel, ResponseDatatest + Error, "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "RaynaB2B");
-                                                #endregion
-
-                                                #region Booking Confirm, On Request, Rejected
-                                                ResponseDatatest = ResponseDatatest.Replace("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>", "");
-                                                ResponseDatatest = ResponseDatatest.Replace("<!DOCTYPE respuesta SYSTEM \"http://xml.hotelresb2b.com/xml/dtd/res_reserva.dtd\">", "");
-                                                ResponseDatatest = ResponseDatatest.Replace("<![CDATA[", "");
-                                                ResponseDatatest = ResponseDatatest.Replace("]]>", "");
-                                                DataSet RestelBook_Response = _commonMethod.GetDataSetFromXMLString(ResponseDatatest);
-
-                                                bool IsTrue = Convert.ToBoolean(RestelBook_Response.Tables["parametros"].Rows.Count > 0);
-
-                                                if (ResponseDatatest == "" || ResponseDatatest == null || IsTrue == false)
+                                            }
+                                            else
+                                            {
+                                                string n_localizador = "";
+                                                string importe_total_reserva = "";
+                                                string estado = "";
+                                                //importe_total_reserva: Final Price
+                                                if (RestelBook_Response.Tables["parametros"] != null)
                                                 {
-                                                    AgentVoucherNo = "";
-                                                    bookingStatus = 2;
-                                                    if (isNonRefundable)
-                                                        bookingStatus = 1;
+                                                    n_localizador = Convert.ToString(RestelBook_Response.Tables["parametros"].Rows[0]["n_localizador"]);
+                                                    estado = Convert.ToString(RestelBook_Response.Tables["parametros"].Rows[0]["estado"]);
+                                                    importe_total_reserva = Convert.ToString(RestelBook_Response.Tables["parametros"].Rows[0]["importe_total_reserva"]);
 
-                                                    #region BookingData
-
-
-                                                    AgentVoucher agentVoucher = new AgentVoucher();
-                                                    agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                    agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                                    agentVoucher.AgentVoucherNo = AgentVoucherNo;
-                                                    agentVoucher.XMLRequest = BookingRequest_restel;
-                                                    agentVoucher.XMLResponse = ResponseDatatest;
-                                                    agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
-                                                    agentVoucher.SupplierName = suppliername;
-                                                    agentVouchers.Add(agentVoucher);
-                                                    //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
-
-                                                    #endregion
-                                                }
-                                                else
-                                                {
-                                                    string n_localizador = "";
-                                                    string importe_total_reserva = "";
-                                                    string estado = "";
-                                                    //importe_total_reserva: Final Price
-                                                    if (RestelBook_Response.Tables["parametros"] != null)
+                                                    if (estado == "00" && importe_total_reserva != "")
                                                     {
-                                                        n_localizador = Convert.ToString(RestelBook_Response.Tables["parametros"].Rows[0]["n_localizador"]);
-                                                        estado = Convert.ToString(RestelBook_Response.Tables["parametros"].Rows[0]["estado"]);
-                                                        importe_total_reserva = Convert.ToString(RestelBook_Response.Tables["parametros"].Rows[0]["importe_total_reserva"]);
+                                                        if (CompanyBuyingPrices >= Convert.ToDouble(importe_total_reserva))
+                                                            estado = "00";
+                                                        else
+                                                            estado = "01";
 
-                                                        if (estado == "00" && importe_total_reserva != "")
+                                                        string finalbookingreq = _restel.FinalRestelBookingRequest(n_localizador, estado);
+                                                        _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), finalbookingreq, "-", "Before Request hit booking final", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "RaynaB2B");
+
+                                                        string ResponseDatatestnew = "";
+                                                        if (finalbookingreq != "")
                                                         {
-                                                            if (CompanyBuyingPrices >= Convert.ToDouble(importe_total_reserva))
-                                                                estado = "00";
-                                                            else
-                                                                estado = "01";
+                                                            string Error1 = "";
+                                                            ResponseDto responseDto1 = await _restel.GetRestelResponse("xml=" + finalbookingreq, Url, 120000, SupplierName);
+                                                            ResponseDatatestnew = responseDto1.Response;
+                                                            Error1 = responseDto1.Error;
+                                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), finalbookingreq, ResponseDatatestnew + Error1, "After Request hit booking final", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "RaynaB2B");
 
-                                                            string finalbookingreq = _restel.FinalRestelBookingRequest(n_localizador, estado);
-                                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), finalbookingreq, "-", "Before Request hit booking final", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Request Confirm", ReferenceNo, "RaynaB2B");
-
-                                                            string ResponseDatatestnew = "";
-                                                            if (finalbookingreq != "")
+                                                            RequestSPR = RequestSPR + " #finalbookingreq= " + finalbookingreq;
+                                                            ReponseSPR = ReponseSPR + "#ResponseDatatestnew= " + ResponseDatatestnew;
+                                                            if (ResponseDatatestnew != "")
                                                             {
-                                                                string Error1 = "";
-                                                                ResponseDto responseDto1 = await _restel.GetRestelResponse("xml=" + finalbookingreq, Url, 120000, SupplierName);
-                                                                ResponseDatatestnew = responseDto1.Response;
-                                                                Error1 = responseDto1.Error;
-                                                                _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), finalbookingreq, ResponseDatatestnew + Error1, "After Request hit booking final", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), "Response Confirm", ReferenceNo, "RaynaB2B");
-
-                                                                RequestSPR = RequestSPR + " #finalbookingreq= " + finalbookingreq;
-                                                                ReponseSPR = ReponseSPR + "#ResponseDatatestnew= " + ResponseDatatestnew;
-                                                                if (ResponseDatatestnew != "")
+                                                                ResponseDatatestnew = ResponseDatatestnew.Replace("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>", "");
+                                                                ResponseDatatestnew = ResponseDatatestnew.Replace("<!DOCTYPE respuesta SYSTEM \"http://xml.hotelresb2b.com/xml/dtd/res_anul_confirm.dtd\">", "");
+                                                                ResponseDatatestnew = ResponseDatatestnew.Replace("<![CDATA[", "");
+                                                                ResponseDatatestnew = ResponseDatatestnew.Replace("]]>", "");
+                                                                DataSet RestelBook_ResponseNew = _commonMethod.GetDataSetFromXMLString(ResponseDatatestnew);
+                                                                string newestado = "";
+                                                                string newlocalizador = "";
+                                                                string newlocalizador_corto = "";
+                                                                if (RestelBook_ResponseNew.Tables["parametros"] != null)
                                                                 {
-                                                                    ResponseDatatestnew = ResponseDatatestnew.Replace("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>", "");
-                                                                    ResponseDatatestnew = ResponseDatatestnew.Replace("<!DOCTYPE respuesta SYSTEM \"http://xml.hotelresb2b.com/xml/dtd/res_anul_confirm.dtd\">", "");
-                                                                    ResponseDatatestnew = ResponseDatatestnew.Replace("<![CDATA[", "");
-                                                                    ResponseDatatestnew = ResponseDatatestnew.Replace("]]>", "");
-                                                                    DataSet RestelBook_ResponseNew = _commonMethod.GetDataSetFromXMLString(ResponseDatatestnew);
-                                                                    string newestado = "";
-                                                                    string newlocalizador = "";
-                                                                    string newlocalizador_corto = "";
-                                                                    if (RestelBook_ResponseNew.Tables["parametros"] != null)
-                                                                    {
-                                                                        newestado = Convert.ToString(RestelBook_ResponseNew.Tables["parametros"].Rows[0]["estado"]);
+                                                                    newestado = Convert.ToString(RestelBook_ResponseNew.Tables["parametros"].Rows[0]["estado"]);
 
-                                                                        newlocalizador = Convert.ToString(RestelBook_ResponseNew.Tables["parametros"].Rows[0]["localizador"]);
-                                                                        newlocalizador_corto = Convert.ToString(RestelBook_ResponseNew.Tables["parametros"].Rows[0]["localizador_corto"]);
-                                                                        if (newestado == "00" && estado == "00")
-                                                                        {
-                                                                            AgentVoucherNo = newlocalizador;
-                                                                            string SupplierRef = "";
-                                                                            SupplierRef = newlocalizador_corto;
-                                                                            if (SupplierRef != "")
-                                                                                AgentVoucherNo = AgentVoucherNo + "|" + SupplierRef;
-                                                                            else
-                                                                            {
-                                                                                AgentVoucherNo = "";
-                                                                                bookingStatus = 2;
-                                                                            }
-                                                                        }
+                                                                    newlocalizador = Convert.ToString(RestelBook_ResponseNew.Tables["parametros"].Rows[0]["localizador"]);
+                                                                    newlocalizador_corto = Convert.ToString(RestelBook_ResponseNew.Tables["parametros"].Rows[0]["localizador_corto"]);
+                                                                    if (newestado == "00" && estado == "00")
+                                                                    {
+                                                                        AgentVoucherNo = newlocalizador;
+                                                                        string SupplierRef = "";
+                                                                        SupplierRef = newlocalizador_corto;
+                                                                        if (SupplierRef != "")
+                                                                            AgentVoucherNo = AgentVoucherNo + "|" + SupplierRef;
                                                                         else
                                                                         {
                                                                             AgentVoucherNo = "";
                                                                             bookingStatus = 2;
-                                                                            if (isNonRefundable)
-                                                                                bookingStatus = 1;
                                                                         }
                                                                     }
                                                                     else
                                                                     {
                                                                         AgentVoucherNo = "";
                                                                         bookingStatus = 2;
+                                                                        if (isNonRefundable)
+                                                                            bookingStatus = 1;
                                                                     }
                                                                 }
                                                                 else
@@ -51218,45 +51212,51 @@ else
                                                         {
                                                             AgentVoucherNo = "";
                                                             bookingStatus = 2;
-                                                            if (isNonRefundable)
-                                                                bookingStatus = 1;
                                                         }
                                                     }
                                                     else
                                                     {
                                                         AgentVoucherNo = "";
                                                         bookingStatus = 2;
+                                                        if (isNonRefundable)
+                                                            bookingStatus = 1;
                                                     }
-                                                    #endregion
-
-                                                    #region SupplierPR Booking
-                                                    if (bookingStatus == 6)
-                                                        responsetype = "Success";
-                                                    else
-                                                        responsetype = "GeneralError";
-
-                                                    try
-                                                    {
-                                                        string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "Book", tokenData.AgentId, time, responsetype, BookingRequest_restel, ResponseDatatest, Error, bookRequest.SearchKey, TechName);
-                                                    }
-                                                    catch (Exception e)
-                                                    {
-                                                        _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", "");
-                                                    }
-                                                    #endregion
-                                                    #region BookingData
-                                                    AgentVoucher agentVoucher = new AgentVoucher();
-                                                    agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
-                                                    agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
-                                                    agentVoucher.AgentVoucherNo = AgentVoucherNo;
-                                                    agentVoucher.XMLRequest = BookingRequest_restel;
-                                                    agentVoucher.XMLResponse = ResponseDatatest;
-                                                    agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
-                                                    agentVoucher.SupplierName = suppliername;
-                                                    agentVouchers.Add(agentVoucher);
-
-                                                    #endregion
                                                 }
+                                                else
+                                                {
+                                                    AgentVoucherNo = "";
+                                                    bookingStatus = 2;
+                                                }
+                                            #endregion
+
+                                                #region SupplierPR Booking
+                                                if (bookingStatus == 6)
+                                                    responsetype = "Success";
+                                                else
+                                                    responsetype = "GeneralError";
+
+                                                try
+                                                {
+                                                    string abc = await _commonMethod.SupplierPerformanceReportForPrebookAndBook(SupplierName, "Book", tokenData.AgentId, time, responsetype, BookingRequest_restel, ResponseDatatest, Error, bookRequest.SearchKey, TechName);
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    _ = _exception.ErrorBooking(e, tokenData.AgentId.ToString(), "", "");
+                                                }
+                                                #endregion
+                                                #region BookingData
+                                                AgentVoucher agentVoucher = new AgentVoucher();
+                                                agentVoucher.UserCartId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartId);
+                                                agentVoucher.UserCartDetailId = Convert.ToInt32(bookRequest.userCart.UserCartDetails[j].UserCartDetailId);
+                                                agentVoucher.AgentVoucherNo = AgentVoucherNo;
+                                                agentVoucher.XMLRequest = BookingRequest_restel;
+                                                agentVoucher.XMLResponse = ResponseDatatest;
+                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
+                                                agentVoucher.SupplierName = suppliername;
+                                                agentVouchers.Add(agentVoucher);
+
+                                                #endregion
+                                            }
                                         }
                                         catch (Exception ex)
                                         {
@@ -52242,7 +52242,7 @@ else
                                             timerbookprocess.Start();
 
                                             ResponseDto responseDto = await _hotelbeds.GetHotelBedsSupplierResponse_timeout(Convert.ToString(XPDetails[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings, Convert.ToString(XPDetails[0]["UserName"]), Convert.ToString(XPDetails[0]["Password"]), ReferenceNo, CheckIn, CheckOut, 180000, HBV1BookingReq, "POST", Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName), null, false, bookRequest.SearchKey);
-                                        
+
                                             ResponseDataHotelBedsV1 = responseDto.Response;
                                             Error = responseDto.Error;
 
@@ -52310,7 +52310,7 @@ else
                                                         if (dsHotelBeds.Tables["booking"].Rows.Count > 0 && (APIbookingStatus.ToLower() == "confirmed" || APIbookingStatus.ToLower() == "preconfirmed"))
                                                         {
                                                             string reference = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["reference"]);
-                                                           string clientReference = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["clientReference"]);
+                                                            string clientReference = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["clientReference"]);
                                                             AgentVoucherNo = reference + "&&&" + clientReference;
 
                                                         }
@@ -54155,33 +54155,33 @@ else
                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), XtgReq, "-", "Before Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Request Confirm", ReferenceNo, "API Out");
                                             isNonRefundable = false;
 
-                                                if (XtgReq != string.Empty)
-                                                {
-                                                    System.Diagnostics.Stopwatch timerroomprocess_xtg = new System.Diagnostics.Stopwatch();
-                                                    timerroomprocess_xtg.Start();
+                                            if (XtgReq != string.Empty)
+                                            {
+                                                System.Diagnostics.Stopwatch timerroomprocess_xtg = new System.Diagnostics.Stopwatch();
+                                                timerroomprocess_xtg.Start();
 
-                                               objResponse = _xtg.GetXTGResponse(ref Error, XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_BOOK_Query, Newtonsoft.Json.Linq.JObject.Parse(XtgReq), XTGApiKey, Convert.ToInt32(120000));
-                                                
+                                                objResponse = _xtg.GetXTGResponse(ref Error, XTGWebUrl, XMLTravelGate.GraphQLClient.XTG_BOOK_Query, Newtonsoft.Json.Linq.JObject.Parse(XtgReq), XTGApiKey, Convert.ToInt32(120000));
+
                                                 RequestSPR = Convert.ToString(XtgReq);
                                                 ReponseSPR = Convert.ToString(objResponse);
-                                               
-                                                timerroomprocess_xtg.Stop();
-                                                    time = timerroomprocess_xtg.Elapsed.ToString();
-                                                }
-                                                objResponse.Response = objResponse.Response.Replace("&lt;", "<");
-                                                objResponse.Response = objResponse.Response.Replace("&gt;", ">");
-                                                objResponse.Response = objResponse.Response.Replace("&amp;lt;", "<");
-                                                objResponse.Response = objResponse.Response.Replace("&amp;gt;", ">");
-                                                DataTable dtCheckPriceRe = null;// (DataTable)HttpContext.Current.Session["CheckPriceReq"];
-                                                //if (dtCheckPriceRe != null)
-                                                //{
-                                                //    dtCheckPriceRe.DefaultView.RowFilter = "UserCartDetailsID=" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailID"]);
-                                                //    if (dtCheckPriceRe.DefaultView.Count > 0)
-                                                //        dtCheckPriceReqStructure.ImportRow(dtCheckPriceRe.DefaultView[0].Row);
-                                                //}
-                                            
 
-                                             _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), XtgReq, objResponse.Response + "Status:" + Convert.ToString(objResponse.IsError), "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Response Confirm", ReferenceNo, "API Out");
+                                                timerroomprocess_xtg.Stop();
+                                                time = timerroomprocess_xtg.Elapsed.ToString();
+                                            }
+                                            objResponse.Response = objResponse.Response.Replace("&lt;", "<");
+                                            objResponse.Response = objResponse.Response.Replace("&gt;", ">");
+                                            objResponse.Response = objResponse.Response.Replace("&amp;lt;", "<");
+                                            objResponse.Response = objResponse.Response.Replace("&amp;gt;", ">");
+                                            DataTable dtCheckPriceRe = null;// (DataTable)HttpContext.Current.Session["CheckPriceReq"];
+                                                                            //if (dtCheckPriceRe != null)
+                                                                            //{
+                                                                            //    dtCheckPriceRe.DefaultView.RowFilter = "UserCartDetailsID=" + Convert.ToString(dsCartDetails.Tables[1].DefaultView[0]["UserCartDetailID"]);
+                                                                            //    if (dtCheckPriceRe.DefaultView.Count > 0)
+                                                                            //        dtCheckPriceReqStructure.ImportRow(dtCheckPriceRe.DefaultView[0].Row);
+                                                                            //}
+
+
+                                            _commonMethod.ThirdPartyBookingHistory(Convert.ToString(UniqueNo), Convert.ToString(AgentUniqueNo), XtgReq, objResponse.Response + "Status:" + Convert.ToString(objResponse.IsError), "After Request hit booking", Convert.ToString(bookRequest.userCart.UserCartDetails[0].SupplierName), "Response Confirm", ReferenceNo, "API Out");
                                             #region "UnSuccessFull"
                                             if (objResponse.IsError || objResponse.Response == string.Empty)
                                             {
@@ -54351,7 +54351,7 @@ else
                                                 agentVoucher.AgentVoucherNo = AgentVoucherNo; //check this  060626
                                                 agentVoucher.XMLRequest = XtgReq;
                                                 agentVoucher.XMLResponse = objResponse.Response;
-                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus); 
+                                                agentVoucher.RoomStatus = Convert.ToString(bookingStatus);
                                                 agentVoucher.SupplierName = suppliername;
                                                 agentVouchers.Add(agentVoucher);
                                                 //_1.agentVouchers[j].PackageId = bookRequest.userCart.PackageId;
@@ -55470,10 +55470,14 @@ else
                                             // Attempt a verify call to obtain a createBookingToken for the group
                                             try
                                             {
-                                                string verifyRQ = _iExely.Get_Exely_VerifyBookingRQ(exelyRoomInfoList, groupPropertyId, groupNationality, null);
+                                                string verifyRQ = _iExely.Get_Exely_VerifyBookingRQ(exelyRoomInfoList, groupPropertyId, groupNationality, dtPassengers);
                                                 string verifyUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.VerifyBooking.TrimStart('/');
+
+                                                _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, verifyRQ, "-", "Before Exely VerifyBooking", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B", bookRequest.SearchKey);
                                                 ResponseDto verifyResp = await _iExely.ExelyResponseNew(verifyRQ, verifyUrl, 120000, password, bookRequest.SearchKey);
                                                 string verifyResponse = verifyResp.Response;
+
+                                                _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, verifyRQ, verifyResponse, "After Exely VerifyBooking", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B", bookRequest.SearchKey);
                                                 if (!string.IsNullOrWhiteSpace(verifyResponse))
                                                 {
                                                     var verifyResult = JsonConvert.DeserializeObject<VerifyBookingResult>(verifyResponse);
@@ -55497,7 +55501,7 @@ else
                                             // If still missing after verify attempt => mark as failed and skip booking
                                             if (string.IsNullOrWhiteSpace(groupToken))
                                             {
-                                                _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, string.Empty, "Exely createBookingToken missing from prebook response.", "Exely Group Book token missing", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
+                                                _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, string.Empty, "Exely createBookingToken missing from prebook response.", "Exely Group Book token missing", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B", bookRequest.SearchKey);
                                                 RequestSPR = string.Empty;
                                                 ReponseSPR = string.Empty;
                                                 Error = "Exely createBookingToken missing from prebook response.";
@@ -55526,15 +55530,10 @@ else
 
                                         if (!skipGroupBooking)
                                         {
-                                            /*if (string.IsNullOrWhiteSpace(RequestSPR))
-                                            {
-                                                _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, string.Empty, string.Empty, "Using existing Exely createBookingToken from prebook/verify", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B");
-                                            }*/
-
                                             // STEP 2: Single book for all rooms using the group token
                                             string ExelyBookRequest = _iExely.Get_Exely_BookingRequest(exelyRoomInfoList, dtPassengers, groupToken, exelyPropertyId, groupNationality);
                                             string ExelyBookUrl = baseUrl.TrimEnd('/') + "/" + _supplierConfig.Exely.CreateBooking.TrimStart('/');
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, "-", "Before Exely Group Book", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B");
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, "-", "Before Exely Group Book", suppliername, "Request Confirm", ReferenceNo, "NomadsB2B", bookRequest.SearchKey);
                                             Error = "";
                                             System.Diagnostics.Stopwatch timerroomprocess = new System.Diagnostics.Stopwatch();
                                             timerroomprocess.Start();
@@ -55544,7 +55543,7 @@ else
                                             RequestSPR = ExelyBookRequest;
                                             ReponseSPR = ExelyBookResponse;
 
-                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, ExelyBookResponse + Error, "After Exely Group Book", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B");
+                                            _commonMethod.ThirdPartyBookingHistory(UniqueNo, AgentUniqueNo, ExelyBookRequest, ExelyBookResponse + Error, "After Exely Group Book", suppliername, "Response Confirm", ReferenceNo, "NomadsB2B", bookRequest.SearchKey);
                                             bookingStatus = 2;
                                             AgentVoucherNo = "";
                                             if (!string.IsNullOrWhiteSpace(ExelyBookResponse))
@@ -56081,7 +56080,7 @@ else
                                                         agentVoucher.SupplierName = Convert.ToString(bookRequest.userCart.UserCartDetails[j].SupplierName);
                                                         #endregion
 
-                                                        
+
 
                                                         bookResponse_1.agentVouchers = agentVouchers;
                                                     }
@@ -62551,58 +62550,58 @@ else
                             break;
                         case "HOTELBEDS":
                             #region "HotelBedsV1"
-                      
-                               try
-                                {
-                                    string[] spitid = AgentVoucherNo_Cancle.Split(new String[] { "&&&" }, StringSplitOptions.None);
-                                
-                                     string AgentVoucherNo = spitid[0].ToString();
-                                    //string VoucherNumber = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/1.0/bookings/" + AgentVoucherNo_Cancle;
-                                    string VoucherNumber = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings2 + AgentVoucherNo;
-                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), VoucherNumber, "-", "Before Request hit cancelbooking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
-                                    ResponseDto responseDto = await _hotelbeds.GetHotelBedsSupplierResponse(VoucherNumber, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), 60000, "", "DELETE", Convert.ToString(Supplier), null, false, "", true);
-                                    string HotelsBedsV1Response = responseDto.Response;
 
-                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), VoucherNumber, HotelsBedsV1Response, "After cancelbooking Response", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                            try
+                            {
+                                string[] spitid = AgentVoucherNo_Cancle.Split(new String[] { "&&&" }, StringSplitOptions.None);
 
-                                    if (HotelsBedsV1Response.ToLower().Contains("error") == true || HotelsBedsV1Response.Trim() == string.Empty)
-                                    {
-                                        _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), Convert.ToString(VoucherNumber), Convert.ToString(HotelsBedsV1Response), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
-                                        return "";
-                                    }
-                                    else
-                                    {
-                                        try
-                                        {
-                                            XmlDocument xd = new XmlDocument();
-                                            HotelsBedsV1Response = "{ \"rootNode\": {" + HotelsBedsV1Response.Trim().TrimStart('{').TrimEnd('}') + "} }";
-                                            xd = (XmlDocument)JsonConvert.DeserializeXmlNode(HotelsBedsV1Response);
-                                            DataSet dsHotelBeds = new DataSet();
-                                            dsHotelBeds.ReadXml(new XmlNodeReader(xd));
-                                            string BookingStatus = "";
-                                            if (dsHotelBeds.Tables.Contains("booking") == true)
-                                            {
-                                                if (dsHotelBeds.Tables["booking"].Rows.Count > 0 && dsHotelBeds.Tables["booking"].Columns.Contains("status") == true)
-                                                    BookingStatus = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["status"]);
-                                            }
-                                            if (BookingStatus.ToUpper() == "CANCELLED")
-                                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), Convert.ToString(VoucherNumber), Convert.ToString(HotelsBedsV1Response), "After Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
-                                            _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), VoucherNumber, ex.Message, "Error block 1", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
-                                            return "";
-                                        }
-                                    }
-                                }
-                                catch (Exception EX)
+                                string AgentVoucherNo = spitid[0].ToString();
+                                //string VoucherNumber = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/1.0/bookings/" + AgentVoucherNo_Cancle;
+                                string VoucherNumber = Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + _supplierConfig.Hotelbeds.bookings2 + AgentVoucherNo;
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), VoucherNumber, "-", "Before Request hit cancelbooking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                ResponseDto responseDto = await _hotelbeds.GetHotelBedsSupplierResponse(VoucherNumber, Convert.ToString(SupplierDetailsCommon[0]["UserName"]), Convert.ToString(SupplierDetailsCommon[0]["Password"]), 60000, "", "DELETE", Convert.ToString(Supplier), null, false, "", true);
+                                string HotelsBedsV1Response = responseDto.Response;
+
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), VoucherNumber, HotelsBedsV1Response, "After cancelbooking Response", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+
+                                if (HotelsBedsV1Response.ToLower().Contains("error") == true || HotelsBedsV1Response.Trim() == string.Empty)
                                 {
-                                    _ = _exception.ErrorNew(EX, _LogAPI.CancelBooking);
-                                    _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/1.0/bookings/" + AgentVoucherNo_Cancle, EX.Message, "Error block 2", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                    _commonMethod.ThirdPartyErrorInCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), Convert.ToString(VoucherNumber), Convert.ToString(HotelsBedsV1Response), "From Cancellation Page", Convert.ToString(Supplier), "Hotel", PNRNO_Cancel, "API Out");
                                     return "";
                                 }
-                            
+                                else
+                                {
+                                    try
+                                    {
+                                        XmlDocument xd = new XmlDocument();
+                                        HotelsBedsV1Response = "{ \"rootNode\": {" + HotelsBedsV1Response.Trim().TrimStart('{').TrimEnd('}') + "} }";
+                                        xd = (XmlDocument)JsonConvert.DeserializeXmlNode(HotelsBedsV1Response);
+                                        DataSet dsHotelBeds = new DataSet();
+                                        dsHotelBeds.ReadXml(new XmlNodeReader(xd));
+                                        string BookingStatus = "";
+                                        if (dsHotelBeds.Tables.Contains("booking") == true)
+                                        {
+                                            if (dsHotelBeds.Tables["booking"].Rows.Count > 0 && dsHotelBeds.Tables["booking"].Columns.Contains("status") == true)
+                                                BookingStatus = Convert.ToString(dsHotelBeds.Tables["booking"].Rows[0]["status"]);
+                                        }
+                                        if (BookingStatus.ToUpper() == "CANCELLED")
+                                            _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), Convert.ToString(VoucherNumber), Convert.ToString(HotelsBedsV1Response), "After Request hit booking", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        _ = _exception.ErrorNew(ex, _LogAPI.CancelBooking);
+                                        _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo, Convert.ToString(UserNameType), VoucherNumber, ex.Message, "Error block 1", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                        return "";
+                                    }
+                                }
+                            }
+                            catch (Exception EX)
+                            {
+                                _ = _exception.ErrorNew(EX, _LogAPI.CancelBooking);
+                                _commonMethod.ThirdPartyCancellationHistory(AgentVoucherNo_Cancle, Convert.ToString(UserNameType), Convert.ToString(SupplierDetailsCommon[0]["WebSiteURL"]) + "/1.0/bookings/" + AgentVoucherNo_Cancle, EX.Message, "Error block 2", Convert.ToString(Supplier), "Request Confirm", PNRNO_Cancel, "API Out");
+                                return "";
+                            }
+
                             #endregion
                             break;
                         case "TRAVELLANDA":
@@ -68635,7 +68634,7 @@ else
 
                         if (!SearchByOneID)
                             SearchPara.HotelID = "";
-                    
+
                         //if (dsAgentDetails.Tables[6] != null && dsAgentDetails.Tables[6].Rows.Count > 0)
                         //{
                         //    DataRow[] rowsRayna = dsAgentDetails.Tables[6].Select("RaynaId IN (" +
@@ -70225,7 +70224,8 @@ else
                         finally
                         {
                         }
-                    };//);
+                    }
+                    ;//);
 
                     dtt = await Task.WhenAll(dataTable).ConfigureAwait(false);
                 }
@@ -70423,7 +70423,7 @@ else
             catch (Exception ex)
             {
                 // Common.Error(ex);
-                 _exception.Error(ex);  //neetochange
+                _exception.Error(ex);  //neetochange
                 return null;
             }
             finally
@@ -72850,7 +72850,7 @@ else
                     //if (Convert.ToString(BookingDetail.Tables[0].Rows[0]["bookingStatus"]).ToLower() == "cancelled")
                     if (Convert.ToString(BookingDetail.Tables[0].Rows[0]["bookingStatus"]).ToLower() == "cancelled" || Convert.ToString(BookingDetail.Tables[0].Rows[0]["bookingStatus"]).ToLower() == "cancel charge")
 
-                     {
+                    {
                         cancellationInfo.cancellationFee = Convert.ToDecimal(BookingDetail.Tables[0].Rows[0]["cancellationFee"]);
                         //cancellationInfo.cancellationDate = Convert.ToString(BookingDetail.Tables[0].Rows[0]["cancellationDate"]);
                         string originalCancellationDate = Convert.ToString(BookingDetail.Tables[0].Rows[0]["cancellationDate"]);
