@@ -5949,7 +5949,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     dataTable.Add(Task.Run(async () =>
                                     {
                                         string exelyMergedResponse = MergeExelyRoomResponses(item.RQRS);
-                                        var result = await _iExely.Exely_HotelSearchWithRooms(item, commonSearch, exelyMergedResponse, SearchPara, item.XmlCity, item.XmlCountry, item.XmlNationality, item.CurrencyCode, item.CurrencyFactor, dtROE, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog);
+                                        var result = await _iExely.Exely_HotelSearchWithRooms(item, commonSearch, exelyMergedResponse, SearchPara, item.XmlCity, item.XmlCountry, item.XmlNationality, item.CurrencyCode, item.CurrencyFactor, dtROE, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, StoreSupplierResErrorLog, SearchByOneID);
                                         item.dtHotelRoom = result;
                                         return result;
                                     }));
