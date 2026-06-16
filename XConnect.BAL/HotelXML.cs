@@ -5586,7 +5586,7 @@ new SqlParameter("@HotelIDs",item.StrHotelIds != string.Empty?item.StrHotelIds:"
                                     //{
                                     dataTable.Add(Task.Run(async () =>
                                     {
-                                        var result = await _hotelbeds.hotelbedsv1_new_HotelSearchWithRooms(SearchByOneID, item, commonSearch, item.RQRS, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, dtROE,ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, withcancellation, StoreSupplierResErrorLog);
+                                        var result = await _hotelbeds.hotelbedsv1_new_HotelSearchWithRooms(SearchByOneID, item, commonSearch, item.RQRS, item.URL, item.UserName, item.PassWord, item.SearchTimeOut, SearchPara, item.DebugeMode, item.CurrencyCode, item.CurrencyFactor, dtROE, ProccessCutOffTime, processTimeout, ResProccessTimerLogActive, ResProccessTimeValueforSaveLog, withcancellation, StoreSupplierResErrorLog);
                                         item.dtHotelRoom = result;
                                         return result;
                                     }));
@@ -7232,7 +7232,8 @@ new SqlParameter("@AgentId", AgentId),
 
                     //cts.CancelAfter(TimeOut);
 
-                    if (Provider.ToLower() != "booking.com_v3" && Provider.ToLower() != "rakuten" && Provider.ToLower() != "fitruums" && Provider.ToLower() != "fitruums_b2c" && Provider.ToLower() != "youtravel" && Provider.ToLower() != "booking.com" && Provider.ToLower() != "jumeirah" && Provider.ToLower().IndexOf("_dingus") < 0)
+                    bool useGetMethod = string.Equals(MethodType, "GET", StringComparison.OrdinalIgnoreCase);
+                    if (!useGetMethod && Provider.ToLower() != "booking.com_v3" && Provider.ToLower() != "rakuten" && Provider.ToLower() != "fitruums" && Provider.ToLower() != "fitruums_b2c" && Provider.ToLower() != "youtravel" && Provider.ToLower() != "booking.com" && Provider.ToLower() != "jumeirah" && Provider.ToLower().IndexOf("_dingus") < 0)
                     {
 
                         //handler.UseProxy = false;
@@ -7767,11 +7768,14 @@ new SqlParameter("@AgentId", AgentId),
                             Request.Headers.Authorization = new AuthenticationHeaderValue("Basic", key);
                             break;
                         case "exely":
-                            Request = new HttpRequestMessage(HttpMethod.Post, strHost);
-                            Request.Headers.Clear();
-                            Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
-                            Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                            Request = new HttpRequestMessage(useGetMethod ? HttpMethod.Get : HttpMethod.Post, requestUri);
                             Request.Headers.Add("X-Api-Key", Password);
+                            Request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                            Request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+                            if (!useGetMethod)
+                            {
+                                Request.Content = new StringContent(strxmlRQRS, Encoding.UTF8, "application/json");
+                            }
                             break;
                         case "directcontracting":
                             {
@@ -14574,6 +14578,59 @@ new SqlParameter("@AgentId", AgentId),
                     case "exely":
                         cancellationDto = await _iExely.Get_Exely_CancellationPolicy(Convert.ToInt32(roomno), hotelcode, dsHotelData, hotelid, roomtypeid, dtAgentDetail, dtSuplierMarkup, dtMarkupDetails, dsAgentDetails.Tables[2], SearchPara, shortname, Convert.ToInt32(AgentId), roomprice, Convert.ToDouble(Companybuy), SearchKey, Supplier, GiataId, hotelRating);
                         dtReturn = cancellationDto.dsHotelData.Tables[2].DefaultView.ToTable();
+
+                        try
+                        {
+                            string supplierCurrency = string.Empty;
+                            if (cancellationDto?.dsHotelData != null && cancellationDto.dsHotelData.Tables.Count > 0 && cancellationDto.dsHotelData.Tables[0].Rows.Count > 0)
+                            {
+                                DataTable bookingTable = cancellationDto.dsHotelData.Tables[0];
+                                DataRow bookingRow = bookingTable.Rows[0];
+
+                                if (bookingTable.Columns.Contains("SupplierCurrency"))
+                                    supplierCurrency = Convert.ToString(bookingRow["SupplierCurrency"]) ?? string.Empty;
+                                else if (bookingTable.Columns.Contains("SupplierCurrencyCode"))
+                                    supplierCurrency = Convert.ToString(bookingRow["SupplierCurrencyCode"]) ?? string.Empty;
+                                else if (bookingTable.Columns.Contains("Currency"))
+                                    supplierCurrency = Convert.ToString(bookingRow["Currency"]) ?? string.Empty;
+                            }
+
+                            string displayCurrency = Convert.ToString(ToeknData?.CreditLimitCurrencyName);
+                            if (string.IsNullOrWhiteSpace(displayCurrency))
+                                displayCurrency = Convert.ToString(ToeknData?.SiteCurrency);
+
+                            if (dtReturn != null
+                                && !string.IsNullOrWhiteSpace(supplierCurrency)
+                                && !string.IsNullOrWhiteSpace(displayCurrency)
+                                && !supplierCurrency.Equals(displayCurrency, StringComparison.OrdinalIgnoreCase)
+                                && ToeknData?.dtROE != null
+                                && ToeknData.dtROE.Rows.Count > 0)
+                            {
+                                double roe = _commonMethod.GetROEByCurrency(supplierCurrency, ToeknData.dtROE);
+                                if (roe > 0)
+                                {
+                                    foreach (DataRow row in dtReturn.Rows)
+                                    {
+                                        if (dtReturn.Columns.Contains("CompanyCancellationPrice") && double.TryParse(Convert.ToString(row["CompanyCancellationPrice"]), out double companyCancellationPrice))
+                                            row["CompanyCancellationPrice"] = Math.Round(companyCancellationPrice / roe, 2);
+
+                                        if (dtReturn.Columns.Contains("AgentCancellationPrice") && double.TryParse(Convert.ToString(row["AgentCancellationPrice"]), out double agentCancellationPrice))
+                                            row["AgentCancellationPrice"] = Math.Round(agentCancellationPrice / roe, 2);
+
+                                        if (dtReturn.Columns.Contains("BuyingPrice") && double.TryParse(Convert.ToString(row["BuyingPrice"]), out double buyingPrice))
+                                            row["BuyingPrice"] = Math.Round(buyingPrice / roe, 2);
+
+                                        if (dtReturn.Columns.Contains("SupplierCurrency"))
+                                            row["SupplierCurrency"] = displayCurrency;
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            // Keep original values if currency metadata is missing or conversion fails.
+                        }
+
                         break;
                     #endregion
                     default:

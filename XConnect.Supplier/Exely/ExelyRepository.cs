@@ -129,15 +129,17 @@ namespace XConnect.Supplier.Exely
                                                                         .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                                                         .Select(s => s.Trim())
                                                                         .Count() == 1;
+                                                                    string exelyBaseUrl = _keySettings.SupplierProxy == "0"
+                                                                        ? Convert.ToString(ExelyDetails.WebSiteURL)
+                                                                        : Convert.ToString(ExelyDetails.WebSiteURLforAPI);
                                                                     if (SearchByOneID)
                                                                     {
-                                                                        if (_keySettings.SupplierProxy == "0")
-                                                                            Xhotel.URL = Convert.ToString(ExelyDetails.WebSiteURL).TrimEnd('/') + "/" + _supplierConfig.Exely.GetRoomStaysByProperty;
-                                                                        else
-                                                                            Xhotel.URL = Convert.ToString(ExelyDetails.WebSiteURLforAPI) + _supplierConfig.Exely.GetRoomStaysByProperty;
+                                                                        Xhotel.MethoodType = "GET";
+                                                                        Xhotel.URL = BuildExelyRoomStaysByPropertyUrl(exelyBaseUrl, IdsForSearch.Trim(), SearchPara);
                                                                     }
                                                                     else
                                                                     {
+                                                                        Xhotel.MethoodType = "POST";
                                                                         if (_keySettings.SupplierProxy == "0")
                                                                             Xhotel.URL = Convert.ToString(ExelyDetails.WebSiteURL).TrimEnd('/') + "/" + _supplierConfig.Exely.SearchRoomStays;
                                                                         else
@@ -169,7 +171,7 @@ namespace XConnect.Supplier.Exely
                                                                         // Single property requests use GET; hotel lists use aggregated JSON POST.
                                                                         if (SearchByOneID)
                                                                         {
-                                                                            objrq.Request = IdsForSearch.Trim();
+                                                                            objrq.Request = Xhotel.URL;
                                                                         }
                                                                         else
                                                                         {
@@ -224,6 +226,22 @@ namespace XConnect.Supplier.Exely
         {
             try
             {
+                bool searchByOneId = !string.IsNullOrWhiteSpace(HotelCode)
+                    && HotelCode
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(x => x.Trim())
+                        .Count(x => !string.IsNullOrWhiteSpace(x)) == 1;
+
+                if (searchByOneId)
+                {
+                    string propertyId = HotelCode
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(x => x.Trim())
+                        .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x)) ?? string.Empty;
+
+                    return BuildExelyRoomStaysByPropertyUrl(string.Empty, propertyId, SearchPara);
+                }
+
                 // 🔹 PropertyIds
                 List<string> propertyIds = new List<string>();
                 if (!string.IsNullOrEmpty(HotelCode))
@@ -298,6 +316,59 @@ namespace XConnect.Supplier.Exely
             {
                 _ = _exception.Error(ex);
                 return "";
+            }
+        }
+
+        private string BuildExelyRoomStaysByPropertyUrl(string baseUrl, string propertyId, HotelSearchParameter searchParam)
+        {
+            try
+            {
+                string template = _supplierConfig.Exely.GetRoomStaysByProperty ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(template) || string.IsNullOrWhiteSpace(propertyId) || searchParam == null)
+                    return string.Empty;
+
+                string effectiveBaseUrl = baseUrl;
+                if (string.IsNullOrWhiteSpace(effectiveBaseUrl))
+                    effectiveBaseUrl = GetExelyBaseUrl(_supplierConfig.Exely.BaseUrl ?? string.Empty);
+
+                if (string.IsNullOrWhiteSpace(effectiveBaseUrl))
+                    return string.Empty;
+
+                string path = template.TrimStart('/').Replace("{propertyId}", propertyId);
+                string arrivalDate = ParseSearchDate(searchParam.CheckInDate).ToString("yyyy-MM-dd");
+                string departureDate = ParseSearchDate(searchParam.CheckOutDate).ToString("yyyy-MM-dd");
+                int adults = searchParam.Rooms?.Sum(r => Math.Max(r.NoofAdults, 1)) ?? 1;
+
+                var queryParams = new List<string>
+                {
+                    $"arrivalDate={arrivalDate}",
+                    $"departureDate={departureDate}",
+                    $"adults={adults}"
+                };
+
+                if (searchParam.Rooms != null)
+                {
+                    foreach (var room in searchParam.Rooms)
+                    {
+                        if (room.ChildAge != null && room.ChildAge.Length > 0)
+                        {
+                            foreach (int age in room.ChildAge.Where(a => a > 0))
+                                queryParams.Add($"childAges={age}");
+                        }
+                        else
+                        {
+                            if (room.Child1Age > 0) queryParams.Add($"childAges={room.Child1Age}");
+                            if (room.Child2Age > 0) queryParams.Add($"childAges={room.Child2Age}");
+                        }
+                    }
+                }
+
+                return $"{effectiveBaseUrl.TrimEnd('/')}/{path}?{string.Join("&", queryParams)}";
+            }
+            catch (Exception ex)
+            {
+                _ = _exception.Error(ex);
+                return string.Empty;
             }
         }
         #endregion Request
@@ -631,45 +702,12 @@ namespace XConnect.Supplier.Exely
                                         double vatOnPolicy = 0;
                                         double mainAgentCharge = cancellationChargeAmount;
                                         double companyChargeAmount = cancellationChargeAmount;
-                                        double markedupCancellationCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(
-                                            ref mainAgentCharge,
-                                            SearchParam.NoofNights,
-                                            SearchParam.CityID,
-                                            Convert.ToString(SearchParam.CountryID),
-                                            cancellationChargeAmount,
-                                            isPerce,
-                                            commonSearch.B2CMarkup,
-                                            AgentPercentage,
-                                            AgentMarkupAmount,
-                                            commonSearch.IsParentId,
-                                            commonSearch.SubAgentMarkup,
-                                            ref vatOnPolicy);
+                                        double markedupCancellationCharge = _markup.ProcessHotelCancelationPrice_WithMarkup(ref mainAgentCharge, SearchParam.NoofNights, SearchParam.CityID, Convert.ToString(SearchParam.CountryID), cancellationChargeAmount, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, ref vatOnPolicy);
                                         bool addedDetailedCancellation = false;
-                                        List<ExelyCancellationSegment> liveSegments = BuildExelyCancellationSegments(
-                                            roomStay.cancellationPolicy,
-                                            checkInDate,
-                                            FinalPrice,
-                                            cutOffDays,
-                                            cancellationCurrency);
+                                        List<ExelyCancellationSegment> liveSegments = BuildExelyCancellationSegments(roomStay.cancellationPolicy, checkInDate, FinalPrice, cutOffDays, cancellationCurrency);
                                         if (liveSegments.Count > 0)
                                         {
-                                            AddExelyCancellationRows(
-                                                dt_Cancellation,
-                                                liveSegments,
-                                                Item.Supplier,
-                                                Convert.ToString(OwnsystemHotelId),
-                                                1,
-                                                RoomTypeId,
-                                                roomStay.mealPlanCode ?? "",
-                                                SearchParam,
-                                                isPerce,
-                                                commonSearch.B2CMarkup,
-                                                AgentPercentage,
-                                                AgentMarkupAmount,
-                                                commonSearch.IsParentId,
-                                                commonSearch.SubAgentMarkup,
-                                                Essen,
-                                                dtROE);
+                                            AddExelyCancellationRows(dt_Cancellation, liveSegments, Item.Supplier, Convert.ToString(OwnsystemHotelId), 1, RoomTypeId, roomStay.mealPlanCode ?? "", SearchParam, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, Essen, dtROE);
                                             addedDetailedCancellation = true;
                                         }
 
@@ -684,24 +722,7 @@ namespace XConnect.Supplier.Exely
                                             List<ExelyCancellationSegment> ruleSegments = BuildExelyCancellationSegments(rulesResponse, checkInDate, companyBuyingPrice, SearchParam.NoofNights, cutOffDays);
                                             if (ruleSegments.Count > 0)
                                             {
-                                                AddExelyCancellationRows(
-                                                    dt_Cancellation,
-                                                    ruleSegments,
-                                                    Item.Supplier,
-                                                    Convert.ToString(OwnsystemHotelId),
-                                                    1,
-                                                    RoomTypeId,
-                                                    roomStay.mealPlanCode ?? "",
-                                                    SearchParam,
-                                                    isPerce,
-                                                    commonSearch.B2CMarkup,
-                                                    AgentPercentage,
-                                                    AgentMarkupAmount,
-                                                    commonSearch.IsParentId,
-                                                    commonSearch.SubAgentMarkup,
-                                                    Essen,
-                                                    dtROE);
-                                                addedDetailedCancellation = true;
+                                                AddExelyCancellationRows(dt_Cancellation, ruleSegments, Item.Supplier, Convert.ToString(OwnsystemHotelId), 1, RoomTypeId, roomStay.mealPlanCode ?? "", SearchParam, isPerce, commonSearch.B2CMarkup, AgentPercentage, AgentMarkupAmount, commonSearch.IsParentId, commonSearch.SubAgentMarkup, Essen, dtROE); addedDetailedCancellation = true;
                                             }
                                         }
 
@@ -1379,6 +1400,12 @@ namespace XConnect.Supplier.Exely
                                 phones = new List<BookingPersonPhone> { new BookingPersonPhone { phoneNumber = "+442012345678" } },
                                 emails = new List<BookingPersonEmail> { new BookingPersonEmail { emailAddress = "guest@withinearth.com" } }
                             }
+                        },
+                        Prepayment = new BookingPrepayment
+                        {
+                            remark = "Payment in channel",
+                            paymentType = PaymentType.PrePay,
+                            prepaidSum = 0
                         }
                     }
                 };
@@ -1455,6 +1482,12 @@ namespace XConnect.Supplier.Exely
                                 phones = new List<Phone> { new Phone { phoneNumber = "+442012345678" } },
                                 emails = new List<Email> { new Email { emailAddress = "guest@withinearth.com" } }
                             }
+                        },
+                        prepayment = new Prepayment
+                        {
+                            remark = "Payment in channel",
+                            paymentType = PaymentType.PrePay,
+                            prepaidSum = 0
                         },
                         createBookingToken = uniqueBookingToken
                     }

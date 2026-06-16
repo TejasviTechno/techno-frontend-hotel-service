@@ -405,7 +405,7 @@
     public class Prepayment
     {
         public string remark { get; set; }
-        public string paymentType { get; set; }
+        public PaymentType paymentType { get; set; }
         public decimal prepaidSum { get; set; }
     }
 
