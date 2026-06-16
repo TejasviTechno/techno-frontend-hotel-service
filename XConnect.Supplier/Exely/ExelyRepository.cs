@@ -1239,19 +1239,6 @@ namespace XConnect.Supplier.Exely
         #region Prebook
         #region Request
 
-        private static string AppendExelyCreateBookingToken(string roomTypeId, string createBookingToken)
-        {
-            if (string.IsNullOrWhiteSpace(roomTypeId) || string.IsNullOrWhiteSpace(createBookingToken))
-                return roomTypeId ?? string.Empty;
-
-            List<string> parts = roomTypeId.Split("$$$").ToList();
-            while (parts.Count <= 11)
-                parts.Add(string.Empty);
-
-            parts[11] = createBookingToken;
-            return string.Join("$$$", parts);
-        }
-
         public string Get_Exely_VerifyBookingRQ(int noofadult, int noofchild, string hotelcode, string CheckIn, string CheckOut, string RoomTypeId, string XmlNationality, string checksum = "", DataTable? dtPassengers = null)
         {
             try
